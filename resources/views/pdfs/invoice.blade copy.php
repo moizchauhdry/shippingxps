@@ -48,7 +48,7 @@ caption {
             City : {{ $address->city}}
             State : {{ $address->state}}
             Address : {{ $address->address}}
-            Country : {{ $address->Country}}
+            Country : {{ $address->country->nicename}}
         </td>
 
         <td cellspacing="0" width="50%" style="height: 120px; border:1px solid #c1c1c1; margin:0;">

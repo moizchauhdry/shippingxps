@@ -19,6 +19,7 @@ class PackageTable extends Migration
             $table->string('package_no',16)->unique();
             $table->integer('customer_id');
             $table->integer('warehouse_id'); 
+            $table->integer('package_handler_id');
             $table->enum('status',['open','filled','labeled','shipped','delivered'])->default('open');
             
             //pcakge

@@ -29,9 +29,9 @@
 
                   <div class="col-md-6" style="border : 1px solid #6b7280;">
                        <p><strong>Tracking No's:</strong></p>
-                       <template v-for="tracking_num in tracking_numbers" :key="tracking_num">
+                      <!--<template v-for="tracking_num in tracking_numbers" :key="tracking_num">
                          <p>{{ tracking_num }}</p>
-                       </template>
+                       </template>-->
                        <p><strong>Date :</strong> {{ package_date }} </p>
                        <p><strong>Package-Id :</strong> {{ packag.package_no }} </p>
                   </div>

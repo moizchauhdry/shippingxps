@@ -14,6 +14,10 @@ class Package extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function packageHandler(){
+        return $this->belongsTo(User::class,'package_handler_id');
+    }
+
     public function warehouse(){
         return $this->belongsTo(Warehouse::class);
     }

@@ -54,12 +54,12 @@ caption {
     <tr>
         <td width="50%" >
             Ship To : <br>
-            PHone : {{ $address->phone}}<br>
-            Email : {{ $user->email}}
-            City : {{ $address->city}}
-            State : {{ $address->state}}
-            Address : {{ $address->address}}
-            Country : {{ $address->Country}}
+            PHone : {{ $address->phone ?? '- -'}}<br>
+            Email : {{ $user->email ?? '- -'}}
+            City : {{ $address->city ?? '- -'}}
+            State : {{ $address->state ?? '- -'}}
+            Address : {{ $address->address ?? '- -'}}
+            Country : {{ $address->country->name ?? '- -' }}
         </td>
 
         <td width="50%">
@@ -99,7 +99,7 @@ caption {
         <td>{{ $item->quantity}}</td>
         <td>PCS</td>
         <td>{{ $item->description}}</td>
-        <td>{{ $country->nicename}}</td>
+        <td>{{ $country->nicename ?? '- -'}}</td>
         <td>{{ $item->unit_price}}</td>
         <td>{{ $item->unit_price*$item->quantity}}</td>
     </tr>
@@ -153,7 +153,7 @@ caption {
 
     <tr>
         <td colspan="2" style="height:80px;">
-            Signature By : {{ $user->name }} 
+            Signature By : @if(isset($package->package_handler_id) && $package->package_handler_id != NULL) {{ $package->packageHandler->name }} @endif
         </td>
         <td colspan="5" style="height:80px;"></td>
     </tr>

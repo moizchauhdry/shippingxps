@@ -416,7 +416,6 @@ class PackageController extends Controller
 
 
     public function getPdf(Request $request, $order_id){
-
         $package = Package::with(['items','warehouse.country'])->find($order_id);
 
         $warehouse = $package->warehouse;
@@ -424,6 +423,7 @@ class PackageController extends Controller
         $user = User::find($package->customer_id);
 
         $address = Address::find($package->address_book_id);
+
 
         $html = view('pdfs.invoice',[
             'package' => $package,
@@ -516,6 +516,7 @@ class PackageController extends Controller
         $package->package_length = $data['package_length'];
         $package->package_width = $data['package_width'];
         $package->package_height = $data['package_height'];
+        $package->package_handler_id = Auth::user()->id;
         $package->update();
 
         event(new PackageConsolidated($package));
