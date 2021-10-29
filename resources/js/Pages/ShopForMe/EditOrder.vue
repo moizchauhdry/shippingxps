@@ -73,7 +73,7 @@
                       <div  class="col-md-4">
                         <div class="form-group">
                           <breeze-label for="notes" value="Notes" />
-                          <textarea v-model="form.note"
+                          <textarea v-model="form.notes"
                                     name="notes"
                                     id="notes"
                                     class="form-control"
@@ -112,7 +112,7 @@
                       <div  class="col-md-12">
                         <div class="form-group">
                           <breeze-label for="notes" value="Notes" />
-                          <textarea v-model="form.note"
+                          <textarea v-model="form.notes"
                                     name="notes"
                                     id="note"
                                     class="form-control"
@@ -288,14 +288,14 @@ export default {
   data() {
     return {
       form: this.$inertia.form({
-        form_type: (this.order.order_type == 'shopping') ? 'shop' : 'pickup',
+        form_type: (this.order.order_type == 'shopping') ? 'shopping' : 'pickup',
         id:this.order.id,
         warehouse_id: this.order.warehouse_id,
         store_id: this.order.store_id,
         site_name: this.order.site_name,
         shop_url: this.order.site_url,
         status: this.order.status,
-        note:  this.order.notes,
+        notes:  this.order.notes,
         shipping_from_shop:  this.order.shipping_from_shop,
         sales_tax: this.order.sales_tax,
         order_origin: this.order.order_origin,
@@ -361,7 +361,7 @@ export default {
         }
         // to handle different form submit behaviour for the same form
         if (tab === 'tab1') {
-          this.form.form_type = 'shop';
+          this.form.form_type = 'shopping';
         } else {
           this.form.form_type = 'pickup';
         }

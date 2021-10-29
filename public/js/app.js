@@ -23704,7 +23704,7 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       form_online: this.$inertia.form({
-        form_type: 'shop',
+        form_type: 'shopping',
         warehouse_id: '',
         site_name: '',
         shop_url: '',
@@ -24011,14 +24011,14 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       form: this.$inertia.form({
-        form_type: this.order.order_type == 'shopping' ? 'shop' : 'pickup',
+        form_type: this.order.order_type == 'shopping' ? 'shopping' : 'pickup',
         id: this.order.id,
         warehouse_id: this.order.warehouse_id,
         store_id: this.order.store_id,
         site_name: this.order.site_name,
         shop_url: this.order.site_url,
         status: this.order.status,
-        note: this.order.notes,
+        notes: this.order.notes,
         shipping_from_shop: this.order.shipping_from_shop,
         sales_tax: this.order.sales_tax,
         order_origin: this.order.order_origin,
@@ -24081,7 +24081,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
         if (tab === 'tab1') {
-          this.form.form_type = 'shop';
+          this.form.form_type = 'shopping';
         } else {
           this.form.form_type = 'pickup';
         }
@@ -28465,7 +28465,7 @@ var _hoisted_2 = /*#__PURE__*/_withScopeId(function () {
     "class": "font-semibold text-xl text-gray-800 leading-tight form-title"
   }, " Using your Addresses ")]), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
     "class": "card-body"
-  }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" How to use your addresses when purchasing from online merchants. "), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("ul", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("li", null, "1: Purchase form murchents"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("li", null, "2: Use one of these addresses"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("li", null, "3: We will deliver items to your address outside US. (Listed in address book) ")])])])])], -1
+  }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" How to use your addresses when purchasing from online merchants. "), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("ul", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("li", null, "1: Purchase form merchants"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("li", null, "2: Use one of these addresses"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("li", null, "3: We will deliver items to your address outside US. (Listed in address book) ")])])])])], -1
   /* HOISTED */
   );
 });
@@ -34113,15 +34113,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       /* TEXT */
       )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [_hoisted_11, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.warehouse.country), 1
       /* TEXT */
-      )]), _hoisted_12]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_13, [_hoisted_14, ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($props.tracking_numbers, function (tracking_num) {
-        return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("p", {
-          key: tracking_num
-        }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(tracking_num), 1
-        /* TEXT */
-        );
-      }), 128
-      /* KEYED_FRAGMENT */
-      )), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [_hoisted_15, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.package_date), 1
+      )]), _hoisted_12]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_13, [_hoisted_14, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("<template v-for=\"tracking_num in tracking_numbers\" :key=\"tracking_num\">\n                         <p>{{ tracking_num }}</p>\n                       </template>"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [_hoisted_15, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.package_date), 1
       /* TEXT */
       )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [_hoisted_16, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.packag.package_no), 1
       /* TEXT */
@@ -44691,7 +44683,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         value: "Notes"
       }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("textarea", {
         "onUpdate:modelValue": _cache[5] || (_cache[5] = function ($event) {
-          return $data.form.note = $event;
+          return $data.form.notes = $event;
         }),
         name: "notes",
         id: "notes",
@@ -44704,7 +44696,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         required: ""
       }, "\n                          ", 512
       /* NEED_PATCH */
-      ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.form.note]])])])])], 2
+      ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.form.notes]])])])])], 2
       /* CLASS */
       ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
         "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)($options.getTabPaneClass('tab2')),
@@ -44761,7 +44753,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         value: "Notes"
       }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("textarea", {
         "onUpdate:modelValue": _cache[9] || (_cache[9] = function ($event) {
-          return $data.form.note = $event;
+          return $data.form.notes = $event;
         }),
         name: "notes",
         id: "note",
@@ -44774,7 +44766,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         required: ""
       }, "\n                                ", 512
       /* NEED_PATCH */
-      ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.form.note]])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_36, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_37, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_breeze_label, {
+      ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.form.notes]])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_36, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_37, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_breeze_label, {
         "for": "only_pickup",
         value: "Only Pickup"
       }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {

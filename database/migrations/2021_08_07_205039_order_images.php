@@ -16,7 +16,7 @@ class OrderImages extends Migration
         Schema::create('order_images', function (Blueprint $table) {
             $table->id();
             $table->integer('order_id');
-            $table->string('image',64);
+            $table->string('image');
             $table->boolean('display')->default(false);
         });
     }

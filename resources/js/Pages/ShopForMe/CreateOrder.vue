@@ -382,7 +382,7 @@ export default {
   data() {
     return {
       form_online: this.$inertia.form({
-        form_type:'shop',
+        form_type:'shopping',
         warehouse_id: '',        
         site_name: '',
         shop_url: '',        

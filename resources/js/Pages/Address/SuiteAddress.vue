@@ -12,7 +12,7 @@
                         <p>
                             How to use your addresses when purchasing from online merchants.
                             <ul>
-                                <li>1: Purchase form murchents</li>
+                                <li>1: Purchase form merchants</li>
                                 <li>2: Use one of these addresses</li>
                                 <li>3: We will deliver items to your address outside US. (Listed in address book) </li>
                             </ul>

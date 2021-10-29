@@ -80,7 +80,7 @@ class ShopController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
-
+        // dd($request->all());
         $request->validate([
             'form_type' => 'required|in:shopping,pickup',
             'warehouse_id' => 'required',
@@ -277,7 +277,7 @@ class ShopController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function updateOrder(Request $request) {
-
+        // dd($request->all());
         $id = $request->input('id');
         $order = Order::findOrFail($id);
         $request->validate([
@@ -288,7 +288,7 @@ class ShopController extends Controller
             'site_name' => 'required_if:form_type,shopping',
             'shop_url' => 'required_if:form_type,shopping',
             'store_id' => 'required_if:form_type,pickup',
-            'pickup_type' => 'required_if:form_type,pickup',
+            // 'pickup_type' => 'required_if:form_type,pickup',
             'pickup_date' => 'required_if:form_type,pickup'
         ]);
 
