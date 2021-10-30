@@ -18,7 +18,7 @@ class UserWelcomeEmail extends Notification
      */
     public function __construct()
     {
-        //
+        //`
     }
 
     /**

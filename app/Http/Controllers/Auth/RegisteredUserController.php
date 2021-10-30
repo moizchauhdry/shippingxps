@@ -52,12 +52,16 @@ class RegisteredUserController extends Controller
             'type' => 'customer'
         ]);
 
+        $admins = User::where(['type' => 'admin'])->get();
+
+        try{
+            
         //Notify User
         $user->notify(new UserWelcomeEmail());
 
         //Notify Admins 
-        $admins = User::where(['type' => 'admin'])->get();
         Notification::send($admins, new AdminUserRegistered($user));
+        }catch(\Throwable $e){}
 
         event(new Registered($user));
 
