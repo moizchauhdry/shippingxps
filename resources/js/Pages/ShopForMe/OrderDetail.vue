@@ -176,7 +176,7 @@
 
           <div class="col-md-12">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight form-title">
-              Itemss
+              Items
             </h2>
             <table class="table table-striped">
               <thead>
@@ -184,8 +184,8 @@
                   <th scope="col">#</th>
                   <th scope="col">Name </th>
                   <th scope="col">Quantity</th>
-                   <th scope="col">Price</th>
-                   <th scope="col">Price with tax</th>
+                  <th scope="col">Price</th>
+                  <th scope="col">Price with tax</th>
                   <th scope="col">Description</th>
                   <th scope="col">URL</th>
                 </tr>

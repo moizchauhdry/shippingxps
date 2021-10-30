@@ -39,7 +39,7 @@
                         <div class="form-group">
                           <breeze-label for="warehouse_id" value="Warehouse" />
                           <select name="warehouse_id" class="form-select" v-model="form_online.warehouse_id" required>
-                            <option selected>Select</option>
+                            <option selected disabled>Select</option>
                             <option v-for="warehouse in warehouses" :value="warehouse.id"  :key="warehouse.id" >{{ warehouse.name}}</option>
                           </select>
                         </div>
@@ -146,7 +146,7 @@
                           </div>
                           <div class="col-md-1">
                             <div class="form-group">
-                              <input v-model="item.qty" name="qty" id="qty" type="number" class="form-control" placeholder="Qty" required />
+                              <input v-model="item.qty" name="qty" id="qty" type="number" class="form-control" placeholder="Qty" min="0" max="9" required />
                             </div>
                           </div>
                           <div class="col-md-1" v-show="index!=0">
@@ -175,7 +175,7 @@
                           <div class="form-group">
                             <breeze-label for="warehouse_id" value="Warehouse" />
                             <select name="warehouse_id" class="form-select" v-model="form_pickup.warehouse_id" @change="filterStores()" required>
-                              <option selected>Select</option>
+                              <option selected disabled>Select</option>
                               <option v-for="warehouse in warehouses" :value="warehouse.id"  :key="warehouse.id" >{{ warehouse.name}}</option>
                             </select>
                           </div>
@@ -184,7 +184,7 @@
                           <div class="form-group">
                             <breeze-label for="store_id" value="Shopping Mall" />
                             <select name="store_id" class="form-select" v-model="form_pickup.store_id" :required="setRequired('tab2')" v-on:change="setPickupCharges($event)" >
-                              <option selected>Select</option>
+                              <option selected disabled>Select</option>
                               <option v-for="store in stores" :value="store.id"  :key="store.id" >{{ store.name }}</option>
                             </select>
                           </div>
@@ -310,7 +310,7 @@
                             </div>
                             <div class="col-md-1">
                               <div class="form-group">
-                                <input v-model="item.qty" name="qty" id="qty" type="number" class="form-control" placeholder="Qty" required />
+                                <input v-model="item.qty" name="qty" id="qty" type="number" class="form-control" placeholder="Qty" min="0" max="9" required />
                               </div>
                             </div>
                             <div class="col-md-1" v-show="index!=0">

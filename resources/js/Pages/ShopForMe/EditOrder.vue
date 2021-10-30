@@ -156,7 +156,7 @@
                     <div class="col">
                       <div class="form-group">
                         <breeze-label for="package_length" value="Sales Tax" />
-                        <input v-model="form.sales_tax" name="sales_tax" id="sales_tax" type="number" class="form-control" placeholder="Sales Tax" required />
+                        <input v-model="salePrice" name="sales_tax" id="sales_tax" type="number" class="form-control" placeholder="Sales Tax" required @keyup="addTax()" />
                       </div>
 
                     </div>
@@ -315,10 +315,11 @@ export default {
   props: {
     auth: Object,
     warehouses: Object,
-    order:Object
+    order:Object,
+    salePrice : Object
   },
   mounted() { 
-    this.filterStores();    
+    this.filterStores();
   },
   created(){
     if(this.form.form_type ==='pickup'){
@@ -336,7 +337,6 @@ export default {
       this.form.is_complete_shopping = 1;
       this.submit();
     },
-
     addItem(){
       this.form.items.push({
         name: "",
@@ -346,12 +346,11 @@ export default {
         price_after_tax: "",
         qty: ""
       })
-    },
 
+    },
     removeItem(index){
       this.form.items.splice(index, 1);
     },
-
     setActiveTabAB(tab){
       for (var key in this.tabs) {
         if(key === tab){
@@ -367,7 +366,6 @@ export default {
         }
       }
     },
-
     getTabClass(tab){
 
       if(this.tabs[tab] === true){
@@ -377,11 +375,9 @@ export default {
       }
 
     },
-
     setRequired(tab){
       return this.tabs[tab];
     },
-
     getTabPaneClass(tab){
 
       if(this.tabs[tab] === true){
@@ -390,7 +386,6 @@ export default {
         return 'tab-pane fade d-none';
       }
     },
-
     filterStores() {
       const params = {
         warehouse_id: this.form.warehouse_id
@@ -400,6 +395,14 @@ export default {
             this.stores = data.stores;
           }
       );
+    },
+    addTax(){
+      setTimeout(function(){
+        console.log('added Tax');
+        var salePrice = document.getElementById('sales_tax').value
+        var price = document.getElementById('price').value;
+        document.getElementById('price_after_tax').value = parseInt(salePrice) + parseInt(price);
+      },500)
     }
   }
 }
