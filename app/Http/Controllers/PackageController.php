@@ -86,6 +86,7 @@ class PackageController extends Controller
         $packag = Package::with(['orders','address','warehouse','customer','items','images','serviceRequests'])->find($id);
 
         $services = Service::where('status','=','1')->get();
+        $serviceRequest = ServiceRequest::where('package_id',$packag->id)->where('service_id',1)->first();
 
         $service_requests = [];
         foreach($packag->serviceRequests as $req){
@@ -140,6 +141,7 @@ class PackageController extends Controller
           'order_charges' => $order_charges,
           'mailout_fee' => (int) SiteSetting::getByName('mailout_fee'),
           'shipping_services' => Shipping::getShippingServices(),
+            'hasConsolidationRequest' => (bool)$serviceRequest,
         ]);
 
     }
@@ -156,7 +158,6 @@ class PackageController extends Controller
 
         $packag = Package::with(['orders','warehouse','customer','items'])->find($package_id);
 
-        $serviceRequest = ServiceRequest::where('package_id',$packag->id)->where('service_id',1)->first();
 
         $warehouse = $packag->warehouse;
 
@@ -215,7 +216,7 @@ class PackageController extends Controller
           'warehouse' => $warehouse,
           'tracking_numbers' => $tracking_numbers,
           'package_date' => date('Y-m-d'),
-          'hasConsolidationRequest' => (bool)$serviceRequest,
+
 
         ]);  
 

@@ -211,6 +211,9 @@ class ShopController extends Controller
 
         $items = [];
 
+        $price = $model->items->sum('unit_price');
+        $price_after_tax = $model->items->sum('price_after_tax');
+
         foreach($model->items as $item){
             $items[] = [
                 'id' => $item->id,
@@ -266,7 +269,8 @@ class ShopController extends Controller
         return Inertia::render('ShopForMe/EditOrder',[
             'order' => $order,
             'warehouses' => $warehouses,
-            'stores' => $stores
+            'stores' => $stores,
+            'salePrice' => (int)$price_after_tax - $price,
         ]);
     }
 
