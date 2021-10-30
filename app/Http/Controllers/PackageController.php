@@ -156,6 +156,8 @@ class PackageController extends Controller
 
         $packag = Package::with(['orders','warehouse','customer','items'])->find($package_id);
 
+        $serviceRequest = ServiceRequest::where('package_id',$packag->id)->where('service_id',1)->first();
+
         $warehouse = $packag->warehouse;
 
         $items = [];
@@ -212,7 +214,9 @@ class PackageController extends Controller
           'packag'=> $packag,
           'warehouse' => $warehouse,
           'tracking_numbers' => $tracking_numbers,
-          'package_date' => date('Y-m-d')
+          'package_date' => date('Y-m-d'),
+          'hasConsolidationRequest' => (bool)$serviceRequest,
+
         ]);  
 
     }
@@ -433,6 +437,12 @@ class PackageController extends Controller
         ])->render();
 
         //echo $html; exit;
+//        return view('pdfs.invoice',[
+//            'package' => $package,
+//            'warehouse' => $warehouse,
+//            'user' => $user,
+//            'address' => $address
+//        ]);
        
         $mpdf = new \Mpdf\Mpdf();
         $mpdf->WriteHTML($html);

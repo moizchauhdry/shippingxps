@@ -55,10 +55,10 @@ caption {
         <td width="50%" >
             Ship To : <br>
             PHone : {{ $address->phone ?? '- -'}}<br>
-            Email : {{ $user->email ?? '- -'}}
-            City : {{ $address->city ?? '- -'}}
-            State : {{ $address->state ?? '- -'}}
-            Address : {{ $address->address ?? '- -'}}
+            Email : {{ $user->email ?? '- -'}}<br>
+            City : {{ $address->city ?? '- -'}}<br>
+            State : {{ $address->state ?? '- -'}}<br>
+            Address : {{ $address->address ?? '- -'}}<br>
             Country : {{ $address->country->name ?? '- -' }}
         </td>
 
@@ -158,3 +158,8 @@ caption {
         <td colspan="5" style="height:80px;"></td>
     </tr>
 </table>
+
+
+<script>
+    window.print();
+</script>

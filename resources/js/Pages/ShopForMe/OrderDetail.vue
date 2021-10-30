@@ -176,7 +176,7 @@
 
           <div class="col-md-12">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight form-title">
-              Items
+              Itemss
             </h2>
             <table class="table table-striped">
               <thead>
@@ -185,6 +185,7 @@
                   <th scope="col">Name </th>
                   <th scope="col">Quantity</th>
                    <th scope="col">Price</th>
+                   <th scope="col">Price with tax</th>
                   <th scope="col">Description</th>
                   <th scope="col">URL</th>
                 </tr>
@@ -195,6 +196,7 @@
                   <td>{{ item.name}}</td>
                   <td>{{ item.quantity}}</td>
                   <td>{{ item.unit_price }}</td>
+                  <td>{{ item.price_after_tax }}</td>
                   <td>{{ item.description }}</td>
                   <td>
                     <a :href="item.url">{{ item.url }}</a>

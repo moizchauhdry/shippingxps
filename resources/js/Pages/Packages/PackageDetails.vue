@@ -149,118 +149,121 @@
                  </div>
             </div>
 
-            <template v-if="$page.props.auth.user.type == 'admin'">                
+            <template v-if="hasConsolidationRequest">
+              <template v-if="$page.props.auth.user.type == 'admin'">
                 <template v-if="packag.status == 'open' || packag.status == 'consolidated'">
-                    <div class="row" style="margin-top:20px;">
-                        <div class="col-md-12"> 
+                  <div class="row" style="margin-top:20px;">
+                    <div class="col-md-12">
 
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3>Consolidated Package Dimentions</h3>
+                      <div class="card">
+                        <div class="card-header">
+                          <h3>Consolidated Package Dimensions</h3>
+                        </div>
+                        <div class="card-body">
+                          <p style="color:red;">Customer has made consolidation request.</p>
+                          <p>Enter new dimensions of package after consolidation.</p>
+
+                          <form @submit.prevent="submitConsolidateForm">
+                            <div class="row">
+                              <div class="col-md-2">
+                                <div class="form-group">
+                                  <breeze-label for="warehouse_id" value="Weight Unit" />
+                                  <select name="weight_unit" class="form-select" v-model="form_consolidate.weight_unit" required>
+                                    <option value="lb">Lb</option>
+                                    <option value="kg">Kg</option>
+                                  </select>
                                 </div>
-                                <div class="card-body">
-                                    <p style="color:red;">Customer has made consolidation request.</p>
-                                    <p>Enter new dimentions of package after consolidation.</p>
-
-                                    <form @submit.prevent="submitConsolidateForm">    
-                                        <div class="row">
-                                            <div class="col-md-2">
-                                                <div class="form-group">
-                                                    <breeze-label for="warehouse_id" value="Weight Unit" />
-                                                    <select name="weight_unit" class="form-select" v-model="form_consolidate.weight_unit" required>
-                                                        <option value="lb">Lb</option>
-                                                        <option value="kg">Kg</option> 
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-2">
-                                                <div class="form-group">
-                                                    <breeze-label for="package_weight" value="Package Weight" />
-                                                    <input v-model="form_consolidate.package_weight" name="package_weight" id="package_weight" type="number" class="form-control" placeholder="Package Weight" required />
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <div class="form-group">
-                                                    <breeze-label for="dim_unit" value="Dimention Unit" />
-                                                    <select name="dim_unit" class="form-select" v-model="form_consolidate.dim_unit" required>
-                                                    <option value="in">Inch</option>
-                                                    <option value="cm">Cm</option> 
-                                                    </select>
-                                                </div>  
-                                            </div>
-                                            <div class="col-md-2">
-                                                <div class="form-group">
-                                                    <breeze-label for="package_length" value="Package Length" />
-                                                    <input v-model="form_consolidate.package_length" name="package_length" id="package_length" type="number" class="form-control" placeholder="Package Length" required />
-                                                </div>
-                                            </div>
-                                            <div class="col-md-2">
-                                                <div class="form-group">
-                                                    <breeze-label for="package_height" value="Package Height" />
-                                                    <input v-model="form_consolidate.package_height" name="package_height" id="package_height" type="number" class="form-control" placeholder="Package Height" required />
-                                                </div>
-                                            </div>
-                                            <div class="col-md-2">
-                                                <div class="form-group">
-                                                    <breeze-label for="package_weight" value="Package Width" />
-                                                    <input v-model="form_consolidate.package_width" name="package_width" id="package_width" type="number" class="form-control" placeholder="Package Width" required />
-                                                </div>  
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-12"> 
-                                                <input type="submit" value="Consolidate Package" class="btn btn-success float-left" />
-                                            </div>
-                                        </div>
-                                    </form>
+                              </div>
+                              <div class="col-md-2">
+                                <div class="form-group">
+                                  <breeze-label for="package_weight" value="Package Weight" />
+                                  <input v-model="form_consolidate.package_weight" name="package_weight" id="package_weight" type="number" class="form-control" placeholder="Package Weight" required />
                                 </div>
+                              </div>
+
+                              <div class="col-md-2">
+                                <div class="form-group">
+                                  <breeze-label for="dim_unit" value="Dimention Unit" />
+                                  <select name="dim_unit" class="form-select" v-model="form_consolidate.dim_unit" required>
+                                    <option value="in">Inch</option>
+                                    <option value="cm">Cm</option>
+                                  </select>
+                                </div>
+                              </div>
+                              <div class="col-md-2">
+                                <div class="form-group">
+                                  <breeze-label for="package_length" value="Package Length" />
+                                  <input v-model="form_consolidate.package_length" name="package_length" id="package_length" type="number" class="form-control" placeholder="Package Length" required />
+                                </div>
+                              </div>
+                              <div class="col-md-2">
+                                <div class="form-group">
+                                  <breeze-label for="package_height" value="Package Height" />
+                                  <input v-model="form_consolidate.package_height" name="package_height" id="package_height" type="number" class="form-control" placeholder="Package Height" required />
+                                </div>
+                              </div>
+                              <div class="col-md-2">
+                                <div class="form-group">
+                                  <breeze-label for="package_weight" value="Package Width" />
+                                  <input v-model="form_consolidate.package_width" name="package_width" id="package_width" type="number" class="form-control" placeholder="Package Width" required />
+                                </div>
+                              </div>
                             </div>
-                        </div>   
+                            <div class="row">
+                              <div class="col-md-12">
+                                <input type="submit" value="Consolidate Package" class="btn btn-success float-left" />
+                              </div>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
                     </div>
+                  </div>
                 </template>
                 <template v-else>
-                    <div class="row" style="margin-top:20px;">
-                        <div class="col-md-12"> 
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3>Consolidated Package Dimentions</h3>
-                                </div>
-                                <div class="card-body">
-                                    <table class="table">
-                                        <tbody> 
-                                            <tr>
-                                                <td>
-                                                    Package
-                                                </td>
-                                                <td>
-                                                    {{packag.package_no}}
-                                                </td>                                                                    
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    Weight
-                                                </td>
-                                                <td>
-                                                    {{packag.package_weight}}
-                                                </td>   
-                                            </tr>
-                                            <tr>                                                                 
-                                                <td>
-                                                    Dimensions
-                                                </td>
-                                                <td>
-                                                    {{ packag.package_length }} {{ packag.dim_unit }} x {{ packag.package_width }} {{ packag.dim_unit }} x {{ packag.package_height }} {{ packag.dim_unit }}
-                                                </td>                                                                    
-                                            </tr>
-                                        </tbody>                                                    
-                                    </table>
-                                </div>
-                            </div>
-                        </div>   
+                  <div class="row" style="margin-top:20px;">
+                    <div class="col-md-12">
+                      <div class="card">
+                        <div class="card-header">
+                          <h3>Consolidated Package Dimentions</h3>
+                        </div>
+                        <div class="card-body">
+                          <table class="table">
+                            <tbody>
+                            <tr>
+                              <td>
+                                Package
+                              </td>
+                              <td>
+                                {{packag.package_no}}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                Weight
+                              </td>
+                              <td>
+                                {{packag.package_weight}}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                Dimensions
+                              </td>
+                              <td>
+                                {{ packag.package_length }} {{ packag.dim_unit }} x {{ packag.package_width }} {{ packag.dim_unit }} x {{ packag.package_height }} {{ packag.dim_unit }}
+                              </td>
+                            </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
                     </div>
+                  </div>
                 </template>
+              </template>
             </template>
+
 
             <div class="row" v-show="($page.props.auth.user.type == 'customer') || (($page.props.auth.user.type == 'admin') && (service_requests.length > 0))">
                 <div class="col-md-12">
