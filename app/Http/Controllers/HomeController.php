@@ -88,6 +88,26 @@ class HomeController extends Controller
 
     ];
 
+    public function checkAuth()
+    {
+        if(Auth::check()){
+            if(Auth::user()->type != 'admin'){
+                return response()->json([
+                    'init' => true,
+                ]);
+            }else{
+                return response()->json([
+                    'init' => false,
+                ]);
+            }
+        }else{
+            return response()->json([
+                'init' => true,
+            ]);
+        }
+
+    }
+
     public function dashboard() {
 
         $customer_id =Auth::user()->id;

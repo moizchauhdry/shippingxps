@@ -25,6 +25,7 @@ Route::get('/', function () {
     ]);
 });
 
+Route::get('/checkAuth-user',[\App\Http\Controllers\HomeController::class,'checkAuth']);
 
 Route::get('/test-email','EmailController@index')->name('test-email');
 

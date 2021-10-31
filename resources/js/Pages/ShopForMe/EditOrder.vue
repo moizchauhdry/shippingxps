@@ -101,10 +101,16 @@
                       <div class="col-md-3">
                         <div class="form-group">
                           <breeze-label for="store_id" value="Store" />
-                          <select name="store_id" class="form-select" v-model="form.store_id" :required="setRequired('tab2')">
+                          <select name="store_id" class="form-select" v-model="form.store_id" :required="setRequired('tab2')" v-on:change="setPickupCharges($event)">
                             <option selected>Select</option>
                             <option v-for="store in stores" :value="store.id"  :key="store.id" >{{ store.name }}</option>
                           </select>
+                        </div>
+                      </div>
+                      <div class="col-md-2" v-show="this.form.store_id !==''">
+                        <div class="form-group">
+                          <breeze-label for="pickup_charges" value="Pickup Charges (USD)" />
+                          <input type="text" name="pickup_charges" id="pickup_charges" v-model="form.pickup_charges" readonly>
                         </div>
                       </div>
                     </div>
@@ -403,6 +409,16 @@ export default {
         var price = document.getElementById('price').value;
         document.getElementById('price_after_tax').value = parseInt(salePrice) + parseInt(price);
       },500)
+    },
+    setPickupCharges(event){
+      var store_id = event.target.value;
+      var pickup_charges = 0;
+      for (var i = 0; i < this.stores.length; i++) {
+        if(this.stores[i]['id'] == store_id){
+          pickup_charges = this.stores[i]['pickup_charges'];
+        }
+      }
+      this.form.pickup_charges = pickup_charges;
     }
   }
 }
