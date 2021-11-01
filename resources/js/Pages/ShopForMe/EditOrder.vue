@@ -5,6 +5,17 @@
       <section>
         <div class="container">
 
+            <div v-if="form.updated_by_admin == '1'" class="alert alert-warning d-block" >
+              Admin Has updated or Changed you order please review and approve changes
+            </div>
+
+            <div v-if="form.changes_approved == '1'" class="alert alert-success d-block">
+                Customer has approved you can complete shopping
+            </div>
+          <div v-else-if="form.changes_approved == '0'" class="alert alert-info d-block">
+                Customer has not approved the order please wait until customer approves
+          </div>
+
           <ul class="nav nav-pills nav-justified mb-3" id="pills-tab " role="tablist">
             <li class="nav-item" role="presentation">
               <button
@@ -253,9 +264,20 @@
 
                   <div class="order-button">
                     <input type="submit" value="Update Shopping" class="btn btn-danger" />
+                    <template v-if="$page.props.auth.user.type == 'customer' && form.updated_by_admin == '1'">
+                    <a class="btn btn-primary ml-2" v-on:click="approveChanges()">Approve Changes</a>
+                    </template>
 
-                    <template v-if="$page.props.auth.user.type == 'admin' && form.status == 'pending'">
-                      <a v-on:click="changeToCompleteShopping()" class="btn btn-primary float-right">
+
+                    <template v-if="form.changes_approved == '1' && $page.props.auth.user.type == 'admin'">
+                      <template v-if="$page.props.auth.user.type == 'admin' && form.status == 'pending'">
+                        <a v-on:click="changeToCompleteShopping()" class="btn btn-primary float-right">
+                          <span>Complete Shopping</span>
+                        </a>
+                      </template>
+                    </template>
+                    <template v-else-if="$page.props.auth.user.type == 'admin'">
+                      <a class="btn btn-primary float-right disabled" style="cursor: not-allowed">
                         <span>Complete Shopping</span>
                       </a>
                     </template>
@@ -292,6 +314,7 @@ export default {
     BreezeLabel
   },
   data() {
+    console.log(this.order.updated_by_admin)
     return {
       form: this.$inertia.form({
         form_type: (this.order.order_type == 'shopping') ? 'shopping' : 'pickup',
@@ -309,7 +332,11 @@ export default {
         only_pickup: (this.order.order_type == 'shopping') ? '' : this.order.only_pickup,
         shipping_xps: (this.order.order_type == 'shopping') ? '' : this.order.shipping_xps,
         pickup_date: (this.order.order_type == 'shopping') ? '' : this.order.pickup_date,
-        is_complete_shopping: 0
+        is_complete_shopping: 0,
+        is_changed: this.order.is_changed,
+        updated_by_admin: this.order.updated_by_admin,
+        changes_approved: this.order.changes_approved,
+
       }),
       tabs : {
         tab1: (this.order.order_type == 'shopping') ? true : false,
@@ -328,10 +355,11 @@ export default {
     this.filterStores();
   },
   created(){
-    if(this.form.form_type ==='pickup'){
-      this.setActiveTabAB('tab2'); 
+    console.log(this.form.form_type);
+    if(this.form.form_type ==='shopping'){
+      this.setActiveTabAB('tab1');
     }else{
-      this.setActiveTabAB('tab1'); 
+      this.setActiveTabAB('tab2');
     } 
   },
   methods : {
@@ -341,6 +369,10 @@ export default {
 
     changeToCompleteShopping() {
       this.form.is_complete_shopping = 1;
+      this.submit();
+    },
+    approveChanges(){
+      this.form.changes_approved = 1;
       this.submit();
     },
     addItem(){
@@ -358,6 +390,7 @@ export default {
       this.form.items.splice(index, 1);
     },
     setActiveTabAB(tab){
+      console.log(tab)
       for (var key in this.tabs) {
         if(key === tab){
           this.tabs[key] = true;
@@ -401,6 +434,9 @@ export default {
             this.stores = data.stores;
           }
       );
+    },
+    priceWithTaxValueCheck(){
+
     },
     addTax(){
       setTimeout(function(){

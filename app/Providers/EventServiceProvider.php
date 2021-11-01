@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Events\CustomFormFilled;
+use App\Events\OrderChangesAcceptedByCustomerEvent;
+use App\Events\OrderChangesByAdminEvent;
 use App\Events\OrderCreatedEvent;
 use App\Events\OrderUpdatedEvent;
 use App\Events\PackageConsolidated;
@@ -12,7 +14,10 @@ use App\Events\ServiceRequestedEvent;
 use App\Events\ServiceRequestUpdatedEvent;
 use App\Events\ShoppingCompletedEvent;
 use App\Events\ShoppingCreatedEvent;
+use App\Listeners\ChangesAcceptedByCustomerListener;
 use App\Listeners\CustomFormFilledListener;
+use App\Listeners\OrderChangesAcceptedByCustomerListener;
+use App\Listeners\OrderChangesByAdminListener;
 use App\Listeners\OrderCreatedListener;
 use App\Listeners\OrderUpdatedListener;
 use App\Listeners\PackageConsolidatedListener;
@@ -68,6 +73,13 @@ class EventServiceProvider extends ServiceProvider
         ShoppingCompletedEvent::class => [
             ShoppingCompletedListener::class
         ],
+        OrderChangesByAdminEvent::class => [
+            OrderChangesByAdminListener::class
+        ],
+        OrderChangesAcceptedByCustomerEvent::class => [
+            ChangesAcceptedByCustomerListener::class
+        ]
+
     ];
 
     /**

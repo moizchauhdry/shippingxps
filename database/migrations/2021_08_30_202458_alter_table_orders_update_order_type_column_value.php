@@ -12,16 +12,16 @@ class AlterTableOrdersUpdateOrderTypeColumnValue extends Migration
      * @return void
      */
     public function up() {
-        if (Schema::hasColumn('orders', 'order_Type')) {
+        if (Schema::hasColumn('orders', 'order_type')) {
 
             Schema::table('orders', function (Blueprint $table) {
-                $table->dropColumn('order_Type');
+                $table->dropColumn('order_type');
             });
 
             Schema::table('orders', function (Blueprint $table) {
-                $table->enum('order_Type', ['order', 'shopping', 'pickup'])
+                $table->enum('order_type', ['order', 'shopping', 'pickup'])
                     ->default('order')->after('notes');
-                $table->unsignedBigInteger('store_id')->after('order_Type')->default(0);
+                $table->unsignedBigInteger('store_id')->after('order_type')->default(0);
             });
         }
     }
@@ -33,13 +33,13 @@ class AlterTableOrdersUpdateOrderTypeColumnValue extends Migration
      */
     public function down() {
 
-        if (Schema::hasColumn('orders', 'order_Type')) {
+        if (Schema::hasColumn('orders', 'order_type')) {
             Schema::table('orders', function (Blueprint $table) {
-                $table->dropColumn(['order_Type', 'store_id']);
+                $table->dropColumn(['order_type', 'store_id']);
             });
 
             Schema::table('orders', function (Blueprint $table) {
-                $table->enum('order_Type', ['order', 'shopping'])
+                $table->enum('order_type', ['order', 'shopping'])
                     ->default('order')->after('notes');
             });
         }

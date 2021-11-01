@@ -14,12 +14,12 @@ class AddAddressFieldsToWarehouse extends Migration
     public function up()
     {
         Schema::table('warehouses', function (Blueprint $table) {
-            $table->string('state',32);
-            $table->string('city',32);
-            $table->string('phone',16);
-            $table->string('address',255);
-            $table->string('contact_person',255);
-            $table->string('email',255);
+            $table->string('state',32)->nullable();
+            $table->string('city',32)->nullable();
+            $table->string('phone',16)->nullable();
+            $table->string('address',255)->nullable();
+            $table->string('contact_person',255)->nullable();
+            $table->string('email',255)->nullable();
         });
 
     }

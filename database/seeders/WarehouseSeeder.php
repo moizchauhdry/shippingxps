@@ -17,12 +17,12 @@ class WarehouseSeeder extends Seeder
         DB::table('warehouses')->insert([            
             [
                 'name' =>'California USA',
-                'country' => 226,
+                'country_id' => 226,
                 'zip' => '90011'
             ],
             [
                 'name' => 'Tax Free Delaware USA',
-                'country' => 226,
+                'country_id' => 226,
                 'zip' => '19706'
             ]
         ]);

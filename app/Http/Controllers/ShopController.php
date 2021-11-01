@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\OrderChangesAcceptedByCustomerEvent;
+use App\Events\OrderChangesByAdminEvent;
 use App\Events\ShoppingCompletedEvent;
 use App\Events\ShoppingCreatedEvent;
 use App\Models\Order;
@@ -11,7 +13,9 @@ use App\Models\Store;
 use App\Models\Warehouse;
 use App\Models\Package;
 use App\Notifications\ShoppingCreated;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
@@ -175,7 +179,6 @@ class ShopController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            dd($e);
             return redirect()->back()->with('error', 'Something went wrong.');
         }
     }
@@ -259,6 +262,13 @@ class ShopController extends Controller
             'images' => $images,
         ];
 
+        if(Auth::user()->type != 'admin'){
+            $order['is_changed'] = $model->is_changed;
+            $order['updated_by_admin'] = $model->updated_by_admin;
+        }else{
+            $order['changes_approved'] = $model->changes_approved;
+        }
+
         $warehouses = Warehouse::select(['id','name'])->get()->toArray();
         $stores = Store::select(['id','name'])->get()->toArray();
 
@@ -295,12 +305,18 @@ class ShopController extends Controller
             // 'pickup_type' => 'required_if:form_type,pickup',
             'pickup_date' => 'required_if:form_type,pickup'
         ]);
-
+        $isAdmin = (Auth::user()->type == 'admin') ? true : false ;
         try {
             DB::beginTransaction();
 
             $order->warehouse_id = $request->warehouse_id;
             $order->notes = $request->notes;
+
+            if(!$isAdmin && $request->has('changes_approved')){
+                $order->changes_approved = $request->changes_approved;
+                $order->updated_by_admin = false;
+                $order->is_changed = false;
+            }
             
             if(isset($request->shipping_from_shop)){
                 $order->shipping_from_shop = $request->shipping_from_shop;
@@ -368,6 +384,10 @@ class ShopController extends Controller
 
             $order->save();
 
+            $checkChanges = $order->wasChanged();
+
+            $orderItemChanges[] = [];
+
             $items = $request->items;
 
             foreach($items as $item){
@@ -391,6 +411,27 @@ class ShopController extends Controller
 
                 $order_item->save();
 
+                $orderItemChanges[] = $order_item->wasChanged();
+
+            }
+
+
+
+            if($request->is_complete_shopping != 1 && $isAdmin){
+
+                $order->updated_by_admin = true;
+                $order->changes_approved = false;
+
+                if($checkChanges != null || $orderItemChanges != null){
+                    $order->is_changed = true;
+                    $order->save();
+                }
+
+                event(new OrderChangesByAdminEvent($order));
+            }
+
+            if(!$isAdmin && $request->has('changes_approved')){
+                event(new OrderChangesAcceptedByCustomerEvent($order));
             }
 
             if ($request->form_type == 'pickup') {
