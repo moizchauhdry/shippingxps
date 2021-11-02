@@ -18,7 +18,7 @@ class AddressTable extends Migration
             $table->id();
             $table->integer('user_id');
             $table->string('fullname',64);
-            $table->string('country',32);
+            $table->string('country_id',55);
             $table->string('state',32);
             $table->string('city',32);
             $table->string('phone',16);
