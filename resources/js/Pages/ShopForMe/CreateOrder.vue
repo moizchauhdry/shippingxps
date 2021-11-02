@@ -458,10 +458,10 @@ export default {
       })
     },
     removeItemPickup(index){
-      this.form_online.items.splice(index, 1);
+      this.form_pickup.items.splice(index, 1);
     },
     addItemPickup(){
-      this.form_online.items.push({
+      this.form_pickup.items.push({
         name: "",
         option: "",
         url: "",

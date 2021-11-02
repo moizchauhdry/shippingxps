@@ -363,6 +363,7 @@ class ShopController extends Controller
                     $package->customer_id = $order->customer_id;
                     $package->warehouse_id =  $request->input('warehouse_id');
                     $package->status = 'open';
+                    $package->package_handler_id = ($isAdmin) ? Auth::user()->id : null;
                     $package->save();
     
                 }
