@@ -5,16 +5,22 @@
       <section>
         <div class="container">
 
-            <div v-if="form.updated_by_admin == '1'" class="alert alert-warning d-block" >
+            <div v-if="form.updated_by_admin == '1' && $page.props.auth.user.type == 'customer'" class="alert alert-warning d-block" >
               Admin Has updated or Changed you order please review and approve changes
             </div>
 
-            <div v-if="form.changes_approved == '1'" class="alert alert-success d-block">
-                Customer has approved you can complete shopping
-            </div>
-          <div v-else-if="form.changes_approved == '0'" class="alert alert-info d-block">
-                Customer has not approved the order please wait until customer approves
+          <div v-if="form.changes_approved == '1' && $page.props.auth.user.type == 'customer'" class="alert alert-success d-block" >
+              You have approved changes
           </div>
+
+            <template v-if="$page.props.auth.user.type == 'admin'">
+              <div v-if="form.changes_approved == '1'" class="alert alert-success d-block">
+                Customer has approved, you can complete shopping
+              </div>
+              <div v-else-if="form.changes_approved == '0'" class="alert alert-warning d-block">
+                Customer has not approved the order please wait until customer approves
+              </div>
+            </template>
 
           <ul class="nav nav-pills nav-justified mb-3" id="pills-tab " role="tablist">
             <li class="nav-item" role="presentation">
@@ -235,12 +241,12 @@
                         </div>
                         <div class="col-md-2">
                           <div class="form-group">
-                            <input v-model="item.price" name="price" id="price" type="number" class="form-control" placeholder="Price" required />
+                            <input v-model="item.price" @change="priceWithTaxValueCheck(this)"  name="price"  id="price" type="number" class="form-control" placeholder="Price" required />
                           </div>
                         </div>
                         <div class="col-md-2">
                           <div class="form-group">
-                            <input v-model="item.price_after_tax" name="price_after_tax" id="price_after_tax" type="number" class="form-control" placeholder="Price After Tax" required />
+                            <input v-model="item.price_after_tax" @change="priceWithTaxValueCheck(this)" name="price_after_tax" id="price_after_tax" type="number" class="form-control" placeholder="Price After Tax" required />
                           </div>
                         </div>
                         <div class="col-md-1">
@@ -435,7 +441,15 @@ export default {
           }
       );
     },
-    priceWithTaxValueCheck(){
+    priceWithTaxValueCheck(event){
+      var price = document.getElementById('price').value;
+      var taxPrice = document.getElementById('price_after_tax');
+
+      if(taxPrice.value != null){
+        if(taxPrice.value < price){
+          taxPrice.append('hello')
+        }
+      }
 
     },
     addTax(){

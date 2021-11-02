@@ -13,7 +13,7 @@ use Illuminate\Queue\SerializesModels;
 class OrderChangesByAdminEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-
+    public $order;
     /**
      * Create a new event instance.
      *

@@ -10,6 +10,7 @@ use Illuminate\Notifications\Notification;
 class NotifyOrderChangesAcceptedByCustomerToAdmin extends Notification
 {
     use Queueable;
+    public $order;
 
     /**
      * Create a new notification instance.
@@ -57,7 +58,7 @@ class NotifyOrderChangesAcceptedByCustomerToAdmin extends Notification
         $url = route("shop-for-me.edit", ["id" => $this->order->id]);
         return [
             'order_id' => $this->order->id,
-            'message' => 'Customer has '.($this->order->changes_accepted)? "Accepted" : "Rejected" .' your changes',
+            'message' => 'Customer has '.(($this->order->changes_approved == 1)? "Accepted" : "Rejected" ).' your changes',
             'url' => $url
         ];
     }

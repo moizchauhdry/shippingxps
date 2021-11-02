@@ -29,9 +29,9 @@ class ChangesAcceptedByCustomerListener
     public function handle(OrderChangesAcceptedByCustomerEvent $event)
     {
         $order = $event->order;
+        \Log::info($order);
         $admins = User::where('type','admin')->get();
-        \Log::info($admins);
-        \Notification::send($admins,new NotifyOrderChangesAcceptedByCustomerToAdmin($event->order));
+        \Notification::send($admins,new NotifyOrderChangesAcceptedByCustomerToAdmin($order));
 
     }
 }

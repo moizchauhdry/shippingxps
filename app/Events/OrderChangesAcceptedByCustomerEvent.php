@@ -13,7 +13,7 @@ use Illuminate\Queue\SerializesModels;
 class OrderChangesAcceptedByCustomerEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-
+    public $order;
     /**
      * Create a new event instance.
      *

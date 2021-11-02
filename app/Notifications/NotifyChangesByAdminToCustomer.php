@@ -10,7 +10,7 @@ use Illuminate\Notifications\Notification;
 class NotifyChangesByAdminToCustomer extends Notification
 {
     use Queueable;
-
+    public $order;
     /**
      * Create a new notification instance.
      *
@@ -57,7 +57,7 @@ class NotifyChangesByAdminToCustomer extends Notification
         $url = route("shop-for-me.edit", ["id" => $this->order->id]);
         return [
             'order_id' => $this->order->id,
-            'message' => 'Admin has '.($this->order->is_changed)? "changed" : "updated" .' your order, Please <a href="'.$url.'">Review</a> and approve changes',
+            'message' => 'Admin has updated your order, Please <a href="'.$url.'">Review</a> and approve changes',
             'url' => $url
         ];
     }
