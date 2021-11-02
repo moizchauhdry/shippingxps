@@ -15,10 +15,12 @@ class ServicesTable extends Migration
     {
         Schema::create('services', function (Blueprint $table) {
             $table->id();
-            $table->string('title',64);               
-            $table->text('description')->nullable();              
+            $table->string('title',64);
+            $table->string('keyword')->nullable();
+            $table->text('description')->nullable();
             $table->tinyInteger('price');
-            $table->boolean('status')->default(true);          
+            $table->boolean('system')->default(false);
+            $table->boolean('status')->default(true);
         });
     }
 

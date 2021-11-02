@@ -17,12 +17,12 @@ class AddressTable extends Migration
         Schema::create('addresses', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id');
-            $table->string('fullname',64);
-            $table->string('country_id',55);
-            $table->string('state',32);
-            $table->string('city',32);
-            $table->string('phone',16);
-            $table->string('address',255);
+            $table->string('fullname');
+            $table->string('country_id');
+            $table->string('state');
+            $table->string('city');
+            $table->string('phone');
+            $table->string('address');
             $table->timestamps();
         });
 

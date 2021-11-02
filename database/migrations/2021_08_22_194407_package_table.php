@@ -32,7 +32,14 @@ class PackageTable extends Migration
             $table->integer('declared_value')->default(0);
             $table->integer('shipping_total')->default(0);
             $table->enum('package_type',['merchandise','gift'])->default('merchandise');
-            $table->integer('address_book_id')->default(0); 
+            $table->integer('address_book_id')->default(0);
+            $table->string('carrier_code')->nullable();
+            $table->string('service_code')->nullable();
+            $table->string('package_type_code')->nullable();
+            $table->string('service_label')->nullable();
+            $table->string('currency')->nullable();
+            $table->string('tracking_number_out')->nullable();
+            $table->boolean('consolidation_request')->default(false);
             $table->timestamps();
         });
     }

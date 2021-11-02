@@ -27,11 +27,11 @@ class AlterTableStoresAddWarehouseIdAndPickupChargesColumn extends Migration
                 $table->string('city')->change();
             });
 
-            if (Schema::hasColumns('stores', ['phone', 'email', 'contact_person'])) {
+            /*if (Schema::hasColumns('stores', ['phone', 'email', 'contact_person'])) {
                 Schema::table('stores', function (Blueprint $table) {
                     $table->dropColumn(['phone', 'email', 'contact_person']);
                 });
-            }
+            }*/
         }
     }
 
