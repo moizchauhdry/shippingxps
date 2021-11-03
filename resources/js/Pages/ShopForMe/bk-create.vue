@@ -200,7 +200,7 @@
                           <breeze-label for="price" value="Price" />
                         </div>
                         <div class="col-md-2">
-                          <breeze-label for="price_after_tax" value="Price after Tax" />
+                          <breeze-label for="price_with_tax" value="Price after Tax" />
                         </div>
                         <div class="col-md-1">
                           <breeze-label for="qty" value="Qty" />
@@ -232,7 +232,7 @@
                         </div>
                         <div class="col-md-2">
                           <div class="form-group">
-                            <input v-model="item.price_after_tax" name="price_after_tax" id="price_after_tax" type="number" class="form-control" placeholder="Price After Tax" required />
+                            <input v-model="item.price_with_tax" name="price_with_tax" id="price_with_tax" type="number" class="form-control" placeholder="Price After Tax" required />
                           </div>
                         </div>
                         <div class="col-md-1">
@@ -308,7 +308,7 @@ export default {
             option: "",
             url: "",
             price: "",
-            price_after_tax: "",
+            price_with_tax: "",
             qty: ""
           }
         ],
@@ -335,7 +335,7 @@ export default {
         option: "",
         url: "",
         price: "",
-        price_after_tax: "",
+        price_with_tax: "",
         qty: ""
       })
     },

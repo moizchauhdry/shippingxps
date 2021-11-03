@@ -164,26 +164,28 @@
                       </div>
                     </div>
                   </div>
-                  <div class="row">
-                    <div class="col form-group">
-                      <h2 class="font-semibold text-xl text-gray-800 leading-tight form-title">Additional Charges</h2>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col">
-                      <div class="form-group">
-                        <breeze-label for="package_weight" value="Shipping From Shop" />
-                        <input v-model="form.shipping_from_shop" name="shipping_from_shop" id="shipping_from_shop" type="text" class="form-control" placeholder="Shipping From Shop" required />
+                  <template v-if="$page.props.auth.user.type == 'admin'">
+                    <div class="row">
+                      <div class="col form-group">
+                        <h2 class="font-semibold text-xl text-gray-800 leading-tight form-title">Additional Charges</h2>
                       </div>
                     </div>
-                    <div class="col">
-                      <div class="form-group">
-                        <breeze-label for="package_length" value="Sales Tax" />
-                        <input v-model="salePrice" name="sales_tax" id="sales_tax" type="number" class="form-control" placeholder="Sales Tax" required @keyup="addTax()" />
+                    <div class="row">
+                      <div class="col">
+                        <div class="form-group">
+                          <breeze-label for="package_weight" value="Shipping From Shop" />
+                          <input v-model="form.shipping_from_shop" name="shipping_from_shop" id="shipping_from_shop" type="text" class="form-control" placeholder="Shipping From Shop" required />
+                        </div>
                       </div>
+                      <div class="col">
+                        <div class="form-group">
+                          <breeze-label for="package_length" value="Sales Tax" />
+                          <input v-model="form.sale_tax" name="sales_tax" id="sales_tax" type="number" class="form-control" placeholder="Sales Tax" required readonly />
+                        </div>
 
+                      </div>
                     </div>
-                  </div>
+                  </template>
 
                   <div class="row">
                     <div class="col-md-12">
@@ -200,58 +202,66 @@
                         </div>
                       </div>
 
-                      <div class="row">
+                      <div class="row mt-3">
                         <div class="col-md-2">
                           <breeze-label for="name" value="Name" />
                         </div>
                         <div class="col-md-2">
-                          <breeze-label for="option" value="Option" />
+                          <breeze-label for="description" value="Description" />
                         </div>
                         <div class="col-md-2">
                           <breeze-label for="url" value="Url" />
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-1">
                           <breeze-label for="price" value="Price" />
                         </div>
                         <div class="col-md-2">
-                          <breeze-label for="price_after_tax" value="Price after Tax" />
+                          <breeze-label for="price_with_tax" value="Price after Tax" />
                         </div>
                         <div class="col-md-1">
                           <breeze-label for="qty" value="Qty" />
                         </div>
+                        <div class="col-md-2">
+                          <breeze-label for="total" value="Total" />
+                        </div>
                       </div>
 
-                      <div v-for="(item,index) in form.items" :key="item.id" class="row">
+                      <div v-for="(item,index) in form.items" :key="item.id" class="row" :id="'order-'+index" :data-id="index">
 
                         <div class="col-md-2">
                           <div class="form-group">
-                            <input v-model="item.name" name="name" id="name" type="text" class="form-control" placeholder="Name" required />
+                            <input v-model="item.name" name="name" id="name" type="text" class="form-control name" placeholder="Name" required  />
                           </div>
                         </div>
                         <div class="col-md-2">
                           <div class="form-group">
-                            <input v-model="item.option" name="option" id="option" type="text" class="form-control" placeholder="Option" />
+                            <input v-model="item.description" name="description" id="description" type="text" class="form-control option" placeholder="Option" />
                           </div>
                         </div>
 
                         <div class="col-md-2">
                           <div class="form-group">
-                            <input v-model="item.url" name="url" id="url" type="url" class="form-control" placeholder="URL" required />
+                            <input v-model="item.url" name="url" id="url" type="url" class="form-control url" placeholder="URL" required />
+                          </div>
+                        </div>
+                        <div class="col-md-1 p-0">
+                          <div class="form-group">
+                            <input v-model="item.price" v-on:change="addTax($event)" v-on:load="addTax($event)"  name="price"  id="price" type="number" class="form-control price" placeholder="Price" required />
                           </div>
                         </div>
                         <div class="col-md-2">
                           <div class="form-group">
-                            <input v-model="item.price" @change="priceWithTaxValueCheck(this)"  name="price"  id="price" type="number" class="form-control" placeholder="Price" required />
-                          </div>
-                        </div>
-                        <div class="col-md-2">
-                          <div class="form-group">
-                            <input v-model="item.price_after_tax" @change="priceWithTaxValueCheck(this)" name="price_after_tax" id="price_after_tax" type="number" class="form-control" placeholder="Price After Tax" required />
+                            <input v-model="item.price_with_tax" name="price_with_tax" id="price_with_tax" type="number" class="form-control price_with_tax" placeholder="Price After Tax"  required readonly/>
                           </div>
                         </div>
                         <div class="col-md-1">
                           <div class="form-group">
-                            <input v-model="item.qty" name="qty" id="qty" type="number" class="form-control" placeholder="Qty" required />
+                            <input v-model="item.qty" name="qty" v-on:change="addTax($event)" id="qty" type="number"  class="form-control qty" placeholder="Qty" :min="1" required />
+                          </div>
+                        </div>
+                        <div class="col-md-1 p-0">
+                          <div class="form-group">
+                            <input v-model="item.sub_total" name="sub_total" id="sub_total" type="number" class="form-control sub_total" placeholder="T.Price" required readonly/>
                           </div>
                         </div>
                         <div class="col-md-1" v-show="index!=0">
@@ -262,6 +272,14 @@
                           </div>
                         </div>
 
+                      </div>
+                      <div class="row">
+                          <div class="col-1 offset-md-9">
+                            <breeze-label for="grand_total" value="Grand Total" />
+                          </div>
+                        <div class="col-1 p-0">
+                          <input v-model="form.grand_total" name="grand_total" id="grand_total" type="number" class="form-control grand_total"  placeholder="T.Price" required readonly/>
+                        </div>
                       </div>
 
                     </div>
@@ -342,6 +360,8 @@ export default {
         is_changed: this.order.is_changed,
         updated_by_admin: this.order.updated_by_admin,
         changes_approved: this.order.changes_approved,
+        grand_total: 0,
+        sale_tax : 0,
 
       }),
       tabs : {
@@ -359,6 +379,12 @@ export default {
   },
   mounted() { 
     this.filterStores();
+
+    if(this.$page.props.auth.user.type === 'admin'){
+      this.getSaleTax();
+    }
+
+
   },
   created(){
     console.log(this.form.form_type);
@@ -366,7 +392,7 @@ export default {
       this.setActiveTabAB('tab1');
     }else{
       this.setActiveTabAB('tab2');
-    } 
+    }
   },
   methods : {
     submit() {
@@ -384,11 +410,12 @@ export default {
     addItem(){
       this.form.items.push({
         name: "",
-        option: "",
+        description: "",
         url: "",
         price: "",
-        price_after_tax: "",
-        qty: ""
+        price_with_tax: "",
+        qty: "",
+        sub_total:""
       })
 
     },
@@ -441,24 +468,31 @@ export default {
           }
       );
     },
-    priceWithTaxValueCheck(event){
-      var price = document.getElementById('price').value;
-      var taxPrice = document.getElementById('price_after_tax');
-
-      if(taxPrice.value != null){
-        if(taxPrice.value < price){
-          taxPrice.append('hello')
+    addTax(event){
+      console.log('triggered...');
+      var mainParent = event.target.parentNode.parentNode.parentNode;
+      var row = document.getElementById(mainParent.id);
+      var index = row.dataset.id;
+      var quantity = this.form.items[index].qty;
+      var price = this.form.items[index].price;
+      var sale_tax = 0;
+      for (var i = 0; i < this.warehouses.length; i++) {
+        if(this.warehouses[i]['id'] == this.form.warehouse_id){
+          sale_tax = this.warehouses[i]['sale_tax'];
         }
       }
+      var gross_total = (price * (sale_tax/100));
+      var net_total = this.form.items[index].price_with_tax = (parseFloat(gross_total) + parseFloat(price)).toFixed(2);
+      this.form.items[index].sub_total = net_total * quantity;
 
+      this.getGrandTotal();
     },
-    addTax(){
-      setTimeout(function(){
-        console.log('added Tax');
-        var salePrice = document.getElementById('sales_tax').value
-        var price = document.getElementById('price').value;
-        document.getElementById('price_after_tax').value = parseInt(salePrice) + parseInt(price);
-      },500)
+    getGrandTotal(){
+      var sum = 0;
+      this.form.items.forEach(function(n){sum += n['sub_total']});
+      console.log(sum);
+
+      this.form.grand_total = sum;
     },
     setPickupCharges(event){
       var store_id = event.target.value;
@@ -469,6 +503,15 @@ export default {
         }
       }
       this.form.pickup_charges = pickup_charges;
+    },
+    getSaleTax(){
+      var sale_tax = 0;
+      for (var i = 0; i < this.warehouses.length; i++) {
+        if(this.warehouses[i]['id'] == this.form.warehouse_id){
+          sale_tax = this.warehouses[i]['sale_tax'];
+        }
+      }
+      this.form.sale_tax = sale_tax;
     }
   }
 }

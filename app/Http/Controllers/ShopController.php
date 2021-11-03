@@ -139,7 +139,7 @@ class ShopController extends Controller
                 $order_item->description = $item['option'];
                 $order_item->quantity = $item['qty'];
                 $order_item->unit_price = $item['price'];
-                $order_item->price_after_tax = $item['price_after_tax'];
+                $order_item->price_with_tax = $item['price_with_tax'];
                 $order_item->url = $item['url'];
 
                 $order_item->save();
@@ -215,16 +215,16 @@ class ShopController extends Controller
         $items = [];
 
         $price = $model->items->sum('unit_price');
-        $price_after_tax = $model->items->sum('price_after_tax');
+        $price_with_tax = $model->items->sum('price_with_tax');
 
         foreach($model->items as $item){
             $items[] = [
                 'id' => $item->id,
                 'name' => $item->name,
-                'option' => $item->description,
+                'description' => $item->description,
                 'qty' => $item->quantity,
                 'price' => $item->unit_price,
-                'price_after_tax' => $item->price_after_tax,
+                'price_with_tax' => $item->price_with_tax,
                 'url' => $item->url
             ];
         }
@@ -269,7 +269,7 @@ class ShopController extends Controller
             $order['changes_approved'] = $model->changes_approved;
         }
 
-        $warehouses = Warehouse::select(['id','name'])->get()->toArray();
+        $warehouses = Warehouse::select(['id','name','sale_tax'])->get()->toArray();
         $stores = Store::select(['id','name'])->get()->toArray();
 
         // echo '<pre>';
@@ -280,7 +280,7 @@ class ShopController extends Controller
             'order' => $order,
             'warehouses' => $warehouses,
             'stores' => $stores,
-            'salePrice' => (int)$price_after_tax - $price,
+            'salePrice' => (int)$price_with_tax - $price,
         ]);
     }
 
@@ -404,11 +404,11 @@ class ShopController extends Controller
 
                 $order_item->order_id = $order->id;
                 $order_item->name = $item['name'];
-                $order_item->description = $item['option'];
+                $order_item->description = $item['description'];
                 $order_item->quantity = $item['qty'];
                 $order_item->url = $item['url'];
                 $order_item->unit_price = $item['price'];
-                $order_item->price_after_tax = $item['price_after_tax'];
+                $order_item->price_with_tax = $item['price_with_tax'];
 
                 $order_item->save();
 

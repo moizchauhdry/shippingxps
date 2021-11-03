@@ -20,6 +20,7 @@ class AddAddressFieldsToWarehouse extends Migration
             $table->string('address',255)->nullable();
             $table->string('contact_person',255)->nullable();
             $table->string('email',255)->nullable();
+            $table->string('sale_tax',255)->nullable();
         });
 
     }
@@ -31,13 +32,14 @@ class AddAddressFieldsToWarehouse extends Migration
      */
     public function down()
     {
-            Schema::table('orders', function (Blueprint $table) {
+            Schema::table('warehouses', function (Blueprint $table) {
                 $table->dropColumn('state');
                 $table->dropColumn('city');
                 $table->dropColumn('phone');
                 $table->dropColumn('address');
                 $table->dropColumn('contact_person');
                 $table->dropColumn('email');
+                $table->dropColumn('sale_tax');
             });
     }
 }

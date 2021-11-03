@@ -196,7 +196,7 @@
                   <td>{{ item.name}}</td>
                   <td>{{ item.quantity}}</td>
                   <td>{{ item.unit_price }}</td>
-                  <td>{{ item.price_after_tax }}</td>
+                  <td>{{ item.price_with_tax }}</td>
                   <td>{{ item.description }}</td>
                   <td>
                     <a :href="item.url">{{ item.url }}</a>

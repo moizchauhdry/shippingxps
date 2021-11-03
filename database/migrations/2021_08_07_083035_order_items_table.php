@@ -20,9 +20,12 @@ class OrderItemsTable extends Migration
             $table->string('description',255)->nullable();              
             $table->tinyInteger('quantity')->default(1);
             $table->string('image',255)->nullable(); 
-            $table->integer('unit_price')->default(0); 
-            $table->integer('origin_country')->default(0); 
+            $table->integer('unit_price')->default(0);
+            $table->double('price_with_tax',2)->nullable();
+            $table->double('sub_total',2)->nullable();
+            $table->integer('origin_country')->default(0);
             $table->integer('batteries')->default(0);
+            $table->string('url',255)->nullable();
             $table->timestamps();
         });
     }

@@ -18,12 +18,14 @@ class WarehouseSeeder extends Seeder
             [
                 'name' =>'California USA',
                 'country_id' => 226,
-                'zip' => '90011'
+                'zip' => '90011',
+                'sale_tax' => '7.75',
             ],
             [
                 'name' => 'Tax Free Delaware USA',
                 'country_id' => 226,
-                'zip' => '19706'
+                'zip' => '19706',
+                'sale_tax' => '0.00',
             ]
         ]);
     }
