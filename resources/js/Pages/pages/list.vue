@@ -20,15 +20,15 @@
 
 					  <thead>
 					    <tr>
-					      <th scope="col">#</th>
+					      <th scope="col">id</th>
 					      <th scope="col">Page Title</th>
-                          <th scope="col">Page Status</th>
-                          <th scope="col">Posted Date</th>
+                <th scope="col">Page Description</th>
+                <th scope="col">Created At</th>
 					      <th scope="col">Actions</th>
 					    </tr>
 					  </thead>
 					  <tbody>
-					  <tr v-for="page in pages.data" :key="page.id">
+					  <tr v-for="page in cms.data" :key="page.id">
 					  	<td>{{ page.id }}</td>
 					  	<td><a :href="page_url(page.post_url)" target="_blank">{{ page.post_title }}</a></td>
                         <td>{{ page.post_status }}</td>
@@ -41,7 +41,7 @@
 					  </tbody>
 					</table>
         </div>
-        <pagination class="mt-6" :links="pages.links" />
+        <pagination class="mt-6" :links="cms.links" />
         </div>
         </div>
     </MainLayout>
@@ -69,7 +69,7 @@
             Pagination,
         },
         props: {
-            pages: Object,
+            cms: Object,
         },
         watch:{
             params:{

@@ -84,7 +84,7 @@ class ShopController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
-        // dd($request->all());
+         //dd($request->all());
         $request->validate([
             'form_type' => 'required|in:shopping,pickup',
             'warehouse_id' => 'required',
@@ -140,6 +140,7 @@ class ShopController extends Controller
                 $order_item->quantity = $item['qty'];
                 $order_item->unit_price = $item['price'];
                 $order_item->price_with_tax = $item['price_with_tax'];
+                $order_item->sub_total = $item['sub_total'];
                 $order_item->url = $item['url'];
 
                 $order_item->save();
@@ -225,6 +226,7 @@ class ShopController extends Controller
                 'qty' => $item->quantity,
                 'price' => $item->unit_price,
                 'price_with_tax' => $item->price_with_tax,
+                'sub_total' => $item->sub_total,
                 'url' => $item->url
             ];
         }
@@ -409,6 +411,7 @@ class ShopController extends Controller
                 $order_item->url = $item['url'];
                 $order_item->unit_price = $item['price'];
                 $order_item->price_with_tax = $item['price_with_tax'];
+                $order_item->sub_total = $item['sub_total'];
 
                 $order_item->save();
 

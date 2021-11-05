@@ -84,9 +84,9 @@
             <i class="fas fa-external-link-alt"></i><span>Manage Services</span>
           </inertia-link>
 
-          <inertia-link v-if="$page.props.auth.user.type == 'admin'" class="nav-link" :href="route('pages_list')" :class="{active: route().current('pages_list')}" :active="route().current('pages_list')">
+          <!-- <inertia-link v-if="$page.props.auth.user.type == 'admin'" class="nav-link" :href="route('pages_list')" :class="{active: route().current('pages_list')}" :active="route().current('pages_list')">
             <i class="fas fa-external-link-alt"></i><span>Manage Pages</span>
-          </inertia-link>
+          </inertia-link>-->
 
           <inertia-link v-if="$page.props.auth.user.type == 'admin'" class="nav-link" :href="route('warehouses')" :class="{active: route().current('warehouses')}" :active="route().current('warehouses')">
             <i class="fas fa-external-link-alt"></i><span>Warehouses</span>
@@ -100,7 +100,7 @@
             <i class="fas fa-external-link-alt"></i><span>Settings</span>
           </inertia-link>
 
-          <inertia-link class="nav-link" :href="route('profile')" :class="{active: route().current('profile')}" :active="route().current('profile')">
+          <inertia-link v-if="$page.props.auth.user.type == 'customer'" class="nav-link" :href="route('profile')" :class="{active: route().current('profile')}" :active="route().current('profile')">
             <i class="fas fa-external-link-alt"></i><span>Profile</span>
           </inertia-link>
 

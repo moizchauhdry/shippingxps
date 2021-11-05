@@ -164,7 +164,7 @@ Route::delete('/lead/{id}', [CustomerController::class, 'destroy'])
                 ->middleware(['auth', 'verified'])
                 ->name('delete-customer');
 
-Route::get('pages/list', 'PostController@list')->middleware(['auth', 'verified'])->name('pages_list');
+Route::get('pages/list', 'CMSPageController@index')->middleware(['auth', 'verified'])->name('pages_list');
 Route::get('pages/edit/{id}', 'PostController@edit')->middleware(['auth', 'verified'])->name('page_edit');
 Route::post('pages/update', 'PostController@update')->middleware(['auth', 'verified'])->name('page_update');
 

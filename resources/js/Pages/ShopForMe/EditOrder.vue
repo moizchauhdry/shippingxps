@@ -173,8 +173,8 @@
                     <div class="row">
                       <div class="col">
                         <div class="form-group">
-                          <breeze-label for="package_weight" value="Shipping From Shop" />
-                          <input v-model="form.shipping_from_shop" name="shipping_from_shop" id="shipping_from_shop" type="text" class="form-control" placeholder="Shipping From Shop" required />
+                          <breeze-label for="package_weight" value="Shipping Charges" />
+                          <input v-model="form.shipping_from_shop" name="shipping_from_shop" id="shipping_from_shop" type="number" step="any" class="form-control" placeholder="Shipping Charges" required />
                         </div>
                       </div>
                       <div class="col">
@@ -241,7 +241,7 @@
 
                         <div class="col-md-2">
                           <div class="form-group">
-                            <input v-model="item.url" name="url" id="url" type="url" class="form-control url" placeholder="URL" required />
+                            <input v-model="item.url" name="url" id="url" type="url" class="form-control url" placeholder="URL"  :required="form.form_type === 'shopping'"/>
                           </div>
                         </div>
                         <div class="col-md-1 p-0">
@@ -387,12 +387,12 @@ export default {
 
   },
   created(){
-    console.log(this.form.form_type);
     if(this.form.form_type ==='shopping'){
       this.setActiveTabAB('tab1');
     }else{
       this.setActiveTabAB('tab2');
     }
+    this.getGrandTotal();
   },
   methods : {
     submit() {

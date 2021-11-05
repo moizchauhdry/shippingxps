@@ -25,7 +25,7 @@
                 <!-- <th scope="col">Postal Code</th> -->
                 <th scope="col">Suite #</th>
                 <th scope="col">Phone No</th>
-                <th></th>
+                <!--<th></th>-->
                 <th scope="col">Actions</th>
 					    </tr>
 					  </thead>
@@ -40,11 +40,11 @@
               <!-- <td>{{ customer.postal_code }}</td> -->
               <td>{{ siuteNum(customer.id) }}</td>
               <td>{{ customer.phone_no }}</td>
-              <td>
+              <!-- <td>
                   <inertia-link class="link-primary" :href="createOrderLink(customer.id)">
                       <span>Create Order </span>
                   </inertia-link>
-              </td>
+              </td>-->
 					  	<td>
 					  		<inertia-link  v-if="$page.props.auth.user.type == 'admin'" :href="route('edit-customer',{ id: customer.id })" class="btn btn-info">Edit</inertia-link> |
 					  		<inertia-link  v-if="$page.props.auth.user.type == 'admin'" href="" class="btn btn-danger" @click="destroy(customer.id)">Delete</inertia-link>

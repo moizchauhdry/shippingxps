@@ -92,14 +92,20 @@ class OrderController extends Controller
 
         $orders->where('order_type', 'order');        
         $orders->orderBy('id', 'DESC');
-
+        $query = $query1 = $query2 = $orders;
         $orders = $orders->paginate(25);
+        $arrived = $query1->where('status','arrived')->get();
+        $labeled = $query->where('status','labeled')->get();
+        $shipped = $query2->where('status','shipped')->get();
 
         return Inertia::render('Orders/OrdersList',[
             'search' => $search,
             'orders' => $orders,
             'customers'=> $customers,
             'customer_id' => $customer_id,
+            'arrived' => $arrived,
+            'labeled' => $labeled,
+            'shipped' => $shipped
         ]);
     }
 
@@ -131,7 +137,7 @@ class OrderController extends Controller
 
         $customers = User::where('type','=','customer')->select(['id','name'])->get()->toArray();
 
-        $warehouses = Warehouse::select(['id','name'])->get()->toArray();
+        $warehouses = Warehouse::select(['id','name','sale_tax'])->get()->toArray();
 
         return Inertia::render('Orders/CreateOrder',[
             'customers' => $customers,
@@ -251,7 +257,7 @@ class OrderController extends Controller
                 $order_item->order_id = $order->id;
                 $order_item->name = $item['name'];
                 $order_item->description = $item['description'];
-                $order_item->quantity = $item['quantity'];
+                $order_item->quantity = $item['qty'];
 
                 $file_name = '';
 
