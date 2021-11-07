@@ -22,7 +22,8 @@ class OrdersTable extends Migration
             $table->integer('package_id');
             $table->string('tracking_number_in',32)->nullable();
             $table->string('tracking_number_out',32)->nullable();
-            $table->enum('status',['arrived','labeled','shipped','delivered','rejected'])->default('arrived');
+            $table->enum('status', ['pending', 'arrived', 'labeled', 'shipped', 'delivered', 'rejected'])
+                ->default('arrived');
             $table->integer('package_weight')->default(0);
             $table->enum('weight_unit',['lb','kg'])->default('lb');
             $table->integer('package_length')->default(0);
@@ -31,6 +32,19 @@ class OrdersTable extends Migration
             $table->enum('dim_unit',['in','cm'])->default('in');
             $table->integer('declared_value')->default(0);
             $table->text('notes')->nullable();
+            $table->enum('order_type', ['order', 'shopping', 'pickup'])->default('order')->after('notes');
+            $table->unsignedBigInteger('store_id')->after('order_type')->default(0);
+            $table->string('order_origin', 15)->default('order');
+            $table->string('site_name',255)->nullable();
+            $table->string('site_url',255)->nullable();
+            $table->double('shipping_from_shop',2)->nullable();
+            $table->double('sales_tax',2)->nullable();
+            $table->boolean('only_pickup')->default(0);
+            $table->boolean('shipping_xps_purchase')->default(0);
+            $table->date('pickup_date')->nullable();
+            $table->double('discount',2)->nullable();
+            $table->double('shipping_charges',2)->nullable();
+            $table->double('grand_total',2)->nullable();
             $table->string('store_name')->nullable();
             $table->string('pickup_type')->nullable();
             $table->string('pickup_charges')->nullable();
