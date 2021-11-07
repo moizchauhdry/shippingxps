@@ -171,6 +171,6 @@ Route::post('pages/update', 'PostController@update')->middleware(['auth', 'verif
 Route::get('pages/add', 'PostController@add')->middleware(['auth', 'verified'])->name('page_new');
 Route::post('pages/save', 'PostController@save')->middleware(['auth', 'verified'])->name('page_save');
 
-Route::get('{post_url}', 'PostController@index');
+//Route::get('{post_url}', 'PostController@index');
 
                                 

@@ -77,7 +77,7 @@
           </inertia-link>
 
           <inertia-link v-if="$page.props.auth.user.type == 'admin'" class="nav-link" :href="route('pages_list')" :class="{active: route().current('pages_list')}" :active="route().current('pages_list')">
-            <i class="fas fa-external-link-alt"></i><span>Manage Pages</span>
+            <i class="fas fa-external-link-alt"></i><span>Manages Pages</span>
           </inertia-link>
 
           <inertia-link v-if="$page.props.auth.user.type == 'admin'" class="nav-link" :href="route('services')" :class="{active: route().current('services')}" :active="route().current('services')">
@@ -94,6 +94,10 @@
 
           <inertia-link v-if="$page.props.auth.user.type == 'admin'" class="nav-link" :href="route('store.index')" :class="{active: route().current('store.index')}" :active="route().current('store.index')">
             <i class="fas fa-external-link-alt"></i><span>Stores</span>
+          </inertia-link>
+
+          <inertia-link v-if="$page.props.auth.user.type == 'admin'" class="nav-link" :href="route('coupon.index')" :class="{active: route().current('store.index')}" :active="route().current('store.index')">
+            <i class="fas fa-external-link-alt"></i><span>Coupons</span>
           </inertia-link>
 
           <inertia-link v-if="$page.props.auth.user.type == 'admin'" class="nav-link" :href="route('settings')" :class="{active: route().current('settings')}" :active="route().current('settings')">

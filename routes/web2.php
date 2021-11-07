@@ -1,8 +1,9 @@
 <?php
+
 use Illuminate\Support\Facades\Route;
 
 
-Route::middleware('auth')->group(function(){
+Route::middleware('auth')->group(function () {
 
     /*
      * Shop for me routes
@@ -37,7 +38,17 @@ Route::middleware('auth')->group(function(){
         Route::post('/store', [\App\Http\Controllers\StoreController::class, 'store'])->name('store.store');
         Route::post('/update', [\App\Http\Controllers\StoreController::class, 'update'])->name('store.update');
     });
+
+    Route::prefix('coupon')->group(function () {
+        Route::get('/', [\App\Http\Controllers\CouponController::class, 'index'])->name('coupon.index');
+        Route::get('/create', [\App\Http\Controllers\CouponController::class, 'create'])->name('coupon.create');
+        Route::get('/edit/{store}', [\App\Http\Controllers\CouponController::class, 'edit'])->name('coupon.edit');
+        Route::post('/store', [\App\Http\Controllers\CouponController::class, 'store'])->name('coupon.store');
+        Route::post('/update', [\App\Http\Controllers\CouponController::class, 'update'])->name('coupon.update');
+        Route::post('/changeStatus', [\App\Http\Controllers\CouponController::class, 'changeStatus'])->name('coupon.changeStatus');
+    });
 });
+
 
 Route::get('migrate', function () {
     $m = \Illuminate\Support\Facades\Artisan::call('migrate', [
