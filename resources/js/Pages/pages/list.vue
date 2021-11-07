@@ -2,6 +2,7 @@
     <MainLayout>
 		<div class="card mt-4">
         <div class="card-body">
+          <FlashMessages />
             <div class="row">
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight form-title">
                         Manage Pages
@@ -11,9 +12,9 @@
                     <!-- <inertia-link :href="route('page_new')" class="btn btn-success float-right">Add New Page</inertia-link> -->
                     </h2>
                 </div>
-                <div class="col-md-6" >
+                <!-- <div class="col-md-6" >
                     <input type="text" class="form-control" placeholder="Search">
-                </div>
+                </div>-->
             </div>
         <div class="table-responsive mt-6">
           <table class="table">
@@ -30,8 +31,8 @@
 					  <tbody>
 					  <tr v-for="page in cms.data" :key="page.id">
 					  	<td>{{ page.id }}</td>
-					  	<td><a :href="page_url(page.post_url)" target="_blank">{{ page.post_title }}</a></td>
-                        <td>{{ page.post_status }}</td>
+					  	<td><a :href="page_url(page.post_url)" target="_blank">{{ page.meta_title }}</a></td>
+                        <td>{{ page.meta_description }}</td>
                         <td>{{ page.created_at }}</td>
 					  	<td>
 					  		<inertia-link :href="route('page_edit',{ id: page.id })" class="btn btn-info">Edit</inertia-link>
@@ -50,6 +51,7 @@
 <script>
     import MainLayout from '@/Layouts/Main'
     import Pagination from '@/Components/Pagination'
+    import FlashMessages from "@/Components/FlashMessages";
 
     export default {
         data() {
@@ -65,6 +67,7 @@
                 }
             },
           components: {
+            FlashMessages,
             MainLayout,
             Pagination,
         },

@@ -149,7 +149,7 @@
                  </div>
             </div>
 
-            <template v-if="hasConsolidationRequest">
+            <template v-if="this.hasConsolidationRequest">
               <template v-if="$page.props.auth.user.type == 'admin'">
                 <template v-if="packag.status == 'open' || packag.status == 'consolidated'">
                   <div class="row" style="margin-top:20px;">
@@ -728,7 +728,8 @@
             images:Object,
             order_charges:Object,
             mailout_fee: Number,
-            shipping_services:Object
+            shipping_services:Object,
+            hasConsolidationRequest:Object,
         },
         computed:{
             siuteNum(){

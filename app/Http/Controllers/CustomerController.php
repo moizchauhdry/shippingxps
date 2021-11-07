@@ -192,7 +192,8 @@ class CustomerController extends Controller
      */
     public function show($id)
     {
-        //
+        $customer = User::with('orders')->find($id);
+        return Inertia::render('CustomerDetail', ['customer' => $customer]);
     }
 
     /**

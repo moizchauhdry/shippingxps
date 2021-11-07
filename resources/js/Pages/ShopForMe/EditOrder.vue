@@ -273,12 +273,47 @@
                         </div>
 
                       </div>
-                      <div class="row">
-                          <div class="col-1 offset-md-9">
-                            <breeze-label for="grand_total" value="Grand Total" />
+
+
+                      <div class="row mb-2">
+                        <div class="col-2 offset-md-8">
+                          <breeze-label class="float-right" for="form.subtotal" value="Sub Total" />
+                        </div>
+                        <div class="col-1 p-0">
+                          <input v-model="form.sub_total" name="sub_total" id="form.subtotal" type="number" class="form-control sub_total"  placeholder="T.Price" required readonly/>
+                        </div>
+                      </div>
+                      <div class="row mb-2">
+                        <div class="col-1 offset-md-9">
+                          <breeze-label class="float-right" for="discount" value="Discount" />
+                        </div>
+                        <div class="col-1 p-0">
+                          <input v-model="form.discount" name="discount" id="discount" type="number" class="form-control discount"  placeholder="Discount" required readonly/>
+                        </div>
+                      </div>
+                      <div class="row mb-2">
+                        <div class="col-2 offset-md-8">
+                          <breeze-label class="float-right" for="service_charges" value="Services Charges" />
+                        </div>
+                        <div class="col-1 p-0">
+                          <input v-model="form.service_charges" name="service_charges" id="service_charges" type="number" class="form-control service_charges"  placeholder="T.Price" required readonly/>
+                        </div>
+                      </div>
+                      <div class="row mb-2" v-if="order.shipping_from_shop != null">
+                        <div class="col-1 offset-md-9">
+                          <breeze-label class="float-right" for="this.form.shipping_charges" value="Additional Charges" />
+                        </div>
+                        <div class="col-1 p-0">
+                          <input v-model="this.form.shipping_charges" name="this.form.shipping_charges" id="shipping_charges" type="number" class="form-control this.form.shipping_charges"  placeholder="T.Price" required readonly/>
+                        </div>
+                      </div>
+
+                      <div class="row mb-2">
+                          <div class="col-2 offset-md-8">
+                            <breeze-label class="float-right" for="grand_total" value="Grand Total" />
                           </div>
                         <div class="col-1 p-0">
-                          <input v-model="form.grand_total" name="grand_total" id="grand_total" type="number" class="form-control grand_total"  placeholder="T.Price" required readonly/>
+                          <input v-model="form.grand_total" name="grand_total" id="grand_total" type="text" class="form-control grand_total"  placeholder="T.Price" required readonly/>
                         </div>
                       </div>
 
@@ -349,8 +384,6 @@ export default {
         shop_url: this.order.site_url,
         status: this.order.status,
         notes:  this.order.notes,
-        shipping_from_shop:  this.order.shipping_from_shop,
-        sales_tax: this.order.sales_tax,
         order_origin: this.order.order_origin,
         items: this.order.items,
         only_pickup: (this.order.order_type == 'shopping') ? '' : this.order.only_pickup,
@@ -360,7 +393,13 @@ export default {
         is_changed: this.order.is_changed,
         updated_by_admin: this.order.updated_by_admin,
         changes_approved: this.order.changes_approved,
+        shipping_from_shop:  this.order.shipping_from_shop != null ?  this.order.shipping_from_shop : 0,
+        sales_tax: this.order.sales_tax,
+        discount: (this.order.discount != null) ? this.order.discount : 0,
+        service_charges : 0,
+        shipping_charges : 0,
         grand_total: 0,
+        sub_total: 0,
         sale_tax : 0,
 
       }),
@@ -492,7 +531,14 @@ export default {
       this.form.items.forEach(function(n){sum += n['sub_total']});
       console.log(sum);
 
-      this.form.grand_total = sum;
+      this.form.sub_total = parseFloat(sum).toFixed(2);
+      this.form.service_charges = parseFloat(sum).toFixed(2)* 0.05;
+      var charges = parseFloat(this.form.shipping_from_shop)
+      this.form.shipping_charges = charges
+      this.form.grand_total = sum + this.form.service_charges - this.form.discount + charges;
+
+
+
     },
     setPickupCharges(event){
       var store_id = event.target.value;

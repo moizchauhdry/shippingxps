@@ -17,8 +17,10 @@ class AlterOrdersTableAddOrderTypeColumn extends Migration
                $table->enum('order_type', ['order', 'shopping'])->default('order')->after('notes');
                $table->string('site_name',255)->nullable()->after('order_type');
                $table->string('site_url',255)->nullable()->after('site_name');
-               $table->string('shipping_from_shop',255)->nullable()->after('site_url');
-               $table->string('sales_tax',255)->nullable()->after('shipping_from_shop');
+               $table->double('shipping_from_shop',2)->nullable()->after('site_url');
+               $table->double('sales_tax',2)->nullable()->after('shipping_from_shop');
+               $table->double('discount',2)->nullable()->after('sales_tax');
+               $table->double('grand_total',2)->nullable()->after('discount');
             });
         }
     }

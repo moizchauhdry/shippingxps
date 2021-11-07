@@ -16,6 +16,7 @@ class CreateCMSPagesTable extends Migration
         Schema::create('c_m_s_pages', function (Blueprint $table) {
             $table->id();
             $table->string('meta_title')->nullable();
+            $table->string('meta_url')->nullable();
             $table->string('meta_description')->nullable();
             $table->string('meta_keywords')->nullable();
             $table->string('meta_image')->nullable();

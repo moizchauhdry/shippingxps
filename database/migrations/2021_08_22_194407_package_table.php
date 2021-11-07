@@ -20,8 +20,7 @@ class PackageTable extends Migration
             $table->integer('customer_id');
             $table->integer('warehouse_id'); 
             $table->integer('package_handler_id')->nullable();
-            $table->enum('status',['open','filled','labeled','shipped','delivered'])->default('open');
-            
+            $table->enum('status',['open','filled','labeled','shipped','delivered','consolidated'])->default('open');
             //pcakge
             $table->integer('package_weight')->default(0);
             $table->enum('weight_unit',['lb','kg'])->default('lb');

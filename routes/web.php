@@ -157,6 +157,9 @@ Route::post('/create-customer', [CustomerController::class, 'store'])
 Route::get('/customer/{id}', [CustomerController::class, 'edit'])
                 ->middleware(['auth', 'verified'])
                 ->name('view-customer');
+Route::get('/customer/show/{id}', [CustomerController::class, 'show'])
+    ->middleware(['auth', 'verified'])
+    ->name('detail-customer');
 Route::put('/customer/{id}', [CustomerController::class, 'update'])
                 ->middleware(['auth', 'verified'])
                 ->name('edit-customer');
@@ -165,8 +168,8 @@ Route::delete('/lead/{id}', [CustomerController::class, 'destroy'])
                 ->name('delete-customer');
 
 Route::get('pages/list', 'CMSPageController@index')->middleware(['auth', 'verified'])->name('pages_list');
-Route::get('pages/edit/{id}', 'PostController@edit')->middleware(['auth', 'verified'])->name('page_edit');
-Route::post('pages/update', 'PostController@update')->middleware(['auth', 'verified'])->name('page_update');
+Route::get('pages/edit/{id}', 'CMSPageController@edit')->middleware(['auth', 'verified'])->name('page_edit');
+Route::post('pages/update', 'CMSPageController@update')->middleware(['auth', 'verified'])->name('page_update');
 
 Route::get('pages/add', 'PostController@add')->middleware(['auth', 'verified'])->name('page_new');
 Route::post('pages/save', 'PostController@save')->middleware(['auth', 'verified'])->name('page_save');

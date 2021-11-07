@@ -4,16 +4,19 @@
 				<div class="card-body stock-subscription-form">
             <form @submit.prevent="submit">
           
-              <h5>{{ form.post_title }}</h5>
+              <h5>Edit Page - {{ form.meta_title }}</h5>
               <div class="row">
                 <div class="col-md-6">
                   <div class="form-group">
-                    <input name="post_title" id="post_title" type="text" class="form-control" placeholder="Post Title Name" v-model="form.post_title" required />
+                    <label for="meta_title"></label>
+                    <input name="meta_title" id="meta_title" type="text" class="form-control" placeholder="Post Title Name" v-model="form.meta_title" required />
                   </div>
                 </div>
-                <div class="col-md-10 ">
+                <div class="col-md-12 ">
                   <div class="form-group">
-                     <Editor
+                    <label for="meta_description"></label>
+                    <textarea v-model="form.meta_description"  class="form-control"  name="meta_description" id="meta_description"  rows="4" required></textarea>
+<!--                     <Editor
                         api-key="hx4hzcjw0ap8hrbz29eh0nypxqnkqw0h8pxp9pmou5mmifaz"
                         :init="{
                             height: 500,
@@ -30,10 +33,16 @@
                             cut copy paste removeformat | searchreplace | bullist numlist | outdent indent | hr | link unlink anchor | inserttime |  \
                             table | subscript superscript | charmap | visualchars visualblocks nonbreaking | template | helloworld '
                         }"
-                        v-model="form.post_content"
-                        />   
+                        v-model="form.meta_description"
+                        />   -->
                         </div>
                     </div>
+                </div>
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label for="meta_keywords">Keywords</label> <small>Please use "," as separators to define your "Keyword".</small>
+                    <input name="meta_keywords" id="meta_keywords" type="text" class="form-control" placeholder="Enter Keywords" v-model="form.meta_keywords" required>
+                  </div>
                 </div>
           
             <div class="order-button text-center">
@@ -58,14 +67,15 @@
         },
          props: {
             errors: Object,
-            post: Object,
+            cms: Object,
         },
     data() {
             return {
                 form: this.$inertia.form({
-                    post_title: this.post.post_title,
-                    post_content: this.post.post_content,
-                    id:this.post.id
+                    meta_title: this.cms.meta_title,
+                    meta_description: this.cms.meta_description,
+                    meta_keywords: this.cms.meta_keywords,
+                    id:this.cms.id
                 }),
                 currentYear: new Date().getFullYear(),
                 Years : [],
