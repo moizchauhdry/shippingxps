@@ -6,6 +6,8 @@ use App\Events\OrderChangesAcceptedByCustomerEvent;
 use App\Events\OrderChangesByAdminEvent;
 use App\Events\ShoppingCompletedEvent;
 use App\Events\ShoppingCreatedEvent;
+use App\Models\Coupon;
+use App\Models\CustomerCoupon;
 use App\Models\Order;
 use App\Models\OrderImage;
 use App\Models\OrderItem;
@@ -490,5 +492,46 @@ class ShopController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /* Coupon Mangement */
+    public function checkCoupon(Request $request)
+    {
+        // dd($request->code);
+        $customer = Auth::user();
+        $code = $request->code;
+
+        $coupon = Coupon::where('code',$code)->first();
+
+        if($coupon != null){
+            $strCheck = strcmp($code,$coupon->code);
+            if($strCheck == 0){
+                $checkCode = CustomerCoupon::where('coupon_id',$coupon->id)->where('customer_id',$customer->id)->get();
+                if($checkCode->count() > 0){
+                    return response()->json([
+                        'status' => 0,
+                        'message' => 'Coupon already used',
+                    ]);
+                }else{
+                    return response()->json([
+                        'status' => 1,
+                        'message' => 'Coupon Applied',
+                        'discount' => $coupon->discount,
+                    ]);
+                }
+
+            }else{
+                return response()->json([
+                    'status' => 0,
+                    'message' => 'Coupon is invalid',
+                ]);
+            }
+        }else{
+            return response()->json([
+                'status' => 0,
+                'message' => 'Coupon is invalid',
+            ]);
+        }
+
     }
 }

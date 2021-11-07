@@ -10,16 +10,10 @@
         </div>
         <div class="row" style="margin-top:30px;">
             <div class="col-md-9" >
-            <form action="/orders" method="get">
+            <form method="get">
                 <div class="row">
                   <div class="col-md-5" >
-                    <input type="text" name="search" :value="form.search" class="form-control" placeholder="Tracking #">
-                  </div>
-                  <div class="col-md-5" >
-                    <select name="customer_id" class="form-select" v-model="form.customer_id">                      
-                      <option value="">All</option>                
-                      <option v-for="customer in customers" :value="customer.id" :key="customer.id" >{{ customer.name}}</option>
-                    </select>
+                    <input type="text" name="search" :value="form.search" class="form-control" placeholder="Search #">
                   </div>
                   <div class="col-md-2" >
                     <input type="submit" value="Search" class="btn btn-primary">
@@ -88,7 +82,7 @@
         </template>
 
         <template v-if="$page.props.auth.user.type == 'admin'">
-          <ul class="nav nav-pills nav-justified mb-3" id="pills-tab " role="tablist">
+          <ul class="nav nav-pills nav-justified mb-3 mt-3" id="pills-tab " role="tablist">
             <li class="nav-item" role="presentation">
               <button
                   v-on:click="setActiveTabAB('tab1')"
@@ -179,19 +173,19 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="order in labeled" :key="order.id">
-                  <td>{{ order.id }}</td>
-                  <td>{{ order.received_from }}</td>
-                  <td>{{ order.tracking_number_in }}</td>
-                  <td>{{ order.warehouse.name }}</td>
-                  <td>{{ order.created_at }}</td>
+                <tr v-for="labeler in labeled" :key="labeler.id">
+                  <td>{{ labeler.id }}</td>
+                  <td>{{ labeler.received_from }}</td>
+                  <td>{{ labeler.tracking_number_in }}</td>
+                  <td>{{ labeler.warehouse.name }}</td>
+                  <td>{{ labeler.created_at }}</td>
                   <template v-if="$page.props.auth.user.type == 'admin'">
                     <td>
-                      <inertia-link class="link-primary" :href="route('orders.show', order.id)">
+                      <inertia-link class="link-primary" :href="route('orders.show', labeler.id)">
                         <span>View</span>
                       </inertia-link>
                       &nbsp;|&nbsp;
-                      <inertia-link class="link-primary" :href="route('order.edit', order.id)">
+                      <inertia-link class="link-primary" :href="route('order.edit', labeler.id)">
                         <span>Edit</span>
                       </inertia-link>
                     </td>

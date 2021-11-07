@@ -274,7 +274,7 @@
 
                       </div>
 
-
+                      <!-- sub_total -->
                       <div class="row mb-2">
                         <div class="col-2 offset-md-8">
                           <breeze-label class="float-right" for="form.subtotal" value="Sub Total" />
@@ -283,6 +283,7 @@
                           <input v-model="form.sub_total" name="sub_total" id="form.subtotal" type="number" class="form-control sub_total"  placeholder="T.Price" required readonly/>
                         </div>
                       </div>
+                      <!-- discount -->
                       <div class="row mb-2">
                         <div class="col-1 offset-md-9">
                           <breeze-label class="float-right" for="discount" value="Discount" />
@@ -291,6 +292,7 @@
                           <input v-model="form.discount" name="discount" id="discount" type="number" class="form-control discount"  placeholder="Discount" required readonly/>
                         </div>
                       </div>
+                      <!-- service_charges -->
                       <div class="row mb-2">
                         <div class="col-2 offset-md-8">
                           <breeze-label class="float-right" for="service_charges" value="Services Charges" />
@@ -299,15 +301,7 @@
                           <input v-model="form.service_charges" name="service_charges" id="service_charges" type="number" class="form-control service_charges"  placeholder="T.Price" required readonly/>
                         </div>
                       </div>
-                      <div class="row mb-2" v-if="order.shipping_from_shop != null">
-                        <div class="col-1 offset-md-9">
-                          <breeze-label class="float-right" for="this.form.shipping_charges" value="Additional Charges" />
-                        </div>
-                        <div class="col-1 p-0">
-                          <input v-model="this.form.shipping_charges" name="this.form.shipping_charges" id="shipping_charges" type="number" class="form-control this.form.shipping_charges"  placeholder="T.Price" required readonly/>
-                        </div>
-                      </div>
-
+                      <!-- grand_total -->
                       <div class="row mb-2">
                           <div class="col-2 offset-md-8">
                             <breeze-label class="float-right" for="grand_total" value="Grand Total" />

@@ -23,85 +23,65 @@ use File;
 
 class OrderController extends Controller
 {
-    public $status_list = ['arrived','labeled','shipped','delivered','rejected'];
+    public $status_list = ['arrived', 'labeled', 'shipped', 'delivered', 'rejected'];
 
-    public function index(){
+    public function index(Request $request)
+    {
 
         // $orders = Order::with(['warehouse']);
         // $orders= new Order();
-    
         $search = '';
-        $customer_id='';
+        $customer_id = '';
 
-        $customers = User::where('type','=','customer')->select(['id','name'])->get()->toArray();
-        
-        if((isset($_GET['search']) && !empty($_GET['search'])) || (isset($_GET['customer_id']) && !empty($_GET['customer_id'])) ){
+        $customers = User::where('type', '=', 'customer')->select(['id', 'name'])->get()->toArray();
 
-     
+        if ((isset($_GET['search']) && !empty($_GET['search']))) {
+
+
             $search = $_GET['search'];
             $search = trim($search);
 
-            $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
-
-            // $orders = Order::with(['warehouse']);
-
-            // $orders=Order::whereHas('user',function($query) use ($search){
-                
-            //     $query->where('name', $search);
-            // })->with(['user' => function($query) use ($search){
-            //     $query->where('name', $search);
-            // },'warehouse']);
-
-            //  dd($orders->toSql());
-            // dd('57');
-            // ('select * from orders join users on orders.customer_id=users.id Where users.name like "%'.$search.'%"')
-            //$orders= DB::table('orders')->join('users','orders.customer_id','=','users.id')->where('users.name','like','%'.$search.'%');
-            // dd($orders->paginate());
-
-            $orders = Order::with(['warehouse','customer']);
-
-            $orders->where(
-                function($query) use ($search) {
-                    return $query
-                        ->where('id', 'LIKE', "%$search%")
-                        ->orWhere('tracking_number_in', 'LIKE', "%$search%");
-                }
-            );
-
-        }else{
-            $orders = Order::with(['customer','warehouse']);
+            $orders = Order::whereHas('user', function ($query) use ($search) {
+                $query->where('name', $search);
+            })->with(['user' => function ($query) use ($search) {
+                $query->where('name', $search);
+            }, 'warehouse']);
+        } else {
+            $orders = Order::with(['customer', 'warehouse']);
         }
 
         $status = isset($_GET['status']) ? $_GET['status'] : '';
 
-        if(!empty($status)){
-            $status = in_array($status,['arrived','labeled','shipped','delivered','rejected']) ? $status : '';
+        if (!empty($status)) {
+            $status = in_array($status, ['arrived', 'labeled', 'shipped', 'delivered', 'rejected']) ? $status : '';
         }
 
 
-        if(!empty($status)){
-            $orders->where('status','=',$status);
+        if (!empty($status)) {
+            $orders->where('status', '=', $status);
         }
 
         $user = Auth::user();
-        if($user->type == 'customer'){
-            $orders->where('customer_id',$user->id);
-        }else if(!empty($customer_id)){
-            $orders->where('customer_id',$customer_id);
+        if ($user->type == 'customer') {
+            $orders->where('customer_id', $user->id);
+        } else if (!empty($customer_id)) {
+            $orders->where('customer_id', $customer_id);
         }
 
-        $orders->where('order_type', 'order');        
+        $orders->where('order_type', 'order');
         $orders->orderBy('id', 'DESC');
-        $query = $query1 = $query2 = $orders;
-        $orders = $orders->paginate(25);
-        $arrived = $query1->where('status','arrived')->get();
-        $labeled = $query->where('status','labeled')->get();
-        $shipped = $query2->where('status','shipped')->get();
+//        $query = $orders;
+//        $query1 = $orders;
+//        $query2 = $orders;
+//        $orders = $orders->paginate(25);
+        $arrived = $orders->where('status', 'like' ,'arrived')->get();
+        $labeled = $orders->where('status', 'like' ,'labeled')->get();
+        $shipped = $orders->where('status', 'like' ,'shipped')->get();
 
-        return Inertia::render('Orders/OrdersList',[
+        return Inertia::render('Orders/OrdersList', [
             'search' => $search,
             'orders' => $orders,
-            'customers'=> $customers,
+            'customers' => $customers,
             'customer_id' => $customer_id,
             'arrived' => $arrived,
             'labeled' => $labeled,
@@ -112,17 +92,15 @@ class OrderController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
 
-        $order = Order::with(['customer','items','warehouse','images'])->findOrFail($id);
+        $order = Order::with(['customer', 'items', 'warehouse', 'images'])->findOrFail($id);
 
-        return Inertia::render('Orders/OrderDetail',[
-            'order' => $order
-        ]);
+        return Inertia::render('Orders/OrderDetail', ['order' => $order]);
     }
 
     /**
@@ -133,13 +111,13 @@ class OrderController extends Controller
     public function create(Request $request)
     {
 
-        $selected_customer = $request->get('customer_id',0);
+        $selected_customer = $request->get('customer_id', 0);
 
-        $customers = User::where('type','=','customer')->select(['id','name'])->get()->toArray();
+        $customers = User::where('type', '=', 'customer')->select(['id', 'name'])->get()->toArray();
 
-        $warehouses = Warehouse::select(['id','name','sale_tax'])->get()->toArray();
+        $warehouses = Warehouse::select(['id', 'name', 'sale_tax'])->get()->toArray();
 
-        return Inertia::render('Orders/CreateOrder',[
+        return Inertia::render('Orders/CreateOrder', [
             'customers' => $customers,
             'selected_customer' => $selected_customer,
             'warehouses' => $warehouses,
@@ -150,7 +128,7 @@ class OrderController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -182,16 +160,16 @@ class OrderController extends Controller
             ])->get()->first();
 
 
-            if(!is_object($package)){
+            if (!is_object($package)) {
 
                 $count = Package::where([
                     'customer_id' => $validated['customer_id']
                 ])->count();
 
-                $next = (int) $count +1;
+                $next = (int)$count + 1;
                 $package = new Package();
 
-                $package->package_no = 'Pkg-'.$validated['customer_id'].'-'.$next;
+                $package->package_no = 'Pkg-' . $validated['customer_id'] . '-' . $next;
                 $package->customer_id = $validated['customer_id'];
                 $package->warehouse_id = $validated['warehouse_id'];
                 $package->status = 'open';
@@ -220,18 +198,18 @@ class OrderController extends Controller
             $order->save();
 
             $files = $request->file();
-            if(isset($files['images'])){
-                foreach($files['images'] as $key => $file){
+            if (isset($files['images'])) {
+                foreach ($files['images'] as $key => $file) {
 
                     $image_object = $file['image'];
 
-                    $file_name = time().'_'.$image_object->getClientOriginalName();
+                    $file_name = time() . '_' . $image_object->getClientOriginalName();
                     $image_object->storeAs('uploads', $file_name);
 
-                    if($_SERVER['HTTP_HOST'] == 'localhost:8000'){
-                        File::move(storage_path('app/uploads/'.$file_name), public_path('/uploads/'.$file_name) );
-                    }else{
-                        File::move(storage_path('app/uploads/'.$file_name), public_path('../uploads/'.$file_name) );
+                    if ($_SERVER['HTTP_HOST'] == 'localhost:8000') {
+                        File::move(storage_path('app/uploads/' . $file_name), public_path('/uploads/' . $file_name));
+                    } else {
+                        File::move(storage_path('app/uploads/' . $file_name), public_path('../uploads/' . $file_name));
                     }
 
                     $order_image = new OrderImage();
@@ -239,9 +217,9 @@ class OrderController extends Controller
                     //$order_image->image = 'default-image.png';
                     $order_image->image = $file_name;
                     $order_image->order_id = $order->id;
-                    if($key == 0){
+                    if ($key == 0) {
                         $order_image->display = 1;
-                    }else{
+                    } else {
                         $order_image->display = 0;
                     }
 
@@ -251,7 +229,7 @@ class OrderController extends Controller
 
             $items = $request->input('items');
 
-            foreach($items as $key => $item){
+            foreach ($items as $key => $item) {
 
                 $order_item = new OrderItem();
                 $order_item->order_id = $order->id;
@@ -261,16 +239,16 @@ class OrderController extends Controller
 
                 $file_name = '';
 
-                if(isset($files['items'][$key]['image'])) {
+                if (isset($files['items'][$key]['image'])) {
 
                     $image_object = $files['items'][$key]['image'];
-                    $file_name = time().'_'.$image_object->getClientOriginalName();
+                    $file_name = time() . '_' . $image_object->getClientOriginalName();
                     $image_object->storeAs('uploads', $file_name);
 
-                    if($_SERVER['HTTP_HOST'] == 'localhost:8000'){
-                        File::move(storage_path('app/uploads/'.$file_name), public_path('/uploads/'.$file_name) );
-                    }else{
-                        File::move(storage_path('app/uploads/'.$file_name), public_path('../uploads/'.$file_name) );
+                    if ($_SERVER['HTTP_HOST'] == 'localhost:8000') {
+                        File::move(storage_path('app/uploads/' . $file_name), public_path('/uploads/' . $file_name));
+                    } else {
+                        File::move(storage_path('app/uploads/' . $file_name), public_path('../uploads/' . $file_name));
                     }
                 }
 
@@ -284,7 +262,7 @@ class OrderController extends Controller
             event(new OrderCreatedEvent($order));
 
             return redirect('orders')->with('success', 'Order Added!');
-            
+
         } catch (\Exception $e) {
 
             DB::rollBack();
@@ -297,7 +275,7 @@ class OrderController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -307,7 +285,7 @@ class OrderController extends Controller
 
         $items = [];
 
-        foreach($model->items as $item){
+        foreach ($model->items as $item) {
             $items[] = [
                 'id' => $item->id,
                 'name' => $item->name,
@@ -319,7 +297,7 @@ class OrderController extends Controller
 
         $images = [];
 
-        foreach($model->images as $image){
+        foreach ($model->images as $image) {
             $images[] = [
                 'id' => $image->id,
                 'image' => $image->image,
@@ -337,24 +315,24 @@ class OrderController extends Controller
             'package_height' => $model->package_height,
             'declared_value' => $model->declared_value,
             'warehouse_id' => $model->warehouse_id,
-            'weight_unit' =>$model->weight_unit,
-            'dim_unit' =>$model->dim_unit,
+            'weight_unit' => $model->weight_unit,
+            'dim_unit' => $model->dim_unit,
             'notes' => $model->notes,
             'status' => $model->status,
-            'received_from' => $model->received_from,            
-            'items' => $items,            
+            'received_from' => $model->received_from,
+            'items' => $items,
             'images' => $images,
         ];
 
-        $warehouses = Warehouse::select(['id','name'])->get()->toArray();
+        $warehouses = Warehouse::select(['id', 'name'])->get()->toArray();
 
 
-        $customers = User::where('type','!=','admin')->select(['id','name'])->get()->toArray();
+        $customers = User::where('type', '!=', 'admin')->select(['id', 'name'])->get()->toArray();
 
-        return Inertia::render('Orders/EditOrder',[
+        return Inertia::render('Orders/EditOrder', [
             'order' => $order,
             'customers' => $customers,
-            'status_list' =>$this->status_list,
+            'status_list' => $this->status_list,
             'warehouses' => $warehouses
         ]);
 
@@ -364,7 +342,7 @@ class OrderController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request)
@@ -385,7 +363,7 @@ class OrderController extends Controller
             'package_width' => 'required|numeric|gt:0',
             'package_height' => 'required|numeric|gt:0',
             'status' => 'required|string',
-            'received_from'=> 'required|string',
+            'received_from' => 'required|string',
             'notes' => 'string',
         ]);
 
@@ -416,20 +394,20 @@ class OrderController extends Controller
             $items = $request->input('items');
 
             $files = $request->file();
-            if(isset($files['images'])){
+            if (isset($files['images'])) {
 
 
-                foreach($files['images'] as $key => $file){
+                foreach ($files['images'] as $key => $file) {
 
                     $image_object = $file['image'];
 
-                    $file_name = time().'_'.$image_object->getClientOriginalName();
+                    $file_name = time() . '_' . $image_object->getClientOriginalName();
                     $image_object->storeAs('uploads', $file_name);
 
-                    if($_SERVER['HTTP_HOST'] == 'localhost:8000'){
-                        File::move(storage_path('app/uploads/'.$file_name), public_path('/uploads/'.$file_name) );
-                    }else{
-                        File::move(storage_path('app/uploads/'.$file_name), public_path('../uploads/'.$file_name) );
+                    if ($_SERVER['HTTP_HOST'] == 'localhost:8000') {
+                        File::move(storage_path('app/uploads/' . $file_name), public_path('/uploads/' . $file_name));
+                    } else {
+                        File::move(storage_path('app/uploads/' . $file_name), public_path('../uploads/' . $file_name));
                     }
 
                     $order_image = new OrderImage();
@@ -437,9 +415,9 @@ class OrderController extends Controller
                     //$order_image->image = 'default-image.png';
                     $order_image->image = $file_name;
                     $order_image->order_id = $order->id;
-                    if($key == 0){
+                    if ($key == 0) {
                         $order_image->display = 1;
-                    }else{
+                    } else {
                         $order_image->display = 0;
                     }
 
@@ -447,14 +425,14 @@ class OrderController extends Controller
                 }
             }
 
-            foreach($items as $key => $item){
+            foreach ($items as $key => $item) {
 
-                $item_id = isset($item['id']) ? (int) $item['id'] : 0;
+                $item_id = isset($item['id']) ? (int)$item['id'] : 0;
 
                 $order_item = OrderItem::find($item_id);
                 //update if existing, else creat new.
 
-                if(!is_object($order_item)){
+                if (!is_object($order_item)) {
                     $order_item = new OrderItem();
                 }
 
@@ -504,7 +482,7 @@ class OrderController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -521,13 +499,15 @@ class OrderController extends Controller
 
     }
 
-    public function removeItem(Request $request){
+    public function removeItem(Request $request)
+    {
 
         $item_id = $request->input('item_id');
         OrderItem::find($item_id)->delete();
     }
 
-    public function deleteImage(Request $request) {
+    public function deleteImage(Request $request)
+    {
         $image_id = $request->input('id');
         OrderImage::find($image_id)->delete();
     }

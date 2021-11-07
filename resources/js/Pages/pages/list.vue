@@ -22,7 +22,7 @@
 					  <thead>
 					    <tr>
 					      <th scope="col">id</th>
-					      <th scope="col">Page Title</th>
+					      <th scope="col">Title</th>
                 <th scope="col">Page Description</th>
                 <th scope="col">Created At</th>
 					      <th scope="col">Actions</th>
@@ -31,8 +31,8 @@
 					  <tbody>
 					  <tr v-for="page in cms.data" :key="page.id">
 					  	<td>{{ page.id }}</td>
-					  	<td><a :href="page_url(page.post_url)" target="_blank">{{ page.meta_title }}</a></td>
-                        <td>{{ page.meta_description }}</td>
+					  	<td><a :href="page_url(page.post_url)" target="_blank">{{ page.title }}</a></td>
+                        <td>{{ page.description }}</td>
                         <td>{{ page.created_at }}</td>
 					  	<td>
 					  		<inertia-link :href="route('page_edit',{ id: page.id })" class="btn btn-info">Edit</inertia-link>
