@@ -261,6 +261,7 @@ class ShopController extends Controller
             'pickup_charges' => $model->pickup_charges,
             'pickup_type' => $model->pickup_type,
             'store_name'=>$model->store_name,
+            'receipt_url'=>$model->receipt_url,
             'image' => '',
             'items' => $items,
             'images' => $images,
@@ -307,7 +308,8 @@ class ShopController extends Controller
             'shop_url' => 'required_if:form_type,shopping',
             'store_id' => 'required_if:form_type,pickup',
             // 'pickup_type' => 'required_if:form_type,pickup',
-            'pickup_date' => 'required_if:form_type,pickup'
+            'pickup_date' => 'required_if:form_type,pickup',
+            'receipt_url' => 'required_if:is_complete_shopping,1'
         ]);
         $isAdmin = (Auth::user()->type == 'admin') ? true : false ;
         try {
@@ -378,6 +380,20 @@ class ShopController extends Controller
                     $order->received_from = $order->store->name;
                 }
 
+                $files = $request->file();
+
+                if(isset($files['receipt_url'])){
+                    $image_object = $files['receipt_url'];
+                    $file_name = time().'_'.$image_object->getClientOriginalName();
+                    $image_object->storeAs('uploads', $file_name);
+                    if($_SERVER['HTTP_HOST'] == 'localhost:8000'){
+                        File::move(storage_path('app/uploads/'.$file_name), public_path('/uploads/'.$file_name) );
+                    }else{
+                        File::move(storage_path('app/uploads/'.$file_name), public_path('../uploads/'.$file_name) );
+                    }
+                    $order->receipt_url = $file_name;
+                }
+
                 $order->package_id = $package->id;
                 $order->order_type = 'order';
                 $order->status = 'arrived';
@@ -432,7 +448,6 @@ class ShopController extends Controller
                     $order->is_changed = true;
                     $order->save();
                 }
-
                 event(new OrderChangesByAdminEvent($order));
             }
 

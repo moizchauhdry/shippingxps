@@ -32,8 +32,8 @@ class OrdersTable extends Migration
             $table->enum('dim_unit',['in','cm'])->default('in');
             $table->integer('declared_value')->default(0);
             $table->text('notes')->nullable();
-            $table->enum('order_type', ['order', 'shopping', 'pickup'])->default('order')->after('notes');
-            $table->unsignedBigInteger('store_id')->after('order_type')->default(0);
+            $table->enum('order_type', ['order', 'shopping', 'pickup'])->default('order');
+            $table->unsignedBigInteger('store_id')->default(0);
             $table->string('order_origin', 15)->default('order');
             $table->string('site_name',255)->nullable();
             $table->string('site_url',255)->nullable();
@@ -48,6 +48,7 @@ class OrdersTable extends Migration
             $table->string('store_name')->nullable();
             $table->string('pickup_type')->nullable();
             $table->string('pickup_charges')->nullable();
+            $table->string('receipt_url')->nullable();
             $table->boolean('is_changed')->nullable();
             $table->boolean('updated_by_admin')->nullable();
             $table->boolean('changes_approved')->default(false);

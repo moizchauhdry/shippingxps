@@ -315,6 +315,18 @@
 
                   </div>
 
+                  <div class="row" v-if="$page.props.auth.user.type == 'admin'">
+                    <div class="col-md-4 text-center form-group">
+                      <input type="file" class="form-control" name="receipt_url"  >
+                    </div>
+                  </div>
+
+                  <div class="row" v-if="$page.props.auth.user.type == 'customer'">
+                    <div class="col-md-4 text-center form-group">
+                      <img :src="imgURL(form.receipt_url)" alt="">
+                    </div>
+                  </div>
+
                   <div class="order-button">
                     <input type="submit" value="Update Shopping" class="btn btn-danger" />
                     <template v-if="$page.props.auth.user.type == 'customer' && form.updated_by_admin == '1'">
@@ -395,6 +407,7 @@ export default {
         grand_total: 0,
         sub_total: 0,
         sale_tax : 0,
+        receipt_url : this.order.receipt_url,
 
       }),
       tabs : {
@@ -552,7 +565,10 @@ export default {
         }
       }
       this.form.sale_tax = sale_tax;
-    }
+    },
+    imgURL(url) {
+      return "/uploads/"+url;
+    },
   }
 }
 </script>
