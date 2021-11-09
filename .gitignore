@@ -12,6 +12,6 @@ npm-debug.log
 yarn-error.log
 phpunit.dusk.xml
 /public/dist
-/public/js/app.js
+/public/js/*.js
 /public/build
 /public/mix-manifest.json
