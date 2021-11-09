@@ -19,10 +19,10 @@ class AddressTable extends Migration
             $table->integer('user_id');
             $table->string('fullname');
             $table->string('country_id');
-            $table->string('state');
-            $table->string('city');
-            $table->string('phone');
-            $table->string('address');
+            $table->string('state')->nullable();
+            $table->string('city')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('address')->nullable();
             $table->timestamps();
         });
 

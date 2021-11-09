@@ -18,7 +18,7 @@ class OrderItemsTable extends Migration
             $table->integer('order_id');
             $table->string('name',64);               
             $table->string('description',255)->nullable();              
-            $table->tinyInteger('quantity')->default(1);
+            $table->integer('quantity')->default(1);
             $table->string('image',255)->nullable(); 
             $table->integer('unit_price')->default(0);
             $table->double('price_with_tax',2)->nullable();

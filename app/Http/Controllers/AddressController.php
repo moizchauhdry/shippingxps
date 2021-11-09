@@ -52,7 +52,7 @@ class AddressController extends Controller
         $validated = $request->validate([
             'fullname' => 'required|string',
             'country_id' => 'required',
-            'state' => 'required|string',
+            'state' => 'nullable|string',
             'city' => 'required|string',
             'phone' => 'required|string',
             'address' => 'required|string',

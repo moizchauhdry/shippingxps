@@ -206,9 +206,9 @@ class OrderController extends Controller
                     $image_object->storeAs('uploads', $file_name);
 
                     if ($_SERVER['HTTP_HOST'] == 'localhost:8000') {
-                        File::move(storage_path('app/uploads/' . $file_name), public_path('/uploads/' . $file_name));
+                        File::move(storage_path('app/uploads/' . $file_name), public_path('/public/uploads/' . $file_name));
                     } else {
-                        File::move(storage_path('app/uploads/' . $file_name), public_path('../uploads/' . $file_name));
+                        File::move(storage_path('app/uploads/' . $file_name), public_path('../public/uploads/' . $file_name));
                     }
 
                     $order_image = new OrderImage();
@@ -235,10 +235,10 @@ class OrderController extends Controller
                 $order_item->name = $item['name'];
                 $order_item->description = $item['description'];
                 $order_item->quantity = $item['qty'];
-                $order_item->unit_price = $item['price'];
+                /*$order_item->unit_price = $item['price'];
                 $order_item->price_with_tax = $item['price_with_tax'];
                 $order_item->sub_total = $item['sub_total'];
-                $order_item->url = $item['url'];
+                $order_item->url = $item['url'];*/
 
                 $file_name = '';
 
@@ -249,9 +249,9 @@ class OrderController extends Controller
                     $image_object->storeAs('uploads', $file_name);
 
                     if ($_SERVER['HTTP_HOST'] == 'localhost:8000') {
-                        File::move(storage_path('app/uploads/' . $file_name), public_path('/uploads/' . $file_name));
+                        File::move(storage_path('app/uploads/' . $file_name), public_path('/public/uploads/' . $file_name));
                     } else {
-                        File::move(storage_path('app/uploads/' . $file_name), public_path('../uploads/' . $file_name));
+                        File::move(storage_path('app/uploads/' . $file_name), public_path('../public/uploads/' . $file_name));
                     }
                 }
 
@@ -267,7 +267,7 @@ class OrderController extends Controller
             return redirect('orders')->with('success', 'Order Added!');
 
         } catch (\Exception $e) {
-
+            dd($e);
             DB::rollBack();
             return redirect('orders')->with('error', 'Something went wrong');
         }
@@ -411,9 +411,9 @@ class OrderController extends Controller
                     $image_object->storeAs('uploads', $file_name);
 
                     if ($_SERVER['HTTP_HOST'] == 'localhost:8000') {
-                        File::move(storage_path('app/uploads/' . $file_name), public_path('/uploads/' . $file_name));
+                        File::move(storage_path('app/uploads/' . $file_name), public_path('/public/uploads/' . $file_name));
                     } else {
-                        File::move(storage_path('app/uploads/' . $file_name), public_path('../uploads/' . $file_name));
+                        File::move(storage_path('app/uploads/' . $file_name), public_path('../public/uploads/' . $file_name));
                     }
 
                     $order_image = new OrderImage();

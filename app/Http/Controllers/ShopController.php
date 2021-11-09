@@ -109,7 +109,9 @@ class ShopController extends Controller
             $order->package_id = 0;
             $order->status = 'pending';
             $order->notes = $request->notes;
-            $order->notes = $request->notes;
+            $order->discount = $request->discount;
+            $order->sub_total = $request->sub_total;
+            $order->grand_total = $request->grand_total;
             //$order->shipping_from_shop = $request->shipping_from_shop;
             //$order->sales_tax = $request->sales_tax;
 
@@ -131,6 +133,12 @@ class ShopController extends Controller
             }
 
             $order->save();
+
+            $coupon = Coupon::where('code',$request->code)->first();
+            $customerCoupon = CustomerCoupon::create([
+                'customer_id' => Auth::user()->id,
+                'coupon_id' => $coupon->id,
+            ]);
 
             foreach($request->items as $item){
 
@@ -181,6 +189,7 @@ class ShopController extends Controller
             return redirect('shop-for-me')->with('success', 'Order Added!');
 
         } catch (\Exception $e) {
+            dd($e);
             DB::rollBack();
             return redirect()->back()->with('error', 'Something went wrong.');
         }

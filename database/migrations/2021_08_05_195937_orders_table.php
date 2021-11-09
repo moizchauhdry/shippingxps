@@ -45,6 +45,7 @@ class OrdersTable extends Migration
             $table->double('discount',2)->nullable();
             $table->double('shipping_charges',2)->nullable();
             $table->double('grand_total',2)->nullable();
+            $table->double('sub_total',2)->nullable();
             $table->string('store_name')->nullable();
             $table->string('pickup_type')->nullable();
             $table->string('pickup_charges')->nullable();

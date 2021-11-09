@@ -18,7 +18,7 @@
                     <div class="form-group">
                       <breeze-label for="customer_id" value="Customer"/>
                       <select name="customer_id" class="form-select" v-model="form.customer_id" :disabled="selected_customer != 0" required>
-                        <option selected>Select</option>
+                        <option selected value="">Select</option>
                         <option v-for="customer in customers" :value="customer.id" :key="customer.id">{{ customer.name }}</option>
                       </select>
                     </div>
@@ -26,7 +26,7 @@
                     <div class="form-group">
                       <breeze-label for="warehouse_id" value="Received At"/>
                       <select name="warehouse_id" class="form-select" v-model="form.warehouse_id" required @change="onChangeWareHouse()">
-                        <option selected>Select</option>
+                        <option selected value="">Select</option>
                         <option v-for="warehouse in warehouses" :value="warehouse.id" :key="warehouse.id">{{ warehouse.name }}</option>
                       </select>
                     </div>
@@ -125,42 +125,42 @@
                     </div>
 
                     <div class="row mt-3">
-                      <div class="col-md-2">
+                      <div class="col-md-4">
                         <breeze-label for="name" value="Name" />
                       </div>
-                      <div class="col-md-2">
+                      <div class="col-md-5">
                         <breeze-label for="description" value="Description" />
                       </div>
                       <!-- <div class="col-md-2">
                         <breeze-label for="url" value="Url" />
-                      </div>-->
+                      </div>
                       <div class="col-md-1 p-0">
                         <breeze-label for="price" value="Price" />
                       </div>
                       <div class="col-md-2">
                         <breeze-label for="price_with_tax" value="Price after Tax" />
-                      </div>
-                      <div class="col-md-1">
+                      </div> -->
+                      <div class="col-md-2">
                         <breeze-label for="qty" value="Qty" />
                       </div>
-                      <div class="col-md-2">
+                      <!-- <div class="col-md-2">
                         <breeze-label for="total" value="Total" />
-                      </div>
+                      </div>-->
                     </div>
 
                     <div v-for="(item,index) in form.items" :key="item.id" class="row" :id="'order-'+index" :data-id="index">
 
-                      <div class="col-md-2">
+                      <div class="col-md-4">
                         <div class="form-group">
                           <input v-model="item.name" name="name" id="name" type="text" class="form-control name" placeholder="Name" required/>
                         </div>
                       </div>
-                      <div class="col-md-2">
+                      <div class="col-md-6">
                         <div class="form-group">
                           <input v-model="item.description" name="description" id="description" type="text" class="form-control option" placeholder="Option"/>
                         </div>
                       </div>
-                      <div class="col-md-1 p-0">
+<!--                       <div class="col-md-1 p-0">
                         <div class="form-group">
                           <input v-model="item.price" v-on:change="addTax($event)" v-on:click="addTax($event)" v-on:load="addTax($event)" name="price" type="number" class="form-control price" placeholder="Price" ref="price" required/>
                         </div>
@@ -169,17 +169,17 @@
                         <div class="form-group">
                           <input v-model="item.price_with_tax" name="price_with_tax" id="price_with_tax" type="number" class="form-control price_with_tax" placeholder="Price After Tax" required readonly/>
                         </div>
-                      </div>
+                      </div> -->
                       <div class="col-md-1">
                         <div class="form-group">
-                          <input v-model="item.qty" name="qty" v-on:change="addTax($event)" id="qty" type="number" class="form-control qty" placeholder="Qty" :min="1" required/>
+                          <input v-model="item.qty" name="qty"  id="qty" type="number" class="form-control qty" placeholder="Qty" :min="1" required/>
                         </div>
                       </div>
-                      <div class="col-md-2 p-0">
+<!--                       <div class="col-md-2 p-0">
                         <div class="form-group">
                           <input v-model="item.sub_total" name="sub_total" id="sub_total" type="number" class="form-control sub_total" placeholder="T.Price" required readonly/>
                         </div>
-                      </div>
+                      </div>-->
                       <div class="col-md-1" v-show="index!=0">
                         <div class="form-group">
                           <a v-on:click="removeItem(index)" class="btn btn-primary" style="margin-top:10px;">
@@ -189,14 +189,14 @@
                       </div>
 
                     </div>
-                    <div class="row">
+<!--                    <div class="row">
                       <div class="col-2 offset-md-6 text-right">
                         <breeze-label for="grand_total" value="Grand Total" />
                       </div>
                       <div class="col-2 p-0">
                         <input v-model="form.grand_total" name="grand_total" id="grand_total" type="number" class="form-control grand_total"  placeholder="T.Price" required readonly/>
                       </div>
-                    </div>
+                    </div>-->
                   </div>
 
                 </div>
@@ -298,10 +298,10 @@ export default {
           {
             name: "",
             description: "",
-            price: "",
-            price_with_tax: "",
+            /*price: "",
+            price_with_tax: "",*/
             qty: "",
-            sub_total: "",
+           /* sub_total: "",*/
           }
         ],
       })
@@ -322,10 +322,10 @@ export default {
           {
             name: "",
             description: "",
-            price: "",
-            price_with_tax: "",
+           /* price: "",
+            price_with_tax: "",*/
             qty: "",
-            sub_total: "",
+            /*sub_total: "",*/
           }
       )
     },

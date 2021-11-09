@@ -166,6 +166,29 @@
                           </div>
 
                         </div>
+                        <div class="row mb-2">
+                          <div class="col-1 offset-md-9">
+                            <breeze-label class="float-right"  value="Coupon Code" />
+                          </div>
+                          <div class="col-1 p-0">
+                            <input v-model="form_online.coupon_code" name="coupon_code" id="coupon_code" type="text" class="form-control coupon_code"  placeholder="Enter Coupon" />
+                          </div>
+                          <div class="col-1 p-0">
+                            <a v-on:click="checkShopCouponCode(this.form_online.coupon_code)" class="btn btn-primary">
+                              <span>Apply</span>
+                            </a>
+                          </div>
+
+                        </div>
+                        <div class="row mb-2">
+                          <div class="col-1 offset-md-9">
+                            <breeze-label class="float-right" for="discount" value="Discount" />
+                          </div>
+                          <div class="col-1 p-0">
+                            <input v-model="form_online.discount" name="discount" id="discount" type="number" class="form-control discount"  placeholder="Discount" required readonly/>
+                            <input name="discount_percentage" id="shop_percentage" type="number" class="form-control discount_percentage" v-on:click="getShopGrandTotal()"  placeholder="Discount"  min="0" value="0" hidden readonly/>
+                          </div>
+                        </div>
                         <div class="row">
                           <div class="col-1 offset-md-9">
                             <breeze-label for="grand_total" value="Grand Total" />
@@ -355,7 +378,7 @@
                               <input v-model="form_pickup.sub_total" name="sub_total" id="form_pickup.subtotal" type="number" class="form-control sub_total"  placeholder="T.Price" required readonly/>
                             </div>
                           </div>
-                    &lt;!&ndash; Coupon Code &ndash;&gt;
+                          -->
                           <div class="row mb-2">
                             <div class="col-1 offset-md-9">
                               <breeze-label class="float-right"  value="Coupon Code" />
@@ -370,15 +393,15 @@
                             </div>
 
                           </div>
-                          &lt;!&ndash; discount &ndash;&gt;
                           <div class="row mb-2">
                             <div class="col-1 offset-md-9">
                               <breeze-label class="float-right" for="discount" value="Discount" />
                             </div>
                             <div class="col-1 p-0">
                               <input v-model="form_pickup.discount" name="discount" id="discount" type="number" class="form-control discount"  placeholder="Discount" required readonly/>
+                              <input name="discount_percentage" id="pickup_percentage" type="number" class="form-control discount_percentage" v-on:click="getPickUpGrandTotal()"  placeholder="Discount"  min="0" value="0" hidden readonly/>
                             </div>
-                          </div>-->
+                          </div>
 <!--                          &lt;!&ndash; service_charges &ndash;&gt;
                           <div class="row mb-2">
                             <div class="col-2 offset-md-8">
@@ -471,6 +494,7 @@ export default {
         discount:0,
         sub_total:0,
         service_charges:0,
+        discount_percentage:0,
         items:[
           {
             name: "",
@@ -502,6 +526,7 @@ export default {
         discount:0,
         sub_total:0,
         service_charges:0,
+        discount_percentage:0,
         items:[
           {
             name: "",
@@ -514,7 +539,6 @@ export default {
           }
         ],
       }),
-      discount_percentage: 0,
       tabs : {
       tab1:true,
       tab2:false
@@ -648,9 +672,13 @@ export default {
     getShopGrandTotal(){
       var sum = 0;
       this.form_online.items.forEach(function(n){sum += n['sub_total']});
-      console.log(sum);
-
-      this.form_online.grand_total = sum;
+      var dis_percentage = document.getElementById('shop_percentage').value
+      this.form_online.sub_total = parseFloat(sum).toFixed(2);
+      // this.form_online.service_charges = parseFloat(sum).toFixed(2)* 0.05;
+      this.form_online.discount = sum * dis_percentage/100;
+      var charges = parseFloat(this.form_online.shipping_from_shop)
+      this.form_online.shipping_charges = charges
+      this.form_online.grand_total = sum - this.form_online.discount;
     },
     addPickUpTax(event){
       console.log('triggered...');
@@ -675,36 +703,54 @@ export default {
       var sum = 0;
       this.form_pickup.items.forEach(function(n){sum += n['sub_total']});
       console.log(sum);
-      console.log(this.discount_percentage);
-
+      var dis_percentage = document.getElementById('pickup_percentage').value
       this.form_pickup.sub_total = parseFloat(sum).toFixed(2);
       // this.form_pickup.service_charges = parseFloat(sum).toFixed(2)* 0.05;
-      this.form_pickup.discount = sum * this.discount_percentage/100;
+      this.form_pickup.discount = sum * dis_percentage/100;
       var charges = parseFloat(this.form_pickup.shipping_from_shop)
       this.form_pickup.shipping_charges = charges
-      this.form_pickup.grand_total = sum;
+      this.form_pickup.grand_total = sum - this.form_pickup.discount;
     },
     checkCouponCode(coupon_code){
       axios.post(this.route('checkCoupon'),{
         code:coupon_code,
-      }).then(function (response) {
-        console.log(response);
+      }).then(function (response){
         var data  = response.data;
         if(data.status == 1){
           alert(data.message);
           document.querySelector('.coupon_code').disabled = true;
-          this.discount_percentage = data.discount;
-          this.getPickUpGrandTotal();
+          document.getElementById('pickup_percentage').value = response.data.discount
+          console.log(document.getElementById('pickup_percentage').value);
         }else{
           alert(data.message)
           console.log('in here')
-          this.discount_percentage = 0;
-          this.getPickUpGrandTotal();
+          document.getElementById('pickup_percentage').value = 0
         }
+        document.getElementById('pickup_percentage').click();
       }).catch(function (error) {
         console.log(error);
       });
-    }
+    },
+    checkShopCouponCode(coupon_code){
+      axios.post(this.route('checkCoupon'),{
+        code:coupon_code,
+      }).then(function (response){
+        var data  = response.data;
+        if(data.status == 1){
+          alert(data.message);
+          // document.querySelector('.coupon_code').disabled = true;
+          document.getElementById('shop_percentage').value = response.data.discount
+          console.log(document.getElementById('shop_percentage').value);
+        }else{
+          alert(data.message)
+          console.log('in here')
+          document.getElementById('shop_percentage').value = 0
+        }
+        document.getElementById('shop_percentage').click();
+      }).catch(function (error) {
+        console.log(error);
+      });
+    },
 
   }
 }

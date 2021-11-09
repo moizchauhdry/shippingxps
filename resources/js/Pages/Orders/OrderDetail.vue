@@ -140,10 +140,10 @@
                                         <th scope="col">#</th>
                                         <th scope="col">Name </th>
                                         <th scope="col">Description</th>
-                                        <th scope="col">Price</th>
-                                        <th scope="col">Price with Tax</th>
+                                        <!-- <th scope="col">Price</th>
+                                        <th scope="col">Price with Tax</th> -->
                                         <th scope="col">Quantity</th>
-                                        <th scope="col">Total</th>
+                                        <!-- <th scope="col">Total</th> -->
                                         <!-- <th scope="col">Image</th> -->
                                         </tr>
                                     </thead>
@@ -152,10 +152,10 @@
                                         <td>{{ item.id}}</td> 
                                         <td>{{ item.name}}</td>
                                         <td>{{ item.description }}</td>
-                                        <td>{{ item.unit_price}}</td>
-                                        <td>{{ item.price_with_tax}}</td>
                                         <td>{{ item.quantity}}</td>
-                                        <td>{{ item.sub_total}}</td>
+                                        <!--<td>{{ item.unit_price}}</td>
+                                        <td>{{ item.price_with_tax}}</td>
+                                        <td>{{ item.sub_total}}</td> -->
                                         <!-- <td>
                                             <div class="text-center">
                                                 <img style="width:100px;height:auto;" class="img-thumbnail" :src="imgURL(item.image)" />

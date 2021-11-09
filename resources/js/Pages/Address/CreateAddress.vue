@@ -34,7 +34,7 @@
 
                     <div class="form-group">
                       <breeze-label for="state" value="State" />
-                      <input name="state" id="state" type="text" class="form-control" placeholder="State" v-model="form.state" required />
+                      <input name="state" id="state" type="text" class="form-control" placeholder="State" v-model="form.state" />
                     </div>
 
                    <div class="form-group">
