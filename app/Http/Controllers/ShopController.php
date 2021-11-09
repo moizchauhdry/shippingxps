@@ -86,7 +86,7 @@ class ShopController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
-         //dd($request->all());
+//         dd($request->all());
         $request->validate([
             'form_type' => 'required|in:shopping,pickup',
             'warehouse_id' => 'required',
@@ -97,7 +97,6 @@ class ShopController extends Controller
             'store_id' => 'required_if:form_type,pickup',
             'pickup_type' => 'required_if:form_type,pickup',
             'pickup_date' => 'required_if:form_type,pickup'
-
         ]);
 
         try {
@@ -109,6 +108,7 @@ class ShopController extends Controller
             $order->warehouse_id = $request->warehouse_id;
             $order->package_id = 0;
             $order->status = 'pending';
+            $order->notes = $request->notes;
             $order->notes = $request->notes;
             //$order->shipping_from_shop = $request->shipping_from_shop;
             //$order->sales_tax = $request->sales_tax;
@@ -299,7 +299,7 @@ class ShopController extends Controller
         // dd($request->all());
         $id = $request->input('id');
         $order = Order::findOrFail($id);
-        $request->validate([
+        $rules =[
             'form_type' => 'required|in:shopping,pickup',
             'warehouse_id' => 'required',
             'notes' => 'required||string',
@@ -310,7 +310,16 @@ class ShopController extends Controller
             // 'pickup_type' => 'required_if:form_type,pickup',
             'pickup_date' => 'required_if:form_type,pickup',
             'receipt_url' => 'required_if:is_complete_shopping,1'
+        ];
+
+        $validator = Validator::make($request->all(), $rules , $message = [
+            'receipt_url.required_if' => 'image of an order is missing',
         ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput($request->all());
+        }
+
         $isAdmin = (Auth::user()->type == 'admin') ? true : false ;
         try {
             DB::beginTransaction();

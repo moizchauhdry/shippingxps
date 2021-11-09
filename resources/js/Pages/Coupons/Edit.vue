@@ -16,14 +16,18 @@
                     <breeze-label for="name" value="Name"/>
                     <input v-model="form.name" name="name" id="name" type="text" class="form-control" placeholder="Enter Name" required/>
                   </div>
+                  <div class="col-sm-12 col-md-4 form-group">
+                    <breeze-label for="Code" value="Code"/>
+                    <input v-model="form.code" name="code" id="code" type="text" class="form-control" placeholder="Enter Code" required/>
+                  </div>
                   <div class="col-sm-12 col-md-6 form-group">
                     <breeze-label for="discount" value="Discount %"/>
                     <input v-model="form.discount" name="discount" id="discount" type="number" class="form-control" placeholder="Enter Discount %" max="100" min="0"  required/>
                   </div>
-                  <div class="col-sm-12 col-md-12 form-group">
+                  <!--<div class="col-sm-12 col-md-12 form-group">
                     <breeze-label for="description" value="Description"/>
                     <textarea v-model="form.description" name="description" id="description" class="form-control" placeholder="Enter Description"  rows="5"></textarea>
-                  </div>
+                  </div>-->
                   <div class="col-12">
                     <button class="btn btn-primary float-right" type="submit" v-on:submit="submit">Submit</button>
                   </div>

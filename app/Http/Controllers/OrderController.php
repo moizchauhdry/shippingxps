@@ -138,7 +138,6 @@ class OrderController extends Controller
             'customer_id' => 'required',
             'tracking_number_in' => 'required|string',
             'warehouse_id' => 'required',
-            'warehouse_id' => 'required',
             'weight_unit' => 'required',
             'dim_unit' => 'required',
             'package_weight' => 'required|numeric|gt:0',
@@ -236,6 +235,10 @@ class OrderController extends Controller
                 $order_item->name = $item['name'];
                 $order_item->description = $item['description'];
                 $order_item->quantity = $item['qty'];
+                $order_item->unit_price = $item['price'];
+                $order_item->price_with_tax = $item['price_with_tax'];
+                $order_item->sub_total = $item['sub_total'];
+                $order_item->url = $item['url'];
 
                 $file_name = '';
 
@@ -291,7 +294,10 @@ class OrderController extends Controller
                 'name' => $item->name,
                 'description' => $item->description,
                 'quantity' => $item->quantity,
-                'image' => $item->image
+                'price' => $item->unit_price,
+                'price_with_tax' => $item->price_with_tax,
+                'sub_total' => $item->sub_total,
+                'url' => $item->url
             ];
         }
 
@@ -439,7 +445,11 @@ class OrderController extends Controller
                 $order_item->order_id = $order->id;
                 $order_item->name = $item['name'];
                 $order_item->description = $item['description'];
-                $order_item->quantity = $item['quantity'];
+                $order_item->quantity = $item['qty'];
+                $order_item->unit_price = $item['price'];
+                $order_item->price_with_tax = $item['price_with_tax'];
+                $order_item->sub_total = $item['sub_total'];
+                $order_item->url = $item['url'];
 
                 /*
                 $file_name = '';

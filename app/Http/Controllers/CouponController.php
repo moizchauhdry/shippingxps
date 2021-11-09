@@ -26,6 +26,7 @@ class CouponController extends Controller
 //        dd($request->all());
         $validate = $request->validate([
             'name' => 'required',
+            'code' => 'required|unique:coupons',
             'discount' => 'required',
         ]);
 
@@ -34,7 +35,7 @@ class CouponController extends Controller
         $coupon = new Coupon();
         $coupon->name = $request->input('name');
         $coupon->discount = $request->input('discount');
-        $coupon->code = $code;
+        $coupon->code = $request->has('code') ? $request->input('code') : $code;
         $coupon->save();
 
         return redirect()->route('coupon.index')->with('success', 'Coupon Added!');
@@ -69,6 +70,9 @@ class CouponController extends Controller
 
     public function destroy(Request $request)
     {
-
+        $id = $request->id;
+        $coupon = Coupon::find($id);
+        $coupon->delete();
+        return response()->json(['status'=>'1']);
     }
 }

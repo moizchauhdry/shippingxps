@@ -38,7 +38,7 @@
                       <div class="col-md-3">
                         <div class="form-group">
                           <breeze-label for="warehouse_id" value="Warehouse" />
-                          <select name="warehouse_id" class="form-select" v-model="form_online.warehouse_id" required>
+                          <select name="warehouse_id" class="form-select" v-model="form_online.warehouse_id" required @change="wareHouseChangeOnline()">
                             <option selected disabled>Select</option>
                             <option v-for="warehouse in warehouses" :value="warehouse.id"  :key="warehouse.id" >{{ warehouse.name}}</option>
                           </select>
@@ -128,7 +128,7 @@
                           </div>
                           <div class="col-md-2">
                             <div class="form-group">
-                              <input v-model="item.option" name="option" id="option" type="text" class="form-control" placeholder="Option" />
+                              <input v-model="item.option" name="option" id="option" type="text" class="form-control"  placeholder="Description" />
                             </div>
                           </div>
 
@@ -139,7 +139,7 @@
                           </div>
                           <div class="col-md-1 p-0">
                             <div class="form-group">
-                              <input v-model="item.price" v-on:change="addShopTax($event)" name="price" id="price" type="number" class="form-control" placeholder="Price" required />
+                              <input v-model="item.price" v-on:change="addShopTax($event)" @click="addShopTax($event)" ref="price_online" name="price" type="number" class="form-control" placeholder="Price" required />
                             </div>
                           </div>
                           <div class="col-md-2">
@@ -318,7 +318,7 @@
 
                             <div class="col-md-2">
                               <div class="form-group">
-                                <input v-model="item.price" v-on:change="addPickUpTax($event)" name="price" id="price" type="number" class="form-control price" placeholder="Price" required />
+                                <input v-model="item.price" v-on:change="addPickUpTax($event)" v-on:click="addPickUpTax($event)" name="price" ref="price" type="number" class="form-control price" placeholder="Price" required />
                               </div>
                             </div>
                             <div class="col-md-2">
@@ -347,7 +347,7 @@
                           </div>
 
                           <!-- sub_total -->
-                          <div class="row mb-2">
+<!--                          <div class="row mb-2">
                             <div class="col-2 offset-md-8">
                               <breeze-label class="float-right" for="form_pickup.subtotal" value="Sub Total" />
                             </div>
@@ -355,7 +355,7 @@
                               <input v-model="form_pickup.sub_total" name="sub_total" id="form_pickup.subtotal" type="number" class="form-control sub_total"  placeholder="T.Price" required readonly/>
                             </div>
                           </div>
-                          <!-- Coupon Code -->
+                    &lt;!&ndash; Coupon Code &ndash;&gt;
                           <div class="row mb-2">
                             <div class="col-1 offset-md-9">
                               <breeze-label class="float-right"  value="Coupon Code" />
@@ -370,7 +370,7 @@
                             </div>
 
                           </div>
-                          <!-- discount -->
+                          &lt;!&ndash; discount &ndash;&gt;
                           <div class="row mb-2">
                             <div class="col-1 offset-md-9">
                               <breeze-label class="float-right" for="discount" value="Discount" />
@@ -378,8 +378,8 @@
                             <div class="col-1 p-0">
                               <input v-model="form_pickup.discount" name="discount" id="discount" type="number" class="form-control discount"  placeholder="Discount" required readonly/>
                             </div>
-                          </div>
-                          <!-- service_charges -->
+                          </div>-->
+<!--                          &lt;!&ndash; service_charges &ndash;&gt;
                           <div class="row mb-2">
                             <div class="col-2 offset-md-8">
                               <breeze-label class="float-right" for="service_charges" value="Services Charges" />
@@ -387,14 +387,14 @@
                             <div class="col-1 p-0">
                               <input v-model="form_pickup.service_charges" name="service_charges" id="service_charges" type="number" class="form-control service_charges"  placeholder="T.Price" required readonly/>
                             </div>
-                          </div>
+                          </div>-->
                           <!-- grand_total -->
                           <div class="row mb-2">
-                            <div class="col-2 offset-md-8">
+                            <div class="col-2 offset-md-7">
                               <breeze-label class="float-right" for="grand_total" value="Grand Total" />
                             </div>
                             <div class="col-1 p-0">
-                              <input v-model="form_pickup.grand_total" name="grand_total" id="grand_total" type="text" class="form-control grand_total"  placeholder="T.Price" required readonly/>
+                              <input v-model="form_pickup.grand_total" name="grand_total" id="grand_total" type="text" class="form-control grand_total"  placeholder="G.Price" required readonly/>
                             </div>
                           </div>
                         </div>
@@ -605,23 +605,17 @@ export default {
         warehouse_id: this.form_pickup.warehouse_id
       };
 
-      const priceTriggrers = document.querySelectorAll("#pills-profile .price")
-      console.log(priceTriggrers);
-      console.log('hello raza')
-
-      for (const priceTriggrer of priceTriggrers) {
-        priceTriggrer.addEventListener('change', function(event) {
-          //...
-        });
-      }
+      this.$refs.price.click();
 
       axios.get("/shop-for-me/filter-stores/" + this.form_pickup.warehouse_id)
       .then(({ data }) => {
             this.stores = data.stores;
           }
       );
-    }
-    ,
+    },
+    wareHouseChangeOnline(){
+      this.$refs.price_online.click();
+    },
     setPickupCharges(event){
       var store_id = event.target.value;
       var pickup_charges = 0;
@@ -684,11 +678,11 @@ export default {
       console.log(this.discount_percentage);
 
       this.form_pickup.sub_total = parseFloat(sum).toFixed(2);
-      this.form_pickup.service_charges = parseFloat(sum).toFixed(2)* 0.05;
+      // this.form_pickup.service_charges = parseFloat(sum).toFixed(2)* 0.05;
       this.form_pickup.discount = sum * this.discount_percentage/100;
       var charges = parseFloat(this.form_pickup.shipping_from_shop)
       this.form_pickup.shipping_charges = charges
-      this.form_pickup.grand_total = sum + this.form_pickup.service_charges - this.form_pickup.discount + charges;
+      this.form_pickup.grand_total = sum;
     },
     checkCouponCode(coupon_code){
       axios.post(this.route('checkCoupon'),{

@@ -61,7 +61,7 @@
                       <div class="col-md-3">
                         <div class="form-group">
                           <breeze-label for="warehouse_id" value="Warehouse" />
-                          <select name="warehouse_id" class="form-select" v-model="form.warehouse_id" :required="setRequired('tab1')">
+                          <select name="warehouse_id" class="form-select" v-model="form.warehouse_id" :required="setRequired('tab1')" @change="wareHouseChangeOnline()">
                             <option selected>Select</option>
                             <option v-for="warehouse in warehouses" :value="warehouse.id"  :key="warehouse.id" >{{ warehouse.name}}</option>
                           </select>
@@ -246,7 +246,7 @@
                         </div>
                         <div class="col-md-1 p-0">
                           <div class="form-group">
-                            <input v-model="item.price" v-on:change="addTax($event)" v-on:load="addTax($event)"  name="price"  id="price" type="number" class="form-control price" placeholder="Price" required />
+                            <input v-model="item.price" v-on:change="addTax($event)" v-on:load="addTax($event)" v-on:click="addTax($event)" ref="price" name="price"  type="number" class="form-control price" placeholder="Price" required />
                           </div>
                         </div>
                         <div class="col-md-2">
@@ -312,14 +312,16 @@
                       </div>
 
                     </div>
-
                   </div>
 
-                  <div class="row" v-if="$page.props.auth.user.type == 'admin'">
-                    <div class="col-md-4 text-center form-group">
-                      <input type="file" class="form-control" name="receipt_url"  >
+                  <fieldset class="border p-2 mb-2" v-if="$page.props.auth.user.type == 'admin'">
+                    <div class="row" >
+                      <div class="col-md-4 form-group">
+                        <label for="receipt_url">Image </label><small>(receipts,invoice,doc, etc.)</small>
+                        <input type="file" class="form-control" name="receipt_url" id="receipt_url"  accept=".png,.jpg,.jpeg,.pdf,.docx,.xls,.xlsx" @input="form.receipt_url = $event.target.files[0]">
+                      </div>
                     </div>
-                  </div>
+                  </fieldset>
 
                   <div class="row" v-if="$page.props.auth.user.type == 'customer'">
                     <div class="col-md-4 text-center form-group">
@@ -371,12 +373,14 @@
 import MainLayout from '@/Layouts/Main'
 import BreezeAuthenticatedLayout from '@/Layouts/Authenticated'
 import BreezeLabel from '@/Components/Label'
+import BreezeValidationErrors from '@/Components/ValidationErrors'
 
 export default {
   components: {
     BreezeAuthenticatedLayout,
     MainLayout,
-    BreezeLabel
+    BreezeLabel,
+    BreezeValidationErrors
   },
   data() {
     console.log(this.order.updated_by_admin)
@@ -418,6 +422,7 @@ export default {
     };
   },
   props: {
+    errors: Object,
     auth: Object,
     warehouses: Object,
     order:Object,
@@ -442,7 +447,7 @@ export default {
   },
   methods : {
     submit() {
-      this.form.post(this.route('shop-for-me.update'))
+      this.form.post(this.route('shop-for-me.update'));
     },
 
     changeToCompleteShopping() {
@@ -508,11 +513,17 @@ export default {
       const params = {
         warehouse_id: this.form.warehouse_id
       };
+
+      this.$refs.price.click();
+
       axios.get("/shop-for-me/filter-stores/" + this.form.warehouse_id)
       .then(({ data }) => {
             this.stores = data.stores;
           }
       );
+    },
+    wareHouseChangeOnline(){
+      this.$refs.price.click();
     },
     addTax(event){
       console.log('triggered...');

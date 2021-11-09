@@ -25,7 +25,7 @@
 
                     <div class="form-group">
                       <breeze-label for="warehouse_id" value="Received At"/>
-                      <select name="warehouse_id" class="form-select" v-model="form.warehouse_id" required>
+                      <select name="warehouse_id" class="form-select" v-model="form.warehouse_id" required @change="onChangeWareHouse()">
                         <option selected>Select</option>
                         <option v-for="warehouse in warehouses" :value="warehouse.id" :key="warehouse.id">{{ warehouse.name }}</option>
                       </select>
@@ -160,16 +160,9 @@
                           <input v-model="item.description" name="description" id="description" type="text" class="form-control option" placeholder="Option"/>
                         </div>
                       </div>
-
-                      <!--<div class="col-md-2">
-                        <div class="form-group">
-                          <input v-model="item.url" name="url" id="url" type="url" class="form-control url" placeholder="URL"  :required="form.form_type === 'shopping'"/>
-                        </div>
-                      </div>-->
-
                       <div class="col-md-1 p-0">
                         <div class="form-group">
-                          <input v-model="item.price" v-on:change="addTax($event)" v-on:load="addTax($event)" name="price" id="price" type="number" class="form-control price" placeholder="Price" required/>
+                          <input v-model="item.price" v-on:change="addTax($event)" v-on:click="addTax($event)" v-on:load="addTax($event)" name="price" type="number" class="form-control price" placeholder="Price" ref="price" required/>
                         </div>
                       </div>
                       <div class="col-md-2">
@@ -187,16 +180,6 @@
                           <input v-model="item.sub_total" name="sub_total" id="sub_total" type="number" class="form-control sub_total" placeholder="T.Price" required readonly/>
                         </div>
                       </div>
-
-                      <!--<div class="col-md-3" v-show="false">
-                        <div class="form-group">
-                            <input type="file"  @input="item.image = $event.target.files[0]" />
-                            <progress v-if="form.progress" :value="form.progress.percentage" max="100">
-                                {{ form.progress.percentage }}%
-                            </progress>
-                        </div>
-                      </div>-->
-
                       <div class="col-md-1" v-show="index!=0">
                         <div class="form-group">
                           <a v-on:click="removeItem(index)" class="btn btn-primary" style="margin-top:10px;">
@@ -305,6 +288,7 @@ export default {
         package_length: '',
         package_width: '',
         package_height: '',
+        sale_tax:0,
         images: [
           {
             image: ""
@@ -344,6 +328,10 @@ export default {
             sub_total: "",
           }
       )
+    },
+    onChangeWareHouse(){
+      console.log('triggered...')
+      this.$refs.price.click();
     },
     removeItem(index) {
       this.form.items.splice(index, 1);

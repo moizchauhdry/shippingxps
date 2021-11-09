@@ -183,10 +183,11 @@
                 <tr>
                   <th scope="col">#</th>
                   <th scope="col">Name </th>
-                  <th scope="col">Quantity</th>
-                  <th scope="col">Price</th>
-                  <th scope="col">Price with tax</th>
                   <th scope="col">Description</th>
+                  <th scope="col">Price</th>
+                  <th scope="col">Price with Tax</th>
+                  <th scope="col">Quantity</th>
+                  <th scope="col">Total</th>
                   <th scope="col">URL</th>
                 </tr>
               </thead>
@@ -194,10 +195,11 @@
                 <tr v-for="item in order.items" :key="item.id">
                   <td>{{ item.id}}</td>
                   <td>{{ item.name}}</td>
-                  <td>{{ item.quantity}}</td>
-                  <td>{{ item.unit_price }}</td>
-                  <td>{{ item.price_with_tax }}</td>
                   <td>{{ item.description }}</td>
+                  <td>{{ item.unit_price}}</td>
+                  <td>{{ item.price_with_tax}}</td>
+                  <td>{{ item.quantity}}</td>
+                  <td>{{ item.sub_total}}</td>
                   <td>
                     <a :href="item.url">{{ item.url }}</a>
                   </td>
