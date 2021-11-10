@@ -134,11 +134,11 @@ class ShopController extends Controller
 
             $order->save();
 
-            $coupon = Coupon::where('code',$request->code)->first();
+            /*$coupon = Coupon::where('code',$request->code)->first();
             $customerCoupon = CustomerCoupon::create([
                 'customer_id' => Auth::user()->id,
                 'coupon_id' => $coupon->id,
-            ]);
+            ]);*/
 
             foreach($request->items as $item){
 
@@ -270,6 +270,9 @@ class ShopController extends Controller
             'pickup_charges' => $model->pickup_charges,
             'pickup_type' => $model->pickup_type,
             'store_name'=>$model->store_name,
+            'sub_total'=>$model->sub_total,
+            'grand_total'=>$model->grand_total,
+            'discount'=>$model->discount,
             'receipt_url'=>$model->receipt_url,
             'image' => '',
             'items' => $items,

@@ -53,7 +53,7 @@
               <td>
                 <template v-if="order.site_url !== null">
                 <a target="_blank" class="link-primary" :href="'//' + order.site_url" >
-                  <span v-if="order.site_url.length<30">{{ order.site_url }}</span>
+                  <span v-if="order.site_url.length<30">{{ order.site_url != null ? order.site_url : '- -' }}</span>
                   <span v-else>Welcome, {{ order.site_url.substring(0,30)+ "..." }}</span>
                 </a>  
                 </template>
