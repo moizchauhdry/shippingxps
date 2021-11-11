@@ -445,7 +445,7 @@ class OrderController extends Controller
                 $order_item->order_id = $order->id;
                 $order_item->name = $item['name'];
                 $order_item->description = $item['description'];
-                $order_item->quantity = $item['qty'];
+                $order_item->quantity = $item['quantity'];
                 $order_item->unit_price = $item['price'];
                 $order_item->price_with_tax = $item['price_with_tax'];
                 $order_item->sub_total = $item['sub_total'];

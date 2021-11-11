@@ -34,7 +34,7 @@
                     <div class="form-group">
                       <breeze-label for="warehouse_id" value="Received At" />
                       <select name="warehouse_id" class="form-select" v-model="form.warehouse_id" required>
-                        <option selected>Select</option>
+                        <option value="" selected>Select</option>
                         <option v-for="warehouse in warehouses" :value="warehouse.id"  :key="warehouse.id" >{{ warehouse.name}}</option>
                       </select>
                     </div>
@@ -178,7 +178,7 @@
                       </div>-->
                       <div class="col-md-2">
                         <div class="form-group">
-                          <input v-model="item.quantity" name="qty" v-on:change="addTax($event)" id="qty" type="number" class="form-control qty" placeholder="Qty" :min="1" required/>
+                          <input v-model="item.quantity" name="quantity" v-on:change="addTax($event)" id="qty" type="number" class="form-control qty" placeholder="Qty" :min="1" required/>
                         </div>
                       </div>
 <!--                      <div class="col-md-2 p-0">
@@ -334,7 +334,7 @@ export default {
           {
             name: "",
             description: "",
-            qty: "",
+            quantity: "",
             /*price: "",
             price_with_tax: "",
             sub_total: "",*/

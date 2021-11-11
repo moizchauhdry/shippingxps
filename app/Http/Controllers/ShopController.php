@@ -272,6 +272,8 @@ class ShopController extends Controller
             'store_name'=>$model->store_name,
             'sub_total'=>$model->sub_total,
             'grand_total'=>$model->grand_total,
+            'service_charges'=>$model->service_charges,
+            'is_service_charges'=>$model->is_service_charges,
             'discount'=>$model->discount,
             'receipt_url'=>$model->receipt_url,
             'image' => '',
@@ -367,6 +369,12 @@ class ShopController extends Controller
                 $order->pickup_date = $request->pickup_date;
                 $order->pickup_charges = $request->pickup_charges;
             }
+                $order->sub_total = $request->sub_total;
+                $order->grand_total = $request->grand_total;
+                $order->service_charges = $request->service_charges;
+                $order->is_service_charges = $request->is_service_charges;
+                $order->discount = $request->discount;
+
 
             if ($request->is_complete_shopping == 1) {
 

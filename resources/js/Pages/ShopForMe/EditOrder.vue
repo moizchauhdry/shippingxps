@@ -254,7 +254,7 @@
                         </div>
                         <div class="col-md-1 p-0" v-show="form.pickup_type!='pickup_only'">
                           <div class="form-group">
-                            <input v-model="item.price" v-on:change="addTax($event)" v-on:keyup="addTax($event)" v-on:load="addTax($event)" v-on:click="addTax($event)" ref="price" name="price" type="number" class="form-control price" placeholder="Price" required/>
+                            <input v-model="item.price" v-on:change="addTax($event)" v-on:keyup="addTax($event)" v-on:load="addTax($event)" v-on:click="addTax($event)" :min="0" ref="price" name="price" type="number" class="form-control price" placeholder="Price" required/>
                           </div>
                         </div>
                         <div class="col-md-2" v-show="form.pickup_type!='pickup_only'">
@@ -315,7 +315,7 @@
                           <breeze-label class="float-right" for="service_charges" value="Services Charges"/>
                         </div>
                         <div class="col-1 p-0">
-                          <input v-model="form.service_charges" name="service_charges" id="service_charges" type="number" class="form-control service_charges" placeholder="T.Price" required readonly/>
+                          <input v-model="form.service_charges" name="service_charges" id="service_charges" type="number" class="form-control service_charges" @keyup="adminServicesCharges()" placeholder="charges" :min="0" required :readonly="$page.props.auth.user.type == 'customer'"/>
                         </div>
                       </div>
                       <!-- grand_total -->
@@ -431,7 +431,7 @@ export default {
         sub_total: this.order.sub_total,
         sale_tax: 0,
         receipt_url: this.order.receipt_url,
-
+        is_service_charges:this.order.is_service_charges,
       }),
       tabs: {
         tab1: (this.order.order_type == 'shopping') ? true : false,
@@ -453,11 +453,8 @@ export default {
     if (this.$page.props.auth.user.type === 'admin') {
       this.getSaleTax();
     }
-
-    this.getGrandTotal();
-
-
   },
+
   created() {
     if (this.form.form_type === 'shopping') {
       this.setActiveTabAB('tab1');
@@ -470,7 +467,14 @@ export default {
     submit() {
       this.form.post(this.route('shop-for-me.update'));
     },
-
+    adminServicesCharges(){
+      if (this.$page.props.auth.user.type === 'admin') {
+        console.log(this.form.is_service_charges)
+        this.form.is_service_charges = 1;
+        console.log(this.form.is_service_charges)
+        this.getGrandTotal();
+      }
+    },
     changeToCompleteShopping() {
       this.form.is_complete_shopping = 1;
       this.submit();
@@ -562,7 +566,7 @@ export default {
       var gross_total = (price * (sale_tax / 100));
       var net_total = this.form.items[index].price_with_tax = (parseFloat(gross_total) + parseFloat(price)).toFixed(2);
       this.form.items[index].sub_total = net_total * quantity;
-
+      this.form.is_service_charges = 0;
       this.getGrandTotal();
     },
     getGrandTotal() {
@@ -575,12 +579,17 @@ export default {
         });
         console.log(sum);
         this.form.sub_total = parseFloat(sum).toFixed(2);
-        this.form.service_charges = parseFloat(sum).toFixed(2) * 0.05;
+        if(this.form.is_service_charges === 0){
+          this.form.service_charges = parseFloat(sum).toFixed(2) * 0.05;
+          this.form.is_service_charges = 0;
+        }
+
         var charges = parseFloat(this.form.shipping_from_shop);
         this.form.shipping_charges = charges
         var pickup_charges = (this.form.form_type == 'shopping') ? 0 : parseFloat(this.form.pickup_charges);
         console.log(this.form.pickup_charges);
         console.log(pickup_charges);
+        console.log(this.form.service_charges);
         this.form.grand_total = sum + this.form.service_charges + charges + pickup_charges - this.form.discount ;
       }
     },

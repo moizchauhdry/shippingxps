@@ -40,7 +40,13 @@
 
         <!-- Styles -->
         <link rel="stylesheet" href="{{ url(mix('css/app.css')) }}">
-
+        <style>
+            input::-webkit-outer-spin-button,
+            input::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+        </style>
         <!-- Scripts -->
         @routes
         <script src="{{ url(mix('js/app.js')) }}" defer></script>

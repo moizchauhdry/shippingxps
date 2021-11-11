@@ -53,7 +53,7 @@ caption {
     </tr>
     <tr>
         <td width="50%" >
-            Ship To : <br>
+            Ship To : {{ $package->customer->name }}<br>
             PHone : {{ $address->phone ?? '- -'}}<br>
             Email : {{ $user->email ?? '- -'}}<br>
             City : {{ $address->city ?? '- -'}}<br>
@@ -120,7 +120,7 @@ caption {
     <tr>
         <td colspan="4" >Total Weight</td>
         <td colspan="2" ></td>
-        <td colspan="1" >{{ $package->package_weight}}
+        <td colspan="1" >{{ $package->package_weight}} {{ $package->weight_unit }}
         </td>
     </tr>
 

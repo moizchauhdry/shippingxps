@@ -26,7 +26,7 @@
                         <tr v-for="address in addresses" :key="address.id">
                             <th scope="col">#</th>
                             <td>{{ address.fullname }}</td>
-                            <td>{{ address.coountry }}</td>
+                            <td>{{ address.country.nicename }}</td>
                             <td>{{ address.state }}</td>
                             <td>{{ address.city }}</td>
                             <td>{{ address.phone }}</td>

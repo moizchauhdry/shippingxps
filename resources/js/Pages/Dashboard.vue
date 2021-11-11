@@ -17,7 +17,7 @@
                         <h5>California Mailing Address</h5>
                     </div>
                     <div class="card-body">
-                        <div class="address-card">
+                        <div class="address-card mb-4">
                             <p><strong>Full Name:</strong><span class="copy-item" id="copy-item-1" v-on:click="copyContent($event)">{{ siuteNum }} – {{ $page.props.auth.user.name }}</span> <span v-if="copied_id=='copy-item-1'" style="color:green">Copied!</span> </p>
                             <p><strong>Street Address:</strong><span class="copy-item" id="copy-item-2" v-on:click="copyContent($event)">3578 W SAVANNA ST </span><span v-if="copied_id=='copy-item-2'" style="color:green">Copied!</span></p>
                             <p><strong>City:</strong><span class="copy-item" id="copy-item-3" v-on:click="copyContent($event)">ANAHEIM </span><span v-if="copied_id=='copy-item-3'" style="color:green">Copied!</span></p>
@@ -311,9 +311,9 @@
 
             copyToClipBoard(address){
                 if(address.includes("92804")){
-                    this.copied1 = true;
+                    // this.copied1 = true;
                 }else{
-                    this.copied2 = true;
+                    // this.copied2 = true;
                 }
                 var text = address;
                 navigator.clipboard.writeText(text).then(function() {
