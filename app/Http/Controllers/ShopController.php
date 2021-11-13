@@ -90,7 +90,7 @@ class ShopController extends Controller
         $request->validate([
             'form_type' => 'required|in:shopping,pickup',
             'warehouse_id' => 'required',
-            'notes' => 'required|string',
+            'notes' => 'nullable|string',
             'items' => 'required',
             'site_name' => 'required_if:form_type,shopping',
             'shop_url' => 'required_if:form_type,shopping',
@@ -112,6 +112,7 @@ class ShopController extends Controller
             $order->discount = $request->discount;
             $order->sub_total = $request->sub_total;
             $order->grand_total = $request->grand_total;
+            $order->service_charges = $request->service_charges;
             //$order->shipping_from_shop = $request->shipping_from_shop;
             //$order->sales_tax = $request->sales_tax;
 
@@ -168,9 +169,9 @@ class ShopController extends Controller
                     $image_object->storeAs('uploads', $file_name);
 
                     if($_SERVER['HTTP_HOST'] == 'localhost:8000'){
-                        File::move(storage_path('app/uploads/'.$file_name), public_path('/uploads/'.$file_name) );
+                        File::move(storage_path('app/uploads/'.$file_name), public_path('/public/uploads/'.$file_name) );
                     }else{
-                        File::move(storage_path('app/uploads/'.$file_name), public_path('../uploads/'.$file_name) );
+                        File::move(storage_path('app/uploads/'.$file_name), public_path('../public/uploads/'.$file_name) );
                     }
 
                     $order_image = new OrderImage();
@@ -316,7 +317,7 @@ class ShopController extends Controller
         $rules =[
             'form_type' => 'required|in:shopping,pickup',
             'warehouse_id' => 'required',
-            'notes' => 'required||string',
+            'notes' => 'nullable|string',
             'items' => 'required',
             'site_name' => 'required_if:form_type,shopping',
             'shop_url' => 'required_if:form_type,shopping',

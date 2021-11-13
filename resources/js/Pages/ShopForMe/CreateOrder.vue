@@ -400,7 +400,7 @@
                             <breeze-label class="float-right" for="form_pickup.subtotal" value="Sub Total"/>
                           </div>
                           <div class="col-1 p-0">
-                            <input v-model="form_pickup.sub_total" name="sub_total" id="form_pickup.subtotal" type="number" class="form-control sub_total" placeholder="T.Price" :required="form_pickup.pickup_type == 'pickup_only'" readonly/>
+                            <input v-model="form_pickup.sub_total" name="sub_total" id="form_pickup.subtotal" type="number" class="form-control sub_total" placeholder="T.Price" :required="form_pickup.pickup_type != 'pickup_only'" readonly/>
                           </div>
                         </div>
                         <!--                          <div class="row mb-2">
@@ -439,6 +439,7 @@
                         <div class="row mb-2" style="display: none" v-show="form_pickup.pickup_type != 'pickup_only'">
                           <div class="col-2 offset-md-8">
                             <breeze-label class="float-right" for="service_charges" value="Services Charges"/>
+                            <br><small class="float-right">5% of Subtotal</small>
                           </div>
                           <div class="col-1 p-0">
                             <input v-model="form_pickup.service_charges" name="service_charges" id="service_charges" type="number" class="form-control service_charges" placeholder="T.Price" required readonly/>
@@ -743,7 +744,7 @@ export default {
           sum += n['sub_total']
         });
         console.log(sum);
-        var dis_percentage = document.getElementById('pickup_percentage').value
+        // var dis_percentage = document.getElementById('pickup_percentage').value
         this.form_pickup.sub_total = parseFloat(sum).toFixed(2);
         this.form_pickup.service_charges = parseFloat(sum).toFixed(2) * 0.05;
         var charges = parseFloat(this.form_pickup.shipping_from_shop)
