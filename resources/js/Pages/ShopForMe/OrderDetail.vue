@@ -105,7 +105,7 @@
               </tbody>
             </table>
           </div>
-          <div class="col-md-6">
+          <div class="col-md-6" v-if="order.order_type == 'pickup'">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight form-title">
               Receipt/Image
             </h2>           
@@ -230,7 +230,7 @@ export default {
   },
   methods : {
       imgURL(url) {
-          return "/uploads/"+url;
+          return "/public/uploads/"+url;
       },
   }
 }

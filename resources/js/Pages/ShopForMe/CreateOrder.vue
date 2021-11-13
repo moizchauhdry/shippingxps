@@ -14,7 +14,8 @@
                   type="button"
                   role="tab"
                   aria-controls="pills-home"
-                  aria-selected="true">Online Order</button>
+                  aria-selected="true">Online Order
+              </button>
             </li>
             <li class="nav-item" role="presentation">
               <button
@@ -26,21 +27,22 @@
                   type="button"
                   role="tab"
                   aria-controls="pills-profile"
-                  aria-selected="false">Pickup Order</button>
+                  aria-selected="false">Pickup Order
+              </button>
             </li>
           </ul>
           <div class="tab-content" id="pills-tabContent">
-            <div class="stock-subscription-form">              
-                <div class="order-form">
-                  <div :class="getTabPaneClass('tab1')" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">                    
-                    <form @submit.prevent="submitFormOnline" enctype="multipart/form-data">
+            <div class="stock-subscription-form">
+              <div class="order-form">
+                <div :class="getTabPaneClass('tab1')" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                  <form @submit.prevent="submitFormOnline" enctype="multipart/form-data">
                     <div class="row">
                       <div class="col-md-3">
                         <div class="form-group">
-                          <breeze-label for="warehouse_id" value="Warehouse" />
+                          <breeze-label for="warehouse_id" value="Warehouse"/>
                           <select name="warehouse_id" class="form-select" v-model="form_online.warehouse_id" required @change="wareHouseChangeOnline()">
                             <option selected disabled>Select</option>
-                            <option v-for="warehouse in warehouses" :value="warehouse.id"  :key="warehouse.id" >{{ warehouse.name}}</option>
+                            <option v-for="warehouse in warehouses" :value="warehouse.id" :key="warehouse.id">{{ warehouse.name }}</option>
                           </select>
                         </div>
                       </div>
@@ -54,20 +56,20 @@
                     <div class="row">
                       <div class="col-md-8">
                         <div class="form-group">
-                          <breeze-label for="package_weight" value="Site Name" />
-                          <input v-model="form_online.site_name" name="site_name" id="site_name" type="text" class="form-control" placeholder="Site Name" :required="setRequired('tab1')" />
+                          <breeze-label for="package_weight" value="Site Name"/>
+                          <input v-model="form_online.site_name" name="site_name" id="site_name" type="text" class="form-control" placeholder="Site Name" :required="setRequired('tab1')"/>
                         </div>
 
                         <div class="form-group">
-                          <breeze-label for="package_length" value="Shop URL" />
+                          <breeze-label for="package_length" value="Shop URL"/>
                           <input v-model="form_online.shop_url" name="shop_url" id="shop_url" type="url" class="form-control" placeholder="Shop URL" :required="setRequired('tab1')"/>
                         </div>
 
                       </div>
 
-                      <div  class="col-md-4">
+                      <div class="col-md-4">
                         <div class="form-group">
-                          <breeze-label for="notes" value="Notes" />
+                          <breeze-label for="notes" value="Notes"/>
                           <textarea v-model="form_online.notes"
                                     name="notes"
                                     id="notes"
@@ -75,7 +77,7 @@
                                     placeholder="Notes"
                                     rows="5"
                                     style="resize:none;"
-                                    required >
+                                    >
                                 </textarea>
                         </div>
                       </div>
@@ -97,25 +99,25 @@
 
                         <div class="row">
                           <div class="col-md-2">
-                            <breeze-label for="name" value="Name" />
+                            <breeze-label for="name" value="Name"/>
                           </div>
                           <div class="col-md-2  ">
-                            <breeze-label for="option" value="Description" />
+                            <breeze-label for="option" value="Description"/>
                           </div>
                           <div class="col-md-2">
-                            <breeze-label for="url" value="Url" />
+                            <breeze-label for="url" value="Url"/>
                           </div>
                           <div class="col-md-1 p-0">
-                            <breeze-label for="price" value="Price(USD)" />
+                            <breeze-label for="price" value="Price(USD)"/>
                           </div>
                           <div class="col-md-2">
-                            <breeze-label for="price_with_tax" value="Price with Tax (USD)" />
+                            <breeze-label for="price_with_tax" value="Price with Tax (USD)"/>
                           </div>
                           <div class="col-md-1">
-                            <breeze-label for="qty" value="Qty" />
+                            <breeze-label for="qty" value="Qty"/>
                           </div>
                           <div class="col-md-1">
-                            <breeze-label for="total" value="Total" />
+                            <breeze-label for="total" value="Total"/>
                           </div>
                         </div>
 
@@ -123,33 +125,33 @@
 
                           <div class="col-md-2">
                             <div class="form-group">
-                              <input v-model="item.name" name="name" id="name" type="text" class="form-control" placeholder="Name" required />
+                              <input v-model="item.name" name="name" id="name" type="text" class="form-control" placeholder="Name" required/>
                             </div>
                           </div>
                           <div class="col-md-2">
                             <div class="form-group">
-                              <input v-model="item.option" name="option" id="option" type="text" class="form-control"  placeholder="Description" />
+                              <input v-model="item.option" name="option" id="option" type="text" class="form-control" placeholder="Description"/>
                             </div>
                           </div>
 
                           <div class="col-md-2">
                             <div class="form-group">
-                              <input v-model="item.url" name="url" id="url" type="url" class="form-control" placeholder="URL" required />
+                              <input v-model="item.url" name="url" id="url" type="url" class="form-control" placeholder="URL" required/>
                             </div>
                           </div>
                           <div class="col-md-1 p-0">
                             <div class="form-group">
-                              <input v-model="item.price" v-on:keyup="addShopTax($event)" @click="addShopTax($event)" ref="price_online" name="price" type="number" class="form-control" placeholder="Price" min="0" required />
+                              <input v-model="item.price" v-on:keyup="addShopTax($event)" @click="addShopTax($event)" ref="price_online" name="price" type="number" class="form-control" placeholder="Price" min="0" required/>
                             </div>
                           </div>
                           <div class="col-md-2">
                             <div class="form-group">
-                              <input v-model="item.price_with_tax" name="price_with_tax" id="price_with_tax" type="number" class="form-control" placeholder="Price With Tax ($)" required readonly />
+                              <input v-model="item.price_with_tax" name="price_with_tax" id="price_with_tax" type="number" class="form-control" placeholder="Price With Tax ($)" required readonly/>
                             </div>
                           </div>
                           <div class="col-md-1">
                             <div class="form-group">
-                              <input v-model="item.qty" v-on:keyup="addShopTax($event)" v-on:change="addShopTax($event)" name="qty" id="qty" type="number" class="form-control" placeholder="Qty" min="1"  required />
+                              <input v-model="item.qty" v-on:keyup="addShopTax($event)" v-on:change="addShopTax($event)" name="qty" id="qty" type="number" class="form-control" placeholder="Qty" min="1" required/>
                             </div>
                           </div>
                           <div class="col-md-1 p-0">
@@ -168,30 +170,29 @@
                         </div>
                         <!-- Sub Total -->
                         <div class="row mb-2">
-                            <div class="col-2 offset-md-8">
-                              <breeze-label class="float-right" for="form_pickup.subtotal" value="Sub Total" />
-                            </div>
-                            <div class="col-1 p-0">
-                              <input v-model="form_online.sub_total" name="sub_total" id="form_online.subtotal" type="number" class="form-control sub_total"  placeholder="T.Price" required readonly/>
-                            </div>
-                          </div>
-                        <!-- Coupon Code -->
-                        <div class="row mb-2">
-                          <div class="col-1 offset-md-9">
-                            <breeze-label class="float-right"  value="Coupon Code" />
+                          <div class="col-2 offset-md-8">
+                            <breeze-label class="float-right" for="form_pickup.subtotal" value="Sub Total"/>
                           </div>
                           <div class="col-1 p-0">
-                            <input v-model="form_online.coupon_code" name="coupon_code" id="coupon_code" type="text" class="form-control coupon_code"  placeholder="Enter Coupon" />
+                            <input v-model="form_online.sub_total" name="sub_total" id="form_online.subtotal" type="number" class="form-control sub_total" placeholder="T.Price" required readonly/>
                           </div>
-                          <div class="col-1 p-0">
-                            <a v-on:click="checkShopCouponCode(this.form_online.coupon_code)" class="btn btn-primary">
-                              <span>Apply</span>
-                            </a>
-                          </div>
-
                         </div>
+                        <!-- Coupon Code -->
+                        <!-- <div class="row mb-2">
+                             <div class="col-1 offset-md-9">
+                             <breeze-label class="float-right"  value="Coupon Code" />
+                             </div>
+                             <div class="col-1 p-0">
+                             <input v-model="form_online.coupon_code" name="coupon_code" id="coupon_code" type="text" class="form-control coupon_code"  placeholder="Enter Coupon" />
+                             </div>
+                             <div class="col-1 p-0">
+                             <a v-on:click="checkShopCouponCode(this.form_online.coupon_code)" class="btn btn-primary">
+                             <span>Apply</span>
+                             </a>
+                             </div>
+                             </div>-->
                         <!-- Discount -->
-                        <div class="row mb-2">
+                        <!-- <div class="row mb-2">
                           <div class="col-1 offset-md-9">
                             <breeze-label class="float-right" for="discount" value="Discount" />
                           </div>
@@ -199,288 +200,288 @@
                             <input v-model="form_online.discount" name="discount" id="discount" type="number" class="form-control discount"  placeholder="Discount" required readonly/>
                             <input name="discount_percentage" id="shop_percentage" type="number" class="form-control discount_percentage" v-on:click="getShopGrandTotal()"  placeholder="Discount"  min="0" value="0" hidden readonly/>
                           </div>
-                        </div>
+                        </div> -->
                         <!-- Service Charges -->
                         <div class="row mb-2">
-                            <div class="col-2 offset-md-8">
-                              <breeze-label class="float-right" for="form_pickup.subtotal" value="Sub Total" />
-                            </div>
-                            <div class="col-1 p-0">
-                              <input v-model="form_online.service_charges" name="service_charges" id="form_online-service_charges" type="number" class="form-control service_charges"  placeholder="T.Price" required readonly/>
-                            </div>
+                          <div class="col-2 offset-md-8">
+                            <breeze-label class="float-right" for="form_pickup.subtotal" value="Service Charges"/>
                           </div>
+                          <div class="col-1 p-0">
+                            <input v-model="form_online.service_charges" name="service_charges" id="form_online-service_charges" type="number" class="form-control service_charges" placeholder="T.Price" required readonly/>
+                          </div>
+                        </div>
                         <!-- Grand Total -->
                         <div class="row">
                           <div class="col-1 offset-md-9">
-                            <breeze-label for="grand_total" value="Grand Total" />
+                            <breeze-label for="grand_total" value="Grand Total"/>
                           </div>
                           <div class="col-1 p-0">
-                            <input v-model="form_online.grand_total" name="grand_total" id="grand_total" type="number" class="form-control grand_total"  placeholder="T.Price" required readonly/>
+                            <input v-model="form_online.grand_total" name="grand_total" id="grand_total" type="number" class="form-control grand_total" placeholder="T.Price" required readonly/>
                           </div>
                         </div>
                       </div>
                     </div>
                     <div class="order-button">
-                        <input type="submit" value="Finish Order" class="btn btn-danger" />
+                      <input type="submit" value="Finish Order" class="btn btn-danger"/>
                     </div>
                   </form>
-                  </div>
-
-                  <div :class="getTabPaneClass('tab2')" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-                    <form @submit.prevent="submitFormPickup" enctype="multipart/form-data">
-                      
-                      <div class="row">
-                        <div class="col-md-3">
-                          <div class="form-group">
-                            <breeze-label for="warehouse_id" value="Warehouse" />
-                            <select name="warehouse_id" class="form-select" v-model="form_pickup.warehouse_id" @change="filterStores()" required>
-                              <option selected disabled>Select</option>
-                              <option v-for="warehouse in warehouses" :value="warehouse.id"  :key="warehouse.id" >{{ warehouse.name}}</option>
-                            </select>
-                          </div>
-                        </div>
-                        <div class="col-md-3">
-                          <div class="form-group">
-                            <breeze-label for="store_id" value="Shopping Mall" />
-                            <select name="store_id" class="form-select" v-model="form_pickup.store_id" :required="setRequired('tab2')" v-on:change="setPickupCharges($event)" >
-                              <option selected disabled>Select</option>
-                              <option v-for="store in stores" :value="store.id"  :key="store.id" >{{ store.name }}</option>
-                            </select>
-                          </div>
-                        </div>
-                        <div class="col-md-2" v-show="this.form_pickup.store_id !==''">
-                          <div class="form-group">
-                            <breeze-label for="pickup_charges" value="Pickup Charges (USD)" />
-                            <input type="text" id="pickup_charges" v-model="form_pickup.pickup_charges" readonly>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row">
-
-                        <div class="col-md-4">
-                          <div class="form-group">
-                            <breeze-label for="store_name" value="Store Name" />
-                            <input type="text" id="store_name" v-model="form_pickup.store_name">
-                          </div>
-                        </div>
-
-                        <div class="col-md-8">
-                          <div class="form-group">
-                              <breeze-label for="pickup_image" value="Image" />
-                              <input id="pickup_image" type="file"  @input="form_pickup.image = $event.target.files[0]" />    
-                              <progress v-if="form_pickup.progress" :value="form_pickup.progress.percentage" max="100">
-                                  {{ form_pickup.progress.percentage }}%
-                              </progress>
-                              <p style="color:red;">Upload image/screenshort that helps in order pickup, like receipt,email,ordernumber, etc</p>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div  class="col-md-12">
-                          <div class="form-group">
-                            <breeze-label for="notes" value="Notes" />
-                            <textarea v-model="form_pickup.notes"
-                                      name="notes"
-                                      id="note"
-                                      class="form-control"
-                                      placeholder="Notes"
-                                      rows="3"
-                                      style="resize:none;"
-                                      required >
-                            </textarea>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row mb-2">
-                        <div class="col-md-8">
-                          <input type="radio" v-model="form_pickup.pickup_type" name="pickup_type" value="pickup_only" checked :required="setRequired('tab2')"> Only Pickup
-                          <input type="radio" v-model="form_pickup.pickup_type" name="pickup_type" value="shipping_xps_purchase" :required="setRequired('tab2')"> Shipping XPS Purchase
-                        </div>
-                        
-                        <div class="col">
-                          <breeze-label for="pickup_date" value="Pickup Date" />
-                          <input type="datetime-local" v-model="form_pickup.pickup_date" name="pickup_date" class="form-control" placeholder="Pickup Data" :required="setRequired('tab2')">
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-md-12">
-                          <div class="row">
-                            <div class="col-md-6">
-                              <h2 class="font-semibold text-xl text-gray-800 leading-tight form-title">
-                                Items
-                              </h2>
-                            </div>
-                            <div class="col-md-6">
-                              <a v-on:click="addItemPickup" class="btn btn-primary" style="float:right;">
-                                <span>Add Item </span>
-                              </a>
-                            </div>
-                          </div>
-
-                          <div class="row">
-                            <div class="col">
-                              <breeze-label for="name" value="Name" />
-                            </div>
-                            <div class="col  ">
-                              <breeze-label for="option" value="Description" />
-                            </div>
-                            <!-- <div class="col-md-2">
-                              <breeze-label for="url" value="Url" />
-                            </div> -->
-                            <div class="col-md-2" style="display: none" v-show="form_pickup.pickup_type != 'pickup_only'">
-                              <breeze-label for="price" value="Price(USD)" />
-                            </div>
-                            <div class="col-md-2" style="display: none" v-show="form_pickup.pickup_type != 'pickup_only'">
-                              <breeze-label for="price_with_tax" value="Price with Tax (USD)" />
-                            </div>
-                            <div class="col">
-                              <breeze-label for="qty" value="Qty" />
-                            </div>
-                            <div class="col-md-1" style="display: none" v-show="form_pickup.pickup_type != 'pickup_only'">
-                              <breeze-label for="total" value="Total" />
-                            </div>
-                            <div class="col-md-1">
-
-                            </div>
-                          </div>
-
-                          <div v-for="(item,index) in form_pickup.items" :key="item.id" class="row" :id="'order-'+index" :data-id="index">
-
-                            <div class="col">
-                              <div class="form-group">
-                                <input v-model="item.name" name="name" id="name" type="text" class="form-control" placeholder="Name" required />
-                              </div>
-                            </div>
-                            <div class="col">
-                              <div class="form-group">
-                                <input v-model="item.option" name="option" id="option" type="text" class="form-control" placeholder="Option" />
-                              </div>
-                            </div>
-
-                            <!-- <div class="col-md-2">
-                              <div class="form-group">
-                                <input v-model="item.url" name="url" id="url" type="url" class="form-control" placeholder="URL" required />
-                              </div>
-                            </div> -->
-
-                            <div class="col-md-2" style="display: none" v-show="form_pickup.pickup_type != 'pickup_only'">
-                              <div class="form-group">
-                                <input v-model="item.price" v-on:keyup="addPickUpTax($event)" v-on:click="addPickUpTax($event)" name="price" ref="price" type="number" min="0" class="form-control price" placeholder="Price"  :required="form_pickup.pickup_type == 'pickup_only'" />
-                              </div>
-                            </div>
-                            <div class="col-md-2" style="display: none" v-show="form_pickup.pickup_type != 'pickup_only'">
-                              <div class="form-group">
-                                <input v-model="item.price_with_tax" name="price_with_tax" id="price_with_tax" type="text" class="form-control" placeholder="Price After Tax ($)" :required="form_pickup.pickup_type == 'pickup_only'" readonly/>
-                              </div>
-                            </div>
-                            <div class="col">
-                              <div class="form-group">
-                                <input v-model="item.qty" v-on:keyup="addPickUpTax($event)" v-on:change="addPickUpTax($event)" name="qty" id="qty" type="number" class="form-control" placeholder="Qty" min="1"  required />
-                              </div>
-                            </div>
-                            <div class="col-md-1 p-0" style="display: none" v-show="form_pickup.pickup_type != 'pickup_only'">
-                              <div class="form-group">
-                                <input v-model="item.sub_total" name="sub_total" id="sub_total" type="number" class="form-control sub_total" placeholder="T.Price" :required="form_pickup.pickup_type == 'pickup_only'" readonly/>
-                              </div>
-                            </div>
-                            <div class="col-md-1" >
-                              <div class="form-group" v-show="index!=0">
-                                <a v-on:click="removeItemPickup(index)" class="btn btn-primary">
-                                  <span>Remove</span>
-                                </a>
-                              </div>
-                            </div>
-
-                          </div>
-
-<!--                           sub_total-->
-                          <div class="row mb-2" style="display: none" v-show="form_pickup.pickup_type != 'pickup_only'">
-                            <div class="col-2 offset-md-8">
-                              <breeze-label class="float-right" for="form_pickup.subtotal" value="Sub Total" />
-                            </div>
-                            <div class="col-1 p-0">
-                              <input v-model="form_pickup.sub_total" name="sub_total" id="form_pickup.subtotal" type="number" class="form-control sub_total"  placeholder="T.Price" :required="form_pickup.pickup_type == 'pickup_only'" readonly/>
-                            </div>
-                          </div>
-<!--                          <div class="row mb-2">
-                            <div class="col-1 offset-md-9">
-                              <breeze-label class="float-right"  value="Coupon Code" />
-                            </div>
-                            <div class="col-1 p-0">
-                              <input v-model="form_pickup.coupon_code" name="coupon_code" id="coupon_code" type="text" class="form-control coupon_code"  placeholder="Enter Coupon" />
-                            </div>
-                            <div class="col-1 p-0">
-                              <a v-on:click="checkCouponCode(this.form_pickup.coupon_code)" class="btn btn-primary">
-                                <span>Apply</span>
-                              </a>
-                            </div>
-
-                          </div>
-                          <div class="row mb-2">
-                            <div class="col-1 offset-md-9">
-                              <breeze-label class="float-right" for="discount" value="Discount" />
-                            </div>
-                            <div class="col-1 p-0">
-                              <input v-model="form_pickup.discount" name="discount" id="discount" type="number" class="form-control discount"  placeholder="Discount" required readonly/>
-                              <input name="discount_percentage" id="pickup_percentage" type="number" class="form-control discount_percentage" v-on:click="getPickUpGrandTotal()"  placeholder="Discount"  min="0" value="0" hidden readonly/>
-                            </div>
-                          </div>-->
-                          <!-- pickup_charges -->
-                          <div class="row mb-2">
-                            <div class="col-2 offset-md-8">
-                              <breeze-label class="float-right" for="pickup_charges" value="Pickup Charges" />
-                            </div>
-                            <div class="col-1 p-0">
-                              <input v-model="form_pickup.pickup_charges" name="pickup_charges" id="pickup_charges" type="number" class="form-control pickup_charges"  placeholder="pickup charges" required readonly/>
-                            </div>
-                          </div>
-                          <!-- service_charges -->
-                          <div class="row mb-2" style="display: none" v-show="form_pickup.pickup_type != 'pickup_only'">
-                            <div class="col-2 offset-md-8">
-                              <breeze-label class="float-right" for="service_charges" value="Services Charges" />
-                            </div>
-                            <div class="col-1 p-0">
-                              <input v-model="form_pickup.service_charges" name="service_charges" id="service_charges" type="number" class="form-control service_charges"  placeholder="T.Price" required readonly/>
-                            </div>
-                          </div>
-                          <!-- grand_total -->
-                          <div class="row mb-2">
-                            <div class="col-2 offset-md-8">
-                              <breeze-label class="float-right" for="grand_total" value="Grand Total" />
-                            </div>
-                            <div class="col-1 p-0">
-                              <input v-model="form_pickup.grand_total" name="grand_total" id="grand_total" type="text" class="form-control grand_total"  placeholder="G.Price" required readonly/>
-                            </div>
-                          </div>
-                        </div>
-
-                      </div>
-                      <div class="order-button">
-                        <input type="submit" value="Finish Order" class="btn btn-danger" />
-                      </div>
-                    </form>
-                  </div>
-
-                  <!-- <div class="row" v-show="false">
-                    <div class="col form-group">
-                      <h2 class="font-semibold text-xl text-gray-800 leading-tight form-title">Additional Charges</h2>
-                    </div>
-                  </div>
-                  <div class="row" v-show="false">
-                    <div class="col">
-                      <div class="form-group">
-                        <breeze-label for="package_weight" value="Shipping From Shop" />
-                        <input v-model="form.shipping_from_shop" name="shipping_from_shop" id="shipping_from_shop" type="text" class="form-control" placeholder="Shipping From Shop" />
-                      </div>
-                    </div>
-                    <div class="col">
-                      <div class="form-group">
-                        <breeze-label for="package_length" value="Sales Tax" />
-                        <input v-model="form.sales_tax" name="sales_tax" id="sales_tax" type="number" class="form-control" placeholder="Sales Tax" />
-                      </div>
-                    </div>
-                  </div> -->
                 </div>
+
+                <div :class="getTabPaneClass('tab2')" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+                  <form @submit.prevent="submitFormPickup" enctype="multipart/form-data">
+
+                    <div class="row">
+                      <div class="col-md-3">
+                        <div class="form-group">
+                          <breeze-label for="warehouse_id" value="Warehouse"/>
+                          <select name="warehouse_id" class="form-select" v-model="form_pickup.warehouse_id" @change="filterStores()" required>
+                            <option selected disabled>Select</option>
+                            <option v-for="warehouse in warehouses" :value="warehouse.id" :key="warehouse.id">{{ warehouse.name }}</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="form-group">
+                          <breeze-label for="store_id" value="Shopping Mall"/>
+                          <select name="store_id" class="form-select" v-model="form_pickup.store_id" :required="setRequired('tab2')" v-on:change="setPickupCharges($event)">
+                            <option selected disabled>Select</option>
+                            <option v-for="store in stores" :value="store.id" :key="store.id">{{ store.name }}</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-md-2" v-show="this.form_pickup.store_id !==''">
+                        <div class="form-group">
+                          <breeze-label for="pickup_charges" value="Pickup Charges (USD)"/>
+                          <input type="text" id="pickup_charges" v-model="form_pickup.pickup_charges" readonly>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <breeze-label for="store_name" value="Store Name"/>
+                          <input type="text" id="store_name" v-model="form_pickup.store_name">
+                        </div>
+                      </div>
+
+                      <div class="col-md-8">
+                        <div class="form-group">
+                          <breeze-label for="pickup_image" value="Image"/>
+                          <input id="pickup_image" type="file" @input="form_pickup.image = $event.target.files[0]"/>
+                          <progress v-if="form_pickup.progress" :value="form_pickup.progress.percentage" max="100">
+                            {{ form_pickup.progress.percentage }}%
+                          </progress>
+                          <p style="color:red;">Upload image/screenshort that helps in order pickup, like receipt,email,ordernumber, etc</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <breeze-label for="notes" value="Notes"/>
+                          <textarea v-model="form_pickup.notes"
+                                    name="notes"
+                                    id="note"
+                                    class="form-control"
+                                    placeholder="Notes"
+                                    rows="3"
+                                    style="resize:none;"
+                                    >
+                            </textarea>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row mb-2">
+                      <div class="col-md-8">
+                        <input type="radio" v-model="form_pickup.pickup_type" name="pickup_type" value="pickup_only" checked :required="setRequired('tab2')"> Only Pickup
+                        <input type="radio" v-model="form_pickup.pickup_type" name="pickup_type" value="shipping_xps_purchase" :required="setRequired('tab2')"> Shipping XPS Purchase
+                      </div>
+
+                      <div class="col">
+                        <breeze-label for="pickup_date" value="Pickup Date"/>
+                        <input type="datetime-local" v-model="form_pickup.pickup_date" name="pickup_date" class="form-control" placeholder="Pickup Data" :required="setRequired('tab2')">
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="row">
+                          <div class="col-md-6">
+                            <h2 class="font-semibold text-xl text-gray-800 leading-tight form-title">
+                              Items
+                            </h2>
+                          </div>
+                          <div class="col-md-6">
+                            <a v-on:click="addItemPickup" class="btn btn-primary" style="float:right;">
+                              <span>Add Item </span>
+                            </a>
+                          </div>
+                        </div>
+
+                        <div class="row">
+                          <div class="col">
+                            <breeze-label for="name" value="Name"/>
+                          </div>
+                          <div class="col  ">
+                            <breeze-label for="option" value="Description"/>
+                          </div>
+                          <!-- <div class="col-md-2">
+                            <breeze-label for="url" value="Url" />
+                          </div> -->
+                          <div class="col-md-2" style="display: none" v-show="form_pickup.pickup_type != 'pickup_only'">
+                            <breeze-label for="price" value="Price(USD)"/>
+                          </div>
+                          <div class="col-md-2" style="display: none" v-show="form_pickup.pickup_type != 'pickup_only'">
+                            <breeze-label for="price_with_tax" value="Price with Tax (USD)"/>
+                          </div>
+                          <div class="col">
+                            <breeze-label for="qty" value="Qty"/>
+                          </div>
+                          <div class="col-md-1" style="display: none" v-show="form_pickup.pickup_type != 'pickup_only'">
+                            <breeze-label for="total" value="Total"/>
+                          </div>
+                          <div class="col-md-1">
+
+                          </div>
+                        </div>
+
+                        <div v-for="(item,index) in form_pickup.items" :key="item.id" class="row" :id="'order-'+index" :data-id="index">
+
+                          <div class="col">
+                            <div class="form-group">
+                              <input v-model="item.name" name="name" id="name" type="text" class="form-control" placeholder="Name" required/>
+                            </div>
+                          </div>
+                          <div class="col">
+                            <div class="form-group">
+                              <input v-model="item.option" name="option" id="option" type="text" class="form-control" placeholder="Option"/>
+                            </div>
+                          </div>
+
+                          <!-- <div class="col-md-2">
+                            <div class="form-group">
+                              <input v-model="item.url" name="url" id="url" type="url" class="form-control" placeholder="URL" required />
+                            </div>
+                          </div> -->
+
+                          <div class="col-md-2" style="display: none" v-show="form_pickup.pickup_type != 'pickup_only'">
+                            <div class="form-group">
+                              <input v-model="item.price" v-on:keyup="addPickUpTax($event)" v-on:click="addPickUpTax($event)" name="price" ref="price" type="number" min="0" class="form-control price" placeholder="Price" :required="form_pickup.pickup_type == 'pickup_only'"/>
+                            </div>
+                          </div>
+                          <div class="col-md-2" style="display: none" v-show="form_pickup.pickup_type != 'pickup_only'">
+                            <div class="form-group">
+                              <input v-model="item.price_with_tax" name="price_with_tax" id="price_with_tax" type="text" class="form-control" placeholder="Price After Tax ($)" :required="form_pickup.pickup_type == 'pickup_only'" readonly/>
+                            </div>
+                          </div>
+                          <div class="col">
+                            <div class="form-group">
+                              <input v-model="item.qty" v-on:keyup="addPickUpTax($event)" v-on:change="addPickUpTax($event)" name="qty" id="qty" type="number" class="form-control" placeholder="Qty" min="1" required/>
+                            </div>
+                          </div>
+                          <div class="col-md-1 p-0" style="display: none" v-show="form_pickup.pickup_type != 'pickup_only'">
+                            <div class="form-group">
+                              <input v-model="item.sub_total" name="sub_total" id="sub_total" type="number" class="form-control sub_total" placeholder="T.Price" :required="form_pickup.pickup_type == 'pickup_only'" readonly/>
+                            </div>
+                          </div>
+                          <div class="col-md-1">
+                            <div class="form-group" v-show="index!=0">
+                              <a v-on:click="removeItemPickup(index)" class="btn btn-primary">
+                                <span>Remove</span>
+                              </a>
+                            </div>
+                          </div>
+
+                        </div>
+
+                        <!--                           sub_total-->
+                        <div class="row mb-2" style="display: none" v-show="form_pickup.pickup_type != 'pickup_only'">
+                          <div class="col-2 offset-md-8">
+                            <breeze-label class="float-right" for="form_pickup.subtotal" value="Sub Total"/>
+                          </div>
+                          <div class="col-1 p-0">
+                            <input v-model="form_pickup.sub_total" name="sub_total" id="form_pickup.subtotal" type="number" class="form-control sub_total" placeholder="T.Price" :required="form_pickup.pickup_type == 'pickup_only'" readonly/>
+                          </div>
+                        </div>
+                        <!--                          <div class="row mb-2">
+                                                    <div class="col-1 offset-md-9">
+                                                      <breeze-label class="float-right"  value="Coupon Code" />
+                                                    </div>
+                                                    <div class="col-1 p-0">
+                                                      <input v-model="form_pickup.coupon_code" name="coupon_code" id="coupon_code" type="text" class="form-control coupon_code"  placeholder="Enter Coupon" />
+                                                    </div>
+                                                    <div class="col-1 p-0">
+                                                      <a v-on:click="checkCouponCode(this.form_pickup.coupon_code)" class="btn btn-primary">
+                                                        <span>Apply</span>
+                                                      </a>
+                                                    </div>
+
+                                                  </div>
+                                                  <div class="row mb-2">
+                                                    <div class="col-1 offset-md-9">
+                                                      <breeze-label class="float-right" for="discount" value="Discount" />
+                                                    </div>
+                                                    <div class="col-1 p-0">
+                                                      <input v-model="form_pickup.discount" name="discount" id="discount" type="number" class="form-control discount"  placeholder="Discount" required readonly/>
+                                                      <input name="discount_percentage" id="pickup_percentage" type="number" class="form-control discount_percentage" v-on:click="getPickUpGrandTotal()"  placeholder="Discount"  min="0" value="0" hidden readonly/>
+                                                    </div>
+                                                  </div>-->
+                        <!-- pickup_charges -->
+                        <div class="row mb-2">
+                          <div class="col-2 offset-md-8">
+                            <breeze-label class="float-right" for="pickup_charges" value="Pickup Charges"/>
+                          </div>
+                          <div class="col-1 p-0">
+                            <input v-model="form_pickup.pickup_charges" name="pickup_charges" id="pickup_charges" type="number" class="form-control pickup_charges" placeholder="pickup charges" required readonly/>
+                          </div>
+                        </div>
+                        <!-- service_charges -->
+                        <div class="row mb-2" style="display: none" v-show="form_pickup.pickup_type != 'pickup_only'">
+                          <div class="col-2 offset-md-8">
+                            <breeze-label class="float-right" for="service_charges" value="Services Charges"/>
+                          </div>
+                          <div class="col-1 p-0">
+                            <input v-model="form_pickup.service_charges" name="service_charges" id="service_charges" type="number" class="form-control service_charges" placeholder="T.Price" required readonly/>
+                          </div>
+                        </div>
+                        <!-- grand_total -->
+                        <div class="row mb-2">
+                          <div class="col-2 offset-md-8">
+                            <breeze-label class="float-right" for="grand_total" value="Grand Total"/>
+                          </div>
+                          <div class="col-1 p-0">
+                            <input v-model="form_pickup.grand_total" name="grand_total" id="grand_total" type="text" class="form-control grand_total" placeholder="G.Price" required readonly/>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                    <div class="order-button">
+                      <input type="submit" value="Finish Order" class="btn btn-danger"/>
+                    </div>
+                  </form>
+                </div>
+
+                <!-- <div class="row" v-show="false">
+                  <div class="col form-group">
+                    <h2 class="font-semibold text-xl text-gray-800 leading-tight form-title">Additional Charges</h2>
+                  </div>
+                </div>
+                <div class="row" v-show="false">
+                  <div class="col">
+                    <div class="form-group">
+                      <breeze-label for="package_weight" value="Shipping From Shop" />
+                      <input v-model="form.shipping_from_shop" name="shipping_from_shop" id="shipping_from_shop" type="text" class="form-control" placeholder="Shipping From Shop" />
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="form-group">
+                      <breeze-label for="package_length" value="Sales Tax" />
+                      <input v-model="form.sales_tax" name="sales_tax" id="sales_tax" type="number" class="form-control" placeholder="Sales Tax" />
+                    </div>
+                  </div>
+                </div> -->
+              </div>
             </div><!-- subscription -->
           </div>
         </div><!-- container -->
@@ -511,23 +512,22 @@ export default {
   data() {
     return {
       form_online: this.$inertia.form({
-        form_type:'shopping',
-        warehouse_id: '',        
+        form_type: 'shopping',
+        warehouse_id: '',
         site_name: '',
-        shop_url: '',        
+        shop_url: '',
         notes: '',
         shipping_from_shop: '',
-        sales_tax:'',
+        sales_tax: '',
         pickup_type: '',
         pickup_date: '',
-        pickup_charges:'',
+        pickup_charges: '',
         grand_total: 0,
-        coupon_code: '',
-        discount:0,
-        sub_total:0,
-        service_charges:0,
-        discount_percentage:0,
-        items:[
+        discount: 0,
+        sub_total: 0,
+        service_charges: 0,
+        discount_percentage: 0,
+        items: [
           {
             name: "",
             option: "",
@@ -540,26 +540,25 @@ export default {
         ],
       }),
       form_pickup: this.$inertia.form({
-        form_type:'pickup',
-        warehouse_id: '',        
+        form_type: 'pickup',
+        warehouse_id: '',
         store_id: '',
         site_name: '',
         store_name: '',
-        image:'',
-        shop_url: '',        
+        image: '',
+        shop_url: '',
         notes: '',
         shipping_from_shop: '',
-        sales_tax:'',
+        sales_tax: '',
         pickup_type: 'pickup_only',
         pickup_date: '',
-        pickup_charges:'',
+        pickup_charges: '',
         grand_total: 0,
-        coupon_code: '',
-        discount:0,
-        sub_total:0,
-        service_charges:0,
-        discount_percentage:0,
-        items:[
+        discount: 0,
+        sub_total: 0,
+        service_charges: 0,
+        discount_percentage: 0,
+        items: [
           {
             name: "",
             option: "",
@@ -571,9 +570,9 @@ export default {
           }
         ],
       }),
-      tabs : {
-      tab1:true,
-      tab2:false
+      tabs: {
+        tab1: true,
+        tab2: false
       },
       stores: []
     };
@@ -582,28 +581,28 @@ export default {
     auth: Object,
     warehouses: Object,
   },
-  methods : {
+  methods: {
     submitFormOnline() {
       this.form_online.post(this.route('shop-for-me.store'))
     },
     submitFormPickup() {
       this.form_pickup.post(this.route('shop-for-me.store'))
     },
-    addItemOnline(){
+    addItemOnline() {
       this.form_online.items.push({
         name: "",
         option: "",
         url: "",
-        price:0,
+        price: 0,
         price_with_tax: "",
         qty: 1,
         sub_total: ""
       })
     },
-    removeItemPickup(index){
+    removeItemPickup(index) {
       this.form_pickup.items.splice(index, 1);
     },
-    addItemPickup(){
+    addItemPickup() {
       this.form_pickup.items.push({
         name: "",
         option: "",
@@ -614,14 +613,14 @@ export default {
         sub_total: ""
       })
     },
-    removeItemOnline(index){
+    removeItemOnline(index) {
       this.form_online.items.splice(index, 1);
     },
-    setActiveTabAB(tab){
+    setActiveTabAB(tab) {
       for (var key in this.tabs) {
-        if(key === tab){
+        if (key === tab) {
           this.tabs[key] = true;
-        }else{
+        } else {
           this.tabs[key] = false;
         }
         // to handle different form submit behaviour for the same form
@@ -633,25 +632,25 @@ export default {
       }
     },
 
-    getTabClass(tab){
+    getTabClass(tab) {
 
-      if(this.tabs[tab] === true){
+      if (this.tabs[tab] === true) {
         return 'nav-link active';
-      }else{
+      } else {
         return 'nav-link';
       }
 
     },
 
-    setRequired(tab){
+    setRequired(tab) {
       return this.tabs[tab];
     },
 
-    getTabPaneClass(tab){
+    getTabPaneClass(tab) {
 
-      if(this.tabs[tab] === true){
+      if (this.tabs[tab] === true) {
         return 'tab-pane show active';
-      }else{
+      } else {
         return 'tab-pane fade d-none';
       }
     },
@@ -664,19 +663,19 @@ export default {
       this.$refs.price.click();
 
       axios.get("/shop-for-me/filter-stores/" + this.form_pickup.warehouse_id)
-      .then(({ data }) => {
-            this.stores = data.stores;
-          }
-      );
+          .then(({data}) => {
+                this.stores = data.stores;
+              }
+          );
     },
-    wareHouseChangeOnline(){
+    wareHouseChangeOnline() {
       this.$refs.price_online.click();
     },
-    setPickupCharges(event){
+    setPickupCharges(event) {
       var store_id = event.target.value;
       var pickup_charges = 0;
       for (var i = 0; i < this.stores.length; i++) {
-        if(this.stores[i]['id'] == store_id){
+        if (this.stores[i]['id'] == store_id) {
           pickup_charges = this.stores[i]['pickup_charges'];
         }
       }
@@ -684,7 +683,7 @@ export default {
 
       this.getPickUpGrandTotal();
     },
-    addShopTax(event){
+    addShopTax(event) {
       console.log('triggered...');
       var mainParent = event.target.parentNode.parentNode.parentNode;
       var row = document.getElementById(mainParent.id);
@@ -693,28 +692,30 @@ export default {
       var price = this.form_online.items[index].price;
       var sale_tax = 0;
       for (var i = 0; i < this.warehouses.length; i++) {
-        if(this.warehouses[i]['id'] == this.form_online.warehouse_id){
+        if (this.warehouses[i]['id'] == this.form_online.warehouse_id) {
           sale_tax = this.warehouses[i]['sale_tax'];
         }
       }
-      var gross_total = (price * (sale_tax/100));
+      var gross_total = (price * (sale_tax / 100));
       var net_total = this.form_online.items[index].price_with_tax = (parseFloat(gross_total) + parseFloat(price)).toFixed(2);
       this.form_online.items[index].sub_total = net_total * quantity;
 
       this.getShopGrandTotal();
     },
-    getShopGrandTotal(){
+    getShopGrandTotal() {
       var sum = 0;
-      this.form_online.items.forEach(function(n){sum += n['sub_total']});
-      var dis_percentage = document.getElementById('shop_percentage').value
+      this.form_online.items.forEach(function (n) {
+        sum += n['sub_total']
+      });
+      // var dis_percentage = document.getElementById('shop_percentage').value
       this.form_online.sub_total = parseFloat(sum).toFixed(2);
-      this.form_online.service_charges = parseFloat(sum).toFixed(2)* 0.05;
-      this.form_online.discount = sum * dis_percentage/100;
+      this.form_online.service_charges = parseFloat(sum).toFixed(2) * 0.05;
+      // this.form_online.discount = sum * dis_percentage / 100;
       var charges = parseFloat(this.form_online.shipping_from_shop)
-      this.form_online.shipping_charges = charges
-      this.form_online.grand_total = sum - this.form_online.discount +  this.form_online.service_charges;
+      this.form_online.shipping_charges = parseFloat(charges).toFixed(2)
+      this.form_online.grand_total = parseFloat(sum  + this.form_online.service_charges).toFixed(2);
     },
-    addPickUpTax(event){
+    addPickUpTax(event) {
       console.log('triggered...');
       var mainParent = event.target.parentNode.parentNode.parentNode;
       var row = document.getElementById(mainParent.id);
@@ -723,42 +724,44 @@ export default {
       var price = this.form_pickup.items[index].price;
       var sale_tax = 0;
       for (var i = 0; i < this.warehouses.length; i++) {
-        if(this.warehouses[i]['id'] == this.form_pickup.warehouse_id){
+        if (this.warehouses[i]['id'] == this.form_pickup.warehouse_id) {
           sale_tax = this.warehouses[i]['sale_tax'];
         }
       }
-      var gross_total = (price * (sale_tax/100));
+      var gross_total = (price * (sale_tax / 100));
       var net_total = this.form_pickup.items[index].price_with_tax = (parseFloat(gross_total) + parseFloat(price)).toFixed(2);
       this.form_pickup.items[index].sub_total = net_total * quantity;
 
       this.getPickUpGrandTotal();
     },
-    getPickUpGrandTotal(){
-      if(this.form_pickup.pickup_type == 'pickup_only'){
+    getPickUpGrandTotal() {
+      if (this.form_pickup.pickup_type == 'pickup_only') {
         this.form_pickup.grand_total = this.form_pickup.pickup_charges
-      }else{
+      } else {
         var sum = 0;
-        this.form_pickup.items.forEach(function(n){sum += n['sub_total']});
+        this.form_pickup.items.forEach(function (n) {
+          sum += n['sub_total']
+        });
         console.log(sum);
         var dis_percentage = document.getElementById('pickup_percentage').value
         this.form_pickup.sub_total = parseFloat(sum).toFixed(2);
-        this.form_pickup.service_charges = parseFloat(sum).toFixed(2)* 0.05;
+        this.form_pickup.service_charges = parseFloat(sum).toFixed(2) * 0.05;
         var charges = parseFloat(this.form_pickup.shipping_from_shop)
         this.form_pickup.shipping_charges = charges
-        this.form_pickup.grand_total = sum  + this.form_pickup.service_charges  + this.form_pickup.pickup_charges;
+        this.form_pickup.grand_total = sum + this.form_pickup.service_charges + this.form_pickup.pickup_charges;
       }
     },
-    checkCouponCode(coupon_code){
-      axios.post(this.route('checkCoupon'),{
-        code:coupon_code,
-      }).then(function (response){
-        var data  = response.data;
-        if(data.status == 1){
+    checkCouponCode(coupon_code) {
+      axios.post(this.route('checkCoupon'), {
+        code: coupon_code,
+      }).then(function (response) {
+        var data = response.data;
+        if (data.status == 1) {
           alert(data.message);
           document.querySelector('.coupon_code').disabled = true;
           document.getElementById('pickup_percentage').value = response.data.discount
           console.log(document.getElementById('pickup_percentage').value);
-        }else{
+        } else {
           alert(data.message)
           console.log('in here')
           document.getElementById('pickup_percentage').value = 0
@@ -768,17 +771,17 @@ export default {
         console.log(error);
       });
     },
-    checkShopCouponCode(coupon_code){
-      axios.post(this.route('checkCoupon'),{
-        code:coupon_code,
-      }).then(function (response){
-        var data  = response.data;
-        if(data.status == 1){
+    checkShopCouponCode(coupon_code) {
+      axios.post(this.route('checkCoupon'), {
+        code: coupon_code,
+      }).then(function (response) {
+        var data = response.data;
+        if (data.status == 1) {
           alert(data.message);
           // document.querySelector('.coupon_code').disabled = true;
           document.getElementById('shop_percentage').value = response.data.discount
           console.log(document.getElementById('shop_percentage').value);
-        }else{
+        } else {
           alert(data.message)
           console.log('in here')
           document.getElementById('shop_percentage').value = 0

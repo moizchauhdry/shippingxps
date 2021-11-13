@@ -83,7 +83,7 @@
                         placeholder="Notes" 
                         rows="7"
                         style="resize:none;"
-                        required >
+                         >
                         </textarea>
                       </div>
                     </div>

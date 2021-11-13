@@ -99,7 +99,7 @@
                                     placeholder="Notes"
                                     rows="5"
                                     style="resize:none;"
-                                    required>
+                                    >
                           </textarea>
                         </div>
                       </div>
@@ -331,14 +331,20 @@
                     </div>
                   </div>
 
-                  <fieldset class="border p-2 mb-2" v-if="$page.props.auth.user.type == 'admin'">
+                  <fieldset class="border p-2 mb-2" v-if="$page.props.auth.user.type == 'admin' && form.changes_approved == '1'">
                     <div class="row">
                       <div class="col-md-4 form-group">
                         <label for="receipt_url">Image </label><small>(receipts,invoice,doc, etc.)</small>
                         <input type="file" class="form-control" name="receipt_url" id="receipt_url" accept=".png,.jpg,.jpeg,.pdf,.docx,.xls,.xlsx" @input="form.receipt_url = $event.target.files[0]">
+                        <progress v-if="form.progress" :value="form.progress.percentage" max="100">
+                          {{ form.progress.percentage }}%
+                        </progress>
+                        <img :src="imgURL(form.receipt_url)" alt="">
+
                       </div>
                     </div>
                   </fieldset>
+
 
                   <div class="row" v-if="$page.props.auth.user.type == 'customer'">
                     <div class="col-md-4 text-center form-group">
@@ -565,7 +571,7 @@ export default {
       }
       var gross_total = (price * (sale_tax / 100));
       var net_total = this.form.items[index].price_with_tax = (parseFloat(gross_total) + parseFloat(price)).toFixed(2);
-      this.form.items[index].sub_total = net_total * quantity;
+      this.form.items[index].sub_total = parseFloat(net_total * quantity).toFixed(2);
       this.form.is_service_charges = 0;
       this.getGrandTotal();
     },
@@ -580,7 +586,7 @@ export default {
         console.log(sum);
         this.form.sub_total = parseFloat(sum).toFixed(2);
         if(this.form.is_service_charges === 0){
-          this.form.service_charges = parseFloat(sum).toFixed(2) * 0.05;
+          this.form.service_charges = parseFloat(sum * 0.05).toFixed(2) ;
           this.form.is_service_charges = 0;
         }
 
@@ -590,7 +596,7 @@ export default {
         console.log(this.form.pickup_charges);
         console.log(pickup_charges);
         console.log(this.form.service_charges);
-        this.form.grand_total = sum + this.form.service_charges + charges + pickup_charges - this.form.discount ;
+        this.form.grand_total = parseFloat(sum + this.form.service_charges + charges + pickup_charges).toFixed(2) ;
       }
     },
     setPickupCharges(event) {

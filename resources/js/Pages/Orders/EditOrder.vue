@@ -111,7 +111,7 @@
                                 placeholder="Notes"
                                 rows="4"
                                 style="resize:none;"
-                                required >
+                                 >
                       </textarea>
                     </div>
 

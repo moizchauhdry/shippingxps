@@ -53,7 +53,7 @@ caption {
     </tr>
     <tr>
         <td width="50%" >
-            Ship To : {{ $package->customer->name }}<br>
+            Ship To : {{ $address->fullname }}<br>
             PHone : {{ $address->phone ?? '- -'}}<br>
             Email : {{ $user->email ?? '- -'}}<br>
             City : {{ $address->city ?? '- -'}}<br>
