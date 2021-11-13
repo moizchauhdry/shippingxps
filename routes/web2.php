@@ -48,6 +48,15 @@ Route::middleware('auth')->group(function () {
         Route::post('/update', [\App\Http\Controllers\CouponController::class, 'update'])->name('coupon.update');
         Route::post('/changeStatus', [\App\Http\Controllers\CouponController::class, 'changeStatus'])->name('coupon.changeStatus');
     });
+
+    /*
+     * Shop for me routes
+     */
+    Route::prefix('payment')->group(function () {
+        Route::get('/', [\App\Http\Controllers\PaymentController::class, 'index'])->name('payment.index');
+        Route::post('pay', [\App\Http\Controllers\PaymentController::class,  'pay'])->name('payment.pay');
+    });
+
 });
 
 

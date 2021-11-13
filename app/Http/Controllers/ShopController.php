@@ -509,10 +509,15 @@ class ShopController extends Controller
                     $order_image->display = 0;
                     $order_image->save();                
                 }
-            }   
+            }
 
             DB::commit();
-            return redirect('shop-for-me')->with('success', 'Order Updated !');
+            if(!$isAdmin && $request->has('changes_approved')){
+                return redirect()->route('payment.index');
+            }else{
+                return redirect('shop-for-me')->with('success', 'Order Updated !');
+            }
+
         } catch (\Exception $e) {
             return redirect('shop-for-me')->with('error', 'Something went wrong: '. $e->getMessage());
             DB::rollBack();

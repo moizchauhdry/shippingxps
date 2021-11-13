@@ -20,10 +20,10 @@
                   <div class="col-md-6" style="border : 1px solid #6b7280;">
                     <h2>Ship From : {{ warehouse.name }}</h2>
                     <p><strong>Contact Person:</strong> {{ warehouse.contact_person }} </p>
-                    <p><strong>Phone:</strong> {{ warehouse.contact_person }} </p>
+                    <p><strong>Phone:</strong> {{ warehouse.phone }} </p>
                     <p><strong>Email:</strong> {{ warehouse.email }} </p>
                     <p><strong>Company Name/Address: </strong> {{ warehouse.address }} </p>
-                    <p><strong>Country:</strong> {{ warehouse.country }} </p>                                                         
+                    <p><strong>Country:</strong> {{ warehouse.country == undefined ? 'USA' : warehouse.country }} </p>
                     <p><strong>Incoterms:</strong> DDU/DAP </p>                                                                                                                             
                   </div>
 
@@ -97,13 +97,13 @@
 
                       <div class="col-md-1">
                         <div class="form-group">
-                          <input v-model="item.quantity" name="quantity" id="quantity" type="number" class="form-control" placeholder="Qty" required />
+                          <input v-model="item.quantity" name="quantity" min="0" id="quantity" type="number" class="form-control" placeholder="Qty" required />
                         </div>
                       </div>
 
                       <div class="col-md-2">
                         <div class="form-group">
-                          <input v-model="item.unit_price" name="value" id="value" type="number" class="form-control" placeholder="Value" required />
+                          <input v-model="item.unit_price" name="value" min="0" id="value" type="number" class="form-control" placeholder="Value" required />
                         </div>
                       </div>
 
