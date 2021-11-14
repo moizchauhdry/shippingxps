@@ -259,7 +259,7 @@
                   </div>
                   <div v-for="(image, index) in order.images" :key="image.id" class="col-md-3">
                     `                       <div class="text-center">
-                    <img style="width:100px;height:auto;" class="img-thumbnail" :src="imgURL(image.image)" />
+                    <img style="width:100px;height:auto;" class="img-thumbnail" :src="imgURL(image.image)" @click="viewImage($event)"/>
                     <a href="void(0);" @click="deleteImage($event, index, image.id)"><i class="fa fa-trash"></i></a>
                   </div>
                   </div>
@@ -277,18 +277,25 @@
 
     </div>
   </MainLayout>
+  <ImageViewer>
+
+  </ImageViewer>
 </template>
 
 <script>
 import MainLayout from '@/Layouts/Main'
 import BreezeAuthenticatedLayout from '@/Layouts/Authenticated'
 import BreezeLabel from '@/Components/Label'
+import ImageViewer from '@/Components/ImageViewer'
+import $ from 'jquery'
+
 
 export default {
   components: {
     BreezeAuthenticatedLayout,
     MainLayout,
-    BreezeLabel
+    BreezeLabel,
+    ImageViewer
   },
   data() {
     return {
@@ -380,6 +387,14 @@ export default {
     },
     imgURL(url) {
       return "/uploads/"+url;
+    },
+    viewImage(event) {
+      console.log(event.target.src);
+      var modal = document.getElementById('imageViewer');
+      var imageSRC = document.querySelector('#imageViewer img')
+      imageSRC.src = event.target.src;
+      modal.classList.add('show');
+      $('#imageViewer').show();
     },
   }
 }

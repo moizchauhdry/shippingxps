@@ -28,7 +28,15 @@ export default {
   },
   methods : {
     checkout(){
-
+      axios.post(this.route('payment.pay'))
+          .then(({ data }) => {
+                if(data.status){
+                  this.$inertia.visit('/dashboard');
+                }else{
+                  //alert('There was some issue');
+                }
+              }
+          );
     },
   },
 }

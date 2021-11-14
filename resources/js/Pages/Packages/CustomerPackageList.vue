@@ -74,7 +74,7 @@
                                         <thead>
                                             <tr>
                                             <th scope="col">#</th>
-                                            <th scope="col">Image</th>
+                                            <!-- <th scope="col">Image</th> -->
                                             <th scope="col">Package</th>
                                             <th scope="col"></th>
                                             </tr>
@@ -82,18 +82,20 @@
                                         <tbody>
                                         <tr v-for="pkg in packages_account.data" :key="pkg.id">
                                             <td>{{ pkg.id }}</td>
-                                            <td>
+                                            <!--
+                                             <td>
                                                 <div class="text-center">
                                                     <img style="width:100px;height:auto;" class="img-thumbnail" :src="pkgImgURL(pkg)" />
-                                                </div>    
+                                                </div>
                                             </td>
+                                             -->
                                             <td>
                                                 <div class="package-no"><a :href="route('packages.show', pkg.id)">{{ pkg.package_no }}</a></div>
                                                 <p>Location: <strong>{{ pkg.warehouse.name }}</strong></p>
                                                 <p>Status: <strong>{{ pkg.status }}</strong></p>
                                                 <p>Tracking IN: <strong>N/A</strong></p>
                                                 <p>Tracking Out: <strong>{{ pkg.tracking_number_out }}</strong></p>
-                                                <p>Dimentions : {{ pkg.package_length }} {{ pkg.dim_unit }} x {{ pkg.package_width }} {{ pkg.dim_unit }} x {{ pkg.package_height }} {{ pkg.dim_unit }} </p>
+                                                <p v-if="pkg.package_length > 0">Dimentions : {{ pkg.package_length }} {{ pkg.dim_unit }} x {{ pkg.package_width }} {{ pkg.dim_unit }} x {{ pkg.package_height }} {{ pkg.dim_unit }} </p>
                                                 <p>Entered :  {{ pkg.created_at }}</p>
                                                 <p>Shipped :  N/A</p>      
                                                 <p>Cosolidated From:  N/A</p>                   
@@ -124,7 +126,7 @@
                                         <thead>
                                             <tr>
                                             <th scope="col">#</th>
-                                            <th scope="col">Image</th>
+                                              <!-- <th scope="col">Image</th> -->
                                             <th scope="col">Package</th>
                                             <th scope="col"></th>
                                             </tr>
@@ -132,18 +134,18 @@
                                         <tbody>
                                         <tr v-for="pkg in packages_ready.data" :key="pkg.id">
                                             <td>{{ pkg.id }}</td>
-                                            <td>
+                                          <!-- <td>
                                                 <div class="text-center">
                                                     <img style="width:100px;height:auto;" class="img-thumbnail" :src="pkgImgURL(pkg)" />
-                                                </div>    
-                                            </td>
+                                                </div>
+                                            </td> -->
                                             <td>
                                                 <div class="package-no"><a :href="route('packages.show', pkg.id)">{{ pkg.package_no }}</a></div>
                                                 <p>Location: <strong>{{ pkg.warehouse.name }}</strong></p>
                                                 <p>Status: <strong>{{ pkg.status }}</strong></p>
                                                 <p>Tracking IN: <strong>N/A</strong></p>
                                                 <p>Tracking Out: <strong>{{ pkg.tracking_number_out }}</strong></p>
-                                                <p>Dimentions : {{ pkg.package_length }} {{ pkg.dim_unit }} x {{ pkg.package_width }} {{ pkg.dim_unit }} x {{ pkg.package_height }} {{ pkg.dim_unit }} </p>
+                                                <p v-if="pkg.package_length > 0">Dimentions : {{ pkg.package_length }} {{ pkg.dim_unit }} x {{ pkg.package_width }} {{ pkg.dim_unit }} x {{ pkg.package_height }} {{ pkg.dim_unit }} </p>
                                                 <p>Entered :  {{ pkg.created_at }}</p>
                                                 <p>Shipped :  N/A</p>      
                                                 <p>Cosolidated From:  N/A</p>                   
@@ -167,7 +169,7 @@
                                         <thead>
                                             <tr>
                                             <th scope="col">#</th>
-                                            <th scope="col">Image</th>
+                                              <!-- <th scope="col">Image</th> -->
                                             <th scope="col">Package</th>
                                             <th scope="col"></th>
                                             </tr>
@@ -175,18 +177,18 @@
                                         <tbody>
                                         <tr v-for="pkg in packages_sent.data" :key="pkg.id">
                                             <td>{{ pkg.id }}</td>
-                                            <td>
+                                          <!-- <td>
                                                 <div class="text-center">
                                                     <img style="width:100px;height:auto;" class="img-thumbnail" :src="pkgImgURL(pkg)" />
-                                                </div>    
-                                            </td>
+                                                </div>
+                                            </td> -->
                                             <td>
                                                 <div class="package-no"><a :href="route('packages.show', pkg.id)">{{ pkg.package_no }}</a></div>
                                                 <p>Location: <strong>{{ pkg.warehouse.name }}</strong></p>
                                                 <p>Status: <strong>{{ pkg.status }}</strong></p>
                                                 <p>Tracking IN: <strong>N/A</strong></p>
                                                 <p>Tracking Out: <strong>{{ pkg.tracking_number_out }}</strong></p>
-                                                <p>Dimentions : {{ pkg.package_length }} {{ pkg.dim_unit }} x {{ pkg.package_width }} {{ pkg.dim_unit }} x {{ pkg.package_height }} {{ pkg.dim_unit }} </p>
+                                                <p v-if="pkg.package_length > 0">Dimentions : {{ pkg.package_length }} {{ pkg.dim_unit }} x {{ pkg.package_width }} {{ pkg.dim_unit }} x {{ pkg.package_height }} {{ pkg.dim_unit }} </p>
                                                 <p>Entered :  {{ pkg.created_at }}</p>
                                                 <p>Shipped :  N/A</p>      
                                                 <p>Cosolidated From:  N/A</p>                   
