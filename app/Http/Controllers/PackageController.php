@@ -87,7 +87,7 @@ class PackageController extends Controller
 
         $services = Service::where('status','=','1')->get();
         $serviceRequest = ServiceRequest::where('package_id',$packag->id)->where('service_id',1)->first();
-
+        $servedConsolidation = ServiceRequest::where('package_id',$packag->id)->where('status','served')->where('service_id',1)->first();
         $service_requests = [];
         foreach($packag->serviceRequests as $req){
             $service_requests[] = [
@@ -142,6 +142,7 @@ class PackageController extends Controller
           'mailout_fee' => (int) SiteSetting::getByName('mailout_fee'),
           'shipping_services' => Shipping::getShippingServices(),
           'hasConsolidationRequest' => (bool)$serviceRequest,
+          'hasConsolidationServed' => (bool)$servedConsolidation,
         ]);
 
     }
@@ -527,8 +528,11 @@ class PackageController extends Controller
         $package->package_length = $data['package_length'];
         $package->package_width = $data['package_width'];
         $package->package_height = $data['package_height'];
+        $package->package_height = $data['package_height'];
         $package->package_handler_id = Auth::user()->id;
         $package->update();
+
+
 
         event(new PackageConsolidated($package));
 
@@ -579,6 +583,7 @@ class PackageController extends Controller
         $package->package_type_code = $service['packageTypeCode'];
         $package->currency = $service['currency'];
         $package->shipping_total = $service['totalAmount'];
+        $package->shipping_charges = $service['totalAmount'];
         $package->update();
 
         event(new PackageShippingServiceSelected($package));

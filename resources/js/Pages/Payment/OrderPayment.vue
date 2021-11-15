@@ -68,7 +68,7 @@ export default {
   data() {
     return {
       form: this.$inertia.form({
-        amount:200,
+        amount:this.amount,
         name_on_card : '',
         card_no : '',
         month : '',
@@ -76,6 +76,9 @@ export default {
         cvv : '',
       })
     };
+  },
+  props: {
+    amount:Object,
   },
   methods : {
     submit(){

@@ -13,9 +13,8 @@ class PaymentController extends Controller
 
 
 
-    public function index(){
-
-        return Inertia::render('Payment/OrderPayment');
+    public function index(Request $request){
+        return Inertia::render('Payment/OrderPayment',['amount' => $request->amount]);
     }
 
     public function pay(Request $request)
@@ -201,7 +200,7 @@ class PaymentController extends Controller
 
 
 
-        dump($response->getBatchList());
+        dump($response);
         return Inertia::render('Payment/BatchList',['batchLists'=>$response->getBatchList()]);
     }
 

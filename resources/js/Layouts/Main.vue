@@ -46,7 +46,7 @@
     <div class="container-fluid">
       <!-- SIDEBAR -->
       <div class="sidebar d-none d-md-block">
-        <div class="sidebar-menu mt-sm-5">
+        <div class="sidebar-menu mt-sm-5 mt-md-0">
 
           <inertia-link class="nav-link" :href="route('dashboard')" :class="{active: route().current('dashboard')}" :active="route().current('dashboard')">
             <i class="fas fa-home"></i><span>DASHBOARD</span>
@@ -144,6 +144,10 @@
   </div>
 </template>
 <style scoped>
+
+.table{
+  overflow-y:scroll ;
+}
 
 @media (max-width: 769px) {
   .main-section {
