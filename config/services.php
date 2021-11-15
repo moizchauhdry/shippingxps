@@ -32,5 +32,9 @@ return [
     'mandrill' => [
         'secret' => 'Z4iK1qN7xFG7FUCTAAanqw',
     ],
+    'authorizeAnet' => [
+        'merchant_login_id' => env('MERCHANT_LOGIN_ID'),
+        'merchant_transaction_key' => env('MERCHANT_TRANSACTION_KEY'),
+    ]
 
 ];

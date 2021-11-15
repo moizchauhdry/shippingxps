@@ -582,7 +582,11 @@
                                                 <td>${{ getGrandTotal() }}</td>
                                                 <td></td>
                                             </tr>
-
+                                            <tr>
+                                              <td colspan="4">
+                                                <button type="button" @click="checkout()" class="btn btn-primary">Checkout</button>
+                                              </td>
+                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -643,6 +647,8 @@
                     </div>
                 </div>
             </div>
+
+
 
         </div>
     </div>
@@ -718,6 +724,9 @@
                 },
                 serverError:'',
                 showEstimatedPrice:false,
+                form_checkout: this.$inertia.form({
+                  amount:'',
+                })
             }            
         },
         props: {
@@ -941,7 +950,11 @@
                     return 'label bg-primary';
                     break;
                 }
-            }
+            },
+          checkout(){
+              this.form_checkout.amount = this.getGrandTotal();
+              this.form_checkout.post(this.route('payment.index'))
+          }
         }        
     }
 </script>

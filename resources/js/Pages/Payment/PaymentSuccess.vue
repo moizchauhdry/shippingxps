@@ -6,9 +6,6 @@
         <div class="card-body">
 
         </div>
-        <div class="card-footer">
-          <button @click="checkout()">Pay</button>
-        </div>
       </div>
     </div>
   </MainLayout>
@@ -27,9 +24,7 @@ export default {
     BreezeValidationErrors
   },
   methods : {
-    checkout(){
 
-    },
   },
 }
 </script>
