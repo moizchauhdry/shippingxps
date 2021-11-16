@@ -53,9 +53,9 @@ Route::middleware('auth')->group(function () {
      * Shop for me routes
      */
     Route::prefix('payment')->group(function () {
-        Route::post('/setup', [\App\Http\Controllers\PaymentController::class, 'index'])->name('payment.index');
+        Route::any('/setup', [\App\Http\Controllers\PaymentController::class, 'index'])->name('payment.index');
         Route::post('pay', [\App\Http\Controllers\PaymentController::class,  'pay'])->name('payment.pay');
-        Route::get('getPayments', [\App\Http\Controllers\PaymentController::class,  'getPayments'])->name('payments.getPayments');
+        Route::get('list', [\App\Http\Controllers\PaymentController::class,  'getPayments'])->name('payments.getPayments');
         Route::get('PaymentSuccess', [\App\Http\Controllers\PaymentController::class,  'PaymentSuccess'])->name('payments.PaymentSuccess');
     });
 

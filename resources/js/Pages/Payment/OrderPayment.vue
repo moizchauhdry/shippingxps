@@ -8,6 +8,10 @@
               <form @submit.prevent="submit" enctype="multipart/form-data">
                 <div class="row">
                   <div class="col-md-6 offset-md-3">
+                    <div class="bg-dark border-3 border-warning container mb-3 text-center text-white">
+                      <h2 style="color: #fff;font-weight:bold;font-size:25px;" >TOTAL AMOUNT</h2>
+                      <h4 class="mb-2" style="color: #fff;font-weight:bold;font-size:20px;" >USD {{ amount }}</h4>
+                    </div>
                     <div class="row">
                       <div class="form-group col-12">
                         <breeze-label for="name" value="Name On Card"/>

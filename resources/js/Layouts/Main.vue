@@ -76,6 +76,10 @@
             <i class="fas fa-external-link-alt"></i><span>Packages</span>
           </inertia-link>
 
+          <inertia-link class="nav-link" :href="route('payments.getPayments')" :class="{active: route().current('packages')}" :active="route().current('packages')">
+            <i class="fas fa-external-link-alt"></i><span>Payments</span>
+          </inertia-link>
+
           <inertia-link v-if="$page.props.auth.user.type == 'admin'" class="nav-link" :href="route('pages_list')" :class="{active: route().current('pages_list')}" :active="route().current('pages_list')">
             <i class="fas fa-external-link-alt"></i><span>Manages Pages</span>
           </inertia-link>

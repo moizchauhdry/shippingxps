@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Payment;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use net\authorize\api\contract\v1 as AnetAPI;
 use net\authorize\api\controller as AnetController;
@@ -14,6 +17,7 @@ class PaymentController extends Controller
 
 
     public function index(Request $request){
+        \Session::put('amount',$request->amount);
         return Inertia::render('Payment/OrderPayment',['amount' => $request->amount]);
     }
 
@@ -134,86 +138,43 @@ class PaymentController extends Controller
         } else {
             echo  "No response returned \n";
         }*/
-        /*dd($response);*/
-        return redirect()->route('payments.PaymentSuccess')->with(['response'=>$response]);
+
+        if ($response->getMessages()->getResultCode() == "Ok"){
+            $payment = new Payment();
+            $payment->customer_id = 1;
+            $payment->order_id = 1;
+            $payment->package_id = 1;
+            $payment->invoice_id = Str::uuid();
+            $payment->transaction_id = $response->getTransactionResponse()->getTransId();
+            $payment->charged_amount = \Session::get('amount');
+            $payment->charged_at = Carbon::now()->format('Y-m-d H:i:s');
+            $payment->save();
+        }
+        return redirect()->route('payments.PaymentSuccess')->with(['payment'=>$payment]);
     }
 
     public function getPayments()
     {
-        /* Create a merchantAuthenticationType object with authentication details
-       retrieved from the constants file */
-        $merchantAuthentication = new AnetAPI\MerchantAuthenticationType();
-        $merchantAuthentication->setName(config('services.authorizeAnet.merchant_login_id'));
-        $merchantAuthentication->setTransactionKey(config('services.authorizeAnet.merchant_transaction_key'));
+        $user = \Auth::user();
 
-        // Set the transaction's refId
-        $refId = 'ref' . time();
-
-        $request = new AnetAPI\GetSettledBatchListRequest();
-        $request->setMerchantAuthentication($merchantAuthentication);
-        $request->setIncludeStatistics(true);
-
-        // Both the first and last dates must be in the same time zone
-        // The time between first and last dates, inclusively, cannot exceed 31 days.
-//        $request->setFirstSettlementDate($firstSettlementDate);
-//        $request->setLastSettlementDate($lastSettlementDate);
-
-        $controller = new AnetController\GetSettledBatchListController ($request);
-
-        $payments[] = [];
-
-        $response = $controller->executeWithApiResponse( \net\authorize\api\constants\ANetEnvironment::SANDBOX);
-
-        /*if (($response != null) && ($response->getMessages()->getResultCode() == "Ok"))
-        {
-            foreach($response->getBatchList() as $batch)
-            {
-
-                echo "\n\n";
-                echo "Batch ID: " . $batch->getBatchId() . "\n";
-                echo "Batch settled on (UTC): " . $batch->getSettlementTimeUTC()->format('r') . "\n";
-                echo "Batch settled on (Local): " . $batch->getSettlementTimeLocal()->format('D, d M Y H:i:s') . "\n";
-                echo "Batch settlement state: " . $batch->getSettlementState() . "\n";
-                echo "Batch market type: " . $batch->getMarketType() . "\n";
-                echo "Batch product: " . $batch->getProduct() . "\n";
-                foreach($batch->getStatistics() as $statistics)
-                {
-                    echo "Account type: ".$statistics->getAccountType()."\n";
-                    echo "Total charge amount: ".$statistics->getChargeAmount()."\n";
-                    echo "Charge count: ".$statistics->getChargeCount()."\n";
-                    echo "Refund amount: ".$statistics->getRefundAmount()."\n";
-                    echo "Refund count: ".$statistics->getRefundCount()."\n";
-                    echo "Void count: ".$statistics->getVoidCount()."\n";
-                    echo "Decline count: ".$statistics->getDeclineCount()."\n";
-                    echo "Error amount: ".$statistics->getErrorCount()."\n";
-                }
-            }
+        if($user->type == 'admin'){
+            $payments = Payment::with(['customer','package','order'])->orderByDesc('id')->get();
+        }else{
+            $payments = Payment::with(['customer','package','order'])->where('customer_id',1)->orderByDesc('id')->get();
         }
-        else
-        {
-            echo "ERROR :  Invalid response\n";
-            $errorMessages = $response->getMessages()->getMessage();
-            echo "Response : " . $errorMessages[0]->getCode() . "  " .$errorMessages[0]->getText() . "\n";
-        }*/
-
-        // Set the request's refId
-
-
-
-        dump($response);
-        return Inertia::render('Payment/BatchList',['batchLists'=>$response->getBatchList()]);
+        return Inertia::render('Payment/Index',['payments'=> $payments]);
     }
 
     public function paymentSuccess()
     {
-        if(\Session::has('response')){
-            $response = \Session::get('response');
+        if(\Session::has('payment')){
+            $payment = \Session::get('payment');
         }else{
-            $response = null;
+            $payment = null;
         }
 
         return Inertia::render('Payment/PaymentSuccess',[
-            'response' => $response,
+            'payment' => $payment,
         ]);
     }
 }

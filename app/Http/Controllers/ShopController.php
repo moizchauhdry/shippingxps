@@ -513,7 +513,7 @@ class ShopController extends Controller
 
             DB::commit();
             if(!$isAdmin && $request->has('changes_approved')){
-                return redirect()->route('payment.index');
+                return redirect()->route('payment.index','amount='.$order->grand_total);
             }else{
                 return redirect('shop-for-me')->with('success', 'Order Updated !');
             }

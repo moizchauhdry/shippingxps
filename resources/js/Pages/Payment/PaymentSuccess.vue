@@ -4,10 +4,10 @@
       <div class="card" style="margin-top: 0px">
         <div class="card-header">Payment</div>
         <div class="card-body text-center">
-          <h2 style="font-size: 25px;color: green">Payment Success</h2>
-          <br>
-          <br>
-          <br>
+          <h2 class="mb-4" style="font-size: 25px;color: green">Payment Success</h2>
+          <h2 class="mb-4" style="font-size: 25px;color: green">Transaction Id : {{payment.transaction_id}}</h2>
+
+
           <inertia-link class="btn btn-primary" :href="route('dashboard')" >
             Dashboard
           </inertia-link>
@@ -32,6 +32,9 @@ export default {
     BreezeValidationErrors,
     BreezeNavLink,
     BreezeResponsiveNavLink,
+  },
+  props:{
+    payment:Object,
   },
   methods : {
 
