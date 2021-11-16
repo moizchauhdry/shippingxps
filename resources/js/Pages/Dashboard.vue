@@ -81,170 +81,155 @@
                 </div>
                 <div class="card-body">
                     <div class="col-md-12">
-                        <ul class="nav nav-pills nav-justified mb-3" id="pills-tab " role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <button 
-                                v-on:click="setActiveTabAB('tab1')" 
-                                :class="getTabClass('tab1')" 
-                                id="pills-home-tab" 
-                                data-bs-toggle="pill" 
-                                data-bs-target="#pills-home" 
-                                type="button" 
-                                role="tab" 
-                                aria-controls="pills-home" 
-                                aria-selected="true">Arrived</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button 
-                                v-on:click="setActiveTabAB('tab2')" 
-                                :class="getTabClass('tab2')" 
-                                id="pills-profile-tab" 
-                                data-bs-toggle="pill" 
-                                data-bs-target="#pills-profile" 
-                                type="button" 
-                                role="tab" 
-                                aria-controls="pills-profile" 
-                                aria-selected="false">Labeled</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button 
-                                v-on:click="setActiveTabAB('tab3')" 
-                                :class="getTabClass('tab3')" 
-                                id="pills-contact-tab" 
-                                data-bs-toggle="pill" 
-                                data-bs-target="#pills-contact" 
-                                type="button" 
-                                role="tab" 
-                                aria-controls="pills-contact" 
-                                aria-selected="false">Shipped</button>
-                            </li>
-                        </ul>
-                        <div class="tab-content" id="pills-tabContent">
-                            <div :class="getTabPaneClass('tab1')" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">Order Id</th>
-                                            <th scope="col">From</th>
-                                            <th scope="col">Tracking #</th>
-                                            <th scope="col">Warehouse</th>                         
-                                            <th scope="col">Received Date</th>
-                                            <template v-if="$page.props.auth.user.type == 'admin'">
-                                                <th scope="col"></th>
-                                            </template>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="order in arrived" :key="order.id">
-                                            <td>{{ order.id }}</td>
-                                            <td>{{ order.received_from }}</td>
-                                            <td>{{ order.tracking_number_in }}</td>
-                                            <td>{{ order.warehouse.name }}</td>
-                                            <td>{{ order.created_at }}</td>
-                                            <template v-if="$page.props.auth.user.type == 'admin'">
-                                                <td>
-                                                    <inertia-link class="link-primary" :href="route('orders.show', order.id)">
-                                                        <span>View</span>
-                                                    </inertia-link>
-                                                    &nbsp;|&nbsp;
-                                                    <inertia-link class="link-primary" :href="route('order.edit', order.id)">
-                                                        <span>Edit</span>
-                                                    </inertia-link>
-                                                </td>
-                                            </template>
-                                        </tr>
-                                        <tr v-if="arrived && arrived.length > 1">
-                                           <td colspan="5">
-                                               <template v-if="$page.props.auth.user.type == 'admin'">
-                                                    <inertia-link class="link-primary" :href="route('orders',{status:'arrived'})">
-                                                        <span> >> See More</span>
-                                                    </inertia-link>
-                                               </template>
-                                               <template v-if="$page.props.auth.user.type == 'customer'">
-                                                    <inertia-link class="link-primary" :href="route('packages')">
-                                                        <span> >> See More</span>
-                                                    </inertia-link>
-                                               </template>
-                                            </td> 
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div :class="getTabPaneClass('tab2')" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">#</th>
-                                            <th scope="col">Order Id</th>
-                                            <th scope="col">Tracking #</th>                         
-                                            <th scope="col">Receiver</th>
-                                            <th scope="col"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="order in labeled" :key="order.id">
-                                            <td>{{ order.id }}</td>
-                                            <td>{{ order.order_id }}</td>
-                                            <td>{{ order.tracking_number }}</td>
-                                            <td>{{ order.receiver_fullname }}</td>
-                                            <td>
-                                                <inertia-link class="link-primary" :href="route('orders.show', order.id)">
-                                                    <span>View</span>
-                                                </inertia-link>
-                                                &nbsp;|&nbsp;
-                                                <inertia-link class="link-primary" :href="route('order.edit', order.id)">
-                                                    <span>Edit</span>
-                                                </inertia-link>
-                                            </td>
-                                        </tr>
-                                        <tr v-if="labeled && labeled.length > 4">
-                                           <td colspan="5">
-                                                <inertia-link class="link-primary" :href="route('orders',{status:'labeled'})">
-                                                    <span> >> See More</span>
-                                                </inertia-link>   
-                                            </td> 
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div :class="getTabPaneClass('tab3')" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">#</th>
-                                            <th scope="col">Order Id</th>
-                                            <th scope="col">Tracking #</th>                         
-                                            <th scope="col">Receiver</th>
-                                            <th scope="col"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="order in shipped" :key="order.id">
-                                            <td>{{ order.id }}</td>
-                                            <td>{{ order.order_id }}</td>
-                                            <td>{{ order.tracking_number }}</td>
-                                            <td>{{ order.receiver_fullname }}</td>
-                                            <td>
-                                                <inertia-link class="link-primary" :href="route('orders.show', order.id)">
-                                                    <span>View</span>
-                                                </inertia-link>
-                                                &nbsp;|&nbsp;
-                                                <inertia-link class="link-primary" :href="route('order.edit', order.id)">
-                                                    <span>Edit</span>
-                                                </inertia-link>
-                                            </td>
-                                        </tr>
-                                        <tr v-if="shipped && shipped.length > 4">
-                                           <td colspan="5">
-                                                <inertia-link class="link-primary" :href="route('orders',{status:'shipped'})">
-                                                    <span> >> See More</span>
-                                                </inertia-link>   
-                                            </td> 
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                      <ul class="nav nav-pills nav-justified mb-3 mt-3" id="pills-tab " role="tablist">
+                        <li class="nav-item" role="presentation">
+                          <button
+                              v-on:click="setActiveTabAB('tab1')"
+                              :class="getTabClass('tab1')"
+                              id="pills-home-tab"
+                              data-bs-toggle="pill"
+                              data-bs-target="#pills-home"
+                              type="button"
+                              role="tab"
+                              aria-controls="pills-home"
+                              aria-selected="true">Arrived</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                          <button
+                              v-on:click="setActiveTabAB('tab2')"
+                              :class="getTabClass('tab2')"
+                              id="pills-profile-tab"
+                              data-bs-toggle="pill"
+                              data-bs-target="#pills-profile"
+                              type="button"
+                              role="tab"
+                              aria-controls="pills-profile"
+                              aria-selected="false">Labeled</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                          <button
+                              v-on:click="setActiveTabAB('tab3')"
+                              :class="getTabClass('tab3')"
+                              id="pills-contact-tab"
+                              data-bs-toggle="pill"
+                              data-bs-target="#pills-contact"
+                              type="button"
+                              role="tab"
+                              aria-controls="pills-contact"
+                              aria-selected="false">Shipped</button>
+                        </li>
+                      </ul>
+                      <div class="tab-content" id="pills-tabContent">
+                        <div :class="getTabPaneClass('tab1')" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                          <table class="table table-striped">
+                            <thead>
+                            <tr>
+                              <th scope="col">Order Id</th>
+                              <th v-if="$page.props.auth.user.type == 'admin'" scope="col">Customer Name</th>
+                              <th scope="col">Tracking #</th>
+                              <th scope="col">Warehouse</th>
+                              <th scope="col">Received Date</th>
+                              <template v-if="$page.props.auth.user.type == 'admin'">
+                                <th scope="col"></th>
+                              </template>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="order in arrived" :key="order.id">
+                              <td>{{ order.id }}</td>
+                              <td v-if="$page.props.auth.user.type == 'admin'">{{ order.customer.name }}</td>
+                              <td>{{ order.tracking_number_in }}</td>
+                              <td>{{ order.warehouse.name }}</td>
+                              <td>{{ order.created_at }}</td>
+                              <template v-if="$page.props.auth.user.type == 'admin'">
+                                <td>
+                                  <inertia-link class="link-primary" :href="route('orders.show', order.id)">
+                                    <span>View</span>
+                                  </inertia-link>
+                                  &nbsp;|&nbsp;
+                                  <inertia-link class="link-primary" :href="route('order.edit', order.id)">
+                                    <span>Edit</span>
+                                  </inertia-link>
+                                </td>
+                              </template>
+                            </tr>
+
+                            </tbody>
+                          </table>
                         </div>
+                        <div :class="getTabPaneClass('tab2')" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+                          <table class="table table-striped">
+                            <thead>
+                            <tr>
+                              <th scope="col">Order Id</th>
+                              <th v-if="$page.props.auth.user.type == 'admin'" scope="col">Customer Name</th>
+                              <th scope="col">Tracking #</th>
+                              <th scope="col">Warehouse</th>
+                              <th scope="col">Received Date</th>
+                              <template v-if="$page.props.auth.user.type == 'admin'">
+                                <th scope="col"></th>
+                              </template>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="labeler in labeled" :key="labeler.id">
+                              <td>{{ labeler.id }}</td>
+                              <td v-if="$page.props.auth.user.type == 'admin'">{{ labeler.customer.name }}</td>
+                              <td>{{ labeler.tracking_number_in }}</td>
+                              <td>{{ labeler.warehouse.name }}</td>
+                              <td>{{ labeler.created_at }}</td>
+                              <template v-if="$page.props.auth.user.type == 'admin'">
+                                <td>
+                                  <inertia-link class="link-primary" :href="route('orders.show', labeler.id)">
+                                    <span>View</span>
+                                  </inertia-link>
+                                  &nbsp;|&nbsp;
+                                  <inertia-link class="link-primary" :href="route('order.edit', labeler.id)">
+                                    <span>Edit</span>
+                                  </inertia-link>
+                                </td>
+                              </template>
+                            </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        <div :class="getTabPaneClass('tab3')" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
+                          <table class="table table-striped">
+                            <thead>
+                            <tr>
+                              <th scope="col">Order Id</th>
+                              <th v-if="$page.props.auth.user.type == 'admin'" scope="col">Customer Name</th>
+                              <th scope="col">Tracking #</th>
+                              <th scope="col">Warehouse</th>
+                              <th scope="col">Received Date</th>
+                              <template v-if="$page.props.auth.user.type == 'admin'">
+                                <th scope="col"></th>
+                              </template>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="order in shipped" :key="order.id">
+                              <td>{{ order.id }}</td>
+                              <td v-if="$page.props.auth.user.type == 'admin'">{{ order.customer.name }}</td>
+                              <td>{{ order.tracking_number_in }}</td>
+                              <td>{{ order.warehouse.name }}</td>
+                              <td>{{ order.created_at }}</td>
+                              <template v-if="$page.props.auth.user.type == 'admin'">
+                                <td>
+                                  <inertia-link class="link-primary" :href="route('orders.show', order.id)">
+                                    <span>View</span>
+                                  </inertia-link>
+                                  &nbsp;|&nbsp;
+                                  <!--                      <inertia-link class="link-primary" :href="route('order.edit', order.id)">
+                                                          <span>Edit</span>
+                                                        </inertia-link>-->
+                                </td>
+                              </template>
+                            </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
                     </div>
                 </div>
             </div>

@@ -113,36 +113,17 @@ class HomeController extends Controller
         $customer_id =Auth::user()->id;
         $user_type = Auth::user()->type;
 
-        $query = Order::with('warehouse')->where('status','=','arrived');
 
-        if($user_type == 'customer'){
-            $query->where('customer_id','=',$customer_id);
+        if($user_type == 'admin'){
+            $arrived = Order::where('status','arrived')->with(['customer','warehouse'])->get();
+            $labeled = Order::where('status','labeled')->with(['customer','warehouse'])->get();
+            $shipped = Order::where('status','shipped')->with(['customer','warehouse'])->get();
+        }else{
+            $arrived = Order::where('customer_id', $customer_id)->where('status','arrived')->with(['customer','warehouse'])->get();
+            $labeled = Order::where('customer_id', $customer_id)->where('status','labeled')->with(['customer','warehouse'])->get();
+            $shipped = Order::where('customer_id', $customer_id)->where('status','shipped')->with(['customer','warehouse'])->get();
         }
 
-        $arrived = $query->limit(5)->get();
-
-        $query = Package::where('status','=','labeled');
-
-        if($user_type == 'customer'){
-            $query->where('customer_id','=',$customer_id);
-        }
-
-        $labeled = $query->limit(5)->get();
-
-        $query = Package::where('status','=','shipped');
-
-        if($user_type == 'customer'){
-            $query->where('customer_id','=',$customer_id);
-        }
-
-        $shipped = $query->limit(5)->get();
-
-
-        //$labeled = Order::where('status','=','labeled')->limit(5)->get();
-        //$shipped = Order::where('status','=','shipped')->limit(5)->get();
-        //$rejected = Order::where('status','=','rejected')->limit(5)->get();
-
-//        $notifications = \auth()->user()->unreadNotifications()->limit(3)->get() ;
 
         return Inertia::render('Dashboard',[
             'arrived' => $arrived,

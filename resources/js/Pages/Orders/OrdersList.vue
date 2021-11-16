@@ -126,7 +126,8 @@
                 <thead>
                 <tr>
                   <th scope="col">Order Id</th>
-                  <th scope="col">From</th>
+                  <th v-if="$page.props.auth.user.type == 'admin'" scope="col">Customer Name</th>
+                  <th scope="col">Order From</th>
                   <th scope="col">Tracking #</th>
                   <th scope="col">Warehouse</th>
                   <th scope="col">Received Date</th>
@@ -138,6 +139,7 @@
                 <tbody>
                 <tr v-for="order in arrived" :key="order.id">
                   <td>{{ order.id }}</td>
+                  <td v-if="$page.props.auth.user.type == 'admin'">{{ order.customer.name }}</td>
                   <td>{{ order.received_from }}</td>
                   <td>{{ order.tracking_number_in }}</td>
                   <td>{{ order.warehouse.name }}</td>
@@ -163,7 +165,8 @@
                 <thead>
                 <tr>
                   <th scope="col">Order Id</th>
-                  <th scope="col">From</th>
+                  <th v-if="$page.props.auth.user.type == 'admin'" scope="col">Customer Name</th>
+                  <th scope="col">Order From</th>
                   <th scope="col">Tracking #</th>
                   <th scope="col">Warehouse</th>
                   <th scope="col">Received Date</th>
@@ -175,7 +178,8 @@
                 <tbody>
                 <tr v-for="labeler in labeled" :key="labeler.id">
                   <td>{{ labeler.id }}</td>
-                  <td>{{ labeler.received_from }}</td>
+                  <td v-if="$page.props.auth.user.type == 'admin'">{{ labeler.customer.name }}</td>
+                  <td>{{ order.received_from }}</td>
                   <td>{{ labeler.tracking_number_in }}</td>
                   <td>{{ labeler.warehouse.name }}</td>
                   <td>{{ labeler.created_at }}</td>
@@ -199,7 +203,8 @@
                 <thead>
                 <tr>
                   <th scope="col">Order Id</th>
-                  <th scope="col">From</th>
+                  <th v-if="$page.props.auth.user.type == 'admin'" scope="col">Customer Name</th>
+                  <th scope="col">Order From</th>
                   <th scope="col">Tracking #</th>
                   <th scope="col">Warehouse</th>
                   <th scope="col">Received Date</th>
@@ -211,6 +216,7 @@
                 <tbody>
                 <tr v-for="order in shipped" :key="order.id">
                   <td>{{ order.id }}</td>
+                  <td v-if="$page.props.auth.user.type == 'admin'">{{ order.customer.name }}</td>
                   <td>{{ order.received_from }}</td>
                   <td>{{ order.tracking_number_in }}</td>
                   <td>{{ order.warehouse.name }}</td>
@@ -221,9 +227,9 @@
                         <span>View</span>
                       </inertia-link>
                       &nbsp;|&nbsp;
-                      <inertia-link class="link-primary" :href="route('order.edit', order.id)">
+<!--                      <inertia-link class="link-primary" :href="route('order.edit', order.id)">
                         <span>Edit</span>
-                      </inertia-link>
+                      </inertia-link>-->
                     </td>
                   </template>
                 </tr>

@@ -35,58 +35,59 @@ class OrderController extends Controller
 
         $customers = User::where('type', '=', 'customer')->select(['id', 'name'])->get()->toArray();
 
-        if ((isset($_GET['search']) && !empty($_GET['search']))) {
+        if(Auth::check()){
+            $user = Auth::user();
+        }else{
+            redirect()->back()->with('errors','Login to continue');
+        }
 
+        if($user->type == 'customer'){
+            $orders = Order::where('customer_id', $user->id);
+            $orders = $this->searchResults($request,$orders);
 
-            $search = $_GET['search'];
+            return Inertia::render('Orders/OrdersList', [
+                'search' => $search,
+                'orders' => $orders->get(),
+                'customers' => $customers,
+                'customer_id' => $customer_id,
+                'arrived' => '',
+                'labeled' => '',
+                'shipped' => ''
+            ]);
+        }else{
+            $arrived = Order::where('status','arrived');
+            $arrived = $this->searchResults($request,$arrived);
+            $labeled = Order::where('status','labeled');
+            $labeled = $this->searchResults($request,$labeled);
+            $shipped = Order::where('status','shipped');
+            $shipped = $this->searchResults($request,$shipped);
+
+            return Inertia::render('Orders/OrdersList', [
+                'search' => $search,
+                'orders' => '',
+                'customers' => $customers,
+                'customer_id' => $customer_id,
+                'arrived' => $arrived->where('status','arrived')->get(),
+                'labeled' => $labeled->where('status','labeled')->get(),
+                'shipped' => $shipped->where('status','shipped')->get()
+            ]);
+        }
+
+    }
+
+    public function searchResults(Request $request,$orders)
+    {
+        $orders->join('users','orders.customer_id','=','users.id');
+        $orders->join('warehouses','orders.warehouse_id','=','warehouses.id');
+        if($request->has('search') && !empty($request->search)){
+            $search = $request->search;
             $search = trim($search);
-
-            $orders = Order::whereHas('user', function ($query) use ($search) {
-                $query->where('name', $search);
-            })->with(['user' => function ($query) use ($search) {
-                $query->where('name', $search);
-            }, 'warehouse']);
-        } else {
-            $orders = Order::with(['customer', 'warehouse']);
+            $orders->where ( 'users.name', 'LIKE', '%' . $search . '%' )
+                ->orWhere ( 'orders.received_from', 'LIKE', '%' . $search . '%' )
+                ->orWhere('warehouses.name', 'LIKE', '%' . $search . '%');
         }
+        return $orders->with(['customer', 'warehouse']);
 
-        $status = isset($_GET['status']) ? $_GET['status'] : '';
-
-        if (!empty($status)) {
-            $status = in_array($status, ['arrived', 'labeled', 'shipped', 'delivered', 'rejected']) ? $status : '';
-        }
-
-
-        if (!empty($status)) {
-            $orders->where('status', '=', $status);
-        }
-
-        $user = Auth::user();
-        if ($user->type == 'customer') {
-            $orders->where('customer_id', $user->id);
-        } else if (!empty($customer_id)) {
-            $orders->where('customer_id', $customer_id);
-        }
-
-        $orders->where('order_type', 'order');
-        $orders->orderBy('id', 'DESC');
-//        $query = $orders;
-//        $query1 = $orders;
-//        $query2 = $orders;
-//        $orders = $orders->paginate(25);
-        $arrived = $orders->where('status', 'like' ,'arrived')->get();
-        $labeled = $orders->where('status', 'like' ,'labeled')->get();
-        $shipped = $orders->where('status', 'like' ,'shipped')->get();
-
-        return Inertia::render('Orders/OrdersList', [
-            'search' => $search,
-            'orders' => $orders,
-            'customers' => $customers,
-            'customer_id' => $customer_id,
-            'arrived' => $arrived,
-            'labeled' => $labeled,
-            'shipped' => $shipped
-        ]);
     }
 
     /**
