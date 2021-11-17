@@ -18,6 +18,6 @@ class Payment extends Model
     }
 
     public function package(){
-        return $this->belongsTo(User::class,'package_id');
+        return $this->belongsTo(Package::class,'package_id');
     }
 }

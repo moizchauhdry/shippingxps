@@ -12,7 +12,7 @@
             <th>Package</th>
             <th>Transaction Id</th>
             <th>Invoice Id</th>
-            <th>Charged Amount</th>
+            <th>Charged Amount (USD)</th>
             <th>Charged At</th>
           </tr>
           </thead>
@@ -20,8 +20,8 @@
           <tr v-for="item in payments" :key="item.id">
             <td>{{ item.id }}</td>
             <td>{{ item.customer_id != null ? item.customer.name : '- -'}}</td>
-            <td>{{ item.order_id  != null ? item.order.name : '- -'}}</td>
-            <td>{{ item.package_id != null ? item.package.name : '- -'}}</td>
+            <td>{{ item.order_id  != null ?item.order_id : '- -'}}</td>
+            <td>{{ item.package_id != null ? item.package.id : '- -'}}</td>
             <td>{{ item.transaction_id }}</td>
             <td>{{ item.invoice_id }}</td>
             <td>{{ item.charged_amount }}</td>

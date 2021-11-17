@@ -16,7 +16,7 @@ class PaymentController extends Controller
 
 
 
-    public function index(Request $request){
+    public function     index(Request $request){
         \Session::put('amount',$request->amount);
 
         if($request->has('status')){
@@ -24,6 +24,10 @@ class PaymentController extends Controller
         }
         else{
             $status = null;
+        }
+
+        if($request->has('package_id')){
+            \Session::put('package_id',$request->package_id);
         }
 
         return Inertia::render('Payment/OrderPayment',['amount' => $request->amount,'status'=>$status]);

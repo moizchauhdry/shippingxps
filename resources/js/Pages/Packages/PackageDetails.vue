@@ -267,7 +267,7 @@
 
         <div class="row" v-show="($page.props.auth.user.type == 'customer') || (($page.props.auth.user.type == 'admin') && (service_requests.length > 0))">
           <div class="col-md-12">
-            <div class="card">
+            <div v-if="packag.status != 'consolidated'" class="card">
               <div class="card-header">
                 <h3>Services</h3>
               </div>
@@ -582,7 +582,7 @@
                         <td>${{ getGrandTotal() }}</td>
                         <td></td>
                       </tr>
-                      <tr v-if="$page.props.auth.user.type == 'customer'">
+                      <tr v-if="$page.props.auth.user.type == 'customer' && packag.status == 'labeled' && hasConsolidationServed && packag.carrier_code != null">
                         <td colspan="4">
                           <button type="button" @click="checkout()" class="btn btn-primary">Checkout</button>
                         </td>
@@ -733,6 +733,7 @@ export default {
       showEstimatedPrice: false,
       form_checkout: this.$inertia.form({
         amount: '',
+        package_id:this.packag.id
       })
     }
   },
@@ -889,6 +890,7 @@ export default {
           0);
 
       var consolidation_total;
+      console.log(this.hasConsolidationServed);
       if(this.hasConsolidationServed){
         consolidation_total = this.packag.orders.length * 1.5;
       }else{

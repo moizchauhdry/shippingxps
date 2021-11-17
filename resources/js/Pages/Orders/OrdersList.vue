@@ -179,7 +179,7 @@
                 <tr v-for="labeler in labeled" :key="labeler.id">
                   <td>{{ labeler.id }}</td>
                   <td v-if="$page.props.auth.user.type == 'admin'">{{ labeler.customer.name }}</td>
-                  <td>{{ order.received_from }}</td>
+                  <td>{{ labeler.received_from }}</td>
                   <td>{{ labeler.tracking_number_in }}</td>
                   <td>{{ labeler.warehouse.name }}</td>
                   <td>{{ labeler.created_at }}</td>

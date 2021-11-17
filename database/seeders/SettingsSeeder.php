@@ -18,7 +18,12 @@ class SettingsSeeder extends Seeder
             [
                 "name" =>'markup', 
                 'value' => '15'
-            ]
+            ],
+            [
+                "name" =>'mailout_fee',
+                'value' => '5'
+            ],
+
         ]);
     }
 }
