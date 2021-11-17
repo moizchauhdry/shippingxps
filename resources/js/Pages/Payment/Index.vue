@@ -19,9 +19,9 @@
           <tbody>
           <tr v-for="item in payments" :key="item.id">
             <td>{{ item.id }}</td>
-            <td>{{ item.customer.name }}</td>
-            <td>{{ item.order.name }}</td>
-            <td>{{ item.package.name }}</td>
+            <td>{{ item.customer_id != null ? item.customer.name : '- -'}}</td>
+            <td>{{ item.order_id  != null ? item.order.name : '- -'}}</td>
+            <td>{{ item.package_id != null ? item.package.name : '- -'}}</td>
             <td>{{ item.transaction_id }}</td>
             <td>{{ item.invoice_id }}</td>
             <td>{{ item.charged_amount }}</td>

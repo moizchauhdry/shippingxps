@@ -18,7 +18,15 @@ class PaymentController extends Controller
 
     public function index(Request $request){
         \Session::put('amount',$request->amount);
-        return Inertia::render('Payment/OrderPayment',['amount' => $request->amount]);
+
+        if($request->has('status')){
+            $status = $request->status;
+        }
+        else{
+            $status = null;
+        }
+
+        return Inertia::render('Payment/OrderPayment',['amount' => $request->amount,'status'=>$status]);
     }
 
     public function pay(Request $request)
@@ -42,42 +50,31 @@ class PaymentController extends Controller
         $paymentOne = new AnetAPI\PaymentType();
         $paymentOne->setCreditCard($creditCard);
 
-        // Create order information
-//        $order = new AnetAPI\OrderType();
-//        $order->setInvoiceNumber("10102");
-//        $order->setDescription("Golf Shirts");
+        $user = \Auth::user();
+
+        $nameExplode = explode(' ',$user->name);
 
         // Set the customer's Bill To address
         $customerAddress = new AnetAPI\CustomerAddressType();
-        $customerAddress->setFirstName("Ellen");
-        $customerAddress->setLastName("Johnson");
-        $customerAddress->setCompany("Souveniropolis");
-        $customerAddress->setAddress("14 Main Street");
-        $customerAddress->setCity("Pecan Springs");
-        $customerAddress->setState("TX");
-        $customerAddress->setZip("44628");
-        $customerAddress->setCountry("USA");
+        $customerAddress->setFirstName($nameExplode[0] ?? '');
+        $customerAddress->setLastName($nameExplode[0] ?? '');
+        $customerAddress->setCompany("");
+        $customerAddress->setAddress($user->address->address ?? '');
+        $customerAddress->setCity($user->address->city ?? '');
+        $customerAddress->setState($user->address->state ?? '');
+        $customerAddress->setZip($user->address->zip ?? '');
+        $customerAddress->setCountry($user->address->country->name ?? '');
 
         // Set the customer's identifying information
         $customerData = new AnetAPI\CustomerDataType();
         $customerData->setType("individual");
-        $customerData->setId("99999456654");
-        $customerData->setEmail("EllenJohnson@example.com");
+        $customerData->setId($user->id);
+        $customerData->setEmail($user->email);
 
         // Add values for transaction settings
         $duplicateWindowSetting = new AnetAPI\SettingType();
         $duplicateWindowSetting->setSettingName("duplicateWindow");
         $duplicateWindowSetting->setSettingValue("60");
-
-        // Add some merchant defined fields. These fields won't be stored with the transaction,
-        // but will be echoed back in the response.
-        $merchantDefinedField1 = new AnetAPI\UserFieldType();
-        $merchantDefinedField1->setName("customerLoyaltyNum");
-        $merchantDefinedField1->setValue("1128836273");
-
-        $merchantDefinedField2 = new AnetAPI\UserFieldType();
-        $merchantDefinedField2->setName("favoriteColor");
-        $merchantDefinedField2->setValue("blue");
 
         // Create a TransactionRequestType object and add the previous objects to it
         $transactionRequestType = new AnetAPI\TransactionRequestType();
@@ -88,8 +85,7 @@ class PaymentController extends Controller
         $transactionRequestType->setBillTo($customerAddress);
         $transactionRequestType->setCustomer($customerData);
         $transactionRequestType->addToTransactionSettings($duplicateWindowSetting);
-        $transactionRequestType->addToUserFields($merchantDefinedField1);
-        $transactionRequestType->addToUserFields($merchantDefinedField2);
+
 
         // Assemble the complete transaction request
         $request = new AnetAPI\CreateTransactionRequest();
@@ -141,16 +137,28 @@ class PaymentController extends Controller
 
         if ($response->getMessages()->getResultCode() == "Ok"){
             $payment = new Payment();
-            $payment->customer_id = 1;
-            $payment->order_id = 1;
-            $payment->package_id = 1;
+            $payment->customer_id = $user->id;
+            $payment->order_id = \Session::has('order_id')? \Session::get('order_id'): null;
+            $payment->package_id = \Session::has('package_id')? \Session::get('package_id'): null;
             $payment->invoice_id = Str::uuid();
             $payment->transaction_id = $response->getTransactionResponse()->getTransId();
             $payment->charged_amount = \Session::get('amount');
             $payment->charged_at = Carbon::now()->format('Y-m-d H:i:s');
             $payment->save();
+            \Session::forget(['order_id','package_id','amount']);
+            return redirect()->route('payments.PaymentSuccess')->with(['payment'=>$payment,'status']);
         }
-        return redirect()->route('payments.PaymentSuccess')->with(['payment'=>$payment]);
+//        dd($response);
+
+        return redirect()->route('payment.index',['amount'=>\Session::get('amount'),'status'=>$response->getMessages()]);
+
+        /*return Inertia::render('Payment/OrderPayment',
+            [
+                'amount' => \Session::has('amount')? \Session::get('amount'): 0,
+                'status'=>$response->getMessages()
+            ]);*/
+
+
     }
 
     public function getPayments()
@@ -160,7 +168,7 @@ class PaymentController extends Controller
         if($user->type == 'admin'){
             $payments = Payment::with(['customer','package','order'])->orderByDesc('id')->get();
         }else{
-            $payments = Payment::with(['customer','package','order'])->where('customer_id',1)->orderByDesc('id')->get();
+            $payments = Payment::with(['customer','package','order'])->where('customer_id',$user->id)->orderByDesc('id')->get();
         }
         return Inertia::render('Payment/Index',['payments'=> $payments]);
     }

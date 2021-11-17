@@ -168,6 +168,7 @@
     position: absolute;
     z-index: 1;
     font-size: 17px;
+    right: 0px;
     /*left: 12px;*/
   }
 }
@@ -228,7 +229,7 @@
   border-top: 9px solid transparent;
   border-left: 9px solid transparent;
   border-right: 9px solid transparent;
-  position: absolute;
+  position: fixed;
   top: -17px;
   left: 112px;
   z-index: 3;

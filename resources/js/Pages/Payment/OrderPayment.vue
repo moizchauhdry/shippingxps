@@ -13,6 +13,9 @@
                       <h4 class="mb-2" style="color: #fff;font-weight:bold;font-size:20px;" >USD {{ amount }}</h4>
                     </div>
                     <div class="row">
+                      <div class="col-12" v-if="status != undefined">
+                        <p style="color:red;">{{ status.message[0].text }}</p>
+                      </div>
                       <div class="form-group col-12">
                         <breeze-label for="name" value="Name On Card"/>
                         <input v-model="form.name_on_card" class="form-control" type="text" maxlength="55" name="name_on_card" placeholder="Enter Name On Card" required>
@@ -83,6 +86,7 @@ export default {
   },
   props: {
     amount:Object,
+    status:Object,
   },
   methods : {
     submit(){
