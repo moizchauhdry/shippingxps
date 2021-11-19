@@ -22,7 +22,7 @@ class CreatePaymentsTable extends Migration
             $table->string('transaction_id');
             $table->string('card_last4')->nullable();
             $table->string('card_type')->nullable();
-            $table->double('charged_amount',9,2);
+            $table->double('charged_amount',10,2);
             $table->timestamp('charged_at');
             $table->timestamps();
         });

@@ -90,7 +90,7 @@ class ShopController extends Controller
         $request->validate([
             'form_type' => 'required|in:shopping,pickup',
             'warehouse_id' => 'required',
-            'notes' => 'nullable|string',
+            'notes' => 'nullable',
             'items' => 'required',
             'site_name' => 'required_if:form_type,shopping',
             'shop_url' => 'required_if:form_type,shopping',
@@ -317,7 +317,7 @@ class ShopController extends Controller
         $rules =[
             'form_type' => 'required|in:shopping,pickup',
             'warehouse_id' => 'required',
-            'notes' => 'nullable|string',
+            'notes' => 'nullable',
             'items' => 'required',
             'site_name' => 'required_if:form_type,shopping',
             'shop_url' => 'required_if:form_type,shopping',

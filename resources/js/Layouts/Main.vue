@@ -76,7 +76,7 @@
             <i class="fas fa-external-link-alt"></i><span>Packages</span>
           </inertia-link>
 
-          <inertia-link class="nav-link" :href="route('payments.getPayments')" :class="{active: route().current('packages')}" :active="route().current('packages')">
+          <inertia-link class="nav-link" :href="route('payments.getPayments')" :class="{active: route().current('payments.getPayments')}" :active="route().current('payments.getPayments')">
             <i class="fas fa-external-link-alt"></i><span>Payments</span>
           </inertia-link>
 

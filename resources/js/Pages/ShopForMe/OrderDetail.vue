@@ -215,7 +215,7 @@
                 <th style="text-align: end">Sub Total</th>
                 <td>{{ order.sub_total }}</td>
               </tr>
-              <tr>
+              <tr v-if="order.order_type == 'pickup'">
                 <th style="text-align: end">Pickup Charges</th>
                 <td>{{ order.pickup_charges }}</td>
               </tr>
@@ -234,7 +234,7 @@
               </tr>
               <tr>
                 <th style="text-align: end">Grand Total</th>
-                <td>{{ (order.grand_total).toFixed(2) }}</td>
+                <td>{{ order.grand_total }}</td>
               </tr>
               </tbody>
             </table>

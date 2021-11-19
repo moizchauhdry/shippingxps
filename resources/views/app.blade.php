@@ -39,7 +39,7 @@
 		<script src="{{ asset('theme/vendor/modernizr/modernizr.min.js') }}"></script>
 
         <!-- Styles -->
-        <link rel="stylesheet" href="{{ url(mix('css/app.css')) }}">
+        <link rel="stylesheet" href="{{ url('public/'.mix('css/app.css')) }}">
         <style>
             input::-webkit-outer-spin-button,
             input::-webkit-inner-spin-button {
@@ -49,7 +49,7 @@
         </style>
         <!-- Scripts -->
         @routes
-        <script src="{{ url(mix('js/app.js')) }}" defer></script>
+        <script src="{{ url('public/'.mix('js/app.js')) }}" defer></script>
     </head>
     <body class="font-sans antialiased">
         <div class="body">

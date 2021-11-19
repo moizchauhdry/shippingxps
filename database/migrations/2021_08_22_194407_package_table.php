@@ -41,11 +41,11 @@ class PackageTable extends Migration
             $table->boolean('consolidation_request')->default(false);
 
             // these have to be updated when a package is created.
-            $table->double('sub_total',2)->nullable();
-            $table->double('discount',2)->nullable();
-            $table->double('delivery_charges',2)->nullable();
-            $table->double('shipping_charges',2)->nullable();
-            $table->double('grand_total',2)->nullable();
+            $table->double('sub_total',10,2)->nullable();
+            $table->double('discount',10,2)->nullable();
+            $table->double('delivery_charges',10,2)->nullable();
+            $table->double('shipping_charges',10,2)->nullable();
+            $table->double('grand_total',10,2)->nullable();
 
             $table->timestamps();
         });

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\OrderCreatedEvent;
 use App\Events\OrderUpdatedEvent;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use \Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -28,8 +29,6 @@ class OrderController extends Controller
     public function index(Request $request)
     {
 
-        // $orders = Order::with(['warehouse']);
-        // $orders= new Order();
         $search = '';
         $customer_id = '';
 
@@ -55,11 +54,11 @@ class OrderController extends Controller
                 'shipped' => ''
             ]);
         }else{
-            $arrived = Order::where('status','arrived');
+            $arrived = Order::select('orders.*','orders.warehouse_id','orders.customer_id','users.name','warehouses.name')->where('status','arrived');
             $arrived = $this->searchResults($request,$arrived);
-            $labeled = Order::where('status','labeled');
+            $labeled = Order::select('orders.*','orders.warehouse_id','orders.customer_id','users.name','warehouses.name')->where('status','labeled');
             $labeled = $this->searchResults($request,$labeled);
-            $shipped = Order::where('status','shipped');
+            $shipped = Order::select('orders.*','orders.warehouse_id','orders.customer_id','users.name','warehouses.name')->where('status','shipped');
             $shipped = $this->searchResults($request,$shipped);
 
             return Inertia::render('Orders/OrdersList', [
@@ -67,9 +66,9 @@ class OrderController extends Controller
                 'orders' => '',
                 'customers' => $customers,
                 'customer_id' => $customer_id,
-                'arrived' => $arrived->where('status','arrived')->get(),
-                'labeled' => $labeled->where('status','labeled')->get(),
-                'shipped' => $shipped->where('status','shipped')->get()
+                'arrived' => $arrived->where('status','arrived')->orderBy('orders.id', 'desc')->get(),
+                'labeled' => $labeled->where('status','labeled')->orderBy('orders.id', 'desc')->get(),
+                'shipped' => $shipped->where('status','shipped')->orderBy('orders.id', 'desc')->get()
             ]);
         }
 
@@ -145,7 +144,7 @@ class OrderController extends Controller
             'package_length' => 'required|numeric|gt:0',
             'package_width' => 'required|numeric|gt:0',
             'package_height' => 'required|numeric|gt:0',
-            'notes' => 'string',
+            'notes' => 'nullable',
             'received_from' => 'required|string',
         ]);
 
@@ -194,6 +193,7 @@ class OrderController extends Controller
             $order->received_from = $validated['received_from'];
 
             $order->notes = $validated['notes'];
+            $order->created_at = Carbon::now();
 
             $order->save();
 
@@ -268,7 +268,7 @@ class OrderController extends Controller
             return redirect('orders')->with('success', 'Order Added!');
 
         } catch (\Exception $e) {
-            dd($e);
+//            dd($e);
             DB::rollBack();
             return redirect('orders')->with('error', 'Something went wrong');
         }
@@ -371,7 +371,7 @@ class OrderController extends Controller
             'package_height' => 'required|numeric|gt:0',
             'status' => 'required|string',
             'received_from' => 'required|string',
-            'notes' => 'string',
+            'notes' => 'nullable',
         ]);
 
         try {

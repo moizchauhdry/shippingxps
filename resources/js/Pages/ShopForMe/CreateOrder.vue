@@ -700,7 +700,7 @@ export default {
       var gross_total = (price * (sale_tax / 100));
       var net_total = this.form_online.items[index].price_with_tax = (parseFloat(gross_total) + parseFloat(price)).toFixed(2);
       this.form_online.items[index].sub_total = net_total * quantity;
-
+      this.form_online.items[index].sub_total = parseFloat(this.form_online.items[index].sub_total).toFixed(2)
       this.getShopGrandTotal();
     },
     getShopGrandTotal() {
@@ -708,11 +708,9 @@ export default {
       this.form_online.items.forEach(function (n) {
         sum += n['sub_total']
       });
-      // var dis_percentage = document.getElementById('shop_percentage').value
       this.form_online.sub_total = parseFloat(sum).toFixed(2);
       this.form_online.service_charges = parseFloat(sum).toFixed(2) * 0.05;
-      // this.form_online.discount = sum * dis_percentage / 100;
-      var charges = parseFloat(this.form_online.shipping_from_shop)
+      var charges = parseFloat(this.form_online.shipping_from_shop).toFixed(2)
       this.form_online.shipping_charges = parseFloat(charges).toFixed(2)
       this.form_online.grand_total = parseFloat(sum  + this.form_online.service_charges).toFixed(2);
     },
@@ -732,6 +730,7 @@ export default {
       var gross_total = (price * (sale_tax / 100));
       var net_total = this.form_pickup.items[index].price_with_tax = (parseFloat(gross_total) + parseFloat(price)).toFixed(2);
       this.form_pickup.items[index].sub_total = net_total * quantity;
+      this.form_pickup.items[index].sub_total = parseFloat(this.form_pickup.items[index].sub_total).toFixed(2)
 
       this.getPickUpGrandTotal();
     },
@@ -748,8 +747,9 @@ export default {
         this.form_pickup.sub_total = parseFloat(sum).toFixed(2);
         this.form_pickup.service_charges = parseFloat(sum).toFixed(2) * 0.05;
         var charges = parseFloat(this.form_pickup.shipping_from_shop)
-        this.form_pickup.shipping_charges = charges
+        this.form_pickup.shipping_charges = parseFloat(charges).toFixed(2)
         this.form_pickup.grand_total = sum + this.form_pickup.service_charges + this.form_pickup.pickup_charges;
+        this.form_pickup.grand_total = parseFloat(this.form_pickup.grand_total).toFixed(2)
       }
     },
     checkCouponCode(coupon_code) {

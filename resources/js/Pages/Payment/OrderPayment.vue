@@ -11,7 +11,10 @@
                     <div class="bg-dark border-3 border-warning container mb-3 text-center text-white">
                       <h2 style="color: #fff;font-weight:bold;font-size:25px;" >TOTAL AMOUNT</h2>
                       <h4 class="mb-2" style="color: #fff;font-weight:bold;font-size:20px;" >USD {{ amount }}</h4>
+
                     </div>
+                    <breeze-label class="mb-2 mt-2" value="Hava a Coupon?"/><breeze-label style="text-decoration: underline" value="Click here to enter your code"/>
+
                     <div class="row">
                       <div class="col-12" v-if="status != undefined">
                         <p style="color:red;">{{ status.message[0].text }}</p>
