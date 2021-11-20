@@ -46,13 +46,12 @@
     import MainLayout from '@/Layouts/Main'
     import BreezeAuthenticatedLayout from '@/Layouts/Authenticated'
     import BreezeValidationErrors from '@/Components/ValidationErrors'
-    import FlashMessages from '@/Components/FlashMessages'
+
     export default {
         components: {
             BreezeAuthenticatedLayout,
             MainLayout,
             BreezeValidationErrors,
-            FlashMessages
         },
         data() {
             return {

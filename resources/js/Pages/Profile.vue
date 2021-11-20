@@ -93,7 +93,7 @@
     import MainLayout from '@/Layouts/Main'
     import BreezeAuthenticatedLayout from '@/Layouts/Authenticated'
     import BreezeLabel from '@/Components/Label'
-    import FlashMessages from '@/Components/FlashMessages'
+
     
     
 
@@ -102,7 +102,7 @@
             BreezeAuthenticatedLayout,
             MainLayout,
             BreezeLabel,
-            FlashMessages,
+
         },
         data() {
             return {

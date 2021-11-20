@@ -4,7 +4,7 @@
     <div class="row" style="margin-top:20px;">
         <div class="col-md-12">
             <div class="row">
-                <FlashMessages />
+
             </div>
             <div class="card">
                 <div class="card-header">
@@ -464,13 +464,13 @@
 <script>
     import MainLayout from '@/Layouts/Main'
     import BreezeAuthenticatedLayout from '@/Layouts/Authenticated'
-    import FlashMessages from '@/Components/FlashMessages'
+
     import BreezeLabel from '@/Components/Label'
     export default {
         components: {
             BreezeAuthenticatedLayout,
             MainLayout,
-            FlashMessages,
+
             BreezeLabel
         },
         data(){

@@ -2,7 +2,7 @@
     <MainLayout>
 		<div class="card mt-4">
         <div class="card-body">
-          <FlashMessages />
+
             <div class="row">
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight form-title">
                         Manage Pages
@@ -51,7 +51,7 @@
 <script>
     import MainLayout from '@/Layouts/Main'
     import Pagination from '@/Components/Pagination'
-    import FlashMessages from "@/Components/FlashMessages";
+
 
     export default {
         data() {
@@ -67,7 +67,7 @@
                 }
             },
           components: {
-            FlashMessages,
+
             MainLayout,
             Pagination,
         },

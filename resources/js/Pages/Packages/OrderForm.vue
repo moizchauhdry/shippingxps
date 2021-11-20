@@ -63,7 +63,7 @@
                       <div class="col-md-2">
                           <div class="form-group">
                             <select name="origin_country" class="form-select" v-model="item.origin_country" required>
-                                <option selected>Select</option>
+                                <option selected value="">Select</option>
                                 <option v-for="country in countries" :value="country.id" >{{ country.name}}</option>
                             </select>
                           </div>
@@ -72,7 +72,7 @@
                       <div class="col-md-2">
                           <div class="form-group">
                             <select name="batteries" class="form-select" v-model="item.batteries" required>
-                                <option selected>Select</option>
+                                <option selected value="">Select</option>
                                 <option value="0">No Battery</option>
                                 <option value="1">1 Battery</option>
                                 <option value="2">2 Battery</option>

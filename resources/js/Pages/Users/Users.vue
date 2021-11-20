@@ -54,7 +54,6 @@
     import MainLayout from '@/Layouts/Main'
     import BreezeAuthenticatedLayout from '@/Layouts/Authenticated'
     import Pagination from '@/Components/Pagination'
-import FlashMessages from '@/Components/FlashMessages.vue'
 
     export default {
         data() {
@@ -73,7 +72,7 @@ import FlashMessages from '@/Components/FlashMessages.vue'
             BreezeAuthenticatedLayout,
             MainLayout,
             Pagination,
-            FlashMessages,
+
         },
     props: {
          users: Object,

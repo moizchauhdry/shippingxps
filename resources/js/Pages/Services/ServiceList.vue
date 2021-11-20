@@ -2,7 +2,7 @@
     <MainLayout>
 		<div class="card mt-4">
 				<div class="card-body">                    
-                    <FlashMessages />
+
                     <h2 class="font-semibold text-xl text-gray-800 leading-tight form-title">
                         Services
                     </h2>
@@ -53,13 +53,12 @@
 <script>
     import MainLayout from '@/Layouts/Main'
     import BreezeAuthenticatedLayout from '@/Layouts/Authenticated'
-    import FlashMessages from '@/Components/FlashMessages'
+
 
     export default {
         components: {
             BreezeAuthenticatedLayout,
             MainLayout,
-            FlashMessages
         },
         props: {
             auth: Object,

@@ -11,7 +11,7 @@
                 </div>
 
                 <div class="row">
-                 <FlashMessages />
+
                 </div>
 
                 <div class="card-body">

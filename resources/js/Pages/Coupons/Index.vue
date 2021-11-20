@@ -10,7 +10,6 @@
         </div>
       </div>
       <div class="card-body">
-        <FlashMessages/>
         <table class="table table-responsive">
           <thead>
           <tr>

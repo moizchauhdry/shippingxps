@@ -263,166 +263,167 @@
           </template>
         </template>
 
-
-        <div class="row" v-show="($page.props.auth.user.type == 'customer') || (($page.props.auth.user.type == 'admin') && (service_requests.length > 0))">
-          <div class="col-md-12">
-            <div class="card">
-              <div class="card-header">
-                <h3>Services</h3>
-              </div>
-              <div class="card-body">
-                <div class="row">
-                  <template v-if="$page.props.auth.user.type == 'customer' && packag.status != 'consolidated'">
-                    <div class="col-md-7">
-                      <table class="table table-striped">
-                        <thead>
-                        <tr>
-                          <th scope="col">Service</th>
-                          <th scope="col">Details</th>
-                          <th scope="col">Fees</th>
-                          <th scope="col"></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr v-for="service in services" :key="service.id">
-                          <td>
-                            {{ service.title }}
-                          </td>
-                          <td>
-                            {{ service.description }}
-                          </td>
-                          <td>
-                            $ {{ service.price }}
-                          </td>
-                          <td style="width:110px;">
-                            <a v-if="service.title == 'Consolidation' && !hasConsolidationRequest" v-on:click="setActiveService(service)" class="link-primary"> Make Request</a>
-                            <a v-else-if="service.title != 'Consolidation'" v-on:click="setActiveService(service)" class="link-primary"> Make Request</a>
-                          </td>
-                        </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                    <div class="col-md-5">
-                      <template v-if="form.service_id !=null">
-                        <form @submit.prevent="submit">
+        <template v-if="packag.status != 'shipped'">
+          <div class="row" v-show="($page.props.auth.user.type == 'customer') || (($page.props.auth.user.type == 'admin') && (service_requests.length > 0))">
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-header">
+                  <h3>Services</h3>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <template v-if="$page.props.auth.user.type == 'customer' && packag.status != 'consolidated'">
+                      <div class="col-md-7">
+                        <table class="table table-striped">
+                          <thead>
+                          <tr>
+                            <th scope="col">Service</th>
+                            <th scope="col">Details</th>
+                            <th scope="col">Fees</th>
+                            <th scope="col"></th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <tr v-for="service in services" :key="service.id">
+                            <td>
+                              {{ service.title }}
+                            </td>
+                            <td>
+                              {{ service.description }}
+                            </td>
+                            <td>
+                              $ {{ service.price }}
+                            </td>
+                            <td style="width:110px;">
+                              <a v-if="service.title == 'Consolidation' && !hasConsolidationRequest" v-on:click="setActiveService(service)" class="link-primary"> Make Request</a>
+                              <a v-else-if="service.title != 'Consolidation'" v-on:click="setActiveService(service)" class="link-primary"> Make Request</a>
+                            </td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="col-md-5">
+                        <template v-if="form.service_id !=null">
+                          <form @submit.prevent="submit">
+                            <div class="form-group">
+                              <breeze-label for="notes" value="Message for Admin"/>
+                              <textarea v-model="form.customer_message"
+                                        name="notes"
+                                        id="notes"
+                                        class="form-control"
+                                        placeholder="Message for Admin"
+                                        rows="2"
+                                        style="resize:none;"
+                                        required>
+                                                    </textarea>
+                            </div>
+                            <p style="color:red;">Are you sure you want to use service? Add your message for admin and continue</p>
+                            <p style="color:red;">Every service request is charged separately, so if you have already requested any service wait for system response.</p>
+                            <p style="color:re">Service : <strong>{{ form.service.title }}</strong></p>
+                            <p style="color:re">Charges : <strong>${{ form.service.price }}</strong></p>
+                            <div class="order-button">
+                              <a class="btn btn-danger" v-on:click="cancelServiceForm()"> Cancel</a>
+                              <input type="submit" value="Make Request" class="btn btn-success float-right"/>
+                            </div>
+                          </form>
+                        </template>
+                      </div>
+                    </template>
+                    <template v-if="service_requests.length > 0">
+                      <div v-bind:class="{ 'col-md-8': $page.props.auth.user.type == 'admin', 'col-md-12': $page.props.auth.user.type == 'customer' }">
+                        <table class="table table-striped">
+                          <thead>
+                          <tr>
+                            <th scope="col">Service</th>
+                            <template v-if="$page.props.auth.user.type == 'customer'">
+                              <th scope="col">
+                                Your Message
+                              </th>
+                            </template>
+                            <template v-if="$page.props.auth.user.type == 'admin'">
+                              <th scope="col">
+                                Customer Message
+                              </th>
+                            </template>
+                            <th scope="col">Admin Response</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Charges</th>
+                            <template v-if="$page.props.auth.user.type == 'admin'">
+                              <th scope="col">
+                              </th>
+                            </template>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <tr v-for="request in service_requests" :key="request.id">
+                            <td>
+                              {{ request.service_title }}
+                            </td>
+                            <td>
+                              {{ request.customer_message }}
+                            </td>
+                            <td>
+                              {{ request.admin_message }}
+                            </td>
+                            <td>
+                              <span v-bind:class="getLabelClass(request.status)" style="padding :5px;"> {{ request.status }} </span>
+                            </td>
+                            <td>
+                              $ {{ request.price }}
+                            </td>
+                            <td>
+                              <template v-if="$page.props.auth.user.type == 'admin' && request.status == 'pending'">
+                                <a v-on:click="setServiceResponse(request)" class="link-primary">Respond</a>
+                              </template>
+                            </td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </template>
+                    <div v-if="$page.props.auth.user.type == 'admin'" class="col-md-4">
+                      <template v-if="form_respond.request !=null">
+                        <h3> Handle Service Request </h3>
+                        <form @submit.prevent="submitRespondForm">
+                          <p style="color:re">Service : <strong>{{ form_respond.request.service_title }}</strong></p>
                           <div class="form-group">
-                            <breeze-label for="notes" value="Message for Admin"/>
-                            <textarea v-model="form.customer_message"
-                                      name="notes"
-                                      id="notes"
+                            <p>Message for Customer</p>
+                            <textarea v-model="form_respond.admin_message"
+                                      name="admin_message"
+                                      id="admin_message"
                                       class="form-control"
-                                      placeholder="Message for Admin"
-                                      rows="2"
+                                      placeholder="Message for Customer"
+                                      rows="4"
                                       style="resize:none;"
                                       required>
-                                                    </textarea>
+                                                </textarea>
                           </div>
-                          <p style="color:red;">Are you sure you want to use service? Add your message for admin and continue</p>
-                          <p style="color:red;">Every service request is charged separately, so if you have already requested any service wait for system response.</p>
-                          <p style="color:re">Service : <strong>{{ form.service.title }}</strong></p>
-                          <p style="color:re">Charges : <strong>${{ form.service.price }}</strong></p>
+                          <p style="color:re">Charges: <strong>${{ form_respond.request.price }}</strong></p>
+                          <div class="form-group">
+                            <p>Edit Charges</p>
+                            <input type="text" v-model="form_respond.request.price"/>
+                          </div>
                           <div class="order-button">
-                            <a class="btn btn-danger" v-on:click="cancelServiceForm()"> Cancel</a>
-                            <input type="submit" value="Make Request" class="btn btn-success float-right"/>
+                            <input style="display:none;" type="submit" value="Update Request" class="btn btn-danger"/>
+
+                            <a v-on:click="requestComplete()" class="btn btn-success float-left">
+                              <span>Complete Request</span>
+                            </a>
+
+                            <a v-on:click="requestReject()" class="btn btn-danger float-right" style="margin-right:5px;">
+                              <span>Reject Request</span>
+                            </a>
+
                           </div>
                         </form>
                       </template>
                     </div>
-                  </template>
-                  <template v-if="service_requests.length > 0">
-                    <div v-bind:class="{ 'col-md-8': $page.props.auth.user.type == 'admin', 'col-md-12': $page.props.auth.user.type == 'customer' }">
-                      <table class="table table-striped">
-                        <thead>
-                        <tr>
-                          <th scope="col">Service</th>
-                          <template v-if="$page.props.auth.user.type == 'customer'">
-                            <th scope="col">
-                              Your Message
-                            </th>
-                          </template>
-                          <template v-if="$page.props.auth.user.type == 'admin'">
-                            <th scope="col">
-                              Customer Message
-                            </th>
-                          </template>
-                          <th scope="col">Admin Response</th>
-                          <th scope="col">Status</th>
-                          <th scope="col">Charges</th>
-                          <template v-if="$page.props.auth.user.type == 'admin'">
-                            <th scope="col">
-                            </th>
-                          </template>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr v-for="request in service_requests" :key="request.id">
-                          <td>
-                            {{ request.service_title }}
-                          </td>
-                          <td>
-                            {{ request.customer_message }}
-                          </td>
-                          <td>
-                            {{ request.admin_message }}
-                          </td>
-                          <td>
-                            <span v-bind:class="getLabelClass(request.status)" style="padding :5px;"> {{ request.status }} </span>
-                          </td>
-                          <td>
-                            $ {{ request.price }}
-                          </td>
-                          <td>
-                            <template v-if="$page.props.auth.user.type == 'admin' && request.status == 'pending'">
-                              <a v-on:click="setServiceResponse(request)" class="link-primary">Respond</a>
-                            </template>
-                          </td>
-                        </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </template>
-                  <div v-if="$page.props.auth.user.type == 'admin'" class="col-md-4">
-                    <template v-if="form_respond.request !=null">
-                      <h3> Handle Service Request </h3>
-                      <form @submit.prevent="submitRespondForm">
-                        <p style="color:re">Service : <strong>{{ form_respond.request.service_title }}</strong></p>
-                        <div class="form-group">
-                          <p>Message for Customer</p>
-                          <textarea v-model="form_respond.admin_message"
-                                    name="admin_message"
-                                    id="admin_message"
-                                    class="form-control"
-                                    placeholder="Message for Customer"
-                                    rows="4"
-                                    style="resize:none;"
-                                    required>
-                                                </textarea>
-                        </div>
-                        <p style="color:re">Charges: <strong>${{ form_respond.request.price }}</strong></p>
-                        <div class="form-group">
-                          <p>Edit Charges</p>
-                          <input type="text" v-model="form_respond.request.price"/>
-                        </div>
-                        <div class="order-button">
-                          <input style="display:none;" type="submit" value="Update Request" class="btn btn-danger"/>
-
-                          <a v-on:click="requestComplete()" class="btn btn-success float-left">
-                            <span>Complete Request</span>
-                          </a>
-
-                          <a v-on:click="requestReject()" class="btn btn-danger float-right" style="margin-right:5px;">
-                            <span>Reject Request</span>
-                          </a>
-
-                        </div>
-                      </form>
-                    </template>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </template>
 
         <div class="row">
           <div class="col-md-12">
@@ -549,10 +550,10 @@
                       <template v-for="service in service_requests " :key="service.id">
                         <tr>
                           <td>{{ service.service_title }}</td>
-                          <td v-if="service.service_title == 'Consolidation'">${{ service.price + ' + $1.5 X '+ packag.orders.length + ' = ' }}</td>
+                          <td v-if="service.service_title == 'Consolidation'">{{ '$1.5 X ' + packag.orders.length + ' + $' + service.price + ' = ' }}</td>
                           <td v-if="service.service_title != 'Consolidation'">${{ service.price }} =</td>
                           <td v-if="service.service_title != 'Consolidation'">${{ service.price }}</td>
-                          <td v-if="service.service_title == 'Consolidation'">${{parseFloat(service.price) + (1.5 * packag.orders.length)}}</td>
+                          <td v-if="service.service_title == 'Consolidation'">${{ parseFloat(service.price) + (1.5 * packag.orders.length) }}</td>
                           <td></td>
                         </tr>
                       </template>
@@ -584,9 +585,9 @@
                         <td>${{ getGrandTotal() }}</td>
                         <td></td>
                       </tr>
-                      <tr v-if="$page.props.auth.user.type == 'customer' && hasConsolidationServed && packag.carrier_code != null && packag.payment_status != 'Paid'">
+                      <tr v-if="$page.props.auth.user.type == 'customer'">
                         <td colspan="4">
-                          <button type="button" @click="checkout()" class="btn btn-primary">Checkout</button>
+                          <button type="button" :disabled="!hasConsolidationServed && packag.carrier_code == null && packag.payment_status == 'Paid'" @click="checkout()" class="btn btn-primary">Checkout</button>
                         </td>
                       </tr>
                       </tbody>
@@ -733,7 +734,7 @@ export default {
       showEstimatedPrice: false,
       form_checkout: this.$inertia.form({
         amount: '',
-        package_id:this.packag.id
+        package_id: this.packag.id
       })
     }
   },
@@ -891,9 +892,9 @@ export default {
 
       var consolidation_total = 0;
       console.log(this.hasConsolidationServed);
-      if(this.hasConsolidationServed || this.hasConsolidationRequest){
+      if (this.hasConsolidationServed || this.hasConsolidationRequest) {
         consolidation_total = this.packag.orders.length * 1.5;
-      }else{
+      } else {
         consolidation_total = 0;
       }
 
@@ -902,7 +903,7 @@ export default {
           },
       0);*/
       // return request_total+pickup_total;
-      return request_total+consolidation_total;
+      return request_total + consolidation_total;
 
     },
     getGrandTotal() {
