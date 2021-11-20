@@ -277,6 +277,7 @@ class ShopController extends Controller
             'is_service_charges'=>$model->is_service_charges,
             'discount'=>$model->discount,
             'receipt_url'=>$model->receipt_url,
+            'payment_status'=>$model->payment_status,
             'image' => '',
             'items' => $items,
             'images' => $images,
@@ -294,7 +295,11 @@ class ShopController extends Controller
 
         // echo '<pre>';
         // print_r($order);
-        // exit; 
+        // exit;
+
+        if($model->order_type == 'order'){
+            return redirect()->back()->with('error','You Have No Longer Access to this page.');
+        }
 
         return Inertia::render('ShopForMe/EditOrder',[
             'order' => $order,

@@ -267,13 +267,13 @@
 
         <div class="row" v-show="($page.props.auth.user.type == 'customer') || (($page.props.auth.user.type == 'admin') && (service_requests.length > 0))">
           <div class="col-md-12">
-            <div v-if="packag.status != 'consolidated'" class="card">
+            <div class="card">
               <div class="card-header">
                 <h3>Services</h3>
               </div>
               <div class="card-body">
                 <div class="row">
-                  <template v-if="$page.props.auth.user.type == 'customer'">
+                  <template v-if="$page.props.auth.user.type == 'customer' && packag.status != 'consolidated'">
                     <div class="col-md-7">
                       <table class="table table-striped">
                         <thead>
@@ -296,7 +296,8 @@
                             $ {{ service.price }}
                           </td>
                           <td style="width:110px;">
-                            <a v-on:click="setActiveService(service)" class="link-primary"> Make Request</a>
+                            <a v-if="service.title == 'Consolidation' && !hasConsolidationRequest" v-on:click="setActiveService(service)" class="link-primary"> Make Request</a>
+                            <a v-else-if="service.title != 'Consolidation'" v-on:click="setActiveService(service)" class="link-primary"> Make Request</a>
                           </td>
                         </tr>
                         </tbody>
@@ -549,8 +550,10 @@
                       <template v-for="service in service_requests " :key="service.id">
                         <tr>
                           <td>{{ service.service_title }}</td>
-                          <td>${{ service.price + ' + $1.5 X '+ packag.orders.length + ' = $' + (service.price + (1.5 * packag.orders.length)) }}</td>
-                          <td></td>
+                          <td v-if="service.service_title == 'Consolidation'">${{ service.price + ' + $1.5 X '+ packag.orders.length + ' = ' }}</td>
+                          <td v-if="service.service_title != 'Consolidation'">${{ service.price }} =</td>
+                          <td v-if="service.service_title != 'Consolidation'">${{ service.price }}</td>
+                          <td v-if="service.service_title == 'Consolidation'">${{parseFloat(service.price) + (1.5 * packag.orders.length)}}</td>
                           <td></td>
                         </tr>
                       </template>
@@ -565,14 +568,14 @@
                       </template>
                       <tr>
                         <td>Mail Out Fee</td>
-                        <td>${{ mailout_fee }}</td>
                         <td></td>
+                        <td>${{ mailout_fee }}</td>
                         <td></td>
                       </tr>
                       <tr>
                         <td>Shipping Total</td>
-                        <td>${{ packag.shipping_total }}</td>
                         <td></td>
+                        <td>${{ packag.shipping_total }}</td>
                         <td></td>
                       </tr>
                       <tr>
@@ -582,7 +585,7 @@
                         <td>${{ getGrandTotal() }}</td>
                         <td></td>
                       </tr>
-                      <tr v-if="$page.props.auth.user.type == 'customer' && packag.status == 'labeled' && hasConsolidationServed && packag.carrier_code != null">
+                      <tr v-if="$page.props.auth.user.type == 'customer' && hasConsolidationServed && packag.carrier_code != null">
                         <td colspan="4">
                           <button type="button" @click="checkout()" class="btn btn-primary">Checkout</button>
                         </td>
@@ -797,7 +800,7 @@ export default {
     setShippingService(service) {
       this.form_shipping_service.service = service;
       this.form_shipping_service.post(this.route('packages.set-shipping-service'));
-      location.reload();
+      window.location.reload()
     },
     getShippingRates() {
       //this.$refs.buttonRates.innerText = "Loading ..."
@@ -889,15 +892,13 @@ export default {
           },
           0);
 
-      var consolidation_total;
+      var consolidation_total = 0;
       console.log(this.hasConsolidationServed);
-      if(this.hasConsolidationServed){
+      if(this.hasConsolidationServed || this.hasConsolidationRequest){
         consolidation_total = this.packag.orders.length * 1.5;
       }else{
         consolidation_total = 0;
       }
-
-
 
       /*let pickup_total =  this.order_charges.reduce((acc, item) => {
           return acc + (parseInt(item.service_charges));

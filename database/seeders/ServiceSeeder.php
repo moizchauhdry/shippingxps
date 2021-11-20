@@ -18,7 +18,7 @@ class ServiceSeeder extends Seeder
             [
                 'title' =>'Consolidation',
                 'description' => 'Merge multiple orders into one package',
-                'price' => 3
+                'price' => 5
             ],
             [
                 'title' => 'Request Item Images',

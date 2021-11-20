@@ -174,7 +174,7 @@
                     </label>
                   </div>
               </div>
-              <template v-if="packag.status=='consolidated' || packag.orders.length==1">
+              <template v-if="packag.status=='consolidated' || packag.orders.length >= 1">
                 <div class="packag-button">
                   <input type="submit" value="Submit" class="btn btn-danger" />
                 </div>

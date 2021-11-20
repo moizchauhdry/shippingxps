@@ -128,7 +128,7 @@
                       <div class="col-md-4">
                         <breeze-label for="name" value="Name" />
                       </div>
-                      <div class="col-md-5">
+                      <div class="col-md-6">
                         <breeze-label for="description" value="Description" />
                       </div>
                       <!-- <div class="col-md-2">

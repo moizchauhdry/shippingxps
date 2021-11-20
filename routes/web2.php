@@ -18,7 +18,6 @@ Route::middleware('auth')->group(function () {
         Route::post('shop-for-me', [\App\Http\Controllers\ShopController::class, 'store'])->name('shop-for-me.store');
         Route::post('/update', [\App\Http\Controllers\ShopController::class, 'updateOrder'])->name('shop-for-me.update');
         Route::post('order/delete-image', [\App\Http\Controllers\OrderController::class, 'deleteImage'])->name('orders.removeImage');
-        Route::post('check/coupon', [\App\Http\Controllers\ShopController::class, 'checkCoupon'])->name('checkCoupon');
         Route::delete('/{id}', [\App\Http\Controllers\ShopController::class, 'destroy'])->name('shop-for-me.delete');
     });
 
@@ -57,6 +56,7 @@ Route::middleware('auth')->group(function () {
         Route::post('pay', [\App\Http\Controllers\PaymentController::class,  'pay'])->name('payment.pay');
         Route::get('list', [\App\Http\Controllers\PaymentController::class,  'getPayments'])->name('payments.getPayments');
         Route::get('PaymentSuccess', [\App\Http\Controllers\PaymentController::class,  'PaymentSuccess'])->name('payments.PaymentSuccess');
+        Route::post('check/coupon', [\App\Http\Controllers\PaymentController::class, 'checkCoupon'])->name('checkCoupon');
     });
 
 });

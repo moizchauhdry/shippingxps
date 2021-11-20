@@ -105,7 +105,7 @@
                             <breeze-label for="option" value="Description"/>
                           </div>
                           <div class="col-md-2">
-                            <breeze-label for="url" value="Url"/>
+                            <breeze-label for="url" value="URL"/>
                           </div>
                           <div class="col-md-1 p-0">
                             <breeze-label for="price" value="Price(USD)"/>
@@ -215,8 +215,9 @@
                           <div class="col-1 offset-md-9">
                             <breeze-label for="grand_total" value="Grand Total"/>
                           </div>
+
                           <div class="col-1 p-0">
-                            <input v-model="form_online.grand_total" name="grand_total" id="grand_total" type="number" class="form-control grand_total" placeholder="T.Price" required readonly/>
+                            <input v-model="shopGrandTotal"   name="grand_total" id="grand_total" type="number" class="form-control grand_total" placeholder="T.Price" required readonly/>
                           </div>
                         </div>
                       </div>
@@ -287,15 +288,15 @@
                                     placeholder="Notes"
                                     rows="3"
                                     style="resize:none;"
-                                    >
+                                   >
                             </textarea>
                         </div>
                       </div>
                     </div>
                     <div class="row mb-2">
                       <div class="col-md-8">
-                        <input type="radio" v-model="form_pickup.pickup_type" name="pickup_type" value="pickup_only" checked :required="setRequired('tab2')"> Only Pickup
-                        <input type="radio" v-model="form_pickup.pickup_type" name="pickup_type" value="shipping_xps_purchase" :required="setRequired('tab2')"> Shipping XPS Purchase
+                        <input type="radio" v-model="form_pickup.pickup_type" name="pickup_type"  @change="getPickUpGrandTotal" value="pickup_only" checked :required="setRequired('tab2')"> Only Pickup
+                        <input type="radio" v-model="form_pickup.pickup_type" name="pickup_type"  @change="getPickUpGrandTotal" value="shipping_xps_purchase" :required="setRequired('tab2')"> Shipping XPS Purchase
                       </div>
 
                       <div class="col">
@@ -451,7 +452,7 @@
                             <breeze-label class="float-right" for="grand_total" value="Grand Total"/>
                           </div>
                           <div class="col-1 p-0">
-                            <input v-model="form_pickup.grand_total" name="grand_total" id="grand_total" type="text" class="form-control grand_total" placeholder="G.Price" required readonly/>
+                            <input v-model="pickupGrandTotal" name="grand_total" id="grand_total" type="text" class="form-control grand_total" placeholder="G.Price" required readonly/>
                           </div>
                         </div>
                       </div>
@@ -499,6 +500,10 @@
 }
 </style>
 
+
+
+
+
 <script>
 import MainLayout from '@/Layouts/Main'
 import BreezeAuthenticatedLayout from '@/Layouts/Authenticated'
@@ -522,7 +527,7 @@ export default {
         sales_tax: '',
         pickup_type: '',
         pickup_date: '',
-        pickup_charges: '',
+        pickup_charges: 0,
         grand_total: 0,
         discount: 0,
         sub_total: 0,
@@ -534,9 +539,9 @@ export default {
             option: "",
             url: "",
             price: 0,
-            price_with_tax: "",
+            price_with_tax: 0,
             qty: 1,
-            sub_total: ""
+            sub_total: 0
           }
         ],
       }),
@@ -553,7 +558,7 @@ export default {
         sales_tax: '',
         pickup_type: 'pickup_only',
         pickup_date: '',
-        pickup_charges: '',
+        pickup_charges: 0,
         grand_total: 0,
         discount: 0,
         sub_total: 0,
@@ -565,9 +570,9 @@ export default {
             option: "",
             url: "",
             price: 0,
-            price_with_tax: "",
+            price_with_tax: 0,
             qty: 1,
-            sub_total: ""
+            sub_total: 0
           }
         ],
       }),
@@ -582,217 +587,216 @@ export default {
     auth: Object,
     warehouses: Object,
   },
-  methods: {
-    submitFormOnline() {
-      this.form_online.post(this.route('shop-for-me.store'))
+  computed: {
+      shopGrandTotal(){
+        var sum = 0;
+        this.form_online.grand_total = 0;
+        this.form_online.items.forEach(function (n) {
+          sum += parseFloat(n['sub_total']);
+        });
+        this.form_online.sub_total = parseFloat(sum).toFixed(2);
+        var servivceCharges = sum * 0.05;
+        this.form_online.service_charges = parseFloat(servivceCharges).toFixed(2);
+        console.log('fetched...')
+        var total = parseFloat(sum) + parseFloat(this.form_online.service_charges);
+        return this.form_online.grand_total = parseFloat(total).toFixed(2)
     },
-    submitFormPickup() {
-      this.form_pickup.post(this.route('shop-for-me.store'))
-    },
-    addItemOnline() {
-      this.form_online.items.push({
-        name: "",
-        option: "",
-        url: "",
-        price: 0,
-        price_with_tax: "",
-        qty: 1,
-        sub_total: ""
-      })
-    },
-    removeItemPickup(index) {
-      this.form_pickup.items.splice(index, 1);
-    },
-    addItemPickup() {
-      this.form_pickup.items.push({
-        name: "",
-        option: "",
-        url: "",
-        price: 0,
-        price_with_tax: "",
-        qty: 1,
-        sub_total: ""
-      })
-    },
-    removeItemOnline(index) {
-      this.form_online.items.splice(index, 1);
-    },
-    setActiveTabAB(tab) {
-      for (var key in this.tabs) {
-        if (key === tab) {
-          this.tabs[key] = true;
-        } else {
-          this.tabs[key] = false;
-        }
-        // to handle different form submit behaviour for the same form
-        // if (tab === 'tab1') {
-        //   this.form.form_type = 'shop';
-        // } else {
-        //   this.form.form_type = 'pickup';
-        // }
-      }
-    },
-
-    getTabClass(tab) {
-
-      if (this.tabs[tab] === true) {
-        return 'nav-link active';
-      } else {
-        return 'nav-link';
-      }
-
-    },
-
-    setRequired(tab) {
-      return this.tabs[tab];
-    },
-
-    getTabPaneClass(tab) {
-
-      if (this.tabs[tab] === true) {
-        return 'tab-pane show active';
-      } else {
-        return 'tab-pane fade d-none';
-      }
-    },
-
-    filterStores() {
-      const params = {
-        warehouse_id: this.form_pickup.warehouse_id
-      };
-
-      this.$refs.price.click();
-
-      axios.get("/shop-for-me/filter-stores/" + this.form_pickup.warehouse_id)
-          .then(({data}) => {
-                this.stores = data.stores;
-              }
-          );
-    },
-    wareHouseChangeOnline() {
-      this.$refs.price_online.click();
-    },
-    setPickupCharges(event) {
-      var store_id = event.target.value;
-      var pickup_charges = 0;
-      for (var i = 0; i < this.stores.length; i++) {
-        if (this.stores[i]['id'] == store_id) {
-          pickup_charges = this.stores[i]['pickup_charges'];
-        }
-      }
-      this.form_pickup.pickup_charges = pickup_charges;
-
-      this.getPickUpGrandTotal();
-    },
-    addShopTax(event) {
-      console.log('triggered...');
-      var mainParent = event.target.parentNode.parentNode.parentNode;
-      var row = document.getElementById(mainParent.id);
-      var index = row.dataset.id;
-      var quantity = this.form_online.items[index].qty;
-      var price = this.form_online.items[index].price;
-      var sale_tax = 0;
-      for (var i = 0; i < this.warehouses.length; i++) {
-        if (this.warehouses[i]['id'] == this.form_online.warehouse_id) {
-          sale_tax = this.warehouses[i]['sale_tax'];
-        }
-      }
-      var gross_total = (price * (sale_tax / 100));
-      var net_total = this.form_online.items[index].price_with_tax = (parseFloat(gross_total) + parseFloat(price)).toFixed(2);
-      this.form_online.items[index].sub_total = net_total * quantity;
-      this.form_online.items[index].sub_total = parseFloat(this.form_online.items[index].sub_total).toFixed(2)
-      this.getShopGrandTotal();
-    },
-    getShopGrandTotal() {
+    pickupGrandTotal(){
       var sum = 0;
-      this.form_online.items.forEach(function (n) {
+      this.form_pickup.grand_total = 0;
+      this.form_pickup.items.forEach(function (n) {
+        sum += parseFloat(n['sub_total']);
+      });
+      this.form_pickup.sub_total = parseFloat(sum).toFixed(2);
+      let pickupCharges = this.form_pickup.pickup_charges;
+      var totalpickup = 0;
+        if(this.form_pickup.pickup_type != 'pickup_only'){
+          var servivceCharges = sum * 0.05;
+          this.form_pickup.service_charges = parseFloat(servivceCharges).toFixed(2);
+          console.log('fetched...')
+          totalpickup = parseFloat(sum) + parseFloat(this.form_pickup.service_charges) + parseFloat(pickupCharges);
+        }else{
+          totalpickup = parseFloat(pickupCharges);
+        }
+      console.log('fetched...pickup')
+      return this.form_pickup.grand_total = parseFloat(totalpickup).toFixed(2)
+    }
+},
+methods: {
+  submitFormOnline() {
+    this.form_online.post(this.route('shop-for-me.store'))
+  },
+  submitFormPickup() {
+    this.form_pickup.post(this.route('shop-for-me.store'))
+  },
+  addItemOnline() {
+    this.form_online.items.push({
+      name: "",
+      option: "",
+      url: "",
+      price: 0,
+      price_with_tax: 0,
+      qty: 1,
+      sub_total: 0
+    })
+  },
+  removeItemPickup(index) {
+    this.form_pickup.items.splice(index, 1);
+  },
+  addItemPickup() {
+    this.form_pickup.items.push({
+      name: "",
+      option: "",
+      url: "",
+      price: 0,
+      price_with_tax: 0,
+      qty: 1,
+      sub_total: 0
+    })
+  },
+  removeItemOnline(index) {
+    this.form_online.items.splice(index, 1);
+  },
+  setActiveTabAB(tab) {
+    for (var key in this.tabs) {
+      if (key === tab) {
+        this.tabs[key] = true;
+      } else {
+        this.tabs[key] = false;
+      }
+      // to handle different form submit behaviour for the same form
+      // if (tab === 'tab1') {
+      //   this.form.form_type = 'shop';
+      // } else {
+      //   this.form.form_type = 'pickup';
+      // }
+    }
+  },
+
+  getTabClass(tab) {
+
+    if (this.tabs[tab] === true) {
+      return 'nav-link active';
+    } else {
+      return 'nav-link';
+    }
+
+  },
+
+  setRequired(tab) {
+    return this.tabs[tab];
+  },
+
+  getTabPaneClass(tab) {
+
+    if (this.tabs[tab] === true) {
+      return 'tab-pane show active';
+    } else {
+      return 'tab-pane fade d-none';
+    }
+  },
+
+  filterStores() {
+    const params = {
+      warehouse_id: this.form_pickup.warehouse_id
+    };
+
+    this.$refs.price.click();
+
+    axios.get("/shop-for-me/filter-stores/" + this.form_pickup.warehouse_id)
+        .then(({data}) => {
+              this.stores = data.stores;
+            }
+        );
+  },
+  wareHouseChangeOnline() {
+    this.$refs.price_online.click();
+  },
+  setPickupCharges(event) {
+    var store_id = event.target.value;
+    var pickup_charges = 0;
+    for (var i = 0; i < this.stores.length; i++) {
+      if (this.stores[i]['id'] == store_id) {
+        pickup_charges = this.stores[i]['pickup_charges'];
+      }
+    }
+    this.form_pickup.pickup_charges = pickup_charges;
+
+    this.getPickUpGrandTotal();
+  },
+  addShopTax(event) {
+    console.log('triggered...');
+    var mainParent = event.target.parentNode.parentNode.parentNode;
+    var row = document.getElementById(mainParent.id);
+    var index = row.dataset.id;
+    var quantity = this.form_online.items[index].qty;
+    var price = this.form_online.items[index].price;
+    var sale_tax = 0;
+    for (var i = 0; i < this.warehouses.length; i++) {
+      if (this.warehouses[i]['id'] == this.form_online.warehouse_id) {
+        sale_tax = this.warehouses[i]['sale_tax'];
+      }
+    }
+    var gross_total = (price * (sale_tax / 100));
+    var net_total = this.form_online.items[index].price_with_tax = (parseFloat(gross_total) + parseFloat(price)).toFixed(2);
+    this.form_online.items[index].sub_total = net_total * quantity;
+    this.form_online.items[index].sub_total = parseFloat(this.form_online.items[index].sub_total).toFixed(2)
+    this.getShopGrandTotal();
+  },
+  getShopGrandTotal() {
+    var sum = 0;
+    this.form_online.grand_total = 0;
+    this.form_online.items.forEach(function (n) {
+      sum += n['sub_total']
+    });
+    /*this.form_online.sub_total = parseFloat(sum).toFixed(2);
+    this.form_online.service_charges = parseFloat(sum * 0.05).toFixed(2);
+    const grand_total_shop = parseFloat(sum).toFixed(2) + parseFloat(this.form_online.service_charges).toFixed(2);
+    console.log(grand_total_shop);
+    console.log(this.form_online.sub_total);
+    console.log(this.form_online.service_charges);
+    console.log(this.form_online.service_charges + this.form_online.sub_total);
+    this.form_online.grand_total = parseFloat((sum * 0.05) + sum).toFixed(2);*/
+  },
+  addPickUpTax(event) {
+    console.log('triggered...');
+    var mainParent = event.target.parentNode.parentNode.parentNode;
+    var row = document.getElementById(mainParent.id);
+    var index = row.dataset.id;
+    var quantity = this.form_pickup.items[index].qty;
+    var price = this.form_pickup.items[index].price;
+    var sale_tax = 0;
+    for (var i = 0; i < this.warehouses.length; i++) {
+      if (this.warehouses[i]['id'] == this.form_pickup.warehouse_id) {
+        sale_tax = this.warehouses[i]['sale_tax'];
+      }
+    }
+    var gross_total = (price * (sale_tax / 100));
+    var net_total = this.form_pickup.items[index].price_with_tax = (parseFloat(gross_total) + parseFloat(price)).toFixed(2);
+    this.form_pickup.items[index].sub_total = net_total * quantity;
+    this.form_pickup.items[index].sub_total = parseFloat(this.form_pickup.items[index].sub_total).toFixed(2)
+
+    this.getPickUpGrandTotal();
+  },
+  getPickUpGrandTotal() {
+    if (this.form_pickup.pickup_type == 'pickup_only') {
+      this.form_pickup.grand_total = this.form_pickup.pickup_charges
+    } else {
+      var sum = 0;
+      this.form_pickup.items.forEach(function (n) {
         sum += n['sub_total']
       });
-      this.form_online.sub_total = parseFloat(sum).toFixed(2);
-      this.form_online.service_charges = parseFloat(sum).toFixed(2) * 0.05;
-      var charges = parseFloat(this.form_online.shipping_from_shop).toFixed(2)
-      this.form_online.shipping_charges = parseFloat(charges).toFixed(2)
-      this.form_online.grand_total = parseFloat(sum  + this.form_online.service_charges).toFixed(2);
-    },
-    addPickUpTax(event) {
-      console.log('triggered...');
-      var mainParent = event.target.parentNode.parentNode.parentNode;
-      var row = document.getElementById(mainParent.id);
-      var index = row.dataset.id;
-      var quantity = this.form_pickup.items[index].qty;
-      var price = this.form_pickup.items[index].price;
-      var sale_tax = 0;
-      for (var i = 0; i < this.warehouses.length; i++) {
-        if (this.warehouses[i]['id'] == this.form_pickup.warehouse_id) {
-          sale_tax = this.warehouses[i]['sale_tax'];
-        }
-      }
-      var gross_total = (price * (sale_tax / 100));
-      var net_total = this.form_pickup.items[index].price_with_tax = (parseFloat(gross_total) + parseFloat(price)).toFixed(2);
-      this.form_pickup.items[index].sub_total = net_total * quantity;
-      this.form_pickup.items[index].sub_total = parseFloat(this.form_pickup.items[index].sub_total).toFixed(2)
+      console.log(sum);
+      // this.form_pickup.sub_total = parseFloat(sum).toFixed(2);
+      // var dis_percentage = document.getElementById('pickup_percentage').value
+     /* this.form_pickup.sub_total = parseFloat(sum).toFixed(2);
+      this.form_pickup.service_charges = parseFloat(sum).toFixed(2) * 0.05;
+      this.form_pickup.service_charges = parseFloat(this.form_pickup.service_charges).toFixed(2);
+      this.form_pickup.shipping_charges = parseFloat(charges).toFixed(2)
+      this.form_pickup.grand_total = parseFloat(this.form_pickup.grand_total).toFixed(2);*/
+    }
+  },
 
-      this.getPickUpGrandTotal();
-    },
-    getPickUpGrandTotal() {
-      if (this.form_pickup.pickup_type == 'pickup_only') {
-        this.form_pickup.grand_total = this.form_pickup.pickup_charges
-      } else {
-        var sum = 0;
-        this.form_pickup.items.forEach(function (n) {
-          sum += n['sub_total']
-        });
-        console.log(sum);
-        // var dis_percentage = document.getElementById('pickup_percentage').value
-        this.form_pickup.sub_total = parseFloat(sum).toFixed(2);
-        this.form_pickup.service_charges = parseFloat(sum).toFixed(2) * 0.05;
-        var charges = parseFloat(this.form_pickup.shipping_from_shop)
-        this.form_pickup.shipping_charges = parseFloat(charges).toFixed(2)
-        this.form_pickup.grand_total = sum + this.form_pickup.service_charges + this.form_pickup.pickup_charges;
-        this.form_pickup.grand_total = parseFloat(this.form_pickup.grand_total).toFixed(2)
-      }
-    },
-    checkCouponCode(coupon_code) {
-      axios.post(this.route('checkCoupon'), {
-        code: coupon_code,
-      }).then(function (response) {
-        var data = response.data;
-        if (data.status == 1) {
-          alert(data.message);
-          document.querySelector('.coupon_code').disabled = true;
-          document.getElementById('pickup_percentage').value = response.data.discount
-          console.log(document.getElementById('pickup_percentage').value);
-        } else {
-          alert(data.message)
-          console.log('in here')
-          document.getElementById('pickup_percentage').value = 0
-        }
-        document.getElementById('pickup_percentage').click();
-      }).catch(function (error) {
-        console.log(error);
-      });
-    },
-    checkShopCouponCode(coupon_code) {
-      axios.post(this.route('checkCoupon'), {
-        code: coupon_code,
-      }).then(function (response) {
-        var data = response.data;
-        if (data.status == 1) {
-          alert(data.message);
-          // document.querySelector('.coupon_code').disabled = true;
-          document.getElementById('shop_percentage').value = response.data.discount
-          console.log(document.getElementById('shop_percentage').value);
-        } else {
-          alert(data.message)
-          console.log('in here')
-          document.getElementById('shop_percentage').value = 0
-        }
-        document.getElementById('shop_percentage').click();
-      }).catch(function (error) {
-        console.log(error);
-      });
-    },
-
-  }
+}
 }
 </script>

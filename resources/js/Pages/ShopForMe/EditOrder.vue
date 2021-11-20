@@ -23,7 +23,7 @@
           </template>
 
           <ul class="nav nav-pills nav-justified mb-3" id="pills-tab " role="tablist">
-            <li class="nav-item" role="presentation" v-show="form.form_type == 'shopping'" >
+            <li class="nav-item" role="presentation" v-show="form.form_type == 'shopping'">
               <button
                   v-on:click="setActiveTabAB('tab1')"
                   :class="getTabClass('tab1')"
@@ -36,7 +36,7 @@
                   aria-selected="true">Online Order
               </button>
             </li>
-            <li class="nav-item" role="presentation" v-show="form.form_type != 'shopping'" >
+            <li class="nav-item" role="presentation" v-show="form.form_type != 'shopping'">
               <button
                   v-on:click="setActiveTabAB('tab2')"
                   :class="getTabClass('tab2')"
@@ -58,7 +58,7 @@
                   <breeze-validation-errors class="mb-4"/>
                   <flash-messages class="mb-4"/>
 
-                  <div :class="getTabPaneClass('tab1')" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab"  >
+                  <div :class="getTabPaneClass('tab1')" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
                     <div class="row">
                       <div class="col-md-3">
                         <div class="form-group">
@@ -99,14 +99,14 @@
                                     placeholder="Notes"
                                     rows="5"
                                     style="resize:none;"
-                                    >
+                          >
                           </textarea>
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  <div :class="getTabPaneClass('tab2')" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab"  >
+                  <div :class="getTabPaneClass('tab2')" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
                     <div class="row">
                       <div class="col-md-3">
                         <div class="form-group">
@@ -144,15 +144,15 @@
                                     placeholder="Notes"
                                     rows="3"
                                     style="resize:none;"
-                                    required>
+                          >
                                 </textarea>
                         </div>
                       </div>
                     </div>
                     <div class="row mb-2">
                       <div class="col-md-8">
-                        <input type="radio" v-model="form.pickup_type" name="pickup_type" value="pickup_only" :required="setRequired('tab2')" :checked="form.pickup_type == 'pickup_only'"> Only Pickup
-                        <input type="radio" v-model="form.pickup_type" name="pickup_type" value="shipping_xps_purchase" :required="setRequired('tab2')" :checked="form.pickup_type == 'shipping_xps_purchase'"> Shipping XPS Purchase
+                        <input type="radio" @change="getGrandTotal(1)" v-model="form.pickup_type" name="pickup_type" value="pickup_only" :required="setRequired('tab2')" :checked="form.pickup_type == 'pickup_only'"> Only Pickup
+                        <input type="radio" @change="getGrandTotal(1)" v-model="form.pickup_type" name="pickup_type" value="shipping_xps_purchase" :required="setRequired('tab2')" :checked="form.pickup_type == 'shipping_xps_purchase'"> Shipping XPS Purchase
                       </div>
                       <!-- <div class="col">
                         <breeze-label for="only_pickup" value="Only Pickup" />
@@ -180,7 +180,7 @@
                       <div class="col">
                         <div class="form-group">
                           <breeze-label for="package_weight" value="Shipping Charges"/>
-                          <input v-model="form.shipping_from_shop" name="shipping_from_shop" id="shipping_from_shop" type="number" step="any" class="form-control" placeholder="Shipping Charges" required/>
+                          <input v-model="form.shipping_from_shop" name="shipping_from_shop" @keyup="getGrandTotal" id="shipping_from_shop" type="number" step="any" min="0" class="form-control" placeholder="Shipping Charges" required/>
                         </div>
                       </div>
                       <div class="col">
@@ -230,7 +230,7 @@
                         <div class="col-md-2" v-show="form.pickup_type != 'pickup_only'">
                           <breeze-label for="total" value="Total"/>
                         </div>
-                        <div class="col-md-1" >
+                        <div class="col-md-1">
                         </div>
                       </div>
 
@@ -272,7 +272,7 @@
                             <input v-model="item.sub_total" name="sub_total" id="sub_total" type="number" class="form-control sub_total" placeholder="T.Price" required readonly/>
                           </div>
                         </div>
-                        <div class="col-md-1" >
+                        <div class="col-md-1">
                           <div class="form-group" v-show="index!=0">
                             <a v-on:click="removeItem(index)" class="btn btn-primary">
                               <span>Remove</span>
@@ -283,30 +283,30 @@
                       </div>
 
                       <!-- sub_total -->
-                      <div class="row mb-2"  v-show="form.pickup_type != 'pickup_only'">
+                      <div class="row mb-2" v-show="form.pickup_type != 'pickup_only'">
                         <div class="col-2 offset-md-8">
                           <breeze-label class="float-right" for="form.subtotal" value="Sub Total"/>
                         </div>
                         <div class="col-1 p-0">
                           <input v-model="form.sub_total" name="sub_total" id="form.subtotal" type="number" class="form-control sub_total" placeholder="T.Price" required readonly/>
                         </div>
-                      </div >
+                      </div>
                       <!-- discount -->
-                      <div class="row mb-2" v-show="form.pickup_type != 'pickup_only'">
+                      <div class="row mb-2" v-show="form.shipping_from_shop != null && form.shipping_from_shop != 0">
                         <div class="col-1 offset-md-9">
-                          <breeze-label class="float-right" for="discount" value="Discount"/>
+                          <breeze-label class="float-right" for="shipping_from_shop" value="Shipping From Shop"/>
                         </div>
                         <div class="col-1 p-0">
-                          <input v-model="form.discount" name="discount" id="discount" type="number" class="form-control discount" placeholder="Discount" required readonly/>
+                          <input v-model="form.shipping_from_shop" name="shipping_from_shop" type="number" class="form-control discount" placeholder="shipping charges" readonly/>
                         </div>
                       </div>
                       <!-- pickup_charges -->
                       <div class="row mb-2" v-show="form.form_type != 'shopping'">
                         <div class="col-2 offset-md-8">
-                          <breeze-label class="float-right" for="pickup_charges" value="Pickup Charges" />
+                          <breeze-label class="float-right" for="pickup_charges" value="Pickup Charges"/>
                         </div>
                         <div class="col-1 p-0">
-                          <input v-model="form.pickup_charges" name="pickup_charges" id="pickup_charges" type="number" class="form-control pickup_charges"  placeholder="pickup charges" required readonly/>
+                          <input v-model="form.pickup_charges" name="pickup_charges" id="pickup_charges" type="number" class="form-control pickup_charges" placeholder="pickup charges" required readonly/>
                         </div>
                       </div>
                       <!-- service_charges -->
@@ -346,21 +346,16 @@
                       </div>
                     </div>
                   </fieldset>
-
-
                   <div class="row" v-if="$page.props.auth.user.type == 'customer'">
                     <div class="col-md-4 text-center form-group">
                       <img :src="imgURL(form.receipt_url)" alt="">
                     </div>
                   </div>
-
                   <div class="order-button">
-                    <input type="submit" value="Update Shopping" class="btn btn-danger"/>
+                    <input v-if="order.payment_status != 'Paid'" type="submit" value="Update Shopping" class="btn btn-danger"/>
                     <template v-if="$page.props.auth.user.type == 'customer' && form.updated_by_admin == '1'">
                       <a class="btn btn-primary ml-2" v-on:click="approveChanges()">Approve Changes</a>
                     </template>
-
-
                     <template v-if="form.changes_approved == '1' && $page.props.auth.user.type == 'admin'">
                       <template v-if="$page.props.auth.user.type == 'admin' && form.status == 'pending'">
                         <a v-on:click="changeToCompleteShopping()" class="btn btn-primary float-right">
@@ -411,7 +406,7 @@ export default {
     console.log(this.order.updated_by_admin)
     return {
       form: this.$inertia.form({
-        form_type: (this.order.order_type == 'shopping') ? 'shopping' : 'pickup',
+        form_type: (this.order.order_type == 'shopping' ) ? 'shopping' : 'pickup',
         id: this.order.id,
         warehouse_id: this.order.warehouse_id,
         store_id: this.order.store_id,
@@ -422,7 +417,7 @@ export default {
         order_origin: this.order.order_origin,
         items: this.order.items,
         pickup_type: this.order.pickup_type,
-        pickup_charges: this.order.pickup_charges,
+        pickup_charges: this.order.pickup_charges == null ? 0 : this.order.pickup_charges,
         only_pickup: (this.order.order_type == 'shopping') ? '' : this.order.only_pickup,
         shipping_xps: (this.order.order_type == 'shopping') ? '' : this.order.shipping_xps,
         pickup_date: (this.order.order_type == 'shopping') ? '' : this.order.pickup_date,
@@ -439,7 +434,7 @@ export default {
         sub_total: this.order.sub_total,
         sale_tax: 0,
         receipt_url: this.order.receipt_url,
-        is_service_charges:this.order.is_service_charges,
+        is_service_charges: this.order.is_service_charges,
       }),
       tabs: {
         tab1: (this.order.order_type == 'shopping') ? true : false,
@@ -475,7 +470,7 @@ export default {
     submit() {
       this.form.post(this.route('shop-for-me.update'));
     },
-    adminServicesCharges(){
+    adminServicesCharges() {
       if (this.$page.props.auth.user.type === 'admin') {
         console.log("adminServicesCharges() triggered...")
         console.log(this.form.is_service_charges)
@@ -497,10 +492,10 @@ export default {
         name: "",
         description: "",
         url: "",
-        price: "",
-        price_with_tax: "",
-        qty: "",
-        sub_total: ""
+        price: 0,
+        price_with_tax: 0,
+        qty: 1,
+        sub_total: 0
       })
 
     },
@@ -577,25 +572,32 @@ export default {
       this.getGrandTotal(1);
     },
     getGrandTotal(e) {
-      if(this.form.pickup_type == 'pickup_only'){
-        this.form.grand_total = this.form.pickup_charges
-      }else{
+      var pickup_charges = this.form.pickup_charges;
+      if (this.form.pickup_type == 'pickup_only') {
+        this.form.grand_total = parseFloat(pickup_charges).toFixed(2);
+        console.log('inHere');
+        console.log(pickup_charges);
+        console.log(this.form.grand_total);
+      } else {
         var sum = 0;
         this.form.items.forEach(function (n) {
-          sum += n['sub_total']
+          sum += parseFloat(n['sub_total']);
         });
         this.form.sub_total = parseFloat(sum).toFixed(2);
-        if(e == 1 && this.form.is_service_charges != 1){
-          this.form.service_charges = parseFloat(sum * 0.05).toFixed(2) ;
-          var serviceCharges = 0;
-        }else{
+        if (e == 1 && this.form.is_service_charges != 1) {
+          var serviceCharges = sum * 0.05
+          this.form.service_charges = parseFloat(serviceCharges).toFixed(2);
+          console.log('hit1')
+          console.log(serviceCharges)
+        } else {
+          console.log('hit2')
           var serviceCharges = this.form.service_charges
         }
         var charges = parseFloat(this.form.shipping_from_shop);
-        this.form.shipping_charges = charges
-        var pickup_charges = (this.form.form_type == 'shopping') ? 0 : parseFloat(this.form.pickup_charges);
+        this.form.shipping_charges = parseFloat(charges).toFixed(2)
+        pickup_charges = this.form.form_type === 'shopping' ? 0 : pickup_charges;
         var total = parseFloat(sum) + parseFloat(charges) + parseFloat(pickup_charges) + parseFloat(serviceCharges);
-        this.form.grand_total = parseFloat(total).toFixed(2) ;
+        this.form.grand_total = parseFloat(total).toFixed(2);
       }
     },
     setPickupCharges(event) {

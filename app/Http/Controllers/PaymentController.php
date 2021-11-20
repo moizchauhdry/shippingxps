@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Coupon;
+use App\Models\CustomerCoupon;
+use App\Models\Order;
+use App\Models\Package;
 use App\Models\Payment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use net\authorize\api\contract\v1 as AnetAPI;
@@ -16,21 +21,29 @@ class PaymentController extends Controller
 
 
 
-    public function     index(Request $request){
-        \Session::put('amount',$request->amount);
+    public function index(Request $request){
+        if($request->has('package_id') || \Session::has('order_id')){
+            \Session::put('amount',$request->amount);
+            if($request->has('status')){
+                $status = $request->status;
+            }
+            else{
+                $status = null;
+            }
 
-        if($request->has('status')){
-            $status = $request->status;
-        }
-        else{
-            $status = null;
-        }
+            if($request->has('package_id')){
+                \Session::put('package_id',$request->package_id);
+            }
 
-        if($request->has('package_id')){
-            \Session::put('package_id',$request->package_id);
+            return Inertia::render('Payment/OrderPayment',
+                [
+                    'amount' => $request->amount,
+                    'status'=>$status,
+                    'hasPackage'=> $request->has('package_id') ? 1 : 0,
+                ]);
+        }else{
+            return redirect()->back()->with('error','Something went wrong');
         }
-
-        return Inertia::render('Payment/OrderPayment',['amount' => $request->amount,'status'=>$status]);
     }
 
     public function pay(Request $request)
@@ -92,13 +105,13 @@ class PaymentController extends Controller
 
 
         // Assemble the complete transaction request
-        $request = new AnetAPI\CreateTransactionRequest();
-        $request->setMerchantAuthentication($merchantAuthentication);
-        $request->setRefId($refId);
-        $request->setTransactionRequest($transactionRequestType);
+        $transaction = new AnetAPI\CreateTransactionRequest();
+        $transaction->setMerchantAuthentication($merchantAuthentication);
+        $transaction->setRefId($refId);
+        $transaction->setTransactionRequest($transactionRequestType);
 
         // Create the controller and get the response
-        $controller = new AnetController\CreateTransactionController($request);
+        $controller = new AnetController\CreateTransactionController($transaction);
         $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::SANDBOX);
 
 
@@ -149,6 +162,29 @@ class PaymentController extends Controller
             $payment->charged_amount = \Session::get('amount');
             $payment->charged_at = Carbon::now()->format('Y-m-d H:i:s');
             $payment->save();
+
+            if(\Session::has('order_id')){
+                $id = \Session::get('order_id');
+                $order = Order::find($id);
+                $order->payment_status = "Paid";
+                $order->save();
+            }
+
+            if(\Session::has('package_id')){
+                $id = \Session::get('package_id');
+                $package = Package::find($id);
+                $package->payment_status = "Paid";
+                $package->save();
+
+
+                if($request->has('coupon_id') && $request->coupon_code != null){
+                    $customerCoupon = new CustomerCoupon();
+                    $customerCoupon->customer_id = $user->id;
+                    $customerCoupon->coupon_id = $request->coupon_id;
+                    $customerCoupon->save();
+                }
+            }
+
             \Session::forget(['order_id','package_id','amount']);
             return redirect()->route('payments.PaymentSuccess')->with(['payment'=>$payment,'status']);
         }
@@ -188,5 +224,53 @@ class PaymentController extends Controller
         return Inertia::render('Payment/PaymentSuccess',[
             'payment' => $payment,
         ]);
+    }
+
+    /* Coupon Mangement */
+    public function checkCoupon(Request $request)
+    {
+        // dd($request->code);
+        $customer = Auth::user();
+        $code = $request->code;
+
+        $coupon = Coupon::where('code',$code)->first();
+
+        if($coupon != null){
+            $strCheck = strcmp($code,$coupon->code);
+            if($strCheck == 0){
+                $checkCode = CustomerCoupon::where('coupon_id',$coupon->id)->where('customer_id',$customer->id)->get();
+                if($checkCode->count() > 0){
+                    return response()->json([
+                        'status' => 0,
+                        'message' => 'Coupon already used',
+                    ]);
+                }else{
+                    if(\Session::has('amount')){
+                        $amount = \Session::get('amount');
+                        $discount = $amount * ($coupon->discount / 100);
+                        $newAmount = $amount - $discount;
+                        \Session::put('amount',$newAmount);
+                    }
+                    return response()->json([
+                        'status' => 1,
+                        'message' => 'Coupon Applied',
+                        'discount' => $coupon->discount,
+                        'coupon_id' => $coupon->id,
+                    ]);
+                }
+
+            }else{
+                return response()->json([
+                    'status' => 0,
+                    'message' => 'Coupon is invalid',
+                ]);
+            }
+        }else{
+            return response()->json([
+                'status' => 0,
+                'message' => 'Coupon is invalid',
+            ]);
+        }
+
     }
 }
