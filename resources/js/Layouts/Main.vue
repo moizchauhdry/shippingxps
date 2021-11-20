@@ -141,6 +141,9 @@
 
       <div role="main" class="main-section">
         <div class="col-md-12">
+          <div class="row">
+            <FlashMessages/>
+          </div>
           <slot/>
         </div>
       </div>
@@ -149,8 +152,8 @@
 </template>
 <style scoped>
 
-.table{
-  overflow-y:scroll ;
+.table {
+  overflow-y: scroll;
 }
 
 @media (max-width: 769px) {
@@ -445,6 +448,7 @@ import BreezeApplicationLogo from '@/Components/ApplicationLogo'
 import BreezeDropdown from '@/Components/Dropdown'
 import BreezeDropdownLink from '@/Components/DropdownLink'
 import BreezeNavLink from '@/Components/NavLink'
+import FlashMessages from '@/Components/FlashMessages'
 import BreezeResponsiveNavLink from '@/Components/ResponsiveNavLink'
 
 export default {
@@ -455,6 +459,7 @@ export default {
     BreezeApplicationLogo,
     BreezeDropdown,
     BreezeDropdownLink,
+    FlashMessages,
     BreezeNavLink,
     BreezeResponsiveNavLink,
   },

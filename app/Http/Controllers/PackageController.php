@@ -572,7 +572,6 @@ class PackageController extends Controller
     public function setShippingService(Request $request){
 
         $data = $request->all();
-
         $service = $data['service'];
 
         $package = Package::find($data['package_id']);
@@ -588,7 +587,7 @@ class PackageController extends Controller
 
         event(new PackageShippingServiceSelected($package));
 
-        return redirect()->back()->with('success', 'Package set for shipment.');
+        return redirect()->route('packages.show',$package->id)->with('success', 'Package set for shipment.');
 
     }
 

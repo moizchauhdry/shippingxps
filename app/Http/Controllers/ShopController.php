@@ -190,7 +190,7 @@ class ShopController extends Controller
             return redirect('shop-for-me')->with('success', 'Order Added!');
 
         } catch (\Exception $e) {
-            dd($e);
+            // dd($e);
             DB::rollBack();
             return redirect()->back()->with('error', 'Something went wrong.');
         }
@@ -298,7 +298,7 @@ class ShopController extends Controller
         // exit;
 
         if($model->order_type == 'order'){
-            return redirect()->back()->with('error','You Have No Longer Access to this page.');
+            return redirect()->back()->with('error','You Have No Longer Access to that page.');
         }
 
         return Inertia::render('ShopForMe/EditOrder',[

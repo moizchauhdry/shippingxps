@@ -3,7 +3,6 @@
     <div class="row" style="margin-top:20px;">
       <div class="col-md-12">
         <div class="row">
-          <FlashMessages/>
         </div>
         <div class="row">
           <div class="col-md-10">
@@ -585,7 +584,7 @@
                         <td>${{ getGrandTotal() }}</td>
                         <td></td>
                       </tr>
-                      <tr v-if="$page.props.auth.user.type == 'customer' && hasConsolidationServed && packag.carrier_code != null">
+                      <tr v-if="$page.props.auth.user.type == 'customer' && hasConsolidationServed && packag.carrier_code != null && packag.payment_status != 'Paid'">
                         <td colspan="4">
                           <button type="button" @click="checkout()" class="btn btn-primary">Checkout</button>
                         </td>
@@ -682,14 +681,12 @@
 <script>
 import MainLayout from '@/Layouts/Main'
 import BreezeAuthenticatedLayout from '@/Layouts/Authenticated'
-import FlashMessages from '@/Components/FlashMessages'
 import BreezeLabel from '@/Components/Label'
 
 export default {
   components: {
     BreezeAuthenticatedLayout,
     MainLayout,
-    FlashMessages,
     BreezeLabel
   },
   data() {
@@ -800,7 +797,7 @@ export default {
     setShippingService(service) {
       this.form_shipping_service.service = service;
       this.form_shipping_service.post(this.route('packages.set-shipping-service'));
-      window.location.reload()
+      /*window.location.reload()*/
     },
     getShippingRates() {
       //this.$refs.buttonRates.innerText = "Loading ..."
