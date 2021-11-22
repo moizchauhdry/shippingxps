@@ -8,6 +8,9 @@
               <form @submit.prevent="submit" enctype="multipart/form-data">
                 <div class="row">
                   <div class="col-md-6 offset-md-3">
+                    {{ status }}
+
+
                     <div class="bg-dark border-3 border-warning container mb-3 text-center text-white">
                       <h2 style="color: #fff;font-weight:bold;font-size:25px;" >Checkout</h2>
                     </div>
@@ -30,17 +33,17 @@
                       </div>
                       <div class="form-group col-12">
                         <breeze-label for="name" value="Card No"/>
-                        <input v-model="form.card_no" class="form-control" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" type="number" :maxlength="card_max"  name="card_no" placeholder="####-####-####-####" required>
+                        <input v-model="form.card_no" class="form-control"  type="number" :maxlength="card_max"  name="card_no" placeholder="####-####-####-####" required>
                       </div>
                       <div class="form-group col-4">
                         <breeze-label for="month" value="Month"/>
                         <select v-model="form.month" class="form-control" name="month" required>
                           <option value="">Selcect Month</option>
-                          <option v-for="n in 12" :value="n">{{n}}</option>
+                          <option v-for="n in 12" :value="n" >{{n}}</option>
                         </select>
                       </div>
                       <div class="form-group col-4">
-                        <breeze-label for="name" value="Year"/>
+                        <breeze-label  for="name" value="Year"/>
                         <select v-model="form.year" class="form-control" name="year" required>
                           <option value="">Selcect Year</option>
                           <option :value="(new Date().getFullYear())">{{new Date().getFullYear()}}</option>
@@ -49,7 +52,7 @@
                       </div>
                       <div class="form-group col-4">
                         <breeze-label for="name" value="CVV"/>
-                        <input v-model="form.cvv" class="form-control" type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="3" name="cvv" placeholder="123" required>
+                        <input v-model="form.cvv" class="form-control" type="number" maxlength="3" name="cvv" placeholder="123" required>
                       </div>
 
                       <table class="table" cols="4">

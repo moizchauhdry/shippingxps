@@ -176,4 +176,11 @@ Route::post('pages/save', 'PostController@save')->middleware(['auth', 'verified'
 
 //Route::get('{post_url}', 'PostController@index');
 
+Route::get('/clear-cache', function () {
+    \Artisan::call('cache:clear');
+    \Artisan::call('route:clear');
+    \Artisan::call('view:clear');
+    \Artisan::call('optimize:clear');
+    return 'Cache Cleared';
+});
                                 

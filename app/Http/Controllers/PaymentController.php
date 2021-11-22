@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\PaymentEventHandler;
 use App\Models\Coupon;
 use App\Models\CustomerCoupon;
 use App\Models\Order;
@@ -163,6 +164,10 @@ class PaymentController extends Controller
             $payment->charged_at = Carbon::now()->format('Y-m-d H:i:s');
             $payment->save();
 
+            /*Dont make it live */
+                event(new PaymentEventHandler($payment));
+            /*Dont make it live end */
+
             if(\Session::has('order_id')){
                 $id = \Session::get('order_id');
                 $order = Order::find($id);
@@ -177,12 +182,12 @@ class PaymentController extends Controller
                 $package->save();
 
 
-                if($request->has('coupon_id') && $request->coupon_code != null){
+                /*if($request->has('coupon_id') && $request->coupon_code != null){
                     $customerCoupon = new CustomerCoupon();
                     $customerCoupon->customer_id = $user->id;
                     $customerCoupon->coupon_id = $request->coupon_id;
                     $customerCoupon->save();
-                }
+                }*/
             }
 
             \Session::forget(['order_id','package_id','amount']);

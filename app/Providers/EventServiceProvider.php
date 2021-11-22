@@ -10,6 +10,7 @@ use App\Events\OrderUpdatedEvent;
 use App\Events\PackageConsolidated;
 use App\Events\PackageShipped;
 use App\Events\PackageShippingServiceSelected;
+use App\Events\PaymentEventHandler;
 use App\Events\ServiceRequestedEvent;
 use App\Events\ServiceRequestUpdatedEvent;
 use App\Events\ShoppingCompletedEvent;
@@ -23,6 +24,7 @@ use App\Listeners\OrderUpdatedListener;
 use App\Listeners\PackageConsolidatedListener;
 use App\Listeners\PackageShippedListener;
 use App\Listeners\PackageShippingServiceListener;
+use App\Listeners\PaymentListener;
 use App\Listeners\ServiceRequstListener;
 use App\Listeners\ServiceRequestUpdatedListener;
 use App\Listeners\ShoppingCompletedListener;
@@ -78,6 +80,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         OrderChangesAcceptedByCustomerEvent::class => [
             ChangesAcceptedByCustomerListener::class
+        ],
+        PaymentEventHandler::class => [
+            PaymentListener::class
         ]
 
     ];

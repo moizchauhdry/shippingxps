@@ -176,14 +176,14 @@
                           <div class="col-md-2">
                             <div class="form-group">
                               <breeze-label for="package_weight" value="Package Weight"/>
-                              <input v-model="form_consolidate.package_weight" name="package_weight" id="package_weight" type="number" class="form-control" placeholder="Package Weight" required/>
+                              <input v-model="form_consolidate.package_weight" min="1" name="package_weight" id="package_weight" type="number" class="form-control" placeholder="Package Weight" required/>
                             </div>
                           </div>
 
                           <div class="col-md-2">
                             <div class="form-group">
                               <breeze-label for="dim_unit" value="Dimention Unit"/>
-                              <select name="dim_unit" class="form-select" v-model="form_consolidate.dim_unit" required>
+                              <select name="dim_unit" class="form-select" v-model="form_consolidate.dim_unit"  required>
                                 <option value="in">Inch</option>
                                 <option value="cm">Cm</option>
                               </select>
@@ -192,19 +192,19 @@
                           <div class="col-md-2">
                             <div class="form-group">
                               <breeze-label for="package_length" value="Package Length"/>
-                              <input v-model="form_consolidate.package_length" name="package_length" id="package_length" type="number" class="form-control" placeholder="Package Length" required/>
+                              <input v-model="form_consolidate.package_length" min="1" name="package_length" id="package_length" type="number" class="form-control" placeholder="Package Length" required/>
                             </div>
                           </div>
                           <div class="col-md-2">
                             <div class="form-group">
                               <breeze-label for="package_height" value="Package Height"/>
-                              <input v-model="form_consolidate.package_height" name="package_height" id="package_height" type="number" class="form-control" placeholder="Package Height" required/>
+                              <input v-model="form_consolidate.package_height" min="1" name="package_height" id="package_height" type="number" class="form-control" placeholder="Package Height" required/>
                             </div>
                           </div>
                           <div class="col-md-2">
                             <div class="form-group">
                               <breeze-label for="package_weight" value="Package Width"/>
-                              <input v-model="form_consolidate.package_width" name="package_width" id="package_width" type="number" class="form-control" placeholder="Package Width" required/>
+                              <input v-model="form_consolidate.package_width" min="1" name="package_width" id="package_width" type="number" class="form-control" placeholder="Package Width" required/>
                             </div>
                           </div>
                         </div>
@@ -586,8 +586,12 @@
                         <td></td>
                       </tr>
                       <tr v-if="$page.props.auth.user.type == 'customer'">
-                        <td colspan="4">
-                          <button type="button" :disabled="!hasConsolidationServed && packag.carrier_code == null && packag.payment_status == 'Paid'" @click="checkout()" class="btn btn-primary">Checkout</button>
+                        <td v-if="packag.carrier_code != null && packag.payment_status != 'Paid'" colspan="4">
+                          <button type="button"  @click="checkout()" class="btn btn-primary">Checkout</button>
+                        </td>
+                        <td v-else colspan="4">
+                          <button v-if="packag.payment_status != 'Paid'" type="button"  class="btn btn-primary disabled">Checkout</button>
+                          <span class="badge badge-success" v-if="packag.payment_status == 'Paid'">Paid</span>
                         </td>
                       </tr>
                       </tbody>

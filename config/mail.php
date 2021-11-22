@@ -34,18 +34,29 @@ return [
     */
 
     'mailers' => [
-//        'smtp' => [
-//            'transport' => 'smtp',
-//            'host' => 'smtp.mailtrap.io',
-//            'port' => 2525,
-//            'encryption' => env('MAIL_ENCRYPTION', 'tls'),
-//            'username' => 'fea77e125e85ff',
-//            'password' => '674354f56867c3',
-//            'timeout' => null,
-//            'auth_mode' => null,
-//        ],
-
         'smtp' => [
+            'transport' => 'smtp',
+            'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
+            'port' => env('MAIL_PORT', 587),
+            'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+            'username' => env('MAIL_USERNAME'),
+            'password' => env('MAIL_PASSWORD'),
+            'timeout' => null,
+            'auth_mode' => null,
+        ],
+
+        /*'smtp' => [
+            'transport' => 'smtp',
+            'host' => 'smtp.mailtrap.io',
+            'port' => 2525,
+            'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+            'username' => 'fea77e125e85ff',
+            'password' => '674354f56867c3',
+            'timeout' => null,
+            'auth_mode' => null,
+        ],*/
+
+        /*'smtp' => [
             'transport' => 'smtp',
             'host' => 'smtp.mailgun.org',
             'port' => 587,
@@ -54,7 +65,7 @@ return [
             'password' => '8a22ae720ffb483a90fedb0171dbd377-fb87af35-0d090499',
             'timeout' => null,
             'auth_mode' => null,
-        ],
+        ],*/
 
         'ses' => [
             'transport' => 'ses',
