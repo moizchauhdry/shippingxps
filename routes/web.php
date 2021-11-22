@@ -32,6 +32,7 @@ Route::get('/test-email','EmailController@index')->name('test-email');
 Route::get('/dashboard','HomeController@dashboard')->name('dashboard')->middleware(['auth','verified']);
 
 Route::get('/shipping-calculator','HomeController@pricing')->name('shipping-calculator');
+Route::get('/getServicesList','HomeController@getServicesList')->name('getServicesList');
 
 Route::get('/pricing','HomeController@pricingTable')->name('pricing');
 

@@ -576,8 +576,8 @@ class PackageController extends Controller
 
         $package = Package::find($data['package_id']);
         $package->status = $data['status'];
-        $package->carrier_code = $service['carrierCode'];
-        $package->service_label = $service['serviceLabel'];
+        $package->carrier_code = isset($service['carrierCode'])? $service['carrierCode'] : " "  ;
+        $package->service_label = isset($service['serviceLabel'])? $service['serviceLabel'] : " " ;
         $package->service_code = $service['serviceCode'];
         $package->package_type_code = $service['packageTypeCode'];
         $package->currency = $service['currency'];

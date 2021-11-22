@@ -129,7 +129,7 @@
                       </tr>
                       </thead>
                       <tbody>
-                      <template v-for="service in shipping_services" :key="service">
+                      <template v-for="service in shipping_services" :key="service.service_id">
                         <tr v-if="service.isReady === true">
                           <td>{{ service.serviceLabel }}</td>
                           <td>{{ service.totalAmount }} {{ service.currency }}</td>
@@ -806,6 +806,9 @@ export default {
     },
     getShippingRates() {
       //this.$refs.buttonRates.innerText = "Loading ..."
+
+      console.log('here');
+
       this.showEstimatedPrice = false;
       this.isLoading = true;
       let quote_params = {
@@ -818,7 +821,17 @@ export default {
         height: this.packag.package_height,
         zipcode: 'null',
       };
-      //get first service rate.
+      axios.get(this.route('getServicesList')).then(response => {
+        console.log(response.data.services)
+        response.data.services.forEach((ele, index) => {
+          console.log(ele);
+          quote_params.service = ele;
+          this.getRates(quote_params);
+        })
+      }).catch(error => {
+        console.log(error)
+      })
+      /*//get first service rate.
       quote_params.service = this.shipping_services.fedex_international_economy;
       axios.get("/getQuote", {
         params: quote_params,
@@ -886,7 +899,7 @@ export default {
                   this.serverError = data.message;
                 }
               }
-          );
+          );*/
     },
     getServiceSubTotal() {
       let request_total = this.service_requests.reduce((acc, item) => {
@@ -977,7 +990,28 @@ export default {
     checkout() {
       this.form_checkout.amount = this.getGrandTotal();
       this.form_checkout.post(this.route('payment.index'))
-    }
+    },
+    getRates(quote_params) {
+      axios.get("/getQuote", {
+        params: quote_params,
+      }).then((response) => {
+            console.log(response.data.service)
+            this.isLoading = false;
+            if (response.data.status) {
+
+              this.showEstimatedPrice = true;
+              //this.services.push(data.data.service)
+              this.shipping_services[response.data.service.service_id] = response.data.service;
+
+            } else {
+              this.serverError = response.data.message;
+            }
+          }
+      );
+    },
+    /*imgURL(url) {
+      return "/public" + url;
+    },*/
   }
 }
 </script>
