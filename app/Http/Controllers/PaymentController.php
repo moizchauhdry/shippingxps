@@ -104,7 +104,6 @@ class PaymentController extends Controller
         $transactionRequestType->setCustomer($customerData);
         $transactionRequestType->addToTransactionSettings($duplicateWindowSetting);
 
-
         // Assemble the complete transaction request
         $transaction = new AnetAPI\CreateTransactionRequest();
         $transaction->setMerchantAuthentication($merchantAuthentication);
@@ -114,8 +113,6 @@ class PaymentController extends Controller
         // Create the controller and get the response
         $controller = new AnetController\CreateTransactionController($transaction);
         $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::SANDBOX);
-
-
         /*if ($response != null) {
             // Check to see if the API request was successfully received and acted upon
             if ($response->getMessages()->getResultCode() == "Ok") {
@@ -181,27 +178,22 @@ class PaymentController extends Controller
                 $package->payment_status = "Paid";
                 $package->save();
 
-
                 /*if($request->has('coupon_id') && $request->coupon_code != null){
                     $customerCoupon = new CustomerCoupon();
                     $customerCoupon->customer_id = $user->id;
                     $customerCoupon->coupon_id = $request->coupon_id;
                     $customerCoupon->save();
                 }*/
+
+
+
             }
 
             \Session::forget(['order_id','package_id','amount']);
             return redirect()->route('payments.PaymentSuccess')->with(['payment'=>$payment,'status']);
         }
-//        dd($response);
 
         return redirect()->route('payment.index',['amount'=>\Session::get('amount'),'status'=>$response->getMessages()]);
-
-        /*return Inertia::render('Payment/OrderPayment',
-            [
-                'amount' => \Session::has('amount')? \Session::get('amount'): 0,
-                'status'=>$response->getMessages()
-            ]);*/
 
 
     }
@@ -277,5 +269,13 @@ class PaymentController extends Controller
             ]);
         }
 
+    }
+
+    public function buildInvoice()
+    {
+        $package = Package::find(2);
+
+
+        return view('pdfs.payment-invoice',compact('package'));
     }
 }

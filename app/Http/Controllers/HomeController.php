@@ -29,403 +29,266 @@ class HomeController extends Controller
 
         //use only fedex and dhl.
         //use logo as well.
-
-        /*'fedex_international_economy' => [
-            'carrierCode' => 'fedex',            
-            'serviceCode' => 'fedex_international_economy',
-            'packageTypeCode' => 'fedex_custom_package',
-            'serviceLabel' =>'FedEx International Economy®',
-            'currency' => 'USD',
-            'totalAmount' => 0,
-            'baseAmount' => 0,
-            'isReady' => false,
-            'logo'=> 'fedex-logo.png',
-        ],
-        'usps_international_first_class' => [
-            'carrierCode' => 'usps',
-            'serviceCode' => 'usps_international_first_class',
-            'packageTypeCode' => 'usps_custom_package',
-            'serviceLabel' =>'USPS International First Class',
-            'currency' => 'USD',
-            'totalAmount' => 0,
-            'baseAmount' => 0,
-            'isReady' => false,
-            'logo'=> 'usps-logo.jpg',
-        ],
-        'usps_international_priority' => [
-            'carrierCode' => 'usps',
-            'serviceCode' => 'usps_international_priority',
-            'packageTypeCode' => 'usps_custom_package',
-            'serviceLabel' =>'USPS International Priority',
-            'currency' => 'USD',
-            'totalAmount' => 0,
-            'baseAmount' => 0,
-            'isReady' => false,
-            'logo'=> 'usps-logo.jpg',
-        ],
-        'usps_international_express' => [
-            'carrierCode' => 'usps',
-            'serviceCode' => 'usps_international_express',
-            'packageTypeCode' => 'usps_custom_package',
-            'serviceLabel' =>'USPS International Express',
-            'currency' => 'USD',
-            'totalAmount' => 0,
-            'baseAmount' => 0,
-            'isReady' => false,
-            'logo'=> 'usps-logo.jpg',
-        ],
-        'dhl_express_worldwide' => [
-            'carrierCode' => 'dhl',
-            'serviceCode' => 'dhl_express_worldwide',
-            'packageTypeCode' => 'dhl_custom_package',
-            'serviceLabel' =>'DHL Intl Express',
-            'currency' => 'USD',
-            'totalAmount' => 0,
-            'baseAmount' => 0,
-            'isReady' => false,
-            'logo'=> 'dhl-logo.png',
-        ],*/
-
-
-        [
-            "service_id" => 0,
-            "carrierCode" => "dhl",
-            "carrierLabel" => "dhl",
-            "serviceLabel" => "DHL Intl Express",
-            "serviceCode" => "dhl_express_worldwide",
-            'packageTypeCode' => 'dhl_custom_package',
-            "currency" => "USD",
-            "totalAmount" => 0,
-            "baseAmount" => 0,
-            "isReady" => false,
-            "logo" => "/partner-imgs/dhl-logo.png"
-        ],
-        [
-            "service_id" => 1,
-            "carrierCode" => "fedex",
-            "carrierLabel" => "fedex",
-            "serviceLabel" => "FedEx International Economy®",
-            "serviceCode" => "fedex_international_economy",
-            'packageTypeCode' => 'fedex_custom_package',
-            "currency" => "USD",
-            "totalAmount" => 0,
-            "baseAmount" => 0,
-            "isReady" => false,
-            "logo" => "/partner-imgs/fedex-logo.png"
-        ],
-        [
-            "service_id" => 2,
-            "carrierCode" => "fedex",
-            "carrierLabel" => "fedex",
-            "serviceLabel" => "FedEx International Ground®",
-            "serviceCode" => "fedex_ground_canada",
-            'packageTypeCode' => 'fedex_custom_package',
-            "currency" => "USD",
-            "totalAmount" => 0,
-            "baseAmount" => 0,
-            "isReady" => false,
-            "logo" => "/partner-imgs/fedex-logo.png"
-        ],
-        [
-            "service_id" => 3,
-            "carrierCode" => "fedex",
-            "carrierLabel" => "fedex",
-            "serviceLabel" => "FedEx Standard Overnight®",
-            "serviceCode" => "fedex_standard_overnight",
-            'packageTypeCode' => 'fedex_custom_package',
-            "currency" => "USD",
-            "totalAmount" => 0,
-            "baseAmount" => 0,
-            "isReady" => false,
-            "logo" => "/partner-imgs/fedex-logo.png"
-        ],
-        [
-            "service_id" => 4,
-            "carrierCode" => "fedex",
-            "carrierLabel" => "fedex",
-            "serviceLabel" => "FedEx 2Day®",
-            "serviceCode" => "fedex_two_day",
-            'packageTypeCode' => 'fedex_custom_package',
-            "currency" => "USD",
-            "totalAmount" => 0,
-            "baseAmount" => 0,
-            "isReady" => false,
-            "logo" => "/partner-imgs/fedex-logo.png"
-        ],
-        [
-            "service_id" => 5,
-            "carrierCode" => "fedex",
-            "carrierLabel" => "fedex",
-            "serviceLabel" => "FedEx Express Saver®",
-            "serviceCode" => "fedex_express_saver",
-            'packageTypeCode' => 'fedex_custom_package',
-            "currency" => "USD",
-            "totalAmount" => 0,
-            "baseAmount" => 0,
-            "isReady" => false,
-            "logo" => "/partner-imgs/fedex-logo.png"
-        ],
-        [
-            "service_id" => 6,
-            "carrierCode" => "fedex",
-            "carrierLabel" => "fedex",
-            "serviceLabel" => "FedEx Ground®",
-            "serviceCode" => "fedex_ground",
-            'packageTypeCode' => 'fedex_custom_package',
-            "currency" => "USD",
-            "totalAmount" => 0,
-            "baseAmount" => 0,
-            "isReady" => false,
-            "logo" => "/partner-imgs/fedex-logo.png"
-        ],
-        [
-            "service_id" => 7,
-            "carrierCode" => "fedex",
-            "carrierLabel" => "fedex",
-            "serviceLabel" => "FedEx Home Delivery®",
-            "serviceCode" => "fedex_ground_home_delivery",
-            'packageTypeCode' => 'fedex_custom_package',
-            "currency" => "USD",
-            "totalAmount" => 0,
-            "baseAmount" => 0,
-            "isReady" => false,
-            "logo" => "/partner-imgs/fedex-logo.png"
-        ],
-        [
-            "service_id" => 8,
-            "carrierCode" => "ups",
-            "carrierLabel" => "ups",
-            "serviceLabel" => "UPS® Standard",
-            "serviceCode" => "ups_standard",
-            'packageTypeCode' => 'ups_custom_package',
-            "currency" => "USD",
-            "totalAmount" => 0,
-            "baseAmount" => 0,
-            "isReady" => false,
-            "logo" => "/partner-imgs/ups-logo.png"
-        ],
-        [
-            "service_id" => 9,
-            "carrierCode" => "ups",
-            "carrierLabel" => "ups",
-            "serviceLabel" => "UPS Worldwide Express®",
-            "serviceCode" => "ups_worldwide_express",
-            'packageTypeCode' => 'ups_custom_package',
-            "currency" => "USD",
-            "totalAmount" => 0,
-            "baseAmount" => 0,
-            "isReady" => false,
-            "logo" => "/partner-imgs/ups-logo.png"
-        ],
-        [
-            "service_id" => 10,
-            "carrierCode" => "ups",
-            "carrierLabel" => "ups",
-            "serviceLabel" => "UPS Worldwide Express Plus®",
-            "serviceCode" => "ups_express_plus",
-            'packageTypeCode' => 'ups_custom_package',
-            "currency" => "USD",
-            "totalAmount" => 0,
-            "baseAmount" => 0,
-            "isReady" => false,
-            "logo" => "/partner-imgs/ups-logo.png"
-        ],
-        [
-            "service_id" => 11,
-            "carrierCode" => "ups",
-            "carrierLabel" => "ups",
-            "serviceLabel" => "UPS Worldwide Saver®",
-            "serviceCode" => "ups_worldwide_saver",
-            'packageTypeCode' => 'ups_custom_package',
-            "currency" => "USD",
-            "totalAmount" => 0,
-            "baseAmount" => 0,
-            "isReady" => false,
-            "logo" => "/partner-imgs/ups-logo.png"
-        ],
-        [
-            "service_id" => 12,
-            "carrierCode" => "ups",
-            "carrierLabel" => "ups",
-            "serviceLabel" => "UPS Next Day Air®",
-            "serviceCode" => "ups_next_day_air",
-            'packageTypeCode' => 'ups_custom_package',
-            "currency" => "USD",
-            "totalAmount" => 0,
-            "baseAmount" => 0,
-            "isReady" => false,
-            "logo" => "/partner-imgs/ups-logo.png"
-        ],
-        [
-            "service_id" => 13,
-            "carrierCode" => "ups",
-            "carrierLabel" => "ups",
-            "serviceLabel" => "UPS 2nd Day Air®",
-            "serviceCode" => "ups_second_day_air",
-            'packageTypeCode' => 'ups_custom_package',
-            "currency" => "USD",
-            "totalAmount" => 0,
-            "baseAmount" => 0,
-            "isReady" => false,
-            "logo" => "/partner-imgs/ups-logo.png"
-        ],
-        [
-            "service_id" => 14,
-            "carrierCode" => "ups",
-            "carrierLabel" => "ups",
-            "serviceLabel" => "UPS® Ground",
-            "serviceCode" => "ups_ground",
-            'packageTypeCode' => 'ups_custom_package',
-            "currency" => "USD",
-            "totalAmount" => 0,
-            "baseAmount" => 0,
-            "isReady" => false,
-            "logo" => "/partner-imgs/ups-logo.png"
-        ],
-        [
-            "service_id" => 15,
-            "carrierCode" => "ups",
-            "carrierLabel" => "ups",
-            "serviceLabel" => "UPS Next Day Air Saver®",
-            "serviceCode" => "ups_next_day_air_saver",
-            'packageTypeCode' => 'ups_custom_package',
-            "currency" => "USD",
-            "totalAmount" => 0,
-            "baseAmount" => 0,
-            "isReady" => false,
-            "logo" => "/partner-imgs/ups-logo.png"
-        ],
-        [
-            "service_id" => 16,
-            "carrierCode" => "ups",
-            "carrierLabel" => "ups",
-            "serviceLabel" => "UPS 2nd Day Air A.M.®",
-            "serviceCode" => "ups_second_day_air_am",
-            'packageTypeCode' => 'ups_custom_package',
-            "currency" => "USD",
-            "totalAmount" => 0,
-            "baseAmount" => 0,
-            "isReady" => false,
-            "logo" => "/partner-imgs/ups-logo.png"
-        ],
-        [
-            "service_id" => 17,
-            "carrierCode" => "ups",
-            "carrierLabel" => "ups",
-            "serviceLabel" => "UPS 3 Day Select®",
-            "serviceCode" => "ups_three_day_select",
-            'packageTypeCode' => 'ups_custom_package',
-            "currency" => "USD",
-            "totalAmount" => 0,
-            "baseAmount" => 0,
-            "isReady" => false,
-            "logo" => "/partner-imgs/ups-logo.png"
-        ],
-        [
-            "service_id" => 18,
-            "carrierCode" => "ups",
-            "carrierLabel" => "ups",
-            "serviceLabel" => "UPS Worldwide Expedited®",
-            "serviceCode" => "ups_worldwide_expedited",
-            'packageTypeCode' => 'ups_custom_package',
-            "currency" => "USD",
-            "totalAmount" => 0,
-            "baseAmount" => 0,
-            "isReady" => false,
-            "logo" => "/partner-imgs/ups-logo.png"
-        ],
-        [
-            "service_id" => 19,
-            "carrierCode" => "usps",
-            "carrierLabel" => "USPS",
-            "serviceLabel" => "USPS International First Class",
-            "serviceCode" => "usps_international_first_class",
-            'packageTypeCode' => 'usps_custom_package',
-            "currency" => "USD",
-            "totalAmount" => 0,
-            "baseAmount" => 0,
-            "isReady" => false,
-            "logo" => "/partner-imgs/usps-logo.png"
-        ],
-        [
-            "service_id" => 20,
-            "carrierCode" => "usps",
-            "carrierLabel" => "USPS",
-            "serviceLabel" => "USPS Priority (1-3 Days)",
-            "serviceCode" => "usps_priority",
-            'packageTypeCode' => 'usps_custom_package',
-            "currency" => "USD",
-            "totalAmount" => 0,
-            "baseAmount" => 0,
-            "isReady" => false,
-            "logo" => "/partner-imgs/usps-logo.png"
-        ],
-        [
-            "service_id" => 21,
-            "carrierCode" => "usps",
-            "carrierLabel" => "USPS",
-            "serviceLabel" => "USPS Priority Mail Express",
-            "serviceCode" => "usps_express",
-            'packageTypeCode' => 'usps_custom_package',
-            "currency" => "USD",
-            "totalAmount" => 0,
-            "baseAmount" => 0,
-            "isReady" => false,
-            "logo" => "/partner-imgs/usps-logo.png"
-        ],
-        [
-            "service_id" => 22,
-            "carrierCode" => "usps",
-            "carrierLabel" => "USPS",
-            "serviceLabel" => "USPS International Priority",
-            "serviceCode" => "usps_international_priority",
-            'packageTypeCode' => 'usps_custom_package',
-            "currency" => "USD",
-            "totalAmount" => 0,
-            "baseAmount" => 0,
-            "isReady" => false,
-            "logo" => "/partner-imgs/usps-logo.png"
-        ],
-        [
-            "service_id" => 23,
-            "carrierCode" => "usps",
-            "carrierLabel" => "USPS",
-            "serviceLabel" => "USPS International Express",
-            "serviceCode" => "usps_international_express",
-            'packageTypeCode' => 'usps_custom_package',
-            "currency" => "USD",
-            "totalAmount" => 0,
-            "baseAmount" => 0,
-            "isReady" => false,
-            "logo" => "/partner-imgs/usps-logo.png"
-        ],
-        [
-            "service_id" => 24,
-            "carrierCode" => "usps",
-            "carrierLabel" => "USPS",
-            "serviceLabel" => "USPS First Class",
-            "serviceCode" => "usps_first_class",
-            'packageTypeCode' => 'usps_custom_package',
-            "currency" => "USD",
-            "totalAmount" => 0,
-            "baseAmount" => 0,
-            "isReady" => false,
-            "logo" => "/partner-imgs/usps-logo.png"
-        ],
-        [
-            "service_id" => 25,
-            "carrierCode" => "fedex",
-            "carrierLabel" => null,
-            "serviceLabel" => "FedEx International Priority®",
-            "serviceCode" => "fedex_international_priority",
-            'packageTypeCode' => 'fedex_custom_package',
-            "currency" => "USD",
-            "totalAmount" => 0,
-            "baseAmount" => 0,
-            "isReady" => false,
-            "logo" => "/partner-imgs/fedex-logo.png"
-        ],
-
+            [
+                "service_id" => 0,
+                "carrierCode" => "dhl",
+                "carrierLabel" => "dhl",
+                "serviceLabel" => "DHL Intl Express",
+                "serviceCode" => "dhl_express_worldwide",
+                'packageTypeCode' => 'dhl_custom_package',
+                "currency" => "USD",
+                "totalAmount" => 0,
+                "baseAmount" => 0,
+                "isReady" => false,
+                "logo" => "/partner-imgs/dhl-logo.png"
+            ],
+            [
+                "service_id" => 1,
+                "carrierCode" => "fedex",
+                "carrierLabel" => "fedex",
+                "serviceLabel" => "FedEx International Economy®",
+                "serviceCode" => "fedex_international_economy",
+                'packageTypeCode' => 'fedex_custom_package',
+                "currency" => "USD",
+                "totalAmount" => 0,
+                "baseAmount" => 0,
+                "isReady" => false,
+                "logo" => "/partner-imgs/fedex-logo.png"
+            ],
+            [
+                "service_id" => 2,
+                "carrierCode" => "fedex",
+                "carrierLabel" => "fedex",
+                "serviceLabel" => "FedEx International Ground®",
+                "serviceCode" => "fedex_ground_canada",
+                'packageTypeCode' => 'fedex_custom_package',
+                "currency" => "USD",
+                "totalAmount" => 0,
+                "baseAmount" => 0,
+                "isReady" => false,
+                "logo" => "/partner-imgs/fedex-logo.png"
+            ],
+            [
+                "service_id" => 3,
+                "carrierCode" => "fedex",
+                "carrierLabel" => "fedex",
+                "serviceLabel" => "FedEx Standard Overnight®",
+                "serviceCode" => "fedex_standard_overnight",
+                'packageTypeCode' => 'fedex_custom_package',
+                "currency" => "USD",
+                "totalAmount" => 0,
+                "baseAmount" => 0,
+                "isReady" => false,
+                "logo" => "/partner-imgs/fedex-logo.png"
+            ],
+            [
+                "service_id" => 4,
+                "carrierCode" => "fedex",
+                "carrierLabel" => "fedex",
+                "serviceLabel" => "FedEx 2Day®",
+                "serviceCode" => "fedex_two_day",
+                'packageTypeCode' => 'fedex_custom_package',
+                "currency" => "USD",
+                "totalAmount" => 0,
+                "baseAmount" => 0,
+                "isReady" => false,
+                "logo" => "/partner-imgs/fedex-logo.png"
+            ],
+            [
+                "service_id" => 5,
+                "carrierCode" => "fedex",
+                "carrierLabel" => "fedex",
+                "serviceLabel" => "FedEx Express Saver®",
+                "serviceCode" => "fedex_express_saver",
+                'packageTypeCode' => 'fedex_custom_package',
+                "currency" => "USD",
+                "totalAmount" => 0,
+                "baseAmount" => 0,
+                "isReady" => false,
+                "logo" => "/partner-imgs/fedex-logo.png"
+            ],
+            [
+                "service_id" => 6,
+                "carrierCode" => "fedex",
+                "carrierLabel" => "fedex",
+                "serviceLabel" => "FedEx Ground®",
+                "serviceCode" => "fedex_ground",
+                'packageTypeCode' => 'fedex_custom_package',
+                "currency" => "USD",
+                "totalAmount" => 0,
+                "baseAmount" => 0,
+                "isReady" => false,
+                "logo" => "/partner-imgs/fedex-logo.png"
+            ],
+            [
+                "service_id" => 7,
+                "carrierCode" => "fedex",
+                "carrierLabel" => "fedex",
+                "serviceLabel" => "FedEx Home Delivery®",
+                "serviceCode" => "fedex_ground_home_delivery",
+                'packageTypeCode' => 'fedex_custom_package',
+                "currency" => "USD",
+                "totalAmount" => 0,
+                "baseAmount" => 0,
+                "isReady" => false,
+                "logo" => "/partner-imgs/fedex-logo.png"
+            ],
+            [
+                "service_id" => 8,
+                "carrierCode" => "fedex",
+                "carrierLabel" => null,
+                "serviceLabel" => "FedEx International Priority®",
+                "serviceCode" => "fedex_international_priority",
+                'packageTypeCode' => 'fedex_custom_package',
+                "currency" => "USD",
+                "totalAmount" => 0,
+                "baseAmount" => 0,
+                "isReady" => false,
+                "logo" => "/partner-imgs/fedex-logo.png"
+            ],
+            [
+                "service_id" => 9,
+                "carrierCode" => "ups",
+                "carrierLabel" => "ups",
+                "serviceLabel" => "UPS® Standard",
+                "serviceCode" => "ups_standard",
+                'packageTypeCode' => 'ups_custom_package',
+                "currency" => "USD",
+                "totalAmount" => 0,
+                "baseAmount" => 0,
+                "isReady" => false,
+                "logo" => "/partner-imgs/ups-logo.png"
+            ],
+            [
+                "service_id" => 10,
+                "carrierCode" => "ups",
+                "carrierLabel" => "ups",
+                "serviceLabel" => "UPS Worldwide Express®",
+                "serviceCode" => "ups_worldwide_express",
+                'packageTypeCode' => 'ups_custom_package',
+                "currency" => "USD",
+                "totalAmount" => 0,
+                "baseAmount" => 0,
+                "isReady" => false,
+                "logo" => "/partner-imgs/ups-logo.png"
+            ],
+            [
+                "service_id" => 11,
+                "carrierCode" => "ups",
+                "carrierLabel" => "ups",
+                "serviceLabel" => "UPS Worldwide Express Plus®",
+                "serviceCode" => "ups_express_plus",
+                'packageTypeCode' => 'ups_custom_package',
+                "currency" => "USD",
+                "totalAmount" => 0,
+                "baseAmount" => 0,
+                "isReady" => false,
+                "logo" => "/partner-imgs/ups-logo.png"
+            ],
+            [
+                "service_id" => 12,
+                "carrierCode" => "ups",
+                "carrierLabel" => "ups",
+                "serviceLabel" => "UPS Worldwide Saver®",
+                "serviceCode" => "ups_worldwide_saver",
+                'packageTypeCode' => 'ups_custom_package',
+                "currency" => "USD",
+                "totalAmount" => 0,
+                "baseAmount" => 0,
+                "isReady" => false,
+                "logo" => "/partner-imgs/ups-logo.png"
+            ],
+            [
+                "service_id" => 13,
+                "carrierCode" => "ups",
+                "carrierLabel" => "ups",
+                "serviceLabel" => "UPS Next Day Air®",
+                "serviceCode" => "ups_next_day_air",
+                'packageTypeCode' => 'ups_custom_package',
+                "currency" => "USD",
+                "totalAmount" => 0,
+                "baseAmount" => 0,
+                "isReady" => false,
+                "logo" => "/partner-imgs/ups-logo.png"
+            ],
+            [
+                "service_id" => 14,
+                "carrierCode" => "ups",
+                "carrierLabel" => "ups",
+                "serviceLabel" => "UPS 2nd Day Air®",
+                "serviceCode" => "ups_second_day_air",
+                'packageTypeCode' => 'ups_custom_package',
+                "currency" => "USD",
+                "totalAmount" => 0,
+                "baseAmount" => 0,
+                "isReady" => false,
+                "logo" => "/partner-imgs/ups-logo.png"
+            ],
+            [
+                "service_id" => 15,
+                "carrierCode" => "ups",
+                "carrierLabel" => "ups",
+                "serviceLabel" => "UPS® Ground",
+                "serviceCode" => "ups_ground",
+                'packageTypeCode' => 'ups_custom_package',
+                "currency" => "USD",
+                "totalAmount" => 0,
+                "baseAmount" => 0,
+                "isReady" => false,
+                "logo" => "/partner-imgs/ups-logo.png"
+            ],
+            [
+                "service_id" => 16,
+                "carrierCode" => "ups",
+                "carrierLabel" => "ups",
+                "serviceLabel" => "UPS Next Day Air Saver®",
+                "serviceCode" => "ups_next_day_air_saver",
+                'packageTypeCode' => 'ups_custom_package',
+                "currency" => "USD",
+                "totalAmount" => 0,
+                "baseAmount" => 0,
+                "isReady" => false,
+                "logo" => "/partner-imgs/ups-logo.png"
+            ],
+            [
+                "service_id" => 17,
+                "carrierCode" => "ups",
+                "carrierLabel" => "ups",
+                "serviceLabel" => "UPS 2nd Day Air A.M.®",
+                "serviceCode" => "ups_second_day_air_am",
+                'packageTypeCode' => 'ups_custom_package',
+                "currency" => "USD",
+                "totalAmount" => 0,
+                "baseAmount" => 0,
+                "isReady" => false,
+                "logo" => "/partner-imgs/ups-logo.png"
+            ],
+            [
+                "service_id" => 18,
+                "carrierCode" => "ups",
+                "carrierLabel" => "ups",
+                "serviceLabel" => "UPS 3 Day Select®",
+                "serviceCode" => "ups_three_day_select",
+                'packageTypeCode' => 'ups_custom_package',
+                "currency" => "USD",
+                "totalAmount" => 0,
+                "baseAmount" => 0,
+                "isReady" => false,
+                "logo" => "/partner-imgs/ups-logo.png"
+            ],
+            [
+                "service_id" => 19,
+                "carrierCode" => "ups",
+                "carrierLabel" => "ups",
+                "serviceLabel" => "UPS Worldwide Expedited®",
+                "serviceCode" => "ups_worldwide_expedited",
+                'packageTypeCode' => 'ups_custom_package',
+                "currency" => "USD",
+                "totalAmount" => 0,
+                "baseAmount" => 0,
+                "isReady" => false,
+                "logo" => "/partner-imgs/ups-logo.png"
+            ]
     ];
 
     public function checkAuth()
@@ -532,6 +395,7 @@ class HomeController extends Controller
         $service = $request->get('service');
 
         $service = json_decode($service);
+        // dd($service);
 
         $markup = SiteSetting::getByName('markup');
 
@@ -543,9 +407,12 @@ class HomeController extends Controller
         $width = $request->input('width');
         $height = $request->input('height');
         $zipcode = $request->input('zipcode');
+        $cityName = $request->has('city')? $request->city : null;
+
+
         //$declared_value = $request->input('declared_value');
 
-        $declared_value = '1.0';
+        $declared_value = '10.0';
 
         $warehouse = Warehouse::where('id',$ship_from)->first();
         
@@ -571,8 +438,14 @@ class HomeController extends Controller
 
         $receiver = [
             "country" => $country->iso,
-            "zip" => empty($zipcode) ? 'null': $zipcode,
+            "zip" => empty($zipcode) ? '40050': $zipcode,
         ];
+
+        if($cityName != null){
+            $receiver['city'] = $cityName;
+        }elseif ($country->iso == 'PK'){
+            $receiver['city'] = "Lahore";
+        }
 
         $pieces = [
             0 => [
@@ -604,7 +477,6 @@ class HomeController extends Controller
             ]
         ];
         $service_rate = [];
-
         try {
 
             $client = new Client();

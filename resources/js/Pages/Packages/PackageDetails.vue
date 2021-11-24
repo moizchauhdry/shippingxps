@@ -319,8 +319,8 @@
                             </div>
                             <p style="color:red;">Are you sure you want to use service? Add your message for admin and continue</p>
                             <p style="color:red;">Every service request is charged separately, so if you have already requested any service wait for system response.</p>
-                            <p style="color:re">Service : <strong>{{ form.service.title }}</strong></p>
-                            <p style="color:re">Charges : <strong>${{ form.service.price }}</strong></p>
+                            <p>Service : <strong>{{ form.service.title }}</strong></p>
+                            <p>Charges : <strong>${{ form.service.price }}</strong></p>
                             <div class="order-button">
                               <a class="btn btn-danger" v-on:click="cancelServiceForm()"> Cancel</a>
                               <input type="submit" value="Make Request" class="btn btn-success float-right"/>
@@ -385,7 +385,7 @@
                       <template v-if="form_respond.request !=null">
                         <h3> Handle Service Request </h3>
                         <form @submit.prevent="submitRespondForm">
-                          <p style="color:re">Service : <strong>{{ form_respond.request.service_title }}</strong></p>
+                          <p style="">Service : <strong>{{ form_respond.request.service_title }}</strong></p>
                           <div class="form-group">
                             <p>Message for Customer</p>
                             <textarea v-model="form_respond.admin_message"
@@ -398,7 +398,7 @@
                                       required>
                                                 </textarea>
                           </div>
-                          <p style="color:re">Charges: <strong>${{ form_respond.request.price }}</strong></p>
+                          <p style="">Charges: <strong>${{ form_respond.request.price }}</strong></p>
                           <div class="form-group">
                             <p>Edit Charges</p>
                             <input type="text" v-model="form_respond.request.price"/>
@@ -455,12 +455,12 @@
                         <tbody>
                         <tr>
                           <td colspan="2">
-                            {{ packag.address.fullname }}
+                            {{ packag.address.fullname === null ? "- -" : packag.address.fullname }}
                           </td>
                         </tr>
                         <tr>
                           <td colspan="2">
-                            {{ packag.address.address }}
+                            {{ packag.address.address === null ? "- -" : packag.address.address }}
                           </td>
                         </tr>
                         <tr>
@@ -800,8 +800,11 @@ export default {
       this.form_ship.post(this.route('packages.ship-package'));
     },
     setShippingService(service) {
-      this.form_shipping_service.service = service;
-      this.form_shipping_service.post(this.route('packages.set-shipping-service'));
+      var result = window.confirm('After Confirming the shippment method you wont be able to change. Are you sure to confirm ?')
+      if(result){
+        this.form_shipping_service.service = service;
+        this.form_shipping_service.post(this.route('packages.set-shipping-service'));
+      }
       /*window.location.reload()*/
     },
     getShippingRates() {
@@ -819,7 +822,8 @@ export default {
         length: this.packag.package_length,
         width: this.packag.package_width,
         height: this.packag.package_height,
-        zipcode: 'null',
+        zipcode: null,
+        city : this.packag.address.city,
       };
       axios.get(this.route('getServicesList')).then(response => {
         console.log(response.data.services)
