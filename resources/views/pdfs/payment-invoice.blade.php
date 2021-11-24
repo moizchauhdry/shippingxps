@@ -133,7 +133,6 @@
 <div class="container">
     <div class="col-md-12">
         <div class="invoice">
-            {{ $package->warehouse }}
             <!-- begin invoice-company -->
             <div class="invoice-company text-center f-w-600">
                 <img style="width: auto;height:80px" src="{{ asset('public/logo.png') }}" alt="">
@@ -144,30 +143,27 @@
                 <div class="invoice-from">
                     <small>from</small>
                     <address class="m-t-5 m-b-5">
-                        <strong class="text-inverse">Twitter, Inc.</strong><br>
-                        Street Address<br>
-                        City, Zip Code<br>
-                        Phone: (123) 456-7890<br>
-                        Fax: (123) 456-7890
+                        <strong class="text-inverse">ShippingXPS</strong><br>
+                        {{ $package->warehouse->name ?? $order->warehouse->name }}<br>
+                        Address:{{ $package->warehouse->address ?? $order->warehouse->address   }}<br>
+                        Phone: {{ $package->warehouse->phone ?? $order->warehouse->phone   }}<br>
+                        Email : {{ $package->warehouse->email ?? $order->warehouse->email   }}
                     </address>
                 </div>
                 <div class="invoice-to">
                     <small>to</small>
                     <address class="m-t-5 m-b-5">
-                        <strong class="text-inverse">Company Name</strong><br>
-                        Street Address<br>
-                        City, Zip Code<br>
-                        Phone: (123) 456-7890<br>
-                        Fax: (123) 456-7890
+                        <strong class="text-inverse">{{ $customer->address->fullname ?? '- -' }}</strong><br>
+                        Address:{{ $customer->address->address ?? '- -' }}<br>
+                        Phone: {{ $customer->address->phone ?? '- -' }}<br>
+                        Email: {{ $customer->customer->email ?? '- -' }}
                     </address>
                 </div>
                 <div class="invoice-date">
-                    <small>Invoice / July period</small>
-                    <div class="date text-inverse m-t-5">August 3,2012</div>
-                    <div class="invoice-detail">
-                        #0000123DSS<br>
-                        Services Product
-                    </div>
+                    <small><strong>Invoice</strong></small><br>
+                    <strong>{{ $payment->invoice_id }}</strong>
+                    <div class="date text-inverse m-t-5">{{ date_format(date_create($payment->charged_at),'d-m-Y') }}</div>
+
                 </div>
             </div>
             <!-- end invoice-header -->
@@ -184,14 +180,63 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>
-                                Shipping
-                            </td>
-                            <td class="text-center">50 X 3</td>
-                            <td class="text-right">$2,500.00</td>
-                        </tr>
+                        @isset($package)
+                            <tr>
+                                <td>
+                                    Mail Fee
+                                </td>
+                                <td class="text-center"></td>
+                                <td class="text-right">$5</td>
+                            </tr>
+                            @foreach($package->serviceRequests as $item)
+                                <tr>
+                                    <td>
+                                        {{ $item->service->title }}
+                                    </td>
+                                    <td class="text-center"></td>
+                                    <td class="text-right">${{ $item->service->price }}</td>
+                                </tr>
+                            @endforeach
+                            <tr>
+                                <td>
+                                    Shipping
+                                </td>
+                                <td class="text-center"></td>
+                                <td class="text-right">${{ $package->shipping_charges }}</td>
+                            </tr>
+                        @endisset
 
+                        @isset($order)
+                            <tr>
+                                <td>
+                                    Order Items Total
+                                </td>
+                                <td class="text-center"></td>
+                                <td class="text-right">{{ (double)$order->sub_total }}</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Service Charges
+                                </td>
+                                <td class="text-center"></td>
+                                <td class="text-right">{{ (double)$order->service_charges }}</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Shipping From Shop
+                                </td>
+                                <td class="text-center"></td>
+                                <td class="text-right">{{ (double)$order->shipping_from_shop }}</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Pickup Charges
+                                </td>
+                                <td class="text-center"></td>
+                                <td class="text-right">{{ (double)$order->pickup_charges ?? 0.00 }}</td>
+                            </tr>
+
+                        @endisset
                         </tbody>
                     </table>
                 </div>
@@ -199,43 +244,27 @@
                 <!-- begin invoice-price -->
                 <div class="invoice-price">
                     <div class="invoice-price-left">
-                        <div class="invoice-price-row">
-                            <div class="sub-price">
-                                <small>SUBTOTAL</small>
-                                <span class="text-inverse">$4,500.00</span>
-                            </div>
-                            <div class="sub-price">
-                                <i class="fa fa-plus text-muted"></i>
-                            </div>
-                            <div class="sub-price">
-                                <small>PAYPAL FEE (5.4%)</small>
-                                <span class="text-inverse">$108.00</span>
-                            </div>
-                        </div>
+
                     </div>
-                    <div class="invoice-price-right">
-                        <small>TOTAL</small> <span class="f-w-600">$4508.00</span>
+                    <div class="float-right">
+                        <strong>
+                            <p>Sub Total : <span class="f-w-600">$ {{ $payment->charged_amount + $payment->discount }}</span></p>
+                            <p>Discount : <span class="f-w-600">$ {{  $payment->discount }}</span></p>
+                            <p>Total : <span class="f-w-600">$ {{ $payment->charged_amount - $payment->discount }}</span></p>
+                        </strong>
                     </div>
                 </div>
                 <!-- end invoice-price -->
             </div>
-            <!-- end invoice-content -->
-            <!-- begin invoice-note -->
-            {{--<div class="invoice-note">
-                * Make all cheques payable to [Your Company Name]<br>
-                * Payment is due within 30 days<br>
-                * If you have any questions concerning this invoice, contact  [Name, Phone Number, Email]
-            </div>--}}
-            <!-- end invoice-note -->
-            <!-- begin invoice-footer -->
+
             <div class="invoice-footer">
                 <p class="text-center m-b-5 f-w-600">
                     THANK YOU FOR YOUR BUSINESS
                 </p>
                 <p class="text-center">
-                    <span class="m-r-10"><i class="fa fa-fw fa-lg fa-globe"></i> matiasgallipoli.com</span>
-                    <span class="m-r-10"><i class="fa fa-fw fa-lg fa-phone-volume"></i> T:016-18192302</span>
-                    <span class="m-r-10"><i class="fa fa-fw fa-lg fa-envelope"></i> rtiemps@gmail.com</span>
+                    <span class="m-r-10"><i class="fa fa-fw fa-lg fa-globe"></i> shippingxps.com</span>
+                    {{--<span class="m-r-10"><i class="fa fa-fw fa-lg fa-phone-volume"></i> T:016-18192302</span>
+                    <span class="m-r-10"><i class="fa fa-fw fa-lg fa-envelope"></i> rtiemps@gmail.com</span>--}}
                 </p>
             </div>
             <!-- end invoice-footer -->

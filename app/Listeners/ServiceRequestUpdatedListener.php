@@ -3,6 +3,8 @@
 namespace App\Listeners;
 
 use App\Events\ServiceRequestUpdatedEvent;
+use App\Mail\UserGeneralMail;
+use Illuminate\Support\Facades\Mail;
 use App\Models\User;
 use App\Notifications\ServiceRequestUpdatedNotification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -33,6 +35,21 @@ class ServiceRequestUpdatedListener
 
         if ($user) {
             $user->notify(new ServiceRequestUpdatedNotification($service_request));
+        }
+
+        $service = $event->service_request->service;
+        $package = $event->service_request->package;
+
+        $data = [
+            'subject' => 'Service Respond',
+            'name' => $user->name,
+            'description' => '<p>Admin has Responded to "'.$service->title.'" request of package ID #'.$package->id.'</p>',
+        ];
+
+        try{
+            Mail::to($user)->send(new UserGeneralMail($data));
+        }catch(\Throwable $e){
+            \Log::info($e);
         }
         
     }

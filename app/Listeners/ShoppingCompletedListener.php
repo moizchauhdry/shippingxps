@@ -3,6 +3,8 @@
 namespace App\Listeners;
 
 use App\Events\ShoppingCompletedEvent;
+use App\Mail\UserGeneralMail;
+use Illuminate\Support\Facades\Mail;
 use App\Models\Order;
 use App\Notifications\ShoppingCompletedNotification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -34,6 +36,19 @@ class ShoppingCompletedListener
 
         if ($customer) {
             $customer->notify(new ShoppingCompletedNotification($order));
+        }
+
+        $user = $event->order->customer;
+        $data = [
+            'subject' => 'Order Item Received',
+            'name' => $user->name,
+            'description' => '<p> Item "'.$event->order->id.'" has been arrived to '.$order->warehouse->name.' </p>',
+        ];
+
+        try{
+            Mail::to($user)->send(new UserGeneralMail($data));
+        }catch(\Throwable $e){
+            \Log::info($e);
         }
     }
 }

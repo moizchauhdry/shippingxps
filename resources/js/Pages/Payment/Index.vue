@@ -12,6 +12,7 @@
             <th>Package</th>
             <th>Transaction Id</th>
             <th>Invoice Id</th>
+            <th>Invoice</th>
             <th>Charged Amount (USD)</th>
             <th>Charged At</th>
           </tr>
@@ -24,6 +25,7 @@
             <td>{{ item.package_id != null ? item.package.id : '- -'}}</td>
             <td>{{ item.transaction_id }}</td>
             <td>{{ item.invoice_id }}</td>
+            <td><a :href="'/public/'+item.invoice_url" target="_blank">View Invoice</a></td>
             <td>{{ item.charged_amount }}</td>
             <td>{{ item.charged_at }}</td>
           </tr>

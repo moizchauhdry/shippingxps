@@ -13,6 +13,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
+use PDF;
+use Mpdf\Mpdf;
 use net\authorize\api\contract\v1 as AnetAPI;
 use net\authorize\api\controller as AnetController;
 
@@ -155,14 +157,15 @@ class PaymentController extends Controller
             $payment->customer_id = $user->id;
             $payment->order_id = \Session::has('order_id')? \Session::get('order_id'): null;
             $payment->package_id = \Session::has('package_id')? \Session::get('package_id'): null;
-            $payment->invoice_id = Str::uuid();
             $payment->transaction_id = $response->getTransactionResponse()->getTransId();
             $payment->charged_amount = \Session::get('amount');
+            $payment->discount = $request->has('discount')? $request->discount : 0.00;
             $payment->charged_at = Carbon::now()->format('Y-m-d H:i:s');
             $payment->save();
-
+            $payment->invoice_id = $payment->id;
+            $payment->save();
             /*Dont make it live */
-                event(new PaymentEventHandler($payment));
+
             /*Dont make it live end */
 
             if(\Session::has('order_id')){
@@ -188,6 +191,9 @@ class PaymentController extends Controller
 
 
             }
+
+            $this->buildInvoice($payment->id);
+
 
             \Session::forget(['order_id','package_id','amount']);
             return redirect()->route('payments.PaymentSuccess')->with(['payment'=>$payment,'status']);
@@ -271,11 +277,55 @@ class PaymentController extends Controller
 
     }
 
-    public function buildInvoice()
+    public function buildInvoice($id)
     {
-        $package = Package::find(2);
+        $payment = Payment::find($id);
+        $customer = $payment->customer;
 
+        if($payment->package_id != null){
+            $package = $payment->package;
+            // return view('pdfs.payment-invoice',compact('payment','package','customer'));
+            $html = view('pdfs.invoice-payment',[
+                'payment' => $payment,
+                'package' => $package,
+                'customer' => $customer,
+            ])->render();
 
-        return view('pdfs.payment-invoice',compact('package'));
+            /*$pdf = PDF::loadView('pdfs.payment-invoice',[
+                'payment' => $payment,
+                'package' => $package,
+                'customer' => $customer,
+            ]);*/
+            /*$pdf = PDF::loadHtml($html)->setPaper('a4', 'landscape')->setWarnings(false)->save('myfile.pdf');
+
+            return $pdf->download('pdfview.pdf');*/
+//            return $html;
+            $mpdf = new \Mpdf\Mpdf();
+            $mpdf->WriteHTML($html);
+            $mpdf->Output('public/invoices/pdf/'.$payment->invoice_id.'.pdf',\Mpdf\Output\Destination::FILE);
+
+            $payment->invoice_url = 'invoices/pdf/'.$payment->invoice_id.'.pdf';
+            $payment->save();
+        }
+
+        if($payment->order_id != null){
+            $order = $payment->order;
+            // return view('pdfs.payment-invoice',compact('payment','order','customer'));
+
+            $html = view('pdfs.invoice-payment',[
+                'payment' => $payment,
+                'order' => $order,
+                'customer' => $customer,
+            ])->render();
+
+            $mpdf = new \Mpdf\Mpdf();
+            $mpdf->WriteHTML($html);
+            $mpdf->Output('public/invoices/pdf/'.$payment->invoice_id.'.pdf',\Mpdf\Output\Destination::FILE);
+            $payment->invoice_url = 'invoices/pdf/'.$payment->invoice_id.'.pdf';
+            $payment->save();
+        }
+
+        event(new PaymentEventHandler($payment));
+
     }
 }

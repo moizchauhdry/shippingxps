@@ -2,6 +2,7 @@
   <MainLayout>
     <div class="container">
       <div class="card" style="margin-top: 0px">
+        <BreezeValidationErrors/>
           <div class="card-header">Payment</div>
           <div class="card-body">
             <div class="container">
@@ -119,7 +120,7 @@ export default {
         cvv : '',
         coupon_code : '',
         coupon_code_id : '',
-        discount:null,
+        discount:0.00,
       })
     };
   },
