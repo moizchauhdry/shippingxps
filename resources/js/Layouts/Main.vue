@@ -104,9 +104,14 @@
             <i class="fas fa-external-link-alt"></i><span>Coupons</span>
           </inertia-link>
 
+          <inertia-link v-if="$page.props.auth.user.type == 'admin'" class="nav-link" :href="route('promotional.edit',1)" :class="{active: route().current('settings')}" :active="route().current('settings')">
+            <i class="fas fa-external-link-alt"></i><span>Promotional Message</span>
+          </inertia-link>
+
           <inertia-link v-if="$page.props.auth.user.type == 'admin'" class="nav-link" :href="route('settings')" :class="{active: route().current('settings')}" :active="route().current('settings')">
             <i class="fas fa-external-link-alt"></i><span>Settings</span>
           </inertia-link>
+
 
           <inertia-link v-if="$page.props.auth.user.type == 'customer'" class="nav-link" :href="route('profile')" :class="{active: route().current('profile')}" :active="route().current('profile')">
             <i class="fas fa-external-link-alt"></i><span>Profile</span>

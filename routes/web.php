@@ -19,7 +19,9 @@ use Inertia\Inertia;
 */
 
 Route::get('/', function () {
+    $promotional = \App\Models\Configuration::find(1);
     return Inertia::render('Welcome', [
+        'promotionalMessage' => $promotional->description ?? "Shopping and Shipping for you with Ease",
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
     ]);

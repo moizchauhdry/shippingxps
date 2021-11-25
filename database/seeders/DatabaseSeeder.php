@@ -25,7 +25,8 @@ class DatabaseSeeder extends Seeder
             ServiceSeeder::class,
             BatteriesSeeder::class,
             StoreSeeder::class,
-            CMSPageSeeder::class
+            CMSPageSeeder::class,
+            ConfigurationSeeder::class,
         ]);
     }
 }

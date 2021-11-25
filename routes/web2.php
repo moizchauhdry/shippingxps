@@ -48,6 +48,12 @@ Route::middleware('auth')->group(function () {
         Route::post('/changeStatus', [\App\Http\Controllers\CouponController::class, 'changeStatus'])->name('coupon.changeStatus');
     });
 
+    Route::prefix('promotional')->group(function () {
+        Route::get('/', [\App\Http\Controllers\ConfigurationController::class, 'index'])->name('promotional.index');
+        Route::get('/edit/{id}', [\App\Http\Controllers\ConfigurationController::class, 'edit'])->name('promotional.edit');
+        Route::post('/update', [\App\Http\Controllers\ConfigurationController::class, 'update'])->name('promotional.update');
+    });
+
     /*
      * Shop for me routes
      */

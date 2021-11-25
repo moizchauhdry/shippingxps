@@ -1,10 +1,9 @@
 <template>
-    <header-component></header-component>
+    <header-component ></header-component>
     <div role="main" class="main">
-    <home-top-section   />
+    <home-top-section :promotionalMessage="promotionalMessage"  />
     </div>
     <FooterComponent />
-
 
 </template>
 
@@ -26,12 +25,14 @@ components: {
   },    
   data() {
     return {
+      promotionalMessage:this.promotionalMessage,
     };
   },
   props: {
             auth: Object,
             canLogin: Boolean,
             canRegister: Boolean,
+            promotionalMessage:String,
             errors: Object,
             laravelVersion: String,
             phpVersion: String,

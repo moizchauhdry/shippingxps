@@ -29,7 +29,6 @@ class   UserGeneralMail extends Mailable
      */
     public function build()
     {
-        \Log::info($this->data['attachment']);
         if(isset($this->data['attachment'])){
             \Log::info('in-here');
             return $this->subject($this->data['subject'])->view('mail.general-mail')->attach('public/'.$this->data['attachment'], [

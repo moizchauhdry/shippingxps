@@ -3,20 +3,24 @@
 		<img src="/theme/img/demos/business-consulting-3/hero-img.png" class="img-fluid position-absolute top-0 right-0 d-none d-md-block"  alt="" />
 		<div class="container pb-5 pb-xl-0 mt-md-3 mb-5 hero-title">
 			<div class="row">
-				<div class="col-md-7 col-lg-10">
-					<h1 class="custom-big-font-size-1 text-14 font-weight-bold float-xl-end clearfix line-height-1 custom-ws-mobile-wrap ws-nowrap pb-2 mb-3" >Shopping and Shipping for you with Ease </h1>
+				<div class="col-sm-12 col-md-5 order-2 order-md-1">
 					<h2 class="main-info-badge">Shop all over the world </h2>
 					<p class="text-dark">We will shop and ship to your doorstep.</p>
+          <div class="row pb-5 mb-5">
+            <div class="col-md-7 col-xl-5 pb-5 pb-xl-0 mb-5">
+              <strong class="d-block font-weight-semibold text-color-dark text-5-5 line-height-4 mb-3 mt-4 pb-1 ws-nowrap">Shop & Ship from USA</strong>
+              <p class="mb-4 mt-3" style="font-size:20px;">We ship worldwide! </p>
+              <a :href="route('register')" class="btn btn-dark custom-btn-style-1 font-weight-semibold text-3-5 mb-4 btn-px-3 py-2 ws-nowrap ms-4 d-inline-block"><span>Get Started - It's free</span></a>
+
+            </div>
+          </div>
 				</div>
+        <div class="col-sm-12 col-md-7 order-1 order-md-2">
+          <h1 class="custom-big-font-size-1 text-14 font-weight-bold  clearfix line-height-1 custom-ws-mobile-wrap wrap pb-2 mb-3" >
+            {{ promotionalMessage }}</h1>
+        </div>
 			</div>
-			<div class="row pb-5 mb-5">
-				<div class="col-md-7 col-xl-5 pb-5 pb-xl-0 mb-5">
-					<strong class="d-block font-weight-semibold text-color-dark text-5-5 line-height-4 mb-3 mt-4 pb-1">Shop & Ship from USA</strong>
-					<p class="mb-4 mt-3" style="font-size:20px;">We ship worldwide! </p>
-					<a :href="route('register')" class="btn btn-dark custom-btn-style-1 font-weight-semibold text-3-5 mb-4 btn-px-3 py-2 ws-nowrap ms-4 d-inline-block"><span>Get Started - It's free</span></a>
-					
-				</div>
-			</div>
+
 		</div>
 		<div class="shape-divider shape-divider-bottom" style="height: 212px;">
 			<div class="shape-divider-horizontal-animation shape-divider-horizontal-animation-to-left">
@@ -110,7 +114,7 @@
 </style>
 <script>
     export default {
-        props: ['href', 'active'],
+        props: ['href', 'active','promotionalMessage'],
         data() {
             return {
                 form: this.$inertia.form({
