@@ -574,6 +574,7 @@ class PackageController extends Controller
         $data = $request->all();
         $service = $data['service'];
 
+
         $package = Package::find($data['package_id']);
         $package->status = $data['status'];
         $package->carrier_code = isset($service['carrierCode'])? $service['carrierCode'] : " "  ;
@@ -581,8 +582,8 @@ class PackageController extends Controller
         $package->service_code = $service['serviceCode'];
         $package->package_type_code = $service['packageTypeCode'];
         $package->currency = $service['currency'];
-        $package->shipping_total = $service['totalAmount'];
-        $package->shipping_charges = $service['totalAmount'];
+        $package->shipping_total = doubleval(str_replace(',', '', $service['totalAmount']));
+        $package->shipping_charges = doubleval(str_replace(',', '', $service['totalAmount']));
         $package->update();
 
         event(new PackageShippingServiceSelected($package));

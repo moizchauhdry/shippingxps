@@ -17,6 +17,7 @@ use PDF;
 use Mpdf\Mpdf;
 use net\authorize\api\contract\v1 as AnetAPI;
 use net\authorize\api\controller as AnetController;
+use SebastianBergmann\LinesOfCode\LinesOfCode;
 
 class PaymentController extends Controller
 {
@@ -162,7 +163,7 @@ class PaymentController extends Controller
             $payment->discount = $request->has('discount')? $request->discount : 0.00;
             $payment->charged_at = Carbon::now()->format('Y-m-d H:i:s');
             $payment->save();
-            $payment->invoice_id = $payment->id;
+            $payment->invoice_id = sprintf("%05d", $payment->id);
             $payment->save();
             /*Dont make it live */
 
@@ -191,8 +192,9 @@ class PaymentController extends Controller
 
 
             }
-
+            \Log::info('b4 invoice');
             $this->buildInvoice($payment->id);
+            \Log::info('after invoice');
 
 
             \Session::forget(['order_id','package_id','amount']);
@@ -283,6 +285,7 @@ class PaymentController extends Controller
         $customer = $payment->customer;
 
         if($payment->package_id != null){
+            \Log::info('On Package');
             $package = $payment->package;
             // return view('pdfs.payment-invoice',compact('payment','package','customer'));
             $html = view('pdfs.invoice-payment',[
@@ -291,19 +294,15 @@ class PaymentController extends Controller
                 'customer' => $customer,
             ])->render();
 
-            /*$pdf = PDF::loadView('pdfs.payment-invoice',[
-                'payment' => $payment,
-                'package' => $package,
-                'customer' => $customer,
-            ]);*/
-            /*$pdf = PDF::loadHtml($html)->setPaper('a4', 'landscape')->setWarnings(false)->save('myfile.pdf');
-
-            return $pdf->download('pdfview.pdf');*/
-//            return $html;
-            $mpdf = new \Mpdf\Mpdf();
-            $mpdf->WriteHTML($html);
-            $mpdf->Output('public/invoices/pdf/'.$payment->invoice_id.'.pdf',\Mpdf\Output\Destination::FILE);
-
+            \Log::info('b4 writing');
+            try{
+                $mpdf = new \Mpdf\Mpdf();
+                $mpdf->WriteHTML($html);
+                $mpdf->Output('public/invoices/pdf/'.$payment->invoice_id.'.pdf',\Mpdf\Output\Destination::FILE);
+            }catch(\Throwable $e){
+                \Log::info($e);
+            }
+            \Log::info('on saving record');
             $payment->invoice_url = 'invoices/pdf/'.$payment->invoice_id.'.pdf';
             $payment->save();
         }

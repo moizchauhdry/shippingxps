@@ -28,8 +28,8 @@ class PackageTable extends Migration
             $table->integer('package_width')->default(0); 
             $table->integer('package_height')->default(0);  
             $table->enum('dim_unit',['in','cm'])->default('in');
-            $table->integer('declared_value')->default(0);
-            $table->integer('shipping_total')->default(0);
+            $table->double('declared_value',10,2)->default(0);
+            $table->double('shipping_total',10,2)->default(0);
             $table->enum('package_type',['merchandise','gift'])->default('merchandise');
             $table->integer('address_book_id')->default(0);
             $table->string('carrier_code')->nullable();

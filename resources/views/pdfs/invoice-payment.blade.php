@@ -15,29 +15,29 @@
 <br>
 <br>
 <br>
-<table style="width: 100%">
-   <tr >
-        <td colspan="2"><strong>ShippingXPS</strong><br>
+<strong>Invoice ID : </strong> {{ $payment->invoice_id }}
+<table class="border" style="width: 100%">
+   <tr>
+        <td colspan="2">
+            <h3>Invoiced From</h3><br>
+            <strong>ShippingXPS</strong><br>
             {{ $package->warehouse->name ?? $order->warehouse->name }}<br>
             Address:{{ $package->warehouse->address ?? $order->warehouse->address   }}<br>
             Phone: {{ $package->warehouse->phone ?? $order->warehouse->phone   }}<br>
-            Email : {{ $package->warehouse->email ?? $order->warehouse->email   }}</td>
-        <td colspan="2"><strong>{{ $customer->address->fullname ?? '- -' }}</strong><br>
-            Address:{{ $customer->address->address ?? '- -' }}<br>
-            Phone: {{ $customer->address->phone ?? '- -' }}<br>
-            Email: {{ $customer->customer->email ?? '- -' }}</td>
+            Email : {{ $package->warehouse->email ?? $order->warehouse->email   }}
+        </td>
+
 
     </tr>
     <tr>
-
-        <td style="float:left">
-            <br><br><br>
-            <strong>Invoice ID : </strong> {{ $payment->invoice_id }}
-        </td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td colspan="2">
+            <h3>Invoiced To:</h3><br>
+            <strong>{{ $customer->address->fullname ?? '- -' }}</strong><br>
+            Address:{{ $customer->address->address ?? '- -' }}<br>
+            Phone: {{ $customer->address->phone ?? '- -' }}<br>
+            Email: {{ $customer->customer->email ?? '- -' }}</td>
     </tr>
+
 
 </table>
 <table class="border" style="width: 100%">
@@ -105,7 +105,6 @@
 </table>
 <br>
 <br>
-<br>
 <table style="width: 100%">
     <tr>
         <td style="width: 100px">Sub Total :  </td><td>${{ $payment->charged_amount + $payment->discount }}</td>
@@ -119,6 +118,22 @@
 </table>
 <br>
 <br>
+
+<b>Payments:</b>
+<table style="width:100%">
+    <tr>
+        <th>Payment Method</th>
+        <th>Date</th>
+        <th>Status</th>
+        <th>Payment Amount</th>
+    </tr>
+    <tr>
+        <td>Card</td>
+        <td>{{ date('Y-m-d',strtotime($payment->charged_amount)) }}</td>
+        <td>Payment Complete</td>
+        <td>$payment->charged_amount - $payment->discount</td>
+    </tr>
+</table>
 <br>
 <br>
 <table style="position: absolute;width: 100%;bottom: 0px">
