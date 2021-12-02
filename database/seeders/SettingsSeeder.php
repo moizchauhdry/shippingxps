@@ -23,6 +23,10 @@ class SettingsSeeder extends Seeder
                 "name" =>'mailout_fee',
                 'value' => '5'
             ],
+            [
+                "name" =>'storage_fee',
+                'value' => '3'
+            ],
 
         ]);
     }

@@ -349,8 +349,6 @@ class PackageController extends Controller
 
     }
 
-
-
     public function getPdf(Request $request, $order_id){
 
         $order = Order::with('items')->find($order_id);
@@ -444,13 +442,15 @@ class PackageController extends Controller
 
     }
 
-
-
-
     public function removeItem(Request $request){
 
         $item_id = $request->input('item_id');
         OrderItem::find($item_id)->delete();
+    }
+
+    public function getStorageFee($id)
+    {
+
     }
     
 }

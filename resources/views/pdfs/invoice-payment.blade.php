@@ -40,13 +40,9 @@
 
 
 </table>
+<br>
+<strong>Charges</strong>
 <table class="border" style="width: 100%">
-    <thead>
-    <tr>
-        <th>Services/Charges</th>
-        <th>Total</th>
-    </tr>
-    </thead>
     <tbody>
     @isset($package)
         <tr>
@@ -54,7 +50,14 @@
                 Mail Fee
             </td>
 
-            <td >$5</td>
+            <td style="width: 100px">$5</td>
+        </tr>
+        <tr>
+            <td>
+                Storage Fee
+            </td>
+
+            <td style="width: 100px">${{ $package->storage_fee }}</td>
         </tr>
         @foreach($package->serviceRequests as $item)
             <tr>
@@ -62,14 +65,20 @@
                     {{ $item->service->title }}
                 </td>
 
-                <td >${{ $item->service->price }}</td>
+                <td style="width: 100px">
+                    @if($item->service->id == 1)
+                        ${{ $item->service->price + $package->orders->count() * 1.5 }}
+                    @else
+                        ${{ $item->service->price }}
+                    @endif
+                </td>
             </tr>
         @endforeach
         <tr>
             <td>
                 Shipping
             </td>
-            <td >${{ $package->shipping_charges }}</td>
+            <td style="width: 100px">${{ $package->shipping_charges }}</td>
         </tr>
     @endisset
 
@@ -78,49 +87,47 @@
             <td>
                 Order Items Total
             </td>
-            <td >{{ $order->sub_total }}</td>
+            <td style="width: 100px">{{ $order->sub_total }}</td>
         </tr>
         <tr>
             <td>
                 Service Charges
             </td>
-            <td >{{ $order->service_charges }}</td>
+            <td style="width: 100px">{{ $order->service_charges }}</td>
         </tr>
         <tr>
             <td>
                 Shipping From Shop
             </td>
-            <td >{{ $order->shipping_from_shop }}</td>
+            <td style="width: 100px">{{ $order->shipping_from_shop }}</td>
         </tr>
         <tr>
             <td>
                 Pickup Charges
             </td>
 
-            <td >{{ $order->pickup_charges ?? 0.00 }}</td>
+            <td style="width: 100px">{{ $order->pickup_charges ?? 0.00 }}</td>
         </tr>
 
     @endisset
     </tbody>
 </table>
-<br>
-<br>
 <table style="width: 100%">
     <tr>
-        <td style="width: 100px">Sub Total :  </td><td>${{ $payment->charged_amount + $payment->discount }}</td>
+        <td style="text-align: right">Sub Total :  </td><td style="width: 100px">${{ $payment->charged_amount + $payment->discount }}</td>
     </tr>
     <tr>
-        <td style="width: 100px">Discount :  </td><td>${{  $payment->discount }}</td>
+        <td style="text-align: right">Discount :  </td><td style="width: 100px">${{  $payment->discount }}</td>
     </tr>
     <tr>
-        <td style="width: 100px">Grand Total :  </td><td>${{ $payment->charged_amount - $payment->discount }}</td>
+        <td style="text-align: right">Grand Total :  </td><td style="width: 100px">${{ $payment->charged_amount - $payment->discount }}</td>
     </tr>
 </table>
 <br>
 <br>
 
 <b>Payments:</b>
-<table style="width:100%">
+<table class="border" style="width:100%">
     <tr>
         <th>Payment Method</th>
         <th>Date</th>
@@ -129,23 +136,10 @@
     </tr>
     <tr>
         <td>Card</td>
-        <td>{{ date('Y-m-d',strtotime($payment->charged_amount)) }}</td>
+        <td>{{ date('d-m-Y',strtotime($payment->charged_at)) }}</td>
         <td>Payment Complete</td>
-        <td>$payment->charged_amount - $payment->discount</td>
+        <td>{{ $payment->charged_amount - $payment->discount }}</td>
     </tr>
 </table>
 <br>
 <br>
-<table style="position: absolute;width: 100%;bottom: 0px">
-    <tr>
-        <th colspan="3" style="text-align: center">
-            THANK YOU FOR YOUR BUSINESS
-            <br><br>
-        </th>
-    </tr>
-    <tr>
-        <th style="text-align: center">657-201-7881</th>
-        <th style="text-align: center">shippingxps.com</th>
-        <th style="text-align: center">info@shippingxps.com</th>
-    </tr>
-</table>

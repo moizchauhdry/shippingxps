@@ -24,29 +24,28 @@ class PaymentController extends Controller
     //
 
 
-
-    public function index(Request $request){
-        if($request->has('package_id') || \Session::has('order_id')){
-            \Session::put('amount',$request->amount);
-            if($request->has('status')){
+    public function index(Request $request)
+    {
+        if ($request->has('package_id') || \Session::has('order_id')) {
+            \Session::put('amount', $request->amount);
+            if ($request->has('status')) {
                 $status = $request->status;
-            }
-            else{
+            } else {
                 $status = null;
             }
 
-            if($request->has('package_id')){
-                \Session::put('package_id',$request->package_id);
+            if ($request->has('package_id')) {
+                \Session::put('package_id', $request->package_id);
             }
 
             return Inertia::render('Payment/OrderPayment',
                 [
                     'amount' => $request->amount,
-                    'status'=>$status,
-                    'hasPackage'=> $request->has('package_id') ? 1 : 0,
+                    'status' => $status,
+                    'hasPackage' => $request->has('package_id') ? 1 : 0,
                 ]);
-        }else{
-            return redirect()->back()->with('error','Something went wrong');
+        } else {
+            return redirect()->back()->with('error', 'Something went wrong');
         }
     }
 
@@ -64,7 +63,7 @@ class PaymentController extends Controller
         // Create the payment data for a credit card
         $creditCard = new AnetAPI\CreditCardType();
         $creditCard->setCardNumber($request->card_no);
-        $creditCard->setExpirationDate($request->year."-".$request->month);
+        $creditCard->setExpirationDate($request->year . "-" . $request->month);
         $creditCard->setCardCode($request->cvv);
 
         // Add the payment data to a paymentType object
@@ -73,7 +72,7 @@ class PaymentController extends Controller
 
         $user = \Auth::user();
 
-        $nameExplode = explode(' ',$user->name);
+        $nameExplode = explode(' ', $user->name);
 
         // Set the customer's Bill To address
         $customerAddress = new AnetAPI\CustomerAddressType();
@@ -153,14 +152,14 @@ class PaymentController extends Controller
             echo  "No response returned \n";
         }*/
 
-        if ($response->getMessages()->getResultCode() == "Ok"){
+        if ($response->getMessages()->getResultCode() == "Ok") {
             $payment = new Payment();
             $payment->customer_id = $user->id;
-            $payment->order_id = \Session::has('order_id')? \Session::get('order_id'): null;
-            $payment->package_id = \Session::has('package_id')? \Session::get('package_id'): null;
+            $payment->order_id = \Session::has('order_id') ? \Session::get('order_id') : null;
+            $payment->package_id = \Session::has('package_id') ? \Session::get('package_id') : null;
             $payment->transaction_id = $response->getTransactionResponse()->getTransId();
             $payment->charged_amount = \Session::get('amount');
-            $payment->discount = $request->has('discount')? $request->discount : 0.00;
+            $payment->discount = $request->has('discount') ? $request->discount : 0.00;
             $payment->charged_at = Carbon::now()->format('Y-m-d H:i:s');
             $payment->save();
             $payment->invoice_id = sprintf("%05d", $payment->id);
@@ -169,14 +168,14 @@ class PaymentController extends Controller
 
             /*Dont make it live end */
 
-            if(\Session::has('order_id')){
+            if (\Session::has('order_id')) {
                 $id = \Session::get('order_id');
                 $order = Order::find($id);
                 $order->payment_status = "Paid";
                 $order->save();
             }
 
-            if(\Session::has('package_id')){
+            if (\Session::has('package_id')) {
                 $id = \Session::get('package_id');
                 $package = Package::find($id);
                 $package->payment_status = "Paid";
@@ -190,19 +189,95 @@ class PaymentController extends Controller
                 }*/
 
 
-
             }
             \Log::info('b4 invoice');
             $this->buildInvoice($payment->id);
             \Log::info('after invoice');
 
 
-            \Session::forget(['order_id','package_id','amount']);
-            return redirect()->route('payments.PaymentSuccess')->with(['payment'=>$payment,'status']);
+            \Session::forget(['order_id', 'package_id', 'amount']);
+            return redirect()->route('payments.PaymentSuccess')->with(['payment' => $payment, 'status']);
         }
 
-        return redirect()->route('payment.index',['amount'=>\Session::get('amount'),'status'=>$response->getMessages()]);
+        return redirect()->route('payment.index', ['amount' => \Session::get('amount'), 'status' => $response->getMessages()]);
 
+
+    }
+
+    public function buildInvoice($id)
+    {
+        $payment = Payment::find($id);
+        $customer = $payment->customer;
+
+        if ($payment->package_id != null) {
+            \Log::info('On Package');
+            $package = $payment->package;
+            // return view('pdfs.payment-invoice',compact('payment','package','customer'));
+            $html = view('pdfs.invoice-payment', [
+                'payment' => $payment,
+                'package' => $package,
+                'customer' => $customer,
+            ])->render();
+
+            // return $html;
+
+            \Log::info('b4 writing');
+            try {
+                $mpdf = new \Mpdf\Mpdf();
+                $mpdf->WriteHTML($html);
+                $mpdf->SetHTMLFooter('<table style="position: absolute;width: 100%;bottom: 0px">
+    <tr>
+        <th colspan="3" style="text-align: center">
+            THANK YOU FOR YOUR BUSINESS
+            <br><br>
+        </th>
+    </tr>
+    <tr>
+        <th style="text-align: center;font-size: 12px;font-weight: normal">657-201-7881</th>
+        <th style="text-align: center;font-size: 12px;font-weight: normal">shippingxps.com</th>
+        <th style="text-align: center;font-size: 12px;font-weight: normal">info@shippingxps.com</th>
+    </tr>
+</table>');
+                $mpdf->Output('public/invoices/pdf/' . $payment->invoice_id . '.pdf', \Mpdf\Output\Destination::FILE);
+            } catch (\Throwable $e) {
+                \Log::info($e);
+            }
+            \Log::info('on saving record');
+            $payment->invoice_url = 'invoices/pdf/' . $payment->invoice_id . '.pdf';
+            $payment->save();
+        }
+
+        if ($payment->order_id != null) {
+            $order = $payment->order;
+            // return view('pdfs.payment-invoice',compact('payment','order','customer'));
+
+            $html = view('pdfs.invoice-payment', [
+                'payment' => $payment,
+                'order' => $order,
+                'customer' => $customer,
+            ])->render();
+
+            $mpdf = new \Mpdf\Mpdf();
+            $mpdf->WriteHTML($html);
+            $mpdf->SetHTMLFooter('<table style="position: absolute;width: 100%;bottom: 0px">
+    <tr>
+        <th colspan="3" style="text-align: center">
+            THANK YOU FOR YOUR BUSINESS
+            <br><br>
+        </th>
+    </tr>
+    <tr>
+        <th style="text-align: center;font-size: 12px;font-weight: normal">657-201-7881</th>
+        <th style="text-align: center;font-size: 12px;font-weight: normal">shippingxps.com</th>
+        <th style="text-align: center;font-size: 12px;font-weight: normal">info@shippingxps.com</th>
+    </tr>
+</table>');
+            $mpdf->Output('public/invoices/pdf/' . $payment->invoice_id . '.pdf', \Mpdf\Output\Destination::FILE);
+            $payment->invoice_url = 'invoices/pdf/' . $payment->invoice_id . '.pdf';
+            $payment->save();
+        }
+
+        event(new PaymentEventHandler($payment));
 
     }
 
@@ -210,51 +285,52 @@ class PaymentController extends Controller
     {
         $user = \Auth::user();
 
-        if($user->type == 'admin'){
-            $payments = Payment::with(['customer','package','order'])->orderByDesc('id')->get();
-        }else{
-            $payments = Payment::with(['customer','package','order'])->where('customer_id',$user->id)->orderByDesc('id')->get();
+        if ($user->type == 'admin') {
+            $payments = Payment::with(['customer', 'package', 'order'])->orderByDesc('id')->get();
+        } else {
+            $payments = Payment::with(['customer', 'package', 'order'])->where('customer_id', $user->id)->orderByDesc('id')->get();
         }
-        return Inertia::render('Payment/Index',['payments'=> $payments]);
+        return Inertia::render('Payment/Index', ['payments' => $payments]);
     }
+
+    /* Coupon Mangement */
 
     public function paymentSuccess()
     {
-        if(\Session::has('payment')){
+        if (\Session::has('payment')) {
             $payment = \Session::get('payment');
-        }else{
+        } else {
             $payment = null;
         }
 
-        return Inertia::render('Payment/PaymentSuccess',[
+        return Inertia::render('Payment/PaymentSuccess', [
             'payment' => $payment,
         ]);
     }
 
-    /* Coupon Mangement */
     public function checkCoupon(Request $request)
     {
         // dd($request->code);
         $customer = Auth::user();
         $code = $request->code;
 
-        $coupon = Coupon::where('code',$code)->first();
+        $coupon = Coupon::where('code', $code)->first();
 
-        if($coupon != null){
-            $strCheck = strcmp($code,$coupon->code);
-            if($strCheck == 0){
-                $checkCode = CustomerCoupon::where('coupon_id',$coupon->id)->where('customer_id',$customer->id)->get();
-                if($checkCode->count() > 0){
+        if ($coupon != null) {
+            $strCheck = strcmp($code, $coupon->code);
+            if ($strCheck == 0) {
+                $checkCode = CustomerCoupon::where('coupon_id', $coupon->id)->where('customer_id', $customer->id)->get();
+                if ($checkCode->count() > 0) {
                     return response()->json([
                         'status' => 0,
                         'message' => 'Coupon already used',
                     ]);
-                }else{
-                    if(\Session::has('amount')){
+                } else {
+                    if (\Session::has('amount')) {
                         $amount = \Session::get('amount');
                         $discount = $amount * ($coupon->discount / 100);
                         $newAmount = $amount - $discount;
-                        \Session::put('amount',$newAmount);
+                        \Session::put('amount', $newAmount);
                     }
                     return response()->json([
                         'status' => 1,
@@ -264,67 +340,18 @@ class PaymentController extends Controller
                     ]);
                 }
 
-            }else{
+            } else {
                 return response()->json([
                     'status' => 0,
                     'message' => 'Coupon is invalid',
                 ]);
             }
-        }else{
+        } else {
             return response()->json([
                 'status' => 0,
                 'message' => 'Coupon is invalid',
             ]);
         }
-
-    }
-
-    public function buildInvoice($id)
-    {
-        $payment = Payment::find($id);
-        $customer = $payment->customer;
-
-        if($payment->package_id != null){
-            \Log::info('On Package');
-            $package = $payment->package;
-            // return view('pdfs.payment-invoice',compact('payment','package','customer'));
-            $html = view('pdfs.invoice-payment',[
-                'payment' => $payment,
-                'package' => $package,
-                'customer' => $customer,
-            ])->render();
-
-            \Log::info('b4 writing');
-            try{
-                $mpdf = new \Mpdf\Mpdf();
-                $mpdf->WriteHTML($html);
-                $mpdf->Output('public/invoices/pdf/'.$payment->invoice_id.'.pdf',\Mpdf\Output\Destination::FILE);
-            }catch(\Throwable $e){
-                \Log::info($e);
-            }
-            \Log::info('on saving record');
-            $payment->invoice_url = 'invoices/pdf/'.$payment->invoice_id.'.pdf';
-            $payment->save();
-        }
-
-        if($payment->order_id != null){
-            $order = $payment->order;
-            // return view('pdfs.payment-invoice',compact('payment','order','customer'));
-
-            $html = view('pdfs.invoice-payment',[
-                'payment' => $payment,
-                'order' => $order,
-                'customer' => $customer,
-            ])->render();
-
-            $mpdf = new \Mpdf\Mpdf();
-            $mpdf->WriteHTML($html);
-            $mpdf->Output('public/invoices/pdf/'.$payment->invoice_id.'.pdf',\Mpdf\Output\Destination::FILE);
-            $payment->invoice_url = 'invoices/pdf/'.$payment->invoice_id.'.pdf';
-            $payment->save();
-        }
-
-        event(new PaymentEventHandler($payment));
 
     }
 }

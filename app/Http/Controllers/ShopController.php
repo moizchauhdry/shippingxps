@@ -432,6 +432,7 @@ class ShopController extends Controller
                 $order->package_id = $package->id;
                 $order->order_type = 'order';
                 $order->status = 'arrived';
+                $order->arrived_at = Carbon::now();
                 $order->save();
 
                 event(new ShoppingCompletedEvent($order));

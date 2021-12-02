@@ -572,6 +572,12 @@
                         <td>${{ mailout_fee }}</td>
                         <td></td>
                       </tr>
+                      <tr v-show="storage_fee > 0">
+                        <td>Storage Fee</td>
+                        <td></td>
+                        <td>${{ storage_fee }}</td>
+                        <td></td>
+                      </tr>
                       <tr>
                         <td>Shipping Total</td>
                         <td></td>
@@ -738,8 +744,9 @@ export default {
       showEstimatedPrice: false,
       form_checkout: this.$inertia.form({
         amount: '',
-        package_id: this.packag.id
-      })
+        package_id: this.packag.id,
+      }),
+      storage_fee : 0,
     }
   },
   props: {
@@ -761,6 +768,7 @@ export default {
   },
   mounted() {
     console.log(this.packag);
+    this.getStorageFee()
   },
   methods: {
     submit() {
@@ -928,7 +936,7 @@ export default {
 
     },
     getGrandTotal() {
-      return this.getServiceSubTotal() + parseFloat(this.packag.shipping_total) + parseFloat(this.mailout_fee);
+      return this.getServiceSubTotal() + parseFloat(this.packag.shipping_total) + parseFloat(this.mailout_fee) + parseFloat(this.storage_fee);
     },
     setActiveTabAB(tab) {
 
@@ -1012,6 +1020,13 @@ export default {
             }
           }
       );
+    },
+    getStorageFee(){
+      axios.get(this.route('getStorageFee'),{
+        params: {
+          package_id:this.packag.id
+        },
+      }).then((response) => {this.storage_fee = response.data});
     },
     /*imgURL(url) {
       return "/public" + url;

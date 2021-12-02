@@ -193,6 +193,7 @@ class OrderController extends Controller
             $order->received_from = $validated['received_from'];
 
             $order->notes = $validated['notes'];
+            $order->arrived_at = Carbon::now();
             $order->created_at = Carbon::now();
 
             $order->save();

@@ -61,6 +61,7 @@ Route::get('/packages/create/{order_id}','PackageController@create')->name('pack
 Route::post('/packages','PackageController@store')->name('package.store')->middleware('auth');
 Route::get('/packages/{id}/edit','PackageController@edit')->name('package.edit')->middleware('auth');
 Route::post('/packages/update','PackageController@update')->name('package.update')->middleware('auth');
+Route::get('/getStorageFee','PackageController@getStorageFee')->name('getStorageFee')->middleware('auth');
 
 Route::post('/packages/service-request','PackageController@serviceRequest')->name('packages.service-request')->middleware('auth');
 Route::post('/packages/service-handle','PackageController@serviceHandle')->name('packages.service-handle')->middleware('auth');

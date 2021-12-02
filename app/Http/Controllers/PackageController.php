@@ -24,6 +24,7 @@ use App\Models\SiteSetting;
 use App\Models\Shipping;
 use Illuminate\Support\Facades\Auth;
 use File;
+use Carbon\Carbon;
 
 
 class PackageController extends Controller
@@ -598,6 +599,33 @@ class PackageController extends Controller
 
         // $item_id = $request->input('item_id');
         // OrderItem::find($item_id)->delete();
+    }
+
+    public function getStorageFee(Request $request)
+    {
+        // dd('here');
+        // dd($request->package_id);
+        $id = $request->package_id;
+        $package = Package::find($id);
+        $orders = $package->orders;
+
+        $fee = SiteSetting::where('name','storage_fee')->first()->value;
+
+        $storageFee = 0;
+        foreach ($orders as $item){
+            if($item->arrived_at != null){
+                $lastDate = Carbon::make($item->arrived_at)->addDays(75);
+                $currentDate = Carbon::now();
+                if(strtotime($currentDate) > strtotime($lastDate)){
+                    $daysDifference = $currentDate->diffInDays($lastDate);
+                    $storageFee += $daysDifference * $fee;
+                }
+            }
+        }
+
+        $package->storage_fee = $storageFee;
+        $package->save();
+        return $storageFee;
     }
     
 }

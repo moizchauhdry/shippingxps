@@ -56,6 +56,7 @@ class OrdersTable extends Migration
             $table->boolean('updated_by_admin')->nullable();
             $table->boolean('changes_approved')->default(false);
             $table->enum('payment_status',['Pending','Paid','Unsuccessful'])->default('Pending');
+            $table->timestamp('arrived_at')->nullable();
             $table->timestamps();
         });
     }

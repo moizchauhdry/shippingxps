@@ -63,7 +63,7 @@ Route::middleware('auth')->group(function () {
         Route::get('list', [\App\Http\Controllers\PaymentController::class,  'getPayments'])->name('payments.getPayments');
         Route::get('PaymentSuccess', [\App\Http\Controllers\PaymentController::class,  'PaymentSuccess'])->name('payments.PaymentSuccess');
         Route::post('check/coupon', [\App\Http\Controllers\PaymentController::class, 'checkCoupon'])->name('checkCoupon');
-        Route::get('invoice', [\App\Http\Controllers\PaymentController::class, 'buildInvoice'])->name('buildInvoice');
+        Route::get('invoice/{id}', [\App\Http\Controllers\PaymentController::class, 'buildInvoice'])->name('buildInvoice');
     });
 
 });
