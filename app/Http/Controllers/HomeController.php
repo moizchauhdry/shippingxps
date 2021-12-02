@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ServicePage;
 use Illuminate\Http\Request;
 use \Illuminate\Http\Response;
 use Inertia\Inertia;
@@ -336,7 +337,9 @@ class HomeController extends Controller
     }
 
     public function pricingTable(){
-        return Inertia::render('PricingTable');
+        $services = ServicePage::all();
+
+        return Inertia::render('PricingTable',['services' => $services]);
 
     }
 

@@ -38,7 +38,11 @@
                                     </tr>    
                                 </thead>
                                 <tbody>
-                                    <tr>
+                                <tr v-for="item in services" :key="item.id">
+                                  <td v-html="item.name"></td>
+                                  <td v-html="item.description"></td>
+                                </tr>
+                                <!-- <tr>
                                         <td>Account Fee</td>
                                         <td>Free</td>
                                     </tr>
@@ -116,8 +120,7 @@
                                     <tr>
                                         <td>Can purchase Gift Cards</td>
                                         <td>6% of your total bill if electronic available  and  $20 per visit if physical store visit is required</td>
-                                    </tr>
-
+                                    </tr>-->
                                 </tbody>
 
                                 </table>
@@ -168,6 +171,7 @@ components: {
             canLogin: Boolean,
             canRegister: Boolean,
             errors: Object,
+            services: Object,
 	},
   methods: {
 

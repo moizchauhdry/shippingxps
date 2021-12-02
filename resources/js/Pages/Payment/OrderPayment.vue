@@ -62,7 +62,7 @@
                           <th class="w-75 text-end">Sub Total</th>
                           <td>${{ amount }}</td>
                         </tr>
-                        <tr  v-if="form.discount != null">
+                        <tr  v-if="form.discount != null && form.discount > 0.00">
                           <th class="w-75 text-end">Coupon Discount</th>
                           <td>${{ parseFloat(amount * (form.discount/100)).toFixed(2) }}</td>
                         </tr>

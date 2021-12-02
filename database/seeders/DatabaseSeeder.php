@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
             StoreSeeder::class,
             CMSPageSeeder::class,
             ConfigurationSeeder::class,
+            ServicePageSeeder::class,
         ]);
     }
 }

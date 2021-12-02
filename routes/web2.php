@@ -54,6 +54,11 @@ Route::middleware('auth')->group(function () {
         Route::post('/update', [\App\Http\Controllers\ConfigurationController::class, 'update'])->name('promotional.update');
     });
 
+    Route::prefix('service-page')->group(function () {
+        Route::get('/edit/', [\App\Http\Controllers\ServicePageController::class, 'edit'])->name('service-page.edit');
+        Route::post('/update', [\App\Http\Controllers\ServicePageController::class, 'update'])->name('service-page.update');
+    });
+
     /*
      * Shop for me routes
      */

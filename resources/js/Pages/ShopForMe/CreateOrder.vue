@@ -596,7 +596,12 @@ export default {
         });
         this.form_online.sub_total = parseFloat(sum).toFixed(2);
         var servivceCharges = sum * 0.05;
-        this.form_online.service_charges = parseFloat(servivceCharges).toFixed(2);
+        if(servivceCharges >= 5){
+          this.form_online.service_charges = parseFloat(servivceCharges).toFixed(2);
+        }else{
+          this.form_online.service_charges = parseFloat(5).toFixed(2);
+        }
+
         console.log('fetched...')
         var total = parseFloat(sum) + parseFloat(this.form_online.service_charges);
         return this.form_online.grand_total = parseFloat(total).toFixed(2)
@@ -612,7 +617,12 @@ export default {
       var totalpickup = 0;
         if(this.form_pickup.pickup_type != 'pickup_only'){
           var servivceCharges = sum * 0.05;
-          this.form_pickup.service_charges = parseFloat(servivceCharges).toFixed(2);
+
+          if(servivceCharges >= 5){
+            this.form_pickup.service_charges = parseFloat(servivceCharges).toFixed(2);
+          }else{
+            this.form_pickup.service_charges = parseFloat(5).toFixed(2);
+          }
           console.log('fetched...')
           totalpickup = parseFloat(sum) + parseFloat(this.form_pickup.service_charges) + parseFloat(pickupCharges);
         }else{

@@ -80,9 +80,9 @@
             <i class="fas fa-external-link-alt"></i><span>Payments</span>
           </inertia-link>
 
-          <inertia-link v-if="$page.props.auth.user.type == 'admin'" class="nav-link" :href="route('pages_list')" :class="{active: route().current('pages_list')}" :active="route().current('pages_list')">
+<!--          <inertia-link v-if="$page.props.auth.user.type == 'admin'" class="nav-link" :href="route('pages_list')" :class="{active: route().current('pages_list')}" :active="route().current('pages_list')">
             <i class="fas fa-external-link-alt"></i><span>Manages Pages</span>
-          </inertia-link>
+          </inertia-link>-->
 
           <inertia-link v-if="$page.props.auth.user.type == 'admin'" class="nav-link" :href="route('services')" :class="{active: route().current('services')}" :active="route().current('services')">
             <i class="fas fa-external-link-alt"></i><span>Manage Services</span>
@@ -105,8 +105,13 @@
           </inertia-link>
 
           <inertia-link v-if="$page.props.auth.user.type == 'admin'" class="nav-link" :href="route('promotional.edit',1)" :class="{active: route().current('settings')}" :active="route().current('settings')">
-            <i class="fas fa-external-link-alt"></i><span>Promotional Message</span>
+            <i class="fas fa-external-link-alt"></i><span>Promo Message</span>
           </inertia-link>
+
+          <inertia-link v-if="$page.props.auth.user.type == 'admin'" class="nav-link" :href="route('service-page.edit')" :class="{active: route().current('settings')}" :active="route().current('settings')">
+            <i class="fas fa-external-link-alt"></i><span>Service Pricing</span>
+          </inertia-link>
+
 
           <inertia-link v-if="$page.props.auth.user.type == 'admin'" class="nav-link" :href="route('settings')" :class="{active: route().current('settings')}" :active="route().current('settings')">
             <i class="fas fa-external-link-alt"></i><span>Settings</span>
