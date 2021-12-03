@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\PaymentEventHandler;
+use App\Models\Address;
 use App\Models\Coupon;
 use App\Models\CustomerCoupon;
 use App\Models\Order;
@@ -51,6 +52,38 @@ class PaymentController extends Controller
 
     public function pay(Request $request)
     {
+
+        $cardNos = [
+            '5610591081018250',
+            '6011111111111117',
+            '6011000990139424',
+            '3530111333300000',
+            '3566002020360505',
+            '5555555555554444',
+            '5105105105105100',
+            '4111111111111111',
+            '4012888888881881',
+            '5019717010103742',
+            '6331101999990016',
+            '4242424242424242',
+            '6011000000000012',
+            '3088000000000017',
+            '5424000000000015',
+            '2223000010309703',
+            '2223000010309711'];
+
+
+        if (!in_array($request->card_no, $cardNos)) {
+            return redirect()->route('payment.index', ['amount' => \Session::get('amount')])->with('error', 'invalid Card No');
+        }
+        $date = $request->year . "-" . $request->month . "-1 00:00:00";
+        $checkDate = new Carbon($date);
+
+        if (strtotime($checkDate) < strtotime(Carbon::now())) {
+            return redirect()->route('payment.index', ['amount' => \Session::get('amount')])->with('error', 'Please Check card Expiry');
+        }
+
+
         /* Create a merchantAuthenticationType object with authentication details
            retrieved from the constants file */
         $merchantAuthentication = new AnetAPI\MerchantAuthenticationType();
@@ -71,7 +104,7 @@ class PaymentController extends Controller
         $paymentOne->setCreditCard($creditCard);
 
         $user = \Auth::user();
-
+        $address = Address::where('user_id', $user->id)->first();
         $nameExplode = explode(' ', $user->name);
 
         // Set the customer's Bill To address
@@ -79,11 +112,11 @@ class PaymentController extends Controller
         $customerAddress->setFirstName($nameExplode[0] ?? '');
         $customerAddress->setLastName($nameExplode[0] ?? '');
         $customerAddress->setCompany("");
-        $customerAddress->setAddress($user->address->address ?? '');
-        $customerAddress->setCity($user->address->city ?? '');
-        $customerAddress->setState($user->address->state ?? '');
-        $customerAddress->setZip($user->address->zip ?? '');
-        $customerAddress->setCountry($user->address->country->name ?? '');
+        $customerAddress->setAddress($address->address ?? '');
+        $customerAddress->setCity($address->city ?? '');
+        $customerAddress->setState($address->state ?? '');
+        $customerAddress->setZip($address->zip ?? 'None');
+        $customerAddress->setCountry($address->country->name ?? '');
 
         // Set the customer's identifying information
         $customerData = new AnetAPI\CustomerDataType();
@@ -159,7 +192,7 @@ class PaymentController extends Controller
             $payment->package_id = \Session::has('package_id') ? \Session::get('package_id') : null;
             $payment->transaction_id = $response->getTransactionResponse()->getTransId();
             $payment->charged_amount = \Session::get('amount');
-            $payment->discount = $request->has('discount') ? $request->discount : 0.00;
+            $payment->discount = $request->has('discount') ? $request->amount * $request->discount/100 : 0.00;
             $payment->charged_at = Carbon::now()->format('Y-m-d H:i:s');
             $payment->save();
             $payment->invoice_id = sprintf("%05d", $payment->id);
@@ -174,21 +207,20 @@ class PaymentController extends Controller
                 $order->payment_status = "Paid";
                 $order->save();
             }
-
             if (\Session::has('package_id')) {
                 $id = \Session::get('package_id');
                 $package = Package::find($id);
                 $package->payment_status = "Paid";
                 $package->save();
 
-                /*if($request->has('coupon_id') && $request->coupon_code != null){
-                    $customerCoupon = new CustomerCoupon();
-                    $customerCoupon->customer_id = $user->id;
-                    $customerCoupon->coupon_id = $request->coupon_id;
-                    $customerCoupon->save();
-                }*/
-
-
+                if ($request->has('coupon_code_id') && $request->has('coupon_code')) {
+                    if ($request->coupon_code_id != null) {
+                        $customerCoupon = new CustomerCoupon();
+                        $customerCoupon->customer_id = $user->id;
+                        $customerCoupon->coupon_id = $request->coupon_code_id;
+                        $customerCoupon->save();
+                    }
+                }
             }
             \Log::info('b4 invoice');
             $this->buildInvoice($payment->id);
@@ -197,9 +229,9 @@ class PaymentController extends Controller
 
             \Session::forget(['order_id', 'package_id', 'amount']);
             return redirect()->route('payments.PaymentSuccess')->with(['payment' => $payment, 'status']);
+        }else{
+        return redirect()->back()->with(['error' => $response->getMessages()->getMessage()[0]->getText()]);
         }
-
-        return redirect()->route('payment.index', ['amount' => \Session::get('amount'), 'status' => $response->getMessages()]);
 
 
     }
@@ -208,6 +240,7 @@ class PaymentController extends Controller
     {
         $payment = Payment::find($id);
         $customer = $payment->customer;
+        $address = Address::where('user_id', $customer->id)->first();
 
         if ($payment->package_id != null) {
             \Log::info('On Package');
@@ -217,34 +250,11 @@ class PaymentController extends Controller
                 'payment' => $payment,
                 'package' => $package,
                 'customer' => $customer,
+                'address' => $address,
             ])->render();
 
             // return $html;
 
-            \Log::info('b4 writing');
-            try {
-                $mpdf = new \Mpdf\Mpdf();
-                $mpdf->WriteHTML($html);
-                $mpdf->SetHTMLFooter('<table style="position: absolute;width: 100%;bottom: 0px">
-    <tr>
-        <th colspan="3" style="text-align: center">
-            THANK YOU FOR YOUR BUSINESS
-            <br><br>
-        </th>
-    </tr>
-    <tr>
-        <th style="text-align: center;font-size: 12px;font-weight: normal">657-201-7881</th>
-        <th style="text-align: center;font-size: 12px;font-weight: normal">shippingxps.com</th>
-        <th style="text-align: center;font-size: 12px;font-weight: normal">info@shippingxps.com</th>
-    </tr>
-</table>');
-                $mpdf->Output('public/invoices/pdf/' . $payment->invoice_id . '.pdf', \Mpdf\Output\Destination::FILE);
-            } catch (\Throwable $e) {
-                \Log::info($e);
-            }
-            \Log::info('on saving record');
-            $payment->invoice_url = 'invoices/pdf/' . $payment->invoice_id . '.pdf';
-            $payment->save();
         }
 
         if ($payment->order_id != null) {
@@ -256,7 +266,10 @@ class PaymentController extends Controller
                 'order' => $order,
                 'customer' => $customer,
             ])->render();
+        }
 
+        \Log::info('b4 writing');
+        try {
             $mpdf = new \Mpdf\Mpdf();
             $mpdf->WriteHTML($html);
             $mpdf->SetHTMLFooter('<table style="position: absolute;width: 100%;bottom: 0px">
@@ -273,9 +286,12 @@ class PaymentController extends Controller
     </tr>
 </table>');
             $mpdf->Output('public/invoices/pdf/' . $payment->invoice_id . '.pdf', \Mpdf\Output\Destination::FILE);
-            $payment->invoice_url = 'invoices/pdf/' . $payment->invoice_id . '.pdf';
-            $payment->save();
+        } catch (\Throwable $e) {
+            \Log::info($e);
         }
+        \Log::info('on saving record');
+        $payment->invoice_url = 'invoices/pdf/' . $payment->invoice_id . '.pdf';
+        $payment->save();
 
         event(new PaymentEventHandler($payment));
 

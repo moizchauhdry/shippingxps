@@ -586,7 +586,14 @@ export default {
         this.form.sub_total = parseFloat(sum).toFixed(2);
         if (e == 1 && this.form.is_service_charges != 1) {
           var serviceCharges = sum * 0.05
+          if(serviceCharges >= 5.00){
           this.form.service_charges = parseFloat(serviceCharges).toFixed(2);
+          }else if(serviceCharges == 0.00 || serviceCharges < 0.01){
+            this.form.service_charges = 0.00;
+          }else{
+            this.form.service_charges = 5.00;
+          }
+
           console.log('hit1')
           console.log(serviceCharges)
         } else {

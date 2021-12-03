@@ -80,6 +80,22 @@
                   </div>
                 </div>
               </form>
+              <hr>
+              <div class="row">
+                {{ status }}
+                <div class="col-md-6 offset-md-3">
+                  <a href="https://www.paypal.com/signin" class="btn btn-info w-100" target="_blank">Pay With PayPal</a>
+<!--                  <form method="post" action="https://www.paypal.com/cgi-bin/webscr">
+                    <input type="hidden" name="cmd" value="_xclick">
+                    &lt;!&ndash; Modify the below items to suit your needs &ndash;&gt;
+                    <input type="hidden" name="business" value="info@shippingxps.com">
+                    <input type="hidden" name="amount" :value="amount">
+                    <input type="hidden" name="currency_code" value="USD">
+                    <input type="hidden" name="return" :value="this.route('payments.PaymentSuccess')">
+                    <button class="btn btn-info w-100" type="submit">Pay With Pay Pal</button>
+                  </form>-->
+                </div>
+              </div>
             </div>
           </div>
 <!--          <div class="card-footer">
@@ -156,12 +172,15 @@ export default {
         this.coupon_status = 1;
         this.coupon_message = info.data.message;
         this.form.discount = info.data.discount;
+        this.form.coupon_code_id = info.data.coupon_id
+
       } else {
         console.log(info);
         console.log(this);
         this.coupon_status = 0;
         this.coupon_message = info.data.message;
         this.form.coupon_code_id = info.data.coupon_id
+
       }
     },
   },

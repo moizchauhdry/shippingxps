@@ -140,7 +140,7 @@ class PackageController extends Controller
           'service_requests' => $service_requests,
           'images' => $images,
           'order_charges' => $order_charges,
-          'mailout_fee' => (int) SiteSetting::getByName('mailout_fee'),
+          'mailout_fee' => (double) SiteSetting::getByName('mailout_fee'),
           'shipping_services' => Shipping::getShippingServices(),
           'hasConsolidationRequest' => (bool)$serviceRequest,
           'hasConsolidationServed' => (bool)$servedConsolidation,

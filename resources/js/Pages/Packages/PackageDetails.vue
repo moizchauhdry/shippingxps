@@ -936,7 +936,8 @@ export default {
 
     },
     getGrandTotal() {
-      return this.getServiceSubTotal() + parseFloat(this.packag.shipping_total) + parseFloat(this.mailout_fee) + parseFloat(this.storage_fee);
+      var grandTotal = this.getServiceSubTotal() + parseFloat(this.packag.shipping_total) + parseFloat(this.mailout_fee) + parseFloat(this.storage_fee);
+      return parseFloat(grandTotal).toFixed(2);
     },
     setActiveTabAB(tab) {
 

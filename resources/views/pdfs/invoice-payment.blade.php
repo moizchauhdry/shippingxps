@@ -32,10 +32,10 @@
     <tr>
         <td colspan="2">
             <h3>Invoiced To:</h3><br>
-            <strong>{{ $customer->address->fullname ?? '- -' }}</strong><br>
-            Address:{{ $customer->address->address ?? '- -' }}<br>
-            Phone: {{ $customer->address->phone ?? '- -' }}<br>
-            Email: {{ $customer->customer->email ?? '- -' }}</td>
+            <strong>{{ $address->fullname ?? '- -' }}</strong><br>
+            Address:{{ $address->address ?? '- -' }}<br>
+            Phone: {{ $address->phone ?? '- -' }}<br>
+            Email: {{ $address->email ?? '- -' }}</td>
     </tr>
 
 
@@ -120,7 +120,7 @@
         <td style="text-align: right">Discount :  </td><td style="width: 100px">${{  $payment->discount }}</td>
     </tr>
     <tr>
-        <td style="text-align: right">Grand Total :  </td><td style="width: 100px">${{ $payment->charged_amount - $payment->discount }}</td>
+        <td style="text-align: right">Grand Total :  </td><td style="width: 100px">${{ $payment->charged_amount }}</td>
     </tr>
 </table>
 <br>
@@ -138,7 +138,7 @@
         <td>Card</td>
         <td>{{ date('d-m-Y',strtotime($payment->charged_at)) }}</td>
         <td>Payment Complete</td>
-        <td>{{ $payment->charged_amount - $payment->discount }}</td>
+        <td>{{ $payment->charged_amount }}</td>
     </tr>
 </table>
 <br>
