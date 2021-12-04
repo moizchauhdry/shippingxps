@@ -67,28 +67,28 @@
         <div class="row mt-4"  style="background-color: #dcdcdc" >
           <div class="col-sm-12 col-md-4 p-0 "><img style="height: 300px" class="img-fluid text-center" src="/theme/img/posters/poster-1.jpeg" alt=""></div>
           <div class="col-sm-12 col-md-8 p-3 p-md-3" style="align-self: center">
-            <h2 style="font-size:20px;font-weight: 800">PLACE ORDER ON AMAZON,USA MALL</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque id finibus risus. Proin pretium sit amet turpis eget lacinia. Nullam lacinia arcu sapien, commodo faucibus nulla pharetra non. Nam venenatis tristique dictum. Duis aliquam auctor interdum. Phasellus euismod commodo libero. Donec pharetra lorem eros, eleifend fermentum eros volutpat eu.</p>
+            <h2 style="font-size:20px;font-weight: 800">GET YOUR USA ADDRESSES  </h2>
+            <p>Sign up with ShippingXPS and receive your free USA addresses immediately. Once you registered ShippingXPS, you will have your own suite in our warehouse.</p>
           </div>
         </div>
         <div class="row mt-4"  style="background-color: #dcdcdc" >
           <div class="col-sm-12 col-md-8 p-3 p-md-3 order-2 order-md-1" style="align-self: center">
-          <h2 style="font-size:20px;font-weight: 800">ENTER YOUR SHIPPING XPS MAILING ADDRESS</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque id finibus risus. Proin pretium sit amet turpis eget lacinia. Nullam lacinia arcu sapien, commodo faucibus nulla pharetra non. Nam venenatis tristique dictum. Duis aliquam auctor interdum. Phasellus euismod commodo libero. Donec pharetra lorem eros, eleifend fermentum eros volutpat eu.</p>
+          <h2 style="font-size:20px;font-weight: 800">START ONLINE SHOPPING FROM USA</h2>
+            <p>Shop online from multiple online retailers and take advantage of great deals of top USA brands. Use your ShippingXPS addresses when you checkout. We will notify you when we received your packages at our warehouse. If a store doesn’t accept your credit card, use our ShopForMe service.</p>
           </div>
           <div class="col-sm-12 col-md-4 p-0 order-1 order-md-2"><img style="height: 300px " class="img-fluid text-sm-center float-right" src="/theme/img/posters/poster-2.jpeg" alt=""></div>
         </div>
         <div class="row mt-4"  style="background-color: #dcdcdc" >
           <div class="col-sm-12 col-md-4 p-0 "><img style="height: 300px" class="img-fluid text-center" src="/theme/img/posters/poster-3.jpeg" alt=""></div>
           <div class="col-sm-12 col-md-8 p-3 p-md-3" style="align-self: center">
-            <h2 style="font-size:20px;font-weight: 800">WE WILL RECIEVE YOUR ORDER AND WILL SHIP TO YOUR HOME</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque id finibus risus. Proin pretium sit amet turpis eget lacinia. Nullam lacinia arcu sapien, commodo faucibus nulla pharetra non. Nam venenatis tristique dictum. Duis aliquam auctor interdum. Phasellus euismod commodo libero. Donec pharetra lorem eros, eleifend fermentum eros volutpat eu.</p>
+            <h2 style="font-size:20px;font-weight: 800">RECEIVING YOUR PACKAGES    </h2>
+            <p>Once we receive your packages, we will consolidate your packages into one box and ship them to your home address. Avoid unnecessary dimensional weight with repacking service and save even more with ShippingXPS.</p>
           </div>
         </div>
         <div class="row mt-4"  style="background-color: #dcdcdc" >
           <div class="col-sm-12 col-md-8 p-3 p-md-3 order-2 order-md-1" style="align-self: center">
-            <h2 style="font-size:20px;font-weight: 800">ORDER AT YOUR HOME STEP</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque id finibus risus. Proin pretium sit amet turpis eget lacinia. Nullam lacinia arcu sapien, commodo faucibus nulla pharetra non. Nam venenatis tristique dictum. Duis aliquam auctor interdum. Phasellus euismod commodo libero. Donec pharetra lorem eros, eleifend fermentum eros volutpat eu.</p>
+            <h2 style="font-size:20px;font-weight: 800">SHIPPING YOUR PACKAGES HOMEw</h2>
+            <p>We will send your packages to your location with the carrier method you choose from a variety of our trustworthy partners. Once packages your leave ShippingXPS, packages will be delivered as little as 2-4 days worldwide.</p>
           </div>
           <div class="col-sm-12 col-md-4 p-0 order-1 order-md-2"><img style="height: 300px " class="img-fluid text-sm-center float-right" src="/theme/img/posters/poster-4.jpeg" alt=""></div>
         </div>

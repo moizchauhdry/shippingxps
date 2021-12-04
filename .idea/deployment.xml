@@ -2,6 +2,13 @@
 <project version="4">
   <component name="PublishConfigData" serverName="ftp.shippingxps.com" remoteFilesAllowedToDisappearOnAutoupload="false">
     <serverData>
+      <paths name="Shipping Main">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/public_html/" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
       <paths name="ftp.shippingxps.com">
         <serverdata>
           <mappings>

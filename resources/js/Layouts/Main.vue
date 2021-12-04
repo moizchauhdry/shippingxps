@@ -1,6 +1,6 @@
 <template>
   <header class="navbar navbar-light sticky-top bg-dark flex-md-nowrap p-0 shadow bg-light" style="" id="header2">
-    <inertia-link :href="route('dashboard')" style="padding: 5px 10px;">
+    <inertia-link :href="route('homePage')" style="padding: 5px 10px;">
       <img alt="Porto" width="100" height="35" src="/theme/img/logo.png">
     </inertia-link>
     <nav class="navbar navbar-expand-lg navbar-light bg-light" style="display:none;">

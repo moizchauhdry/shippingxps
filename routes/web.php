@@ -25,7 +25,8 @@ Route::get('/', function () {
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
     ]);
-});
+
+})->name('homePage');
 
 Route::get('/checkAuth-user',[\App\Http\Controllers\HomeController::class,'checkAuth']);
 
@@ -174,9 +175,9 @@ Route::delete('/lead/{id}', [CustomerController::class, 'destroy'])
 Route::get('pages/list', 'CMSPageController@index')->middleware(['auth', 'verified'])->name('pages_list');
 Route::get('pages/edit/{id}', 'CMSPageController@edit')->middleware(['auth', 'verified'])->name('page_edit');
 Route::post('pages/update', 'CMSPageController@update')->middleware(['auth', 'verified'])->name('page_update');
-
 Route::get('pages/add', 'PostController@add')->middleware(['auth', 'verified'])->name('page_new');
 Route::post('pages/save', 'PostController@save')->middleware(['auth', 'verified'])->name('page_save');
+Route::get('page/{slug}','CMSPageController@show')->name('page-show');
 
 //Route::get('{post_url}', 'PostController@index');
 

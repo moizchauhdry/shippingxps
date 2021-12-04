@@ -282,7 +282,7 @@ class PackageController extends Controller
              $order_item = new OrderItem();
           }
           
-          $order_item->name = $item['description'];
+          // $order_item->name = $item['description'];
           $order_item->description = $item['description'];
           $order_item->quantity = $item['quantity'];
           $order_item->unit_price = $item['unit_price'];

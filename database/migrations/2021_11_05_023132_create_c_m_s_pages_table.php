@@ -16,11 +16,12 @@ class CreateCMSPagesTable extends Migration
         Schema::create('c_m_s_pages', function (Blueprint $table) {
             $table->id();
             $table->string('title')->nullable();
+            $table->string('slug')->nullable();
             $table->string('meta_title')->nullable();
             $table->string('meta_url')->nullable();
-            $table->text('meta_description')->nullable();
+            $table->longText('meta_description')->nullable();
             $table->string('meta_keywords')->nullable();
-            $table->text('description')->nullable();
+            $table->longText('description')->nullable();
             $table->boolean('status')->default(true);
             $table->timestamps();
         });

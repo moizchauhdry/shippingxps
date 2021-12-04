@@ -35,7 +35,7 @@
 							<ul class="list list-icons list-icons-sm">
 								<li>
 									<i class="fas fa-angle-right text-color-default"></i>
-									<a href="/how-it-works" class="link-hover-style-1 ms-1 "> How it works</a>
+									<inertia-link :href="route('homePage')" class="link-hover-style-1 ms-1">Home</inertia-link>
 								</li>
 								<li>
 									<i class="fas fa-angle-right text-color-default"></i>
@@ -47,7 +47,7 @@
 								</li>
 							</ul>
 						</div>
-						<div class="col-lg-3">
+						<!-- <div class="col-lg-3">
 							<h4 class="font-weight-bold text-3">OUR SERVICES</h4>
 							<ul class="list list-icons list-icons-sm">
 								<li>
@@ -69,11 +69,11 @@
 								</li>
 
 							</ul>
-						</div>
+						</div> -->
 						<div class="col-lg-3">
 							<h4 class="font-weight-bold text-3">SUPPORT</h4>
 							<ul class="list list-icons list-icons-sm">
-								<li>
+								<!-- <li>
 									<i class="fas fa-angle-right text-color-default"></i>
 									<a href="/customer-service" class="link-hover-style-1 ms-1 "> Customer Service</a>
 								</li>
@@ -84,10 +84,10 @@
 								<li>
 									<i class="fas fa-angle-right text-color-default"></i>
 									<a href="/unaccapted-items" class="link-hover-style-1 ms-1 "> Unaccapted Items</a>
-								</li>
+								</li> -->
 								<li>
 									<i class="fas fa-angle-right text-color-default"></i>
-									<a href="/policies-terms" class="link-hover-style-1 ms-1 "> Policies & Terms</a>
+									<inertia-link :href="route('page-show','terms_and_conditions')" class="link-hover-style-1 ms-1">Terms And Conditions</inertia-link>
 								</li>
 							</ul>
 						</div>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\CMSPage;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Route;
 
 class CMSPageController extends Controller
 {
@@ -40,5 +41,20 @@ class CMSPageController extends Controller
         $cms->save();
 
         return redirect('pages/list')->with('success', 'CMS Page Has Been Updated Updated Successfully.');
+    }
+
+    public function show($slug){
+
+        $page = CMSPage::where('slug',$slug)->first();
+        if($page != null){
+            return Inertia::render('CMSPage',[
+                'pageContext' => $page,
+                'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+            ]);
+        }else{
+            return redirect()->back();
+        }
+
     }
 }
