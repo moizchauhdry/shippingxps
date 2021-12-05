@@ -106,8 +106,57 @@
           </div>-->
       </div>
     </div>
+
+    <div v-show="overlay === true" class="overlay">
+      <div class="overlay__inner">
+        <div class="overlay__content"><span class="spinner"></span></div>
+      </div>
+    </div>
   </MainLayout>
 </template>
+<style scoped>
+.overlay {
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  background: rgba(0,0,0,0.5);
+}
+
+.overlay__inner {
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
+.overlay__content {
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.spinner {
+  width: 75px;
+  height: 75px;
+  display: inline-block;
+  border-width: 2px;
+  border-color: rgba(255, 255, 255, 0.05);
+  border-top-color: #fff;
+  animation: spin 1s infinite linear;
+  border-radius: 100%;
+  border-style: solid;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+</style>
 
 <script>
 import MainLayout from '@/Layouts/Main'
@@ -125,6 +174,7 @@ export default {
     return {
       isHidden: true,
       info:'',
+      overlay: false,
       response:'',
       response_message : null,
       coupon_status : 2,
@@ -161,12 +211,14 @@ export default {
     submit(){
       // this.form.post(this.route('payment.pay'))
       this.response_message = null;
+      this.overlay = true;
       axios.post(this.route('payment.pay'), this.form).then(response => (this.response = response)).finally(() => this.responseFromSubmit());
     },
     responseFromSubmit(){
       let data = this.response.data;
       if(data.status === 0){
         this.response_message = data.message
+        this.overlay = false;
       }else{
         location.href = this.route('payments.PaymentSuccess',data.payment_id)
       }
