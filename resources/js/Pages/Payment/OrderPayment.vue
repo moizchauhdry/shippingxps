@@ -73,7 +73,7 @@
                         </tbody>
                       </table>
                       <div class="form-group col-12">
-                        <input type="checkbox" id="terms" required> <label for="terms">By clicking here, I state that I have read and understood the</label> <inertia-link :href="route('page-show','policies_and_terms')" class="link-hover-style-1 ms-1">Terms and Conditions</inertia-link>
+                        <input type="checkbox" id="terms" required> <label for="terms">By clicking here, I state that I have read and understood the</label> <inertia-link :href="route('page-show','terms_and_conditions')" class="link-hover-style-1 ms-1">Terms and Conditions</inertia-link>
                       </div>
                       <div class="form-group col-12">
                         <button type="submit" v-on:submit="submit()" class="btn btn-primary w-100">Pay</button>
