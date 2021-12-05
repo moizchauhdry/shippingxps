@@ -66,7 +66,7 @@ Route::middleware('auth')->group(function () {
         Route::any('/setup', [\App\Http\Controllers\PaymentController::class, 'index'])->name('payment.index');
         Route::post('pay', [\App\Http\Controllers\PaymentController::class,  'pay'])->name('payment.pay');
         Route::get('list', [\App\Http\Controllers\PaymentController::class,  'getPayments'])->name('payments.getPayments');
-        Route::get('PaymentSuccess', [\App\Http\Controllers\PaymentController::class,  'PaymentSuccess'])->name('payments.PaymentSuccess');
+        Route::get('PaymentSuccess/{id}', [\App\Http\Controllers\PaymentController::class,  'PaymentSuccess'])->name('payments.PaymentSuccess');
         Route::post('check/coupon', [\App\Http\Controllers\PaymentController::class, 'checkCoupon'])->name('checkCoupon');
         Route::get('invoice/{id}', [\App\Http\Controllers\PaymentController::class, 'buildInvoice'])->name('buildInvoice');
     });

@@ -9,11 +9,11 @@
               <form @submit.prevent="submit" enctype="multipart/form-data">
                 <div class="row">
                   <div class="col-md-6 offset-md-3">
-                    {{ status }}
-
-
                     <div class="bg-dark border-3 border-warning container mb-3 text-center text-white">
                       <h2 style="color: #fff;font-weight:bold;font-size:25px;" >Checkout</h2>
+                    </div>
+                    <div v-show="response_message != null" class="alert alert-danger">
+                      {{ response_message }}
                     </div>
                     <div v-if="hasPackage == 1" class="d-inline-flex mt-2 mb-2">
                       <breeze-label value="Hava a Coupon?"/><span @click="isHidden = false" style="text-decoration: underline;cursor: pointer" >Click here to enter your code</span>
@@ -125,6 +125,8 @@ export default {
     return {
       isHidden: true,
       info:'',
+      response:'',
+      response_message : null,
       coupon_status : 2,
       coupon_message : '',
       card_max:16,
@@ -157,7 +159,17 @@ export default {
   },
   methods : {
     submit(){
-      this.form.post(this.route('payment.pay'))
+      // this.form.post(this.route('payment.pay'))
+      this.response_message = null;
+      axios.post(this.route('payment.pay'), this.form).then(response => (this.response = response)).finally(() => this.responseFromSubmit());
+    },
+    responseFromSubmit(){
+      let data = this.response.data;
+      if(data.status === 0){
+        this.response_message = data.message
+      }else{
+        location.href = this.route('payments.PaymentSuccess',data.payment_id)
+      }
     },
     checkCouponCode() {
       axios.post(this.route('checkCoupon'), {

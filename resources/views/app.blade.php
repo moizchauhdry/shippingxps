@@ -40,7 +40,7 @@
 
         <!-- Styles -->
         {{-- if default path is public then remove 'public'. from below --}}
-        <link rel="stylesheet" href="{{ url('public'.mix('css/app.css')) }}">
+        <link rel="stylesheet" href="{{ url(mix('css/app.css')) }}">
         <style>
             input::-webkit-outer-spin-button,
             input::-webkit-inner-spin-button {
@@ -51,7 +51,7 @@
         <!-- Scripts -->
         @routes
         {{-- if default path is public then remove 'public'. from below --}}
-        <script src="{{ url('public'.mix('js/app.js')) }}" defer></script>
+        <script src="{{ url(mix('js/app.js')) }}" defer></script>
     </head>
     <body class="font-sans antialiased">
         <div class="body">

@@ -52,7 +52,6 @@ class PaymentController extends Controller
 
     public function pay(Request $request)
     {
-
         $cardNos = [
             '5610591081018250',
             '6011111111111117',
@@ -73,14 +72,22 @@ class PaymentController extends Controller
             '2223000010309711'];
 
 
-        if (!in_array($request->card_no, $cardNos)) {
-            return redirect()->route('payment.index', ['amount' => \Session::get('amount')])->with('error', 'invalid Card No');
+        if (in_array($request->card_no, $cardNos)) {
+            return response()->json([
+               'status' => 0,
+               'message' => 'The Card No is Invalid'
+            ]);
+            // return redirect()->route('payment.index', ['amount' => \Session::get('amount')])->with('error', 'invalid Card No');
         }
         $date = $request->year . "-" . $request->month . "-1 00:00:00";
         $checkDate = new Carbon($date);
 
         if (strtotime($checkDate) < strtotime(Carbon::now())) {
-            return redirect()->route('payment.index', ['amount' => \Session::get('amount')])->with('error', 'Please Check card Expiry');
+            return response()->json([
+                'status' => 0,
+                'message' => 'Please Check card Expiry'
+            ]);
+            // return redirect()->route('payment.index', ['amount' => \Session::get('amount')])->with('error', 'Please Check card Expiry');
         }
 
 
@@ -228,9 +235,18 @@ class PaymentController extends Controller
 
 
             \Session::forget(['order_id', 'package_id', 'amount']);
-            return redirect()->route('payments.PaymentSuccess')->with(['payment' => $payment, 'status']);
+            return response()->json([
+                'status' => 1,
+                'message' => 'Please Check card Expiry',
+                'payment_id' => $payment->id,
+            ]);
+            // return redirect()->route('payments.PaymentSuccess')->with(['payment' => $payment, 'status']);
         }else{
-        return redirect()->back()->with(['error' => $response->getMessages()->getMessage()[0]->getText()]);
+            return response()->json([
+                'status' => 0,
+                'message' => $response->getMessages()->getMessage()[0]->getText()
+            ]);
+            // return redirect()->back()->with(['error' => ]);
         }
 
 
@@ -311,17 +327,23 @@ class PaymentController extends Controller
 
     /* Coupon Mangement */
 
-    public function paymentSuccess()
+    public function paymentSuccess($id)
     {
-        if (\Session::has('payment')) {
+        /*if (\Session::has('payment')) {
             $payment = \Session::get('payment');
         } else {
             $payment = null;
-        }
+        }*/
+        $payment = Payment::find($id);
 
-        return Inertia::render('Payment/PaymentSuccess', [
-            'payment' => $payment,
-        ]);
+        if($payment != null){
+            return Inertia::render('Payment/PaymentSuccess', [
+                'payment' => $payment,
+            ]);
+        }
+        else{
+            return redirect()->back();
+        }
     }
 
     public function checkCoupon(Request $request)

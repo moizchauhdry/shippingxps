@@ -593,11 +593,7 @@ export default {
           }else{
             this.form.service_charges = 5.00;
           }
-
-          console.log('hit1')
-          console.log(serviceCharges)
         } else {
-          console.log('hit2')
           var serviceCharges = this.form.service_charges
         }
         var charges = parseFloat(this.form.shipping_from_shop);
