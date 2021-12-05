@@ -10,11 +10,11 @@
 							<ul class="list list-icons list-icons-lg">
 								<li class="d-flex px-0 mb-1">
 									<!-- <img width="25" src="/theme/img/demos/business-consulting-3/icons/phone.svg" alt="Phone Icon" /> -->
-									<a href="tel:13022650777" class="text-color-light font-weight-semibold text-1 ms-2"> +1 (302) 265 0 777</a>
+									<a href="tel:13022650777" class="p-0 mr-0 text-color-light font-weight-semibold text-1">+1 (302) 265 0 777</a>
 								</li>
 								<li class="d-flex px-0 my-3">
 									<!-- <img width="25" src="/theme/img/demos/business-consulting-3/icons/email.svg" alt="Email Icon" /> -->
-									<a href="mailto:shippingxps@shippingxpstheme.com" class="text-color-light font-weight-semibold text-1 ms-2"> @shippingxps.com</a>
+									<a href="mailto:shippingxps@shippingxpstheme.com" class="p-0 mr-0 text-color-light font-weight-semibold text-1">info@shippingxps.com</a>
 								</li>
 								<li class="d-flex font-weight-semibold text-color-light text-1 px-0 mb-1">
 									<!-- <img width="25" src="/theme/img/demos/business-consulting-3/icons/map-pin.svg" alt="Location" /> -->

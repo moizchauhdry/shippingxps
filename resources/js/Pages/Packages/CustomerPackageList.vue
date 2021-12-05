@@ -29,7 +29,7 @@
                                     type="button" 
                                     role="tab" 
                                     aria-controls="pills-home" 
-                                    aria-selected="true">Packages In Account</button>
+                                    aria-selected="true">Packages In Account ({{ packages_account.data.length }})</button>
                                 </li>
                                 <li class="nav-item" role="presentation">
                                     <button 
@@ -41,7 +41,7 @@
                                     type="button" 
                                     role="tab" 
                                     aria-controls="pills-profile" 
-                                    aria-selected="false">Ready for Mail Out</button>
+                                    aria-selected="false">Ready for Mail Out ({{ packages_ready.data.length }})</button>
                                 </li>
                                 <li class="nav-item" role="presentation">
                                     <button 
@@ -53,7 +53,7 @@
                                     type="button" 
                                     role="tab" 
                                     aria-controls="pills-profile" 
-                                    aria-selected="false">Sent</button>
+                                    aria-selected="false">Sent ({{ packages_sent.data.length }})</button>
                                 </li>
                                 <li class="nav-item" role="presentation">
                                     <button 
