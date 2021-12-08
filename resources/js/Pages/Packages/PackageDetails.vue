@@ -967,7 +967,7 @@ export default {
       }
     },
     imgURL(url) {
-      return "/uploads/" + url;
+      return "/public/uploads/" + url;
     },
     makePackageUrl(order_id) {
       return route('package.create') + '?order_id=' + order_id;

@@ -72,13 +72,23 @@ class PaymentController extends Controller
             '2223000010309711'];
 
 
-        if (in_array($request->card_no, $cardNos)) {
+        /*if (in_array($request->card_no, $cardNos)) {
             return response()->json([
                'status' => 0,
                'message' => 'The Card No is Invalid'
             ]);
             // return redirect()->route('payment.index', ['amount' => \Session::get('amount')])->with('error', 'invalid Card No');
+        }*/
+
+        $discount = 0.00;
+        if ($request->has('discount')) {
+            if ($request->discount > 0) {
+                $amt = $request->amount;
+                $discount = $amt * ($request->discount / 100);
+                $request->amount = $amt - $discount;
+            }
         }
+
         $date = $request->year . "-" . $request->month . "-1 00:00:00";
         $checkDate = new Carbon($date);
 
@@ -87,8 +97,11 @@ class PaymentController extends Controller
                 'status' => 0,
                 'message' => 'Please Check card Expiry'
             ]);
-            // return redirect()->route('payment.index', ['amount' => \Session::get('amount')])->with('error', 'Please Check card Expiry');
         }
+
+        $amount = (double)number_format($request->amount, 2);
+        $discount = (double)number_format($discount,2);
+        \Log::info('amount = '. $amount . ', discount = '.$discount);
 
 
         /* Create a merchantAuthenticationType object with authentication details
@@ -116,20 +129,20 @@ class PaymentController extends Controller
 
         // Set the customer's Bill To address
         $customerAddress = new AnetAPI\CustomerAddressType();
-        $customerAddress->setFirstName($nameExplode[0] ?? '');
-        $customerAddress->setLastName($nameExplode[0] ?? '');
+        $customerAddress->setFirstName($request->first_name ?? '');
+        $customerAddress->setLastName($request->last_name ?? '');
         $customerAddress->setCompany("");
-        $customerAddress->setAddress($address->address ?? '');
-        $customerAddress->setCity($address->city ?? '');
-        $customerAddress->setState($address->state ?? '');
-        $customerAddress->setZip($address->zip ?? 'None');
-        $customerAddress->setCountry($address->country->name ?? '');
+        $customerAddress->setAddress($request->address ?? '');
+        $customerAddress->setCity($request->city ?? '');
+        $customerAddress->setState($request->state ?? '');
+        $customerAddress->setZip($request->zip ?? 'None');
+        $customerAddress->setCountry($request->country ?? '');
 
         // Set the customer's identifying information
         $customerData = new AnetAPI\CustomerDataType();
         $customerData->setType("individual");
         $customerData->setId($user->id);
-        $customerData->setEmail($user->email);
+        $customerData->setEmail($request->email);
 
         // Add values for transaction settings
         $duplicateWindowSetting = new AnetAPI\SettingType();
@@ -139,7 +152,7 @@ class PaymentController extends Controller
         // Create a TransactionRequestType object and add the previous objects to it
         $transactionRequestType = new AnetAPI\TransactionRequestType();
         $transactionRequestType->setTransactionType("authCaptureTransaction");
-        $transactionRequestType->setAmount($request->amount);
+        $transactionRequestType->setAmount($amount);
 //        $transactionRequestType->setOrder($order);
         $transactionRequestType->setPayment($paymentOne);
         $transactionRequestType->setBillTo($customerAddress);
@@ -154,8 +167,8 @@ class PaymentController extends Controller
 
         // Create the controller and get the response
         $controller = new AnetController\CreateTransactionController($transaction);
-        $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::SANDBOX);
-        /*if ($response != null) {
+        $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::PRODUCTION);
+        if ($response != null) {
             // Check to see if the API request was successfully received and acted upon
             if ($response->getMessages()->getResultCode() == "Ok") {
                 // Since the API request was successful, look for a transaction response
@@ -163,91 +176,122 @@ class PaymentController extends Controller
                 $tresponse = $response->getTransactionResponse();
 
                 if ($tresponse != null && $tresponse->getMessages() != null) {
-                    echo " Successfully created transaction with Transaction ID: " . $tresponse->getTransId() . "\n";
+                    /*echo " Successfully created transaction with Transaction ID: " . $tresponse->getTransId() . "\n";
                     echo " Transaction Response Code: " . $tresponse->getResponseCode() . "\n";
                     echo " Message Code: " . $tresponse->getMessages()[0]->getCode() . "\n";
                     echo " Auth Code: " . $tresponse->getAuthCode() . "\n";
-                    echo " Description: " . $tresponse->getMessages()[0]->getDescription() . "\n";
+                    echo " Description: " . $tresponse->getMessages()[0]->getDescription() . "\n";*/
+
+                    /*  On Successful Transaction Show Status =>   */
+
+                    $payment = new Payment();
+                    $payment->customer_id = $user->id;
+                    $payment->order_id = \Session::has('order_id') ? \Session::get('order_id') : null;
+                    $payment->package_id = \Session::has('package_id') ? \Session::get('package_id') : null;
+                    $payment->transaction_id = $response->getTransactionResponse()->getTransId();
+                    $payment->charged_amount = $amount;
+                    $payment->discount = $discount;
+                    $payment->charged_at = Carbon::now()->format('Y-m-d H:i:s');
+                    $payment->save();
+                    $payment->invoice_id = sprintf("%05d", $payment->id);
+                    $payment->save();
+                    /*Dont make it live */
+
+                    /*Dont make it live end */
+
+                    if (\Session::has('order_id')) {
+                        $id = \Session::get('order_id');
+                        $order = Order::find($id);
+                        $order->payment_status = "Paid";
+                        $order->save();
+                    }
+                    if (\Session::has('package_id')) {
+                        $id = \Session::get('package_id');
+                        $package = Package::find($id);
+                        $package->payment_status = "Paid";
+                        $package->save();
+
+                        if ($request->has('coupon_code_id') && $request->has('coupon_code')) {
+                            if ($request->coupon_code_id != null) {
+                                $customerCoupon = new CustomerCoupon();
+                                $customerCoupon->customer_id = $user->id;
+                                $customerCoupon->coupon_id = $request->coupon_code_id;
+                                $customerCoupon->save();
+                            }
+                        }
+                    }
+                    \Log::info('b4 invoice');
+                    $this->buildInvoice($payment->id);
+                    \Log::info('after invoice');
+
+
+                    \Session::forget(['order_id', 'package_id', 'amount']);
+                    return response()->json([
+                        'status' => 1,
+                        'message' => 'Please Check card Expiry',
+                        'payment_id' => $payment->id,
+                    ]);
+
+
                 } else {
-                    echo "Transaction Failed \n";
+                    //  echo "Transaction Failed \n";
                     if ($tresponse->getErrors() != null) {
-                        echo " Error Code  : " . $tresponse->getErrors()[0]->getErrorCode() . "\n";
-                        echo " Error Message : " . $tresponse->getErrors()[0]->getErrorText() . "\n";
+                        //  echo " Error Code  : " . $tresponse->getErrors()[0]->getErrorCode() . "\n";
+                        //  echo " Error Message : " . $tresponse->getErrors()[0]->getErrorText() . "\n";
+                        return response()->json([
+                            'status' => 0,
+                            'error_code' => $tresponse->getErrors()[0]->getErrorCode(),
+                            'message' => $tresponse->getErrors()[0]->getErrorText()
+                        ]);
                     }
                 }
                 // Or, print errors if the API request wasn't successful
             } else {
-                echo "Transaction Failed \n";
+                //  echo "Transaction Failed \n";
                 $tresponse = $response->getTransactionResponse();
 
                 if ($tresponse != null && $tresponse->getErrors() != null) {
-                    echo " Error Code  : " . $tresponse->getErrors()[0]->getErrorCode() . "\n";
-                    echo " Error Message : " . $tresponse->getErrors()[0]->getErrorText() . "\n";
+                    //  echo " Error Code  : " . $tresponse->getErrors()[0]->getErrorCode() . "\n";
+                    //  echo " Error Message : " . $tresponse->getErrors()[0]->getErrorText() . "\n";
+                    return response()->json([
+                        'status' => 0,
+                        'error_code' => $tresponse->getErrors()[0]->getErrorCode(),
+                        'message' => $tresponse->getErrors()[0]->getErrorText()
+                    ]);
                 } else {
-                    echo " Error Code  : " . $response->getMessages()->getMessage()[0]->getCode() . "\n";
-                    echo " Error Message : " . $response->getMessages()->getMessage()[0]->getText() . "\n";
+                    // echo " Error Code  : " . $response->getMessages()->getMessage()[0]->getCode() . "\n";
+                    // echo " Error Message : " . $response->getMessages()->getMessage()[0]->getText() . "\n";
+                    return response()->json([
+                        'status' => 0,
+                        'error_code' => $response->getMessages()->getMessage()[0]->getCode(),
+                        'message' => $response->getMessages()->getMessage()[0]->getText()
+                    ]);
                 }
             }
         } else {
-            echo  "No response returned \n";
-        }*/
-
-        if ($response->getMessages()->getResultCode() == "Ok") {
-            $payment = new Payment();
-            $payment->customer_id = $user->id;
-            $payment->order_id = \Session::has('order_id') ? \Session::get('order_id') : null;
-            $payment->package_id = \Session::has('package_id') ? \Session::get('package_id') : null;
-            $payment->transaction_id = $response->getTransactionResponse()->getTransId();
-            $payment->charged_amount = \Session::get('amount');
-            $payment->discount = $request->has('discount') ? $request->amount * $request->discount/100 : 0.00;
-            $payment->charged_at = Carbon::now()->format('Y-m-d H:i:s');
-            $payment->save();
-            $payment->invoice_id = sprintf("%05d", $payment->id);
-            $payment->save();
-            /*Dont make it live */
-
-            /*Dont make it live end */
-
-            if (\Session::has('order_id')) {
-                $id = \Session::get('order_id');
-                $order = Order::find($id);
-                $order->payment_status = "Paid";
-                $order->save();
-            }
-            if (\Session::has('package_id')) {
-                $id = \Session::get('package_id');
-                $package = Package::find($id);
-                $package->payment_status = "Paid";
-                $package->save();
-
-                if ($request->has('coupon_code_id') && $request->has('coupon_code')) {
-                    if ($request->coupon_code_id != null) {
-                        $customerCoupon = new CustomerCoupon();
-                        $customerCoupon->customer_id = $user->id;
-                        $customerCoupon->coupon_id = $request->coupon_code_id;
-                        $customerCoupon->save();
-                    }
-                }
-            }
-            \Log::info('b4 invoice');
-            $this->buildInvoice($payment->id);
-            \Log::info('after invoice');
-
-
-            \Session::forget(['order_id', 'package_id', 'amount']);
+            // echo "No response returned \n";
             return response()->json([
-                'status' => 1,
-                'message' => 'Please Check card Expiry',
-                'payment_id' => $payment->id,
+                'status' => 0,
+                // 'error_code' => $response->getMessages()->getMessage()[0]->getCode(),
+                'message' => 'No response returned'
             ]);
+        }
+
+        return response()->json([
+            'status' => 0,
+            // 'error_code' => $response->getMessages()->getMessage()[0]->getCode(),
+            'message' => 'No response returned'
+        ]);
+
+        /*if ($response->getMessages()->getResultCode() == "Ok") {
             // return redirect()->route('payments.PaymentSuccess')->with(['payment' => $payment, 'status']);
-        }else{
+        } else {
             return response()->json([
                 'status' => 0,
                 'message' => $response->getMessages()->getMessage()[0]->getText()
             ]);
             // return redirect()->back()->with(['error' => ]);
-        }
+        }*/
 
 
     }
@@ -336,12 +380,11 @@ class PaymentController extends Controller
         }*/
         $payment = Payment::find($id);
 
-        if($payment != null){
+        if ($payment != null) {
             return Inertia::render('Payment/PaymentSuccess', [
                 'payment' => $payment,
             ]);
-        }
-        else{
+        } else {
             return redirect()->back();
         }
     }

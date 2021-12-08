@@ -45,7 +45,7 @@
   <div class="row">
     <div class="container-fluid">
       <!-- SIDEBAR -->
-      <div class="sidebar d-none d-md-block">
+      <div class="sidebar">
         <div class="sidebar-menu mt-sm-5 mt-md-0">
 
           <inertia-link class="nav-link" :href="route('dashboard')" :class="{active: route().current('dashboard')}" :active="route().current('dashboard')">
@@ -184,9 +184,14 @@
     right: 0px;
     /*left: 12px;*/
   }
+
+  .sidebar{
+    display: none;
+    z-index: 1;
+  }
 }
 
-@media (min-width: 769px) {
+@media (min-width: 770px) {
   .main-section {
     margin-left: 240px;
     margin-top: 25px;
@@ -194,6 +199,11 @@
 
   .toggle-side {
     display: none;
+  }
+
+  .sidebar{
+    display: block !important;
+    z-index: 0;
   }
 }
 
