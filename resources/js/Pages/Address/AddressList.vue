@@ -4,7 +4,7 @@
 				<div class="card-body">                    
 
                     <h2 class="font-semibold text-xl text-gray-800 leading-tight form-title">
-                        Address Book
+                        Shipping Address
                     </h2>
                     <inertia-link class="btn btn-primary nav-link" style="float:right;" :href="route('address.create')">
                         <i class="fas fa-external-link-alt"></i><span>Add New</span>

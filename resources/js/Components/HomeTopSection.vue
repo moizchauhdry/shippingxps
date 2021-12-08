@@ -4,15 +4,15 @@
 		<div class="container pb-5 pb-xl-0 mt-md-3 mb-5 hero-title">
 			<div class="row">
 				<div class="col-sm-12 col-md-6 order-2 order-md-1">
-          <h1 style="color: #2a007c;" class="custom-big-font-size-1 text-14 font-weight-bold  clearfix line-height-1 custom-ws-mobile-wrap wrap pb-2 mb-3" >
+          <h1 style="color: #2a007c;" class="clearfix custom-ws-mobile-wrap line-height-1 font-weight-bold line-height-1 mb-3 pb-2 text-9 wrap" >
             {{ promotionalMessage }}</h1>
-					<h2 class="text-4-5 main-info-badge">Shop all over the world </h2>
-					<p class="text-4-5 text-dark">We will shop and ship to your doorstep.</p>
-          <p class="text-4-5 text-dark">You can also shop for gift cards.</p>
+          <h2 class="main-info-badge mb-3" style="font-size: 2em">Shop all over the world </h2>
+          <p class="line-height-1 mb-3 text-dark" style="font-size: 2em">We will shop and ship to your doorstep.</p>
+          <p class="mb-2 text-dark" style="font-size: 2em">You can also shop for gift cards.</p>
           <div class="row pb-5 mb-5">
             <div class="col-md-7 col-xl-5 pb-5 pb-xl-0 mb-5">
-              <strong class="d-block font-weight-semibold text-color-dark text-5-5 line-height-4 mb-3 mt-4 pb-1 ws-nowrap">Shop & Ship from USA</strong>
-              <p class="mb-4 mt-3" style="font-size:20px;">We ship worldwide! </p>
+              <strong class="d-block font-weight-semibold line-height-4 mb-3 mt-4 pb-1 text-7 text-color-dark ws-nowrap">Shop &amp; Ship from USA</strong>
+              <p class="mb-4 mt-3 text-6 ws-nowrap" style="font-size: 20px;">We ship worldwide! </p>
               <a :href="route('register')" class="btn btn-dark custom-btn-style-1 font-weight-semibold text-3-5 mb-4 btn-px-3 py-2 ws-nowrap ms-4 d-inline-block"><span>Get Started - It's free</span></a>
 
             </div>

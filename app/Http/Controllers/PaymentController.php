@@ -127,6 +127,11 @@ class PaymentController extends Controller
         $address = Address::where('user_id', $user->id)->first();
         $nameExplode = explode(' ', $user->name);
 
+        // Create order information
+        $order = new AnetAPI\OrderType();
+        $order->setInvoiceNumber("10101");
+        $order->setDescription("Golf Shirts");
+
         // Set the customer's Bill To address
         $customerAddress = new AnetAPI\CustomerAddressType();
         $customerAddress->setFirstName($request->first_name ?? '');
@@ -153,7 +158,7 @@ class PaymentController extends Controller
         $transactionRequestType = new AnetAPI\TransactionRequestType();
         $transactionRequestType->setTransactionType("authCaptureTransaction");
         $transactionRequestType->setAmount($amount);
-//        $transactionRequestType->setOrder($order);
+        $transactionRequestType->setOrder($order);
         $transactionRequestType->setPayment($paymentOne);
         $transactionRequestType->setBillTo($customerAddress);
         $transactionRequestType->setCustomer($customerData);

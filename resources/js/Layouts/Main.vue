@@ -123,7 +123,7 @@
           </inertia-link>
 
           <inertia-link v-if="$page.props.auth.user.type != 'manager'" class="nav-link" :href="route('addresses')" :class="{active: route().current('addresses')}" :active="route().current('addresses')">
-            <i class="fas fa-external-link-alt"></i><span>Address Book</span>
+            <i class="fas fa-external-link-alt"></i><span>Shipping Address</span>
           </inertia-link>
 
           <inertia-link class="nav-link" :href="route('update-password')" :class="{active: route().current('update-password')}" :active="route().current('update-password')">
@@ -166,7 +166,7 @@
   overflow-y: scroll;
 }
 
-@media (max-width: 769px) {
+@media (max-width: 1299px) {
   .main-section {
     margin-left: 10px;
     margin-top: 25px;
@@ -191,7 +191,7 @@
   }
 }
 
-@media (min-width: 770px) {
+@media (min-width: 1300px) {
   .main-section {
     margin-left: 240px;
     margin-top: 25px;
@@ -523,7 +523,7 @@ export default {
     },
     toggleSideBar() {
       var sidebar = document.querySelector('.sidebar');
-      if (window.innerWidth < 769) {
+      if (window.innerWidth < 1300) {
         if (sidebar.style.display == 'block') {
           sidebar.classList.add('d-none');
           sidebar.style.display = 'none';
