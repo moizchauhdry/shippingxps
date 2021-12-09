@@ -21,8 +21,18 @@
           <tr v-for="item in payments" :key="item.id">
             <td>{{ item.id }}</td>
             <td>{{ item.customer_id != null ? item.customer.name : '- -'}}</td>
-            <td>{{ item.order_id  != null ?item.order_id : '- -'}}</td>
-            <td>{{ item.package_id != null ? item.package.id : '- -'}}</td>
+            <td>
+              <template v-if="item.order_id != null">
+                <inertia-link :href="route('orders.show',item.order_id)" class="link-hover-style-1 ms-1">{{ item.order_id }}</inertia-link>
+              </template>
+              <template v-else>- -</template>
+            </td>
+            <td>
+              <template v-if="item.package_id != null">
+                <inertia-link :href="route('packages.show',item.package.id)" class="link-hover-style-1 ms-1">{{ item.package.id }}</inertia-link>
+              </template>
+              <template v-else>- -</template>
+            </td>
             <td>{{ item.transaction_id }}</td>
             <td>{{ item.invoice_id }}</td>
             <td><a :href="'/public/'+item.invoice_url" target="_blank">View Invoice</a></td>

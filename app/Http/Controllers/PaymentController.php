@@ -127,10 +127,13 @@ class PaymentController extends Controller
         $address = Address::where('user_id', $user->id)->first();
         $nameExplode = explode(' ', $user->name);
 
+        $lastPayment = Payment::latest()->first();
+        $invoiceID = sprintf("%05d", ++$lastPayment->id);
+        $invoiceDescription = \Session::has('order_id') ? "Payment Of Order" : (\Session::has('package_id') ? "Payment of Package" : 'Void');
         // Create order information
         $order = new AnetAPI\OrderType();
-        $order->setInvoiceNumber("10101");
-        $order->setDescription("Golf Shirts");
+        $order->setInvoiceNumber($invoiceID);
+        $order->setDescription($invoiceDescription);
 
         // Set the customer's Bill To address
         $customerAddress = new AnetAPI\CustomerAddressType();
@@ -198,7 +201,7 @@ class PaymentController extends Controller
                     $payment->discount = $discount;
                     $payment->charged_at = Carbon::now()->format('Y-m-d H:i:s');
                     $payment->save();
-                    $payment->invoice_id = sprintf("%05d", $payment->id);
+                    $payment->invoice_id = $invoiceID;
                     $payment->save();
                     /*Dont make it live */
 
@@ -225,10 +228,10 @@ class PaymentController extends Controller
                             }
                         }
                     }
+
                     \Log::info('b4 invoice');
                     $this->buildInvoice($payment->id);
                     \Log::info('after invoice');
-
 
                     \Session::forget(['order_id', 'package_id', 'amount']);
                     return response()->json([
@@ -330,6 +333,7 @@ class PaymentController extends Controller
                 'payment' => $payment,
                 'order' => $order,
                 'customer' => $customer,
+                'address' => $address,
             ])->render();
         }
 
@@ -345,7 +349,7 @@ class PaymentController extends Controller
         </th>
     </tr>
     <tr>
-        <th style="text-align: center;font-size: 12px;font-weight: normal">657-201-7881</th>
+        <th style="text-align: center;font-size: 12px;font-weight: normal">+1 657-201-7881</th>
         <th style="text-align: center;font-size: 12px;font-weight: normal">shippingxps.com</th>
         <th style="text-align: center;font-size: 12px;font-weight: normal">info@shippingxps.com</th>
     </tr>

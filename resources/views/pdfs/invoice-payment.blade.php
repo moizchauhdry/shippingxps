@@ -35,7 +35,7 @@
             <strong>{{ $address->fullname ?? '- -' }}</strong><br>
             Address:{{ $address->address ?? '- -' }}<br>
             Phone: {{ $address->phone ?? '- -' }}<br>
-            Email: {{ $address->email ?? '- -' }}</td>
+            Email: {{ $customer->email ?? '- -' }}</td>
     </tr>
 
 
