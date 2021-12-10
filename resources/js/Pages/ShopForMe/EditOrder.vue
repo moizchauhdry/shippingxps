@@ -254,7 +254,7 @@
                         </div>
                         <div class="col-md-1 p-0" v-show="form.pickup_type!='pickup_only'">
                           <div class="form-group">
-                            <input v-model="item.price" v-on:change="addTax($event)" v-on:keyup="addTax($event)" v-on:click="addTax($event)" :min="0" ref="price" name="price" type="number" class="form-control price" placeholder="Price" required/>
+                            <input v-model="item.price" v-on:change="addTax($event)" v-on:keyup="addTax($event)" v-on:click="addTax($event)" :min="0" ref="price" name="price" step="0.01" type="number" class="form-control price" placeholder="Price" required/>
                           </div>
                         </div>
                         <div class="col-md-2" v-show="form.pickup_type!='pickup_only'">
@@ -313,7 +313,7 @@
                       <div class="row mb-2" v-show="form.pickup_type != 'pickup_only'">
                         <div class="col-2 offset-md-8">
                           <breeze-label class="float-right" for="service_charges" value="Services Charges"/>
-                          <br><small class="float-right">5% of Subtotal</small>
+                          <br><small class="float-right">Minimum USD 5 Or 5% of Subtotal</small>
                         </div>
                         <div class="col-1 p-0">
                           <input v-model="form.service_charges" name="service_charges" id="service_charges" step="0.01" type="number" class="form-control service_charges" @keyup="adminServicesCharges()" placeholder="charges" :min="0" required :readonly="$page.props.auth.user.type == 'customer'"/>
@@ -586,15 +586,13 @@ export default {
         this.form.sub_total = parseFloat(sum).toFixed(2);
         if (e == 1 && this.form.is_service_charges != 1) {
           var serviceCharges = sum * 0.05
-          if(serviceCharges >= 5.00){
-          this.form.service_charges = parseFloat(serviceCharges).toFixed(2);
-          }else if(serviceCharges == 0.00 || serviceCharges < 0.01){
-            this.form.service_charges = 0.00;
+          if(serviceCharges <= 5 && serviceCharges > 0.01){
+            serviceCharges = this.form.service_charges = 5.00;
           }else{
-            this.form.service_charges = 5.00;
+            serviceCharges = this.form.service_charges = parseFloat(serviceCharges).toFixed(2);
           }
         } else {
-          var serviceCharges = this.form.service_charges
+          serviceCharges = this.form.service_charges
         }
         var charges = parseFloat(this.form.shipping_from_shop);
         this.form.shipping_charges = parseFloat(charges).toFixed(2)
@@ -623,7 +621,7 @@ export default {
       this.form.sale_tax = sale_tax;
     },
     imgURL(url) {
-      return "/uploads/" + url;
+      return "/public/uploads/" + url;
     },
   }
 }

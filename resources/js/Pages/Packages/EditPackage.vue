@@ -105,7 +105,7 @@
 
                       <div class="col-md-2">
                         <div class="form-group">
-                          <input v-model="item.value" name="value" id="value" type="number" class="form-control" placeholder="Value" required />
+                          <input v-model="item.value" name="value" id="value" type="number" step="0.01" class="form-control" placeholder="Value" required />
                         </div>
                       </div>
 

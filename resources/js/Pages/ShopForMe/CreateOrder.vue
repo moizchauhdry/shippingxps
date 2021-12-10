@@ -141,7 +141,7 @@
                           </div>
                           <div class="col-md-1 p-0">
                             <div class="form-group">
-                              <input v-model="item.price" v-on:keyup="addShopTax($event)" @click="addShopTax($event)" ref="price_online" name="price" type="number" class="form-control" placeholder="Price" min="0" required/>
+                              <input v-model="item.price" v-on:keyup="addShopTax($event)" @click="addShopTax($event)" ref="price_online" name="price" type="number" class="form-control" placeholder="Price" min="0" step="0.01" required/>
                             </div>
                           </div>
                           <div class="col-md-2">
@@ -205,6 +205,7 @@
                         <div class="row mb-2">
                           <div class="col-2 offset-md-8">
                             <breeze-label class="float-right" for="form_pickup.subtotal" value="Service Charges"/>
+                            <br><small class="float-right">Minimum USD 5 Or 5% of Subtotal</small>
                           </div>
                           <div class="col-1 p-0">
                             <input v-model="form_online.service_charges" name="service_charges" id="form_online-service_charges" type="number" class="form-control service_charges" placeholder="T.Price" required readonly/>
@@ -367,7 +368,7 @@
 
                           <div class="col-md-2" style="display: none" v-show="form_pickup.pickup_type != 'pickup_only'">
                             <div class="form-group">
-                              <input v-model="item.price" v-on:keyup="addPickUpTax($event)" v-on:click="addPickUpTax($event)" name="price" ref="price" type="number" min="0" class="form-control price" placeholder="Price" :required="form_pickup.pickup_type == 'pickup_only'"/>
+                              <input v-model="item.price" v-on:keyup="addPickUpTax($event)" v-on:click="addPickUpTax($event)" name="price" ref="price" type="number" min="0" step="0.01" class="form-control price" placeholder="Price" :required="form_pickup.pickup_type == 'pickup_only'"/>
                             </div>
                           </div>
                           <div class="col-md-2" style="display: none" v-show="form_pickup.pickup_type != 'pickup_only'">
@@ -377,12 +378,12 @@
                           </div>
                           <div class="col">
                             <div class="form-group">
-                              <input v-model="item.qty" v-on:keyup="addPickUpTax($event)" v-on:change="addPickUpTax($event)" name="qty" id="qty" type="number" class="form-control" placeholder="Qty" min="1" required/>
+                              <input v-model="item.qty" v-on:keyup="addPickUpTax($event)" v-on:change="addPickUpTax($event)" name="qty" id="qty" type="number"  class="form-control" placeholder="Qty" min="1" required/>
                             </div>
                           </div>
                           <div class="col-md-1 p-0" style="display: none" v-show="form_pickup.pickup_type != 'pickup_only'">
                             <div class="form-group">
-                              <input v-model="item.sub_total" name="sub_total" id="sub_total" type="number" class="form-control sub_total" placeholder="T.Price" :required="form_pickup.pickup_type == 'pickup_only'" readonly/>
+                              <input v-model="item.sub_total" name="sub_total" id="sub_total" type="number"  class="form-control sub_total" placeholder="T.Price" :required="form_pickup.pickup_type == 'pickup_only'" readonly/>
                             </div>
                           </div>
                           <div class="col-md-1">

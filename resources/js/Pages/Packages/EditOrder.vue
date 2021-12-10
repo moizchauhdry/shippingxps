@@ -245,7 +245,7 @@
 
             },
             imgURL(url) {
-                return "/uploads/"+url;
+                return "/public/uploads/"+url;
             },
         }
     }

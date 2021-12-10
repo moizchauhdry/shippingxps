@@ -20,7 +20,7 @@ class OrderItemsTable extends Migration
             $table->string('description',255)->nullable();              
             $table->integer('quantity')->default(1);
             $table->string('image',255)->nullable(); 
-            $table->integer('unit_price')->default(0);
+            $table->double('unit_price',10,2)->default(0);
             $table->double('price_with_tax',10,2)->nullable();
             $table->double('sub_total',10,2)->nullable();
             $table->integer('origin_country')->default(0);

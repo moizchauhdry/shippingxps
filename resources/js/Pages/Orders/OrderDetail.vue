@@ -207,7 +207,7 @@ export default {
   },
   methods: {
     imgURL(url) {
-      return "/uploads/" + url;
+      return "/public/uploads/" + url;
     },
     viewImage(event) {
       console.log(event.target.src);
