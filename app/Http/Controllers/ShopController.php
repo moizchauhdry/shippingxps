@@ -286,6 +286,8 @@ class ShopController extends Controller
         if(Auth::user()->type != 'admin'){
             $order['is_changed'] = $model->is_changed;
             $order['updated_by_admin'] = $model->updated_by_admin;
+            $order['changes_approved'] = $model->changes_approved;
+
         }else{
             $order['changes_approved'] = $model->changes_approved;
         }

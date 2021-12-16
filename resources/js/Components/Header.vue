@@ -30,11 +30,11 @@
                 <div class="header-nav-main header-nav-main-square header-nav-main-text-capitalize header-nav-main-effect-1 header-nav-main-sub-effect-1">
                   <nav class="collapse">
                     <ul class="nav nav-pills" id="mainNav">
-                      <li>
+                      <!--<li>
                         <a class="nav-link active" href="/how-it-works">
                           How it works
                         </a>
-                      </li>
+                      </li>-->
                       <li>
                         <inertia-link class="nav-link dropdown-toggle" :href="route('pricing')">
                           <i class="fa fa-cart"></i> &nbsp;&nbsp;
