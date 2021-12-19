@@ -52,11 +52,11 @@
             <i class="fas fa-home"></i><span>DASHBOARD</span>
           </inertia-link>
 
-          <inertia-link v-if="$page.props.auth.user.type != 'customer'" class="nav-link" :href="route('customers')" :class="{active: route().current('customers')}" :active="route().current('customers')">
+          <inertia-link v-if="$page.props.auth.user.type != 'customer'" class="nav-link" :href="route('customers')" :class="{active: route().current('customers') || route().current('edit-customer') || route().current('detail-customer')}" :active="route().current('customers')">
             <i class="fas fa-external-link-alt"></i><span>Customers</span>
           </inertia-link>
 
-          <inertia-link v-if="$page.props.auth.user.type == 'admin'" class="nav-link" :href="route('manage-users')" :class="{active: route().current('manage-users')}" :active="route().current('manage-users')">
+          <inertia-link v-if="$page.props.auth.user.type == 'admin'" class="nav-link" :href="route('manage-users')" :class="{active: route().current('manage-users') || route().current('create-users')}" :active="route().current('manage-users')">
             <i class="fas fa-external-link-alt"></i><span>Manage Users</span>
           </inertia-link>
 
@@ -64,15 +64,15 @@
             <i class="fas fa-external-link-alt"></i><span>Mailing Addresses</span>
           </inertia-link>
 
-          <inertia-link v-if="$page.props.auth.user.type == 'admin'" class="nav-link" :href="route('orders')" :class="{active: route().current('orders')}" :active="route().current('orders')">
+          <inertia-link v-if="$page.props.auth.user.type == 'admin'" class="nav-link" :href="route('orders')" :class="{active: route().current('orders') || route().current('orders.show') || route().current('orders.create') || route().current('order.edit') }" :active="route().current('orders')">
             <i class="fas fa-external-link-alt"></i><span>Orders</span>
           </inertia-link>
 
-          <inertia-link class="nav-link" v-if="$page.props.auth.user.type == 'admin'" :href="route('shop-for-me.index')" :class="{active: route().current('shop-for-me.index')}" :active="route().current('shop-for-me.index')">
+          <inertia-link class="nav-link" v-if="$page.props.auth.user.type == 'admin'" :href="route('shop-for-me.index')" :class="{active: route().current('shop-for-me.index') || route().current('shop-for-me.edit') || route().current('shop-for-me.show')}" :active="route().current('shop-for-me.index')">
             <i class="fas fa-external-link-alt"></i><span>Shopping List</span>
           </inertia-link>
 
-          <inertia-link class="nav-link" :href="route('packages')" :class="{active: route().current('packages')}" :active="route().current('packages')">
+          <inertia-link class="nav-link" :href="route('packages')" :class="{active: route().current('packages') || route().current('packages.show') || route().current('packages.custom')}" :active="route().current('packages')">
             <i class="fas fa-external-link-alt"></i><span>Packages</span>
           </inertia-link>
 
@@ -84,7 +84,7 @@
             <i class="fas fa-external-link-alt"></i><span>Manages Pages</span>
           </inertia-link>-->
 
-          <inertia-link v-if="$page.props.auth.user.type == 'admin'" class="nav-link" :href="route('services')" :class="{active: route().current('services')}" :active="route().current('services')">
+          <inertia-link v-if="$page.props.auth.user.type == 'admin'" class="nav-link" :href="route('services')" :class="{active: route().current('services') || route().current('services.create') || route().current('services.edit')}" :active="route().current('services')">
             <i class="fas fa-external-link-alt"></i><span>Manage Services</span>
           </inertia-link>
 
@@ -92,15 +92,15 @@
             <i class="fas fa-external-link-alt"></i><span>Manage Pages</span>
           </inertia-link>-->
 
-          <inertia-link v-if="$page.props.auth.user.type == 'admin'" class="nav-link" :href="route('warehouses')" :class="{active: route().current('warehouses')}" :active="route().current('warehouses')">
+          <inertia-link v-if="$page.props.auth.user.type == 'admin'" class="nav-link" :href="route('warehouses')" :class="{active: route().current('warehouses') || route().current('warehouses.create') || route().current('warehouses.edit')}" :active="route().current('warehouses')">
             <i class="fas fa-external-link-alt"></i><span>Warehouses</span>
           </inertia-link>
 
-          <inertia-link v-if="$page.props.auth.user.type == 'admin'" class="nav-link" :href="route('store.index')" :class="{active: route().current('store.index')}" :active="route().current('store.index')">
+          <inertia-link v-if="$page.props.auth.user.type == 'admin'" class="nav-link" :href="route('store.index')" :class="{active: route().current('store.index') || route().current('store.create') || route().current('store.edit')}" :active="route().current('store.index')">
             <i class="fas fa-external-link-alt"></i><span>Stores</span>
           </inertia-link>
 
-          <inertia-link v-if="$page.props.auth.user.type == 'admin'" class="nav-link" :href="route('coupon.index')" :class="{active: route().current('store.index')}" :active="route().current('store.index')">
+          <inertia-link v-if="$page.props.auth.user.type == 'admin'" class="nav-link" :href="route('coupon.index')" :class="{active: route().current('coupon.index') || route().current('coupon.create') ||  route().current('coupon.edit')}" :active="route().current('coupon.index')">
             <i class="fas fa-external-link-alt"></i><span>Coupons</span>
           </inertia-link>
 
@@ -122,7 +122,7 @@
             <i class="fas fa-external-link-alt"></i><span>Profile</span>
           </inertia-link>
 
-          <inertia-link v-if="$page.props.auth.user.type != 'manager'" class="nav-link" :href="route('addresses')" :class="{active: route().current('addresses')}" :active="route().current('addresses')">
+          <inertia-link v-if="$page.props.auth.user.type != 'admin'" class="nav-link" :href="route('addresses')" :class="{active: route().current('addresses')  || route().current('address.create') || route().current('address.edit')}" :active="route().current('addresses')">
             <i class="fas fa-external-link-alt"></i><span>Shipping Address</span>
           </inertia-link>
 
@@ -130,11 +130,11 @@
             <i class="fas fa-external-link-alt"></i><span>Update Password</span>
           </inertia-link>
 
-          <inertia-link class="nav-link" v-if="$page.props.auth.user.type == 'customer'" :href="route('shop-for-me.index')" :class="{active: route().current('shop-for-me.index')}" :active="route().current('shop-for-me.index')">
+          <inertia-link class="nav-link" v-if="$page.props.auth.user.type == 'customer'" :href="route('shop-for-me.index')" :class="{active: route().current('shop-for-me.index')|| route().current('shop-for-me.edit') || route().current('shop-for-me.show')}" :active="route().current('shop-for-me.index')">
             <i class="fas fa-external-link-alt"></i><span>My Shopping List</span>
           </inertia-link>
 
-          <inertia-link class="nav-link" v-if="$page.props.auth.user.type == 'customer'" :href="route('shop-for-me.create')" :class="{active: route().current('shop-for-me.create')}" :active="route().current('shop-for-me.create')">
+          <inertia-link class="nav-link" v-if="$page.props.auth.user.type == 'customer'" :href="route('shop-for-me.create')" :class="{active: route().current('shop-for-me.create') }" :active="route().current('shop-for-me.create')">
             <i class="fas fa-external-link-alt"></i><span>Shop for me</span>
           </inertia-link>
 
