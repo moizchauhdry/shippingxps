@@ -58,7 +58,7 @@ class NotifyOrderChangesAcceptedByCustomerToAdmin extends Notification
         $url = route("shop-for-me.edit", ["id" => $this->order->id]);
         return [
             'order_id' => $this->order->id,
-            'message' => 'Customer has '.(($this->order->changes_approved == 1)? "Accepted" : "Rejected" ).' your changes. <a href="'. $url .'" style="color:#1b4eff">See Details</a>',
+            'message' => 'Customer has '.(($this->order->changes_approved == 1)? "Accepted" : "re modified" ).' your changes. <a href="'. $url .'" style="color:#1b4eff">See Details</a>',
             'url' => $url
         ];
     }

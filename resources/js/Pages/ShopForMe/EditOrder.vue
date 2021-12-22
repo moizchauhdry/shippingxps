@@ -352,8 +352,9 @@
                     </div>
                   </div>
                   <div class="order-button">
-                    <input v-if="order.payment_status != 'Paid'" type="submit" value="Update Shopping" class="btn btn-danger"/>
-                    <template v-if="$page.props.auth.user.type == 'customer' && form.updated_by_admin == '1'">
+                    <input v-if="order.payment_status != 'Paid' && $page.props.auth.user.type == 'admin'" type="submit" value="Update Shopping" class="btn btn-danger"/>
+                    <input v-if="order.payment_status != 'Paid'  && $page.props.auth.user.type == 'customer'" type="submit" value="Update Shopping" class="btn btn-danger"/>
+                    <template v-if="order.payment_status != 'Paid' && $page.props.auth.user.type == 'customer' && form.updated_by_admin == '1'">
                       <a class="btn btn-primary ml-2" v-on:click="approveChanges()">Approve & Checkout</a>
                     </template>
                     <template v-if="order.payment_status != 'Paid' && $page.props.auth.user.type == 'customer' && order.changes_approved == '1'">
