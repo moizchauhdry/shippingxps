@@ -15,6 +15,7 @@
             <th>Invoice</th>
             <th>Charged Amount (USD)</th>
             <th>Charged At</th>
+            <th>Action</th>
           </tr>
           </thead>
           <tbody>
@@ -38,6 +39,10 @@
             <td><a :href="'/public/'+item.invoice_url" target="_blank">View Invoice</a></td>
             <td>{{ item.charged_amount }}</td>
             <td>{{ item.charged_at }}</td>
+            <td>
+              <!-- Action Here -->
+              <a href="javascript:void(0)" >Download Report</a>
+            </td>
           </tr>
           </tbody>
         </table>
