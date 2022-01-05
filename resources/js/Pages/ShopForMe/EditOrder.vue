@@ -353,7 +353,7 @@
                   </div>
                   <div class="order-button">
                     <input v-if="order.payment_status != 'Paid' && $page.props.auth.user.type == 'admin'" type="submit" value="Update Shopping" class="btn btn-danger"/>
-                    <input v-if="order.payment_status != 'Paid'  && $page.props.auth.user.type == 'customer'" type="submit" value="Update Shopping" class="btn btn-danger"/>
+                    <input v-if="order.payment_status != 'Paid'  && $page.props.auth.user.type == 'customer'" type="button"  v-on:click="updateChanges()"  value="Update Shopping" class="btn btn-danger"/>
                     <template v-if="order.payment_status != 'Paid' && $page.props.auth.user.type == 'customer' && form.updated_by_admin == '1'">
                       <a class="btn btn-primary ml-2" v-on:click="approveChanges()">Approve & Checkout</a>
                     </template>
@@ -483,6 +483,10 @@ export default {
         console.log(this.form.is_service_charges)
         this.getGrandTotal(0);
       }
+    },
+    updateChanges() {
+      this.form.changes_approved = 0;
+      this.submit();
     },
     changeToCompleteShopping() {
       this.form.is_complete_shopping = 1;
