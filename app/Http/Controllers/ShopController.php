@@ -520,7 +520,7 @@ class ShopController extends Controller
             }
 
             DB::commit();
-            if(!$isAdmin && $request->has('changes_approved')){
+            if(!$isAdmin && $request->has('changes_approved') && $request->get('changes_approved') == 1){
                 \Session::put('order_id',$order->id);
                 return redirect()->route('payment.index','amount='.$order->grand_total);
             }else{
