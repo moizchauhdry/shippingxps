@@ -1,51 +1,63 @@
 <template>
   <MainLayout>
     <div class="card mt-4 pr-2">
-      <div class="card-header">Payments</div>
-      <div class="card-body">
-        <table class="table table-responsive table-hover">
-          <thead>
-          <tr>
-            <th>ID</th>
-            <th>Customer</th>
-            <th>Order</th>
-            <th>Package</th>
-            <th>Transaction Id</th>
-            <th>Invoice Id</th>
-            <th>Invoice</th>
-            <th>Charged Amount (USD)</th>
-            <th>Charged At</th>
-            <th>Action</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr v-for="item in payments" :key="item.id">
-            <td>{{ item.id }}</td>
-            <td>{{ item.customer_id != null ? item.customer.name : '- -'}}</td>
-            <td>
-              <template v-if="item.order_id != null">
-                <inertia-link :href="route('orders.show',item.order_id)" class="link-hover-style-1 ms-1">{{ item.order_id }}</inertia-link>
-              </template>
-              <template v-else>- -</template>
-            </td>
-            <td>
-              <template v-if="item.package_id != null">
-                <inertia-link :href="route('packages.show',item.package.id)" class="link-hover-style-1 ms-1">{{ item.package.id }}</inertia-link>
-              </template>
-              <template v-else>- -</template>
-            </td>
-            <td>{{ item.transaction_id }}</td>
-            <td>{{ item.invoice_id }}</td>
-            <td><a :href="'/public/'+item.invoice_url" target="_blank">View Invoice</a></td>
-            <td>{{ item.charged_amount }}</td>
-            <td>{{ item.charged_at }}</td>
-            <td>
-              <!-- Action Here -->
-              <a href="javascript:void(0)" >Download Report</a>
-            </td>
-          </tr>
-          </tbody>
-        </table>
+      <div class="card-header">Payments
+        <div class="float-right"><label for="" class="btn btn-primary">Download Reports</label></div>
+      </div>
+      <div class="card-body ">
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+            <tr>
+              <th>ID</th>
+              <th>Customer</th>
+              <th>Order</th>
+              <th>Package</th>
+              <th>Transaction Id</th>
+              <th>Invoice Id</th>
+              <th>Invoice</th>
+              <th>Charged Amount (USD)</th>
+              <th>Charged At</th>
+              <th>Destination Country</th>
+              <th>Service Type</th>
+              <th>Service Shipping Charges (USD)</th>
+              <th>Tracking No.</th>
+              <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="(item,index) in payments" :key="item.id">
+              <td>{{ item.id }}</td>
+              <td>{{ item.customer_id != null ? item.customer.name : '- -'}}</td>
+              <td>
+                <template v-if="item.order_id != null">
+                  <inertia-link :href="route('orders.show',item.order_id)" class="link-hover-style-1 ms-1">{{ item.order_id }}</inertia-link>
+                </template>
+                <template v-else>- -</template>
+              </td>
+              <td>
+                <template v-if="item.package_id != null">
+                  <inertia-link :href="route('packages.show',item.package.id)" class="link-hover-style-1 ms-1">{{ item.package.id }}</inertia-link>
+                </template>
+                <template v-else>- -</template>
+              </td>
+              <td>{{ item.transaction_id }}</td>
+              <td>{{ item.invoice_id }}</td>
+              <td><a :href="'/public/'+item.invoice_url" target="_blank">View Invoice</a></td>
+              <td>{{ item.charged_amount }}</td>
+              <td>{{ item.charged_at }}</td>
+              <td>{{ item.package != NULL ? getShippingAddress(item.package.address_book_id,index): '- -'  }}</td>
+              <td>{{ item.package != NULL ? item.package.service_label : '- -' }}</td>
+              <td>{{ item.package != NULL ? item.package.shipping_total : '- -' }}</td>
+              <td>{{ item.package != NULL ? item.package.tracking_number_out : '- -' }}</td>
+              <td>
+                <!-- Action Here -->
+                <a href="javascript:void(0)" >Download Report</a>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </MainLayout>
@@ -84,6 +96,17 @@ export default {
       }).catch(function (error) {
         console.log(error);
       });
+    },
+    getShippingAddress(id,index){
+      axios.get(this.route('getShippingAddress',id)).then(response => {
+        console.log(response)
+          this.payments[index].address = 'yes 2';
+        return;
+        }).catch(error => {
+        console.log(error)
+        return "yes";
+      })
+
     }
   }
 

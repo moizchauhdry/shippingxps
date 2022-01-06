@@ -214,4 +214,15 @@ class AddressController extends Controller
         ]);    
 
     }
+
+    public function getShippingAddress($id)
+    {
+        $address = Address::find($id);
+
+        if($address != NULL){
+            return response()->json(['status'=> true,'address'=>$address]);
+        }else{
+            return response()->json(['status'=> false,'address'=> NULL]);
+        }
+    }
 }

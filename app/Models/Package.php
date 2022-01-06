@@ -50,4 +50,13 @@ class Package extends Model
     {
         return date('Y-m-d h:i:s',strtotime($value));
     }
+
+    public function getShippingAddressAttribute()
+    {
+        $address = $this->address;
+        if($address == NULL){
+            return '- -';
+        }
+        return $address->address;
+    }
 }

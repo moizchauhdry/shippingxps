@@ -444,4 +444,31 @@ class PaymentController extends Controller
         }
 
     }
+
+    public function generateReport($paymentID)
+    {
+        $payment = Payment::where('id',$paymentID)->with(['customer', 'package', 'order'])->first();
+
+        $html = view('pdfs.report', [
+            'payment' => $payment,
+        ])->render();
+
+        return $html;
+
+        try {
+            $mpdf = new \Mpdf\Mpdf();
+            $mpdf->WriteHTML($html);
+            $mpdf->Output('public/payments/pdf/' . $payment->invoice_id . '.pdf', \Mpdf\Output\Destination::FILE);
+        } catch (\Throwable $e) {
+            \Log::info($e);
+        }
+        \Log::info('on saving record');
+        $payment->invoice_url = 'invoices/pdf/' . $payment->invoice_id . '.pdf';
+        $payment->save();
+    }
+
+    public function generateReportList()
+    {
+        $payments = Payment::all();
+    }
 }
