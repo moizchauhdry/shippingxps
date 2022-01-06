@@ -2,7 +2,7 @@
   <MainLayout>
     <div class="card mt-4 pr-2">
       <div class="card-header">Payments
-        <div class="float-right"><label for="" class="btn btn-primary">Download Reports</label></div>
+        <div class="float-right"><a :href="route('generateReportList')" class="btn btn-primary" target="_blank">Download Reports</a></div>
       </div>
       <div class="card-body ">
         <div class="table-responsive">
@@ -46,13 +46,13 @@
               <td><a :href="'/public/'+item.invoice_url" target="_blank">View Invoice</a></td>
               <td>{{ item.charged_amount }}</td>
               <td>{{ item.charged_at }}</td>
-              <td>{{ item.package != NULL ? getShippingAddress(item.package.address_book_id,index): '- -'  }}</td>
+              <td>{{ item.package != NULL ? getAddress(item.package.address): '- -'  }}</td>
               <td>{{ item.package != NULL ? item.package.service_label : '- -' }}</td>
               <td>{{ item.package != NULL ? item.package.shipping_total : '- -' }}</td>
               <td>{{ item.package != NULL ? item.package.tracking_number_out : '- -' }}</td>
               <td>
                 <!-- Action Here -->
-                <a href="javascript:void(0)" >Download Report</a>
+                <a :href="route('generateReport',item.id)" target="_blank">Download Report</a>
               </td>
             </tr>
             </tbody>
@@ -97,15 +97,8 @@ export default {
         console.log(error);
       });
     },
-    getShippingAddress(id,index){
-      axios.get(this.route('getShippingAddress',id)).then(response => {
-        console.log(response)
-          this.payments[index].address = 'yes 2';
-        return;
-        }).catch(error => {
-        console.log(error)
-        return "yes";
-      })
+    getAddress(address){
+      return address.address + ', ' + address.city +', '+ address.country.name;
 
     }
   }

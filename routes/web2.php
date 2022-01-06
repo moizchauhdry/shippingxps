@@ -70,6 +70,7 @@ Route::middleware('auth')->group(function () {
         Route::post('check/coupon', [\App\Http\Controllers\PaymentController::class, 'checkCoupon'])->name('checkCoupon');
         Route::get('invoice/{id}', [\App\Http\Controllers\PaymentController::class, 'buildInvoice'])->name('buildInvoice');
         Route::get('generateReport/{id}', [\App\Http\Controllers\PaymentController::class, 'generateReport'])->name('generateReport');
+        Route::get('generateReportList', [\App\Http\Controllers\PaymentController::class, 'generateReportList'])->name('generateReportList');
     });
 
     Route::get('getShippingAddress/{id}', [\App\Http\Controllers\AddressController::class, 'getShippingAddress'])->name('getShippingAddress');

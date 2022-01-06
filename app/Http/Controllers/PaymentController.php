@@ -371,9 +371,13 @@ class PaymentController extends Controller
         $user = \Auth::user();
 
         if ($user->type == 'admin') {
-            $payments = Payment::with(['customer', 'package', 'order'])->orderByDesc('id')->get();
+            $payments = Payment::with(['customer', 'package' => function ($query) {
+                $query->with('address',function ($qry){ $qry->with('country'); });
+            }, 'order'])->orderByDesc('id')->get();
         } else {
-            $payments = Payment::with(['customer', 'package', 'order'])->where('customer_id', $user->id)->orderByDesc('id')->get();
+            $payments = Payment::with(['customer', 'package' => function ($query) {
+                $query->with('address',function ($qry){ $qry->with('country'); });
+            }, 'order'])->where('customer_id', $user->id)->orderByDesc('id')->get();
         }
         return Inertia::render('Payment/Index', ['payments' => $payments]);
     }
@@ -449,26 +453,42 @@ class PaymentController extends Controller
     {
         $payment = Payment::where('id',$paymentID)->with(['customer', 'package', 'order'])->first();
 
+
         $html = view('pdfs.report', [
             'payment' => $payment,
+
         ])->render();
 
-        return $html;
 
         try {
             $mpdf = new \Mpdf\Mpdf();
+            $mpdf->SetFooter('ShippingXPS||Payment Report');
             $mpdf->WriteHTML($html);
-            $mpdf->Output('public/payments/pdf/' . $payment->invoice_id . '.pdf', \Mpdf\Output\Destination::FILE);
+            $mpdf->Output($payment->customer->name .'_'.Carbon::now()->format('Ymdhis'). '.pdf', \Mpdf\Output\Destination::INLINE);
         } catch (\Throwable $e) {
             \Log::info($e);
         }
-        \Log::info('on saving record');
-        $payment->invoice_url = 'invoices/pdf/' . $payment->invoice_id . '.pdf';
-        $payment->save();
+
     }
 
     public function generateReportList()
     {
         $payments = Payment::all();
+
+
+        $html = view('pdfs.reports', [
+            'payments' => $payments,
+        ])->render();
+
+        try {
+            $mpdf = new \Mpdf\Mpdf();
+            // $mpdf->SetWatermarkImage('https://shippingxps.com/theme/img/logo.png','0.2','50%');
+            // $mpdf->showWatermarkImage = true;
+            $mpdf->SetFooter('ShippingXPS|Payment Report|{PAGENO}');
+            $mpdf->WriteHTML($html);
+            $mpdf->Output('Payment_Report_'.Carbon::now()->format('Ymdhis'). '.pdf', \Mpdf\Output\Destination::INLINE);
+        } catch (\Throwable $e) {
+            \Log::info($e);
+        }
     }
 }

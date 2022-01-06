@@ -51,12 +51,34 @@ class Package extends Model
         return date('Y-m-d h:i:s',strtotime($value));
     }
 
-    public function getShippingAddressAttribute()
+    public function setShippingAddressAttribute()
     {
         $address = $this->address;
         if($address == NULL){
             return '- -';
         }
         return $address->address;
+    }
+
+    public function getShippingAddressAttribute()
+    {
+        $address = $this->address;
+        if($address == NULL){
+            return '- -';
+        }
+        return $address->address.', '.$address->city.', '.ucfirst(strtolower($address->country->name));
+    }
+
+    public function getServiceChargesAttribute()
+    {
+        $serviceCharges = $this->serviceRequests;
+        \Log::info($serviceCharges);
+        $sum = 0;
+        foreach($serviceCharges as $service){
+            $sum += $service->price;
+        }
+        $mailOutFee = SiteSetting::where('name','mailout_fee')->orderBy('id','desc')->first()->value;
+        $sum += $mailOutFee;
+        return $sum;
     }
 }
