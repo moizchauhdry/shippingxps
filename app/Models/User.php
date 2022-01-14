@@ -23,6 +23,9 @@ class User extends Authenticatable
     //     'password',
     // ];
 
+    protected $appends = [
+        'suite_no'
+    ];
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -49,5 +52,10 @@ class User extends Authenticatable
     public function address()
     {
         return $this->hasMany(Address::class,'user_id');
+    }
+
+    public function getSuiteNoAttribute()
+    {
+        return $this->id + 4000;
     }
 }

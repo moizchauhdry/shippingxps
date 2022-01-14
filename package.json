@@ -34,7 +34,9 @@
     "numeral": "^2.0.6",
     "vue-jquery-mask": "^2.0.0",
     "vue-loading-overlay": "^4.0.4",
-    "vue-router": "^3.5.1"
+    "vue-router": "^3.5.1",
+    "vue2-daterange-picker": "^0.6.8",
+    "vue3-date-time-picker": "^2.4.4"
   },
   "name": "shippingxps",
   "description": "<p align=\"center\"><a href=\"https://laravel.com\" target=\"_blank\"><img src=\"https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg\" width=\"400\"></a></p>",

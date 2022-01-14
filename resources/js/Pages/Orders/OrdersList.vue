@@ -119,6 +119,18 @@
                   aria-controls="pills-contact"
                   aria-selected="false">Shipped</button>
             </li>
+            <li class="nav-item" role="presentation">
+              <button
+                  v-on:click="setActiveTabAB('tab4')"
+                  :class="getTabClass('tab4')"
+                  id="pills-contact-tab"
+                  data-bs-toggle="pill"
+                  data-bs-target="#pills-contact"
+                  type="button"
+                  role="tab"
+                  aria-controls="pills-contact"
+                  aria-selected="false">Trashed/Rejected</button>
+            </li>
           </ul>
           <div class="tab-content" id="pills-tabContent">
             <div :class="getTabPaneClass('tab1')" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
@@ -236,6 +248,45 @@
                 </tbody>
               </table>
             </div>
+            <div :class="getTabPaneClass('tab4')" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+              <table class="table table-striped">
+                <thead>
+                <tr>
+                  <th scope="col">Order Id</th>
+                  <th v-if="$page.props.auth.user.type == 'admin'" scope="col">Customer Name</th>
+                  <th scope="col">Order From</th>
+                  <th scope="col">Tracking #</th>
+                  <th scope="col">Warehouse</th>
+                  <th scope="col">Received Date</th>
+                  <template v-if="$page.props.auth.user.type == 'admin'">
+                    <th scope="col"></th>
+                  </template>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="order in rejected" :key="order.id">
+                  <td>{{ order.id }}</td>
+                  <td v-if="$page.props.auth.user.type == 'admin'">{{ order.customer.name }}</td>
+                  <td>{{ order.received_from }}</td>
+                  <td>{{ order.tracking_number_in }}</td>
+                  <td>{{ order.warehouse.name }}</td>
+                  <td>{{ order.created_at }}</td>
+                  <template v-if="$page.props.auth.user.type == 'admin'">
+                    <td>
+                      <inertia-link class="link-primary" :href="route('orders.show', order.id)">
+                        <span>View</span>
+                      </inertia-link>
+                      &nbsp;|&nbsp;
+                      <inertia-link class="link-primary" :href="route('order.edit', order.id)">
+                        <span>Edit</span>
+                      </inertia-link>
+                    </td>
+                  </template>
+                </tr>
+
+                </tbody>
+              </table>
+            </div>
           </div>
         </template>
 
@@ -266,6 +317,7 @@ export default {
     arrived:Object,
     labeled:Object,
     shipped:Object,
+    rejected:Object,
     // rejected:Object
   },
   data() {
@@ -273,7 +325,8 @@ export default {
       tabs : {
         tab1:true,
         tab2:false,
-        tab3:false
+        tab3:false,
+        tab4:false
       },
       form: this.$inertia.form({
         search: this.search,

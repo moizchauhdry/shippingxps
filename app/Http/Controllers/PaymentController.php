@@ -366,20 +366,35 @@ class PaymentController extends Controller
 
     }
 
-    public function getPayments()
+    public function getPayments(Request $request)
     {
         $user = \Auth::user();
 
         if ($user->type == 'admin') {
             $payments = Payment::with(['customer', 'package' => function ($query) {
                 $query->with('address',function ($qry){ $qry->with('country'); });
-            }, 'order'])->orderByDesc('id')->get();
+            }, 'order'])->orderByDesc('id');
         } else {
             $payments = Payment::with(['customer', 'package' => function ($query) {
                 $query->with('address',function ($qry){ $qry->with('country'); });
-            }, 'order'])->where('customer_id', $user->id)->orderByDesc('id')->get();
+            }, 'order'])->where('customer_id', $user->id)->orderByDesc('id');
         }
-        return Inertia::render('Payment/Index', ['payments' => $payments]);
+
+        if($request->isMethod('post')) {
+
+            $payments = $this->searchPayments($request,$payments);
+
+            $perPage = 10;
+
+            if($request->has('per_page') && $request->get('per_page') != NULL){
+                $perPage = $request->get('per_page');
+            }
+
+            return response([
+                'payments' => $payments->paginate($perPage),
+            ]);
+        }
+        return Inertia::render('Payment/Index', ['payments' => $payments->paginate(10)]);
     }
 
     /* Coupon Mangement */
@@ -490,5 +505,57 @@ class PaymentController extends Controller
         } catch (\Throwable $e) {
             \Log::info($e);
         }
+    }
+
+    public function searchPayments(Request $request,$payments)
+    {
+        if ($request->has('search') && $request->search != null) {
+            $search = $request->search;
+            $payments->where(function ($query) use ($search) {
+                $query->where('id', 'LIKE', "%$search%")
+                    ->orWhere('transaction_id', 'LIKE', "%$search%")
+                    ->orWhere('package_id', 'LIKE', "%$search%")
+                    ->orWhere('invoice_id', 'LIKE', "%$search%")
+                    ->orWhere('charged_amount', 'LIKE', "%$search%");
+            })
+                ->orWhereHas('customer', function ($qry) use ($search) {
+                    $qry->where('name', 'LIKE', '%' . $search . '%');
+                })
+                ->orWhereHas('package', function ($qry) use ($search) {
+                    $qry->where('payment_status', 'LIKE', "%$search%")
+                        ->orWhere('service_label', 'LIKE', "%$search%")
+                        ->orWhere('shipping_charges', 'LIKE', "%$search%");
+                })
+                ->orWhereHas('order', function ($qry) use ($search) {
+                    $qry->where('id', 'LIKE', '%' . $search . '%');
+                });
+        }
+
+        if ($request->has('date_selection') && $request->get('date_selection') != NULL) {
+            if ($request->get('date_selection') == '1') {
+                $payments->whereDate('created_at', Carbon::today());
+            }
+            if ($request->get('date_selection') == '2') {
+                $payments->whereDate('created_at', Carbon::yesterday());
+            }
+            if ($request->get('date_selection') == '3') {
+                $date = Carbon::now()->subDays(7);
+                $payments->where('created_at', '>=', $date);
+            }
+            if ($request->get('date_selection') == '4') {
+                $date = Carbon::now()->subDays(30);
+                $payments->where('created_at', '>=', $date);
+            }
+            if ($request->date_selection == 5) {
+                if ($request->get('date_range')) {
+                    $dateRange = explode(' - ', $request->date_range);
+                    $from = date("Y-m-d", strtotime($dateRange[0]));
+                    $to = date("Y-m-d", strtotime($dateRange[1]));
+                    $payments->whereBetween('created_at', [$from, $to]);
+                }
+            }
+        }
+
+        return $payments;
     }
 }

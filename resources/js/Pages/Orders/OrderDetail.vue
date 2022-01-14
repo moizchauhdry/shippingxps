@@ -28,6 +28,10 @@
                 <td>Received At</td>
                 <td>{{ order.warehouse.name }}</td>
               </tr>
+              <tr>
+                <td>Status</td>
+                <td>{{ order.status }}</td>
+              </tr>
               </tbody>
             </table>
           </div>

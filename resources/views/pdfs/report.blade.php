@@ -32,6 +32,10 @@
         <td>{{ $payment->customer->name  }}</td>
     </tr>
     <tr>
+        <th style="width:30%">Suite No</th>
+        <td>{{ $payment->customer->suite_no  }}</td>
+    </tr>
+    <tr>
         <th style="width:30%">Tracking No</th>
         <td>{{ $payment->package->tracking_number_out }}</td>
     </tr>

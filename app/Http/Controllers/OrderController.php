@@ -60,6 +60,8 @@ class OrderController extends Controller
             $labeled = $this->searchResults($request,$labeled);
             $shipped = Order::select('orders.*','orders.warehouse_id','orders.customer_id','users.name','warehouses.name')->where('status','shipped');
             $shipped = $this->searchResults($request,$shipped);
+            $rejected = Order::select('orders.*','orders.warehouse_id','orders.customer_id','users.name','warehouses.name')->where('status','rejected');
+            $rejected = $this->searchResults($request,$rejected);
 
             return Inertia::render('Orders/OrdersList', [
                 'search' => $search,
@@ -68,7 +70,8 @@ class OrderController extends Controller
                 'customer_id' => $customer_id,
                 'arrived' => $arrived->where('status','arrived')->orderBy('orders.id', 'desc')->get(),
                 'labeled' => $labeled->where('status','labeled')->orderBy('orders.id', 'desc')->get(),
-                'shipped' => $shipped->where('status','shipped')->orderBy('orders.id', 'desc')->get()
+                'shipped' => $shipped->where('status','shipped')->orderBy('orders.id', 'desc')->get(),
+                'rejected' => $rejected->where('status','rejected')->orderBy('orders.id', 'desc')->get()
             ]);
         }
 

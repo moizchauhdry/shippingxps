@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Package extends Model
 {
     use HasFactory;
-    
+
+    protected $appends = ['service_charges'];
 
     public function customer(){
         return $this->belongsTo(User::class);
