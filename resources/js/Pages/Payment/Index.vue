@@ -41,6 +41,7 @@
               <th>Destination Country</th>
               <th>Service Type</th>
               <th>Service Shipping Charges (USD)</th>
+              <th v-if="$page.props.auth.user.type == 'admin'">MarkUp Fee (USD)</th>
               <th>Service Charges (USD)</th>
               <th>Charged Amount (USD)</th>
               <th>Charged At</th>
@@ -69,7 +70,9 @@
               <td><a :href="'/public/'+item.invoice_url" target="_blank">View Invoice</a></td>
               <td>{{ item.package != NULL ? getAddress(item.package.address): '- -'  }}</td>
               <td>{{ item.package != NULL ? item.package.service_label : '- -' }}</td>
-              <td>{{ item.package != NULL ? item.package.shipping_total : '- -' }}</td>
+              <td v-if="$page.props.auth.user.type != 'admin'">{{ item.package != NULL ? item.package.shipping_total : '- -' }}</td>
+              <td v-if="$page.props.auth.user.type == 'admin'">{{ item.package != NULL ? (item.package.shipping_total - item.package.markup_fee).toFixed(2) : '- -' }}</td>
+              <td v-if="$page.props.auth.user.type == 'admin'">{{ item.package != NULL ? item.package.markup_fee : '- -' }}</td>
               <td>{{ item.package != NULL ? item.package.service_charges : '- -' }}</td>
               <td>{{ item.charged_amount }}</td>
               <td>{{ item.charged_at }}</td>

@@ -47,6 +47,7 @@ class PackageTable extends Migration
             $table->double('shipping_charges',10,2)->nullable();
             $table->double('storage_fee',10,2)->nullable();
             $table->double('grand_total',10,2)->nullable();
+            $table->double('markup_fee',10,2)->nullable();
             $table->enum('payment_status',['Pending','Paid','Unsuccessful'])->default('Pending');
             $table->timestamp('arrived_at')->nullable();
             $table->timestamps();

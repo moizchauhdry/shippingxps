@@ -511,6 +511,7 @@ class HomeController extends Controller
                 'baseAmount' => $response->baseAmount,
                 'isReady' => true,
                 'logo'=> $service->logo,
+                'markup_fee' => $markup_amount,
             ];
 
         }catch(\Exception $ex){

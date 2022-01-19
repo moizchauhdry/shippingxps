@@ -583,6 +583,7 @@ class PackageController extends Controller
         $package->service_code = $service['serviceCode'];
         $package->package_type_code = $service['packageTypeCode'];
         $package->currency = $service['currency'];
+        $package->markup_fee = $service['markup_fee'];
         $package->shipping_total = doubleval(str_replace(',', '', $service['totalAmount']));
         $package->shipping_charges = doubleval(str_replace(',', '', $service['totalAmount']));
         $package->update();

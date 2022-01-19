@@ -47,10 +47,21 @@
         <th style="width:30%">Destination</th>
         <td>{{ $payment->package->shipping_address }}</td>
     </tr>
-    <tr>
-        <th style="width:30%">Shipping Charges (USD)</th>
-        <td>{{ $payment->package->shipping_total }}</td>
-    </tr>
+    @if(Auth::user()->type == "admin")
+        <tr>
+            <th style="width:30%">Shipping Charges (USD)</th>
+            <td>{{ $payment->package != NULL ?($payment->package->shipping_total - $payment->package->markup_fee) : 'N/A'}}</td>
+        </tr>
+        <tr>
+            <th style="width:30%">Markup Fee (USD)</th>
+            <td>{{ $payment->package->markup_fee }}</td>
+        </tr>
+    @else
+        <tr>
+            <th style="width:30%">Shipping Charges (USD)</th>
+            <td>{{ $payment->package->shipping_total }}</td>
+        </tr>
+    @endif
     <tr>
         <th style="width:30%">Service Charges (USD)</th>
         <td>{{ $payment->package->service_charges }}</td>

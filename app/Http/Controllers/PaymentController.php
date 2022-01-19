@@ -520,6 +520,11 @@ class PaymentController extends Controller
             })
                 ->orWhereHas('customer', function ($qry) use ($search) {
                     $qry->where('name', 'LIKE', '%' . $search . '%');
+                    if(is_numeric($search)){
+                        $s = (int)$search;
+                        $s =$s - 4000;
+                        $qry->orWhere('id', 'LIKE', '%' . $s . '%');
+                    }
                 })
                 ->orWhereHas('package', function ($qry) use ($search) {
                     $qry->where('payment_status', 'LIKE', "%$search%")

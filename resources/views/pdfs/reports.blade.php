@@ -28,6 +28,7 @@
         <th>Service Name</th>
         <th>Destination</th>
         <th>Shipping Charges (USD)</th>
+        @if(Auth::user()->type == "admin")<th>Markup Fee (USD)</th>@endif
         <th>Service Charges (USD)</th>
         <th>Charged Amount (USD)</th>
         <th>Charged Date</th>
@@ -41,7 +42,9 @@
             <td>{{ $payment->package->tracking_number_out  ?? 'N/A'}}</td>
             <td>{{ $payment->package->service_label  ?? 'N/A'}}</td>
             <td>{{ $payment->package->shipping_address  ?? 'N/A'}}</td>
-            <td>{{ $payment->package->shipping_total  ?? 'N/A'}}</td>
+            @if(Auth::user()->type != "admin")<td>{{ $payment->package->shipping_total  ?? 'N/A'}}</td>@endif
+            @if(Auth::user()->type == "admin")<td>{{ $payment->package != NULL ?($payment->package->shipping_total - $payment->package->markup_fee) : 'N/A'}}</td>@endif
+            @if(Auth::user()->type == "admin")<td>{{ $payment->package->markup_fee  ?? 'N/A'}}</td>@endif
             <td>{{ $payment->package->service_charges  ?? 'N/A'}}</td>
             <td>{{ $payment->charged_amount  ?? 'N/A'}}</td>
             <td>{{ date('d-m-y H:i:s',strtotime($payment->charged_at)) ?? 'N/A'}}</td>
