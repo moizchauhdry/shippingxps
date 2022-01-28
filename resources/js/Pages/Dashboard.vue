@@ -341,6 +341,8 @@
                     return 'tab-pane fade';
                 }
             }
-        }        
+        },
+        created(){
+        }
     }
 </script>

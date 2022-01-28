@@ -320,6 +320,16 @@
 
                         </div>
                       </div>
+                      <!-- Box Price -->
+                      <div class="row mb-2" v-show="this.form.form_type !== 'shopping'">
+                        <div class="col-2 offset-md-8">
+                          <breeze-label class="float-right" for="additional_pickup_charges" value="Box Price"/>
+                        </div>
+                        <div class="col-1 p-0">
+                          <input v-model="additional_pickup_charges" name="additional_pickup_charges" id="additional_pickup_charges" type="text" class="form-control additional_pickup_charges" placeholder="T.Price" required readonly/>
+                        </div>
+                      </div>
+
                       <!-- grand_total -->
                       <div class="row mb-2">
                         <div class="col-2 offset-md-8">
@@ -453,7 +463,8 @@ export default {
     auth: Object,
     warehouses: Object,
     order: Object,
-    salePrice: Object
+    salePrice: Object,
+    additional_pickup_charges:Number,
   },
   mounted() {
     this.filterStores();
@@ -582,6 +593,8 @@ export default {
     },
     getGrandTotal(e) {
       var pickup_charges = this.form.pickup_charges;
+      var additionalCharges = parseFloat(this.additional_pickup_charges).toFixed(2);
+
       if (this.form.pickup_type == 'pickup_only') {
         this.form.grand_total = parseFloat(pickup_charges).toFixed(2);
         console.log('inHere');
@@ -606,7 +619,8 @@ export default {
         var charges = parseFloat(this.form.shipping_from_shop);
         this.form.shipping_charges = parseFloat(charges).toFixed(2)
         pickup_charges = this.form.form_type === 'shopping' ? 0 : pickup_charges;
-        var total = parseFloat(sum) + parseFloat(charges) + parseFloat(pickup_charges) + parseFloat(serviceCharges);
+        additionalCharges = this.form.form_type === 'shopping' ? 0 : additionalCharges;
+        var total = parseFloat(sum) + parseFloat(charges) + parseFloat(pickup_charges) + parseFloat(serviceCharges) + parseFloat(additionalCharges);
         this.form.grand_total = parseFloat(total).toFixed(2);
       }
     },

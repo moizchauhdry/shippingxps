@@ -447,6 +447,15 @@
                             <input v-model="form_pickup.service_charges" name="service_charges" id="service_charges" type="number" class="form-control service_charges" placeholder="T.Price" required readonly/>
                           </div>
                         </div>
+                        <!-- Box Price -->
+                        <div class="row mb-2">
+                          <div class="col-2 offset-md-8">
+                            <breeze-label class="float-right" for="additional_pickup_charges" value="Box Price"/>
+                          </div>
+                          <div class="col-1 p-0">
+                            <input v-model="additional_pickup_charges" name="additional_pickup_charges" id="additional_pickup_charges" type="text" class="form-control additional_pickup_charges" placeholder="Box Price" required readonly/>
+                          </div>
+                        </div>
                         <!-- grand_total -->
                         <div class="row mb-2">
                           <div class="col-2 offset-md-8">
@@ -459,6 +468,7 @@
                       </div>
 
                     </div>
+
                     <div class="order-button">
                       <input type="submit" value="Finish Order" class="btn btn-danger"/>
                     </div>
@@ -577,6 +587,7 @@ export default {
           }
         ],
       }),
+      additional_pickup_charges : this.additional_pickup_charges,
       tabs: {
         tab1: true,
         tab2: false
@@ -587,6 +598,7 @@ export default {
   props: {
     auth: Object,
     warehouses: Object,
+    additional_pickup_charges:Number,
   },
   computed: {
       shopGrandTotal(){
@@ -629,8 +641,12 @@ export default {
         }else{
           totalpickup = parseFloat(pickupCharges);
         }
+        console.log(totalpickup);
+        var additionalCharges = parseFloat(this.additional_pickup_charges).toFixed(2);
+
+        var tot = +totalpickup + +additionalCharges;
       console.log('fetched...pickup')
-      return this.form_pickup.grand_total = parseFloat(totalpickup).toFixed(2)
+      return this.form_pickup.grand_total = parseFloat(tot).toFixed(2)
     }
 },
 methods: {

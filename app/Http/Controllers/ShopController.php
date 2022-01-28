@@ -11,6 +11,7 @@ use App\Models\CustomerCoupon;
 use App\Models\Order;
 use App\Models\OrderImage;
 use App\Models\OrderItem;
+use App\Models\SiteSetting;
 use App\Models\Store;
 use App\Models\Warehouse;
 use App\Models\Package;
@@ -22,6 +23,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 use File;
+use Sabberworm\CSS\Settings;
 
 class ShopController extends Controller
 {
@@ -71,11 +73,13 @@ class ShopController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create() {
+        $additional_pickup_charges = SiteSetting::where('name','additional_pickup_charges')->first()->value;
         $warehouses = Warehouse::all();
         $stores = Store::all();
         return Inertia::render('ShopForMe/CreateOrder',[
             'warehouses' => $warehouses,
-            'stores' => $stores
+            'stores' => $stores,
+            'additional_pickup_charges' => $additional_pickup_charges,
         ]);
     }
 
@@ -205,6 +209,7 @@ class ShopController extends Controller
     public function show($id) {
 
         $order = Order::with(['customer','images','items','store','warehouse','package'])->findOrFail($id);
+        $additional_pickup_charges = SiteSetting::where('name','additional_pickup_charges')->first()->value;
 
         // echo '<pre>';
         // print_r($order);
@@ -212,6 +217,7 @@ class ShopController extends Controller
 
         return Inertia::render('ShopForMe/OrderDetail',[
             'order' => $order,
+            'additional_pickup_charges' => $additional_pickup_charges,
         ]);
     }
 
@@ -224,6 +230,7 @@ class ShopController extends Controller
     public function edit($id) {
 
         $model = order::find($id);
+        $additional_pickup_charges = SiteSetting::where('name','additional_pickup_charges')->first()->value;
 
         $items = [];
 
@@ -308,6 +315,7 @@ class ShopController extends Controller
             'warehouses' => $warehouses,
             'stores' => $stores,
             'salePrice' => (int)$price_with_tax - $price,
+            'additional_pickup_charges' => $additional_pickup_charges,
         ]);
     }
 

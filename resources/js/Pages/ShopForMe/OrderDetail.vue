@@ -232,6 +232,10 @@
                 </th>
                 <td>{{ order.shipping_charges }}</td>
               </tr>
+              <tr v-if="order.order_type == 'pickup' && additional_pickup_charges != null">
+                <th style="text-align: end">Box Price</th>
+                <td>{{ additional_pickup_charges }}</td>
+              </tr>
               <tr>
                 <th style="text-align: end">Grand Total</th>
                 <td>{{ order.grand_total }}</td>
@@ -263,7 +267,8 @@ export default {
   props: {
     auth: Object,
     order: Object,
-    order_details: Object
+    order_details: Object,
+    additional_pickup_charges:Number,
   },
   methods: {
     imgURL(url) {
