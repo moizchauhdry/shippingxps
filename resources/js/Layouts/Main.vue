@@ -76,6 +76,10 @@
             <i class="fas fa-external-link-alt"></i><span>Packages</span>
           </inertia-link>
 
+          <inertia-link class="nav-link" :href="route('additional-request.index')" :class="{active: route().current('additional-request.index') || route().current('additional-request.create') || route().current('additional-request.edit')}" :active="route().current('additional-request')">
+            <i class="fas fa-external-link-alt"></i><span>Additional Request</span>
+          </inertia-link>
+
           <inertia-link class="nav-link" :href="route('payments.getPayments')" :class="{active: route().current('payments.getPayments')}" :active="route().current('payments.getPayments')">
             <i class="fas fa-external-link-alt"></i><span>Payments</span>
           </inertia-link>

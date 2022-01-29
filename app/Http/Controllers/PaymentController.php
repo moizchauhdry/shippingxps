@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\PaymentEventHandler;
+use App\Models\AdditionalRequest;
 use App\Models\Address;
 use App\Models\Coupon;
 use App\Models\CustomerCoupon;
@@ -27,7 +28,7 @@ class PaymentController extends Controller
 
     public function index(Request $request)
     {
-        if ($request->has('package_id') || \Session::has('order_id')) {
+        if ($request->has('package_id') || \Session::has('order_id') || \Session::has('additional_request_id')) {
             \Session::put('amount', $request->amount);
             if ($request->has('status')) {
                 $status = $request->status;
@@ -43,6 +44,7 @@ class PaymentController extends Controller
                 [
                     'amount' => $request->amount,
                     'status' => $status,
+                    'hasRequest' => \Session::has('additional_request_id') ? 1 : 0,
                     'hasPackage' => $request->has('package_id') ? 1 : 0,
                 ]);
         } else {
@@ -129,7 +131,7 @@ class PaymentController extends Controller
 
         $lastPayment = Payment::latest()->first();
         $invoiceID = sprintf("%05d", ++$lastPayment->id);
-        $invoiceDescription = \Session::has('order_id') ? "Payment Of Order" : (\Session::has('package_id') ? "Payment of Package" : 'Void');
+        $invoiceDescription = \Session::has('order_id') ? "Payment Of Order" : (\Session::has('package_id') ? "Payment of Package" : 'Request');
         // Create order information
         $order = new AnetAPI\OrderType();
         $order->setInvoiceNumber($invoiceID);
@@ -196,6 +198,7 @@ class PaymentController extends Controller
                     $payment->customer_id = $user->id;
                     $payment->order_id = \Session::has('order_id') ? \Session::get('order_id') : null;
                     $payment->package_id = \Session::has('package_id') ? \Session::get('package_id') : null;
+                    $payment->additional_request_id = \Session::has('additional_request_id') ? \Session::get('additional_request_id') : null;
                     $payment->transaction_id = $response->getTransactionResponse()->getTransId();
                     $payment->charged_amount = $amount;
                     $payment->discount = $discount;
@@ -213,6 +216,15 @@ class PaymentController extends Controller
                         $order->payment_status = "Paid";
                         $order->save();
                     }
+
+                    if (\Session::has('additional_request_id')) {
+                        $id = \Session::get('additional_request_id');
+                        $additionalRequest = AdditionalRequest::find($id);
+                        $additionalRequest->payment_status = "Paid";
+                        $additionalRequest->save();
+                    }
+
+
                     if (\Session::has('package_id')) {
                         $id = \Session::get('package_id');
                         $package = Package::find($id);
@@ -332,6 +344,18 @@ class PaymentController extends Controller
             $html = view('pdfs.invoice-payment', [
                 'payment' => $payment,
                 'order' => $order,
+                'customer' => $customer,
+                'address' => $address,
+            ])->render();
+        }
+
+        if ($payment->additional_request_id != null) {
+            $additional_request_id = $payment->additionalRequest;
+            // return view('pdfs.payment-invoice',compact('payment','order','customer'));
+
+            $html = view('pdfs.invoice-payment', [
+                'payment' => $payment,
+                'additionalRequest' => $additional_request_id,
                 'customer' => $customer,
                 'address' => $address,
             ])->render();

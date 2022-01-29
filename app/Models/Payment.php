@@ -21,5 +21,9 @@ class Payment extends Model
         return $this->belongsTo(Package::class,'package_id');
     }
 
+    public function additionalRequest(){
+        return $this->belongsTo(AdditionalRequest::class,'additional_request_id');
+    }
+
 
 }

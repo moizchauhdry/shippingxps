@@ -110,6 +110,17 @@
         </tr>
 
     @endisset
+
+    @isset($additionalRequest)
+        <tr>
+            <td>
+                Additional Charges For Request - {{ $additionalRequest->message ?? '- -' }}
+            </td>
+
+            <td style="width: 100px">{{ $additionalRequest->price }}</td>
+        </tr>
+    @endisset
+
     </tbody>
 </table>
 <table style="width: 100%">

@@ -59,6 +59,15 @@ Route::middleware('auth')->group(function () {
         Route::post('/update', [\App\Http\Controllers\ServicePageController::class, 'update'])->name('service-page.update');
     });
 
+    Route::prefix('additional-request')->group(function () {
+        Route::get('/', [\App\Http\Controllers\AdditionalRequestController::class, 'index'])->name('additional-request.index');
+        Route::any('/create', [\App\Http\Controllers\AdditionalRequestController::class, 'create'])->name('additional-request.create');
+        Route::any('/{id}/edit', [\App\Http\Controllers\AdditionalRequestController::class, 'edit'])->name('additional-request.edit');
+        Route::any('/update/{id}', [\App\Http\Controllers\AdditionalRequestController::class, 'update'])->name('additional-request.update');
+        Route::any('/changeStatus', [\App\Http\Controllers\AdditionalRequestController::class, 'changeStatus'])->name('additional-request.changeStatus');
+        Route::any('/storeComment/{id}', [\App\Http\Controllers\AdditionalRequestController::class, 'storeComment'])->name('additional-request.storeComment');
+    });
+
     /*
      * Shop for me routes
      */
