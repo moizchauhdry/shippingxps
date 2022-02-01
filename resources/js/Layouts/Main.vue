@@ -76,6 +76,10 @@
             <i class="fas fa-external-link-alt"></i><span>Packages</span>
           </inertia-link>
 
+          <inertia-link class="nav-link" :href="route('insurance.index')" :class="{active: route().current('insurance.index') || route().current('insurance.show') || route().current('insurance.create')}" :active="route().current('insurance.index')">
+            <i class="fas fa-external-link-alt"></i><span>Insurance</span>
+          </inertia-link>
+
           <inertia-link class="nav-link" :href="route('additional-request.index')" :class="{active: route().current('additional-request.index') || route().current('additional-request.create') || route().current('additional-request.edit')}" :active="route().current('additional-request')">
             <i class="fas fa-external-link-alt"></i><span>Additional Request</span>
           </inertia-link>

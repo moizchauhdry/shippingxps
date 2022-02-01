@@ -68,6 +68,15 @@ Route::middleware('auth')->group(function () {
         Route::any('/storeComment/{id}', [\App\Http\Controllers\AdditionalRequestController::class, 'storeComment'])->name('additional-request.storeComment');
     });
 
+    Route::prefix('insurance')->group(function () {
+        Route::get('/', [\App\Http\Controllers\InsuranceController::class, 'index'])->name('insurance.index');
+        Route::any('/create', [\App\Http\Controllers\InsuranceController::class, 'create'])->name('insurance.create');
+        Route::any('/{id}/edit', [\App\Http\Controllers\InsuranceController::class, 'edit'])->name('insurance.edit');
+        Route::any('/update/{id}', [\App\Http\Controllers\InsuranceController::class, 'update'])->name('insurance.update');
+        Route::any('/changeStatus', [\App\Http\Controllers\InsuranceController::class, 'changeStatus'])->name('insurance.changeStatus');
+        Route::any('/storeComment/{id}', [\App\Http\Controllers\InsuranceController::class, 'storeComment'])->name('insurance.storeComment');
+    });
+
     /*
      * Shop for me routes
      */
