@@ -7,6 +7,7 @@ use App\Models\AdditionalRequest;
 use App\Models\Address;
 use App\Models\Coupon;
 use App\Models\CustomerCoupon;
+use App\Models\InsuranceRequest;
 use App\Models\Order;
 use App\Models\Package;
 use App\Models\Payment;
@@ -28,7 +29,7 @@ class PaymentController extends Controller
 
     public function index(Request $request)
     {
-        if ($request->has('package_id') || \Session::has('order_id') || \Session::has('additional_request_id')) {
+        if ($request->has('package_id') || \Session::has('order_id') || \Session::has('additional_request_id') || \Session::has('insurance_id')) {
             \Session::put('amount', $request->amount);
             if ($request->has('status')) {
                 $status = $request->status;
@@ -44,6 +45,7 @@ class PaymentController extends Controller
                 [
                     'amount' => $request->amount,
                     'status' => $status,
+                    'hasInsurance' => \Session::has('insurance_id') ? 1 : 0,
                     'hasRequest' => \Session::has('additional_request_id') ? 1 : 0,
                     'hasPackage' => $request->has('package_id') ? 1 : 0,
                 ]);
@@ -101,9 +103,12 @@ class PaymentController extends Controller
             ]);
         }
 
-        $amount = (double)number_format($request->amount, 2);
+        $amount = doubleval($request->amount);
         $discount = (double)number_format($discount,2);
+        \Log::info('amount = '. $request->amount );
         \Log::info('amount = '. $amount . ', discount = '.$discount);
+
+
 
 
         /* Create a merchantAuthenticationType object with authentication details
@@ -222,6 +227,16 @@ class PaymentController extends Controller
                         $additionalRequest = AdditionalRequest::find($id);
                         $additionalRequest->payment_status = "Paid";
                         $additionalRequest->save();
+                    }
+
+                    if (\Session::has('insurance_id')) {
+                        $id = \Session::get('insurance_id');
+                        $insuranceRequest = InsuranceRequest::find($id);
+                        $insuranceRequest->payment_status = "Paid";
+                        $insuranceRequest->save();
+                        $package = Package::find($insuranceRequest->package_id);
+                        $package->payment_status = "Paid";
+                        $package->save();
                     }
 
 
@@ -356,6 +371,18 @@ class PaymentController extends Controller
             $html = view('pdfs.invoice-payment', [
                 'payment' => $payment,
                 'additionalRequest' => $additional_request_id,
+                'customer' => $customer,
+                'address' => $address,
+            ])->render();
+        }
+
+        if ($payment->insurance_id != null) {
+            $insurance = $payment->insuranceRequest;
+            // return view('pdfs.payment-invoice',compact('payment','order','customer'));
+
+            $html = view('pdfs.invoice-payment', [
+                'payment' => $payment,
+                'insuranceRequest' => $insurance,
                 'customer' => $customer,
                 'address' => $address,
             ])->render();

@@ -23,7 +23,7 @@
             </div>
             <div class="form-group col-12 col-md-4">
               <label for="insurance_amount">Insurance Amount</label>
-              <input type="text" class="form-control" name="insurance_amount" id="insurance_amount" v-model="form.insurance_amount" required/>
+              <input type="number" step="0.01" class="form-control" name="insurance_amount" id="insurance_amount" v-model="form.insurance_amount" required :readonly="$page.props.auth.user.type == 'admin'"/>
             </div>
             <div class="form-group col-12">
               <label for="message">Message</label>

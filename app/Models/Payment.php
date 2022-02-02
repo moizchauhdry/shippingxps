@@ -25,5 +25,9 @@ class Payment extends Model
         return $this->belongsTo(AdditionalRequest::class,'additional_request_id');
     }
 
+    public function insuranceRequest(){
+        return $this->belongsTo(InsuranceRequest::class,'insurance_id');
+    }
+
 
 }

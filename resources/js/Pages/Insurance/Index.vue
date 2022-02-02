@@ -2,11 +2,11 @@
   <MainLayout>
     <div class="card mt-4 pr-2">
       <div class="card-header">
-        Coupons
+        Insurance
         <div class="float-right">
-          <inertia-link :href="route('coupon.create')"
-                        v-if="$page.props.auth.user.type == 'admin'"
-                        class="btn btn-primary float-right">Create Coupon</inertia-link>
+          <inertia-link :href="route('insurance.create')"
+                        v-if="$page.props.auth.user.type != 'admin'"
+                        class="btn btn-primary float-right">Add Request</inertia-link>
         </div>
       </div>
       <div class="card-body">
@@ -14,23 +14,23 @@
           <thead>
           <tr>
             <th>ID</th>
-            <th>Name</th>
-            <th>Code</th>
-            <th>Discount</th>
-            <th>Created At</th>
+            <th>Package ID</th>
+            <th>Insurance Amount</th>
+            <th>Shipping Service</th>
             <th>Action</th>
           </tr>
           </thead>
           <tbody>
-          <tr v-for="coupon in coupons" :key="coupon.id">
-            <td>{{ coupon.id }}</td>
-            <td>{{ coupon.name }}</td>
-            <td>{{ coupon.code }}</td>
-            <td>{{ coupon.discount }}</td>
-            <td>{{ coupon.created_at }}</td>
+          <tr v-for="insurance in insurances" :key="insurance.id">
+            <td>{{ insurance.id }}</td>
+            <td>{{ insurance.package_id }}</td>
+            <td>{{ insurance.insurance_amount }}</td>
+            <td>{{ insurance.shipping_service }}</td>
             <td>
-              <a class="btn btn-danger" v-if="coupon.status == 1" v-on:click="changeStatus(coupon.id,0,$event)">Deactivate</a>
-              <a class="btn btn-success" v-else v-on:click="changeStatus(coupon.id,1,$event)">Activate</a>
+              <inertia-link v-show="insurance.payment_status != 'Paid'" :href="route('insurance.edit',insurance.id)"
+                            class="btn btn-primary float-right">Edit</inertia-link>
+<!--              <a class="btn btn-danger" v-if="insurance.status == 1" v-on:click="changeStatus(insurance.id,0,$event)">Deactivate</a>
+              <a class="btn btn-success" v-else v-on:click="changeStatus(insurance.id,1,$event)">Activate</a>-->
             </td>
           </tr>
           </tbody>
@@ -55,16 +55,16 @@ export default {
     BreezeLabel
   },
   props: {
-    coupons: Object
+    insurances: Object
   },
   methods:{
     changeStatus(id,status,event){
-      axios.post(this.route('coupon.changeStatus'), {
+      axios.post(this.route('insurance.changeStatus'), {
         id:id,
         status:status,
       }).then(function (response) {
-        console.log(response.data.coupon.status);
-        let status = response.data.coupon.status;
+        console.log(response.data.insurance.status);
+        let status = response.data.insurance.status;
         if(status === 1){
           event.target.classList.remove('btn-success');
           event.target.classList.add('btn-danger');
