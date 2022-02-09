@@ -86,6 +86,7 @@ class AdditionalRequestController extends Controller
         if ($request->isMethod('POST')) {
 
             if ($request->has('approve') && $request->approve == 1) {
+                \Session::forget(['order_id','package_id', 'insurance_id']);
                 \Session::put('additional_request_id', $id);
                 return redirect()->route('payment.index', 'amount=' . $additionalRequest->price);
             }

@@ -11,6 +11,7 @@ use App\Models\InsuranceRequest;
 use App\Models\Order;
 use App\Models\Package;
 use App\Models\Payment;
+use App\Models\Warehouse;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,6 +30,12 @@ class PaymentController extends Controller
 
     public function index(Request $request)
     {
+        if($request->has('package_id')){
+            \Session::forget(['order_id','additional_request_id','insurance_id']);
+        }
+        if(\Session::has('order_id')){
+            \Session::forget(['package_id','additional_request_id','insurance_id']);
+        }
         if ($request->has('package_id') || \Session::has('order_id') || \Session::has('additional_request_id') || \Session::has('insurance_id')) {
             \Session::put('amount', $request->amount);
             if ($request->has('status')) {
@@ -182,6 +189,8 @@ class PaymentController extends Controller
 
         // Create the controller and get the response
         $controller = new AnetController\CreateTransactionController($transaction);
+        // $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::SANDBOX);
+        /*For Production use the below line */
         $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::PRODUCTION);
         if ($response != null) {
             // Check to see if the API request was successfully received and acted upon
@@ -204,6 +213,7 @@ class PaymentController extends Controller
                     $payment->order_id = \Session::has('order_id') ? \Session::get('order_id') : null;
                     $payment->package_id = \Session::has('package_id') ? \Session::get('package_id') : null;
                     $payment->additional_request_id = \Session::has('additional_request_id') ? \Session::get('additional_request_id') : null;
+                    $payment->insurance_id = \Session::has('insurance_id') ? \Session::get('insurance_id') : null;
                     $payment->transaction_id = $response->getTransactionResponse()->getTransId();
                     $payment->charged_amount = $amount;
                     $payment->discount = $discount;
@@ -260,7 +270,7 @@ class PaymentController extends Controller
                     $this->buildInvoice($payment->id);
                     \Log::info('after invoice');
 
-                    \Session::forget(['order_id', 'package_id', 'amount']);
+                    \Session::forget(['order_id', 'package_id', 'amount','additional_request_id','insurance_id']);
                     return response()->json([
                         'status' => 1,
                         'message' => 'Please Check card Expiry',
@@ -335,6 +345,7 @@ class PaymentController extends Controller
     {
         $payment = Payment::find($id);
         $customer = $payment->customer;
+        $warehouse = Warehouse::first();
         $address = Address::where('user_id', $customer->id)->first();
 
         if ($payment->package_id != null) {
@@ -346,6 +357,7 @@ class PaymentController extends Controller
                 'package' => $package,
                 'customer' => $customer,
                 'address' => $address,
+                'warehouse' => $warehouse
             ])->render();
 
             // return $html;
@@ -361,6 +373,7 @@ class PaymentController extends Controller
                 'order' => $order,
                 'customer' => $customer,
                 'address' => $address,
+                'warehouse' => $warehouse
             ])->render();
         }
 
@@ -373,11 +386,13 @@ class PaymentController extends Controller
                 'additionalRequest' => $additional_request_id,
                 'customer' => $customer,
                 'address' => $address,
+                'warehouse' => $warehouse
             ])->render();
         }
 
         if ($payment->insurance_id != null) {
             $insurance = $payment->insuranceRequest;
+            $warehouse = Warehouse::find($insurance->package->warehouse_id);
             // return view('pdfs.payment-invoice',compact('payment','order','customer'));
 
             $html = view('pdfs.invoice-payment', [
@@ -385,6 +400,7 @@ class PaymentController extends Controller
                 'insuranceRequest' => $insurance,
                 'customer' => $customer,
                 'address' => $address,
+                'warehouse' => $warehouse
             ])->render();
         }
 

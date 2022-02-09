@@ -84,6 +84,7 @@ class InsuranceController extends Controller
         if ($request->isMethod('POST')) {
 
             if ($request->has('approve') && $request->approve == 1) {
+                \Session::forget(['order_id','package_id','additional_request_id']);
                 \Session::put('insurance_id', $id);
                 return redirect()->route('payment.index', 'amount=' . $insuranceRequest->amount);
             }

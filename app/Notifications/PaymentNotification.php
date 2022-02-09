@@ -71,7 +71,15 @@ class PaymentNotification extends Notification
                 'message' => 'Customer has paid for <strong>Order ' . $this->payment->order_id . '</strong>, Click on link to complete shipping <a class="link-primary" href="' . $url . '" >Order # ' . $this->payment->order_id . '</a>',
                 'url' => $url
             ];
-        } elseif ($this->payment->additional_request_id != null) {
+        } elseif ($this->payment->insurance_id != null) {
+
+            $url = route("insurance.edit", $this->payment->insurance_id);
+            return [
+                'insurance_id' => $this->payment->insurance_id,
+                'message' => 'Customer has paid for <strong>Insurance Request ' . $this->payment->insurance_id . '</strong>, Click here link  <a class="link-primary" href="' . $url . '" >Request # ' . $this->payment->insurance_id . '</a>',
+                'url' => $url
+            ];
+        }elseif ($this->payment->additional_request_id != null) {
             $url = route("additional-request.edit", $this->payment->additional_request_id);
             return [
                 'additional_request_id' => $this->payment->additional_request_id,

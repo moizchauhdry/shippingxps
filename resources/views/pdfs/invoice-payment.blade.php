@@ -21,10 +21,10 @@
         <td colspan="2">
             <h3>Invoiced From</h3><br>
             <strong>ShippingXPS</strong><br>
-            {{ $package->warehouse->name ?? $order->warehouse->name ?? '- -' }}<br>
-            Address:{{ $package->warehouse->address ?? $order->warehouse->address ?? '- -'   }}<br>
-            Phone: {{ $package->warehouse->phone ?? $order->warehouse->phone ?? '- -'   }}<br>
-            Email : {{ $package->warehouse->email ?? $order->warehouse->email ?? '- -'   }}
+            {{ $package->warehouse->name ?? $order->warehouse->name ?? $warehouse->name ?? '- -' }}<br>
+            Address:{{ $package->warehouse->address ?? $order->warehouse->address ?? $warehouse->address ?? '- -'   }}<br>
+            Phone: {{ $package->warehouse->phone ?? $order->warehouse->phone ?? $warehouse->phone  ?? '- -'   }}<br>
+            Email : {{ $package->warehouse->email ?? $order->warehouse->email ?? $warehouse->email ?? '- -'   }}
         </td>
 
 
