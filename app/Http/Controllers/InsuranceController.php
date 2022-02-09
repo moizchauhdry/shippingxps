@@ -17,7 +17,12 @@ class InsuranceController extends Controller
 
     public function index()
     {
-        $insurance = InsuranceRequest::all();
+        $user = \Auth::user();
+        if ($user->type == 'admin') {
+            $insurance = InsuranceRequest::with('package')->get();
+        } else {
+            $insurance = InsuranceRequest::with('package')->where('customer_id', $user->id)->get();
+        }
 
         return Inertia::render('Insurance/Index',[
             'insurances' => $insurance,

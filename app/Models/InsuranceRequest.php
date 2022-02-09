@@ -15,4 +15,9 @@ class InsuranceRequest extends Model
     {
         return $this->hasMany(InsuranceRequestComment::class);
     }
+
+    public function package()
+    {
+        return $this->belongsTo(Package::class);
+    }
 }

@@ -11,7 +11,7 @@
               <label for="package_id">Package</label>
               <select class="form-control" name="package_id" v-model="form.package_id" id="package_id" required>
                 <option value="">Select Package</option>
-                <option v-for="packge in packages" :value="packge.id">{{ packge.id }}</option>
+                <option v-for="packge in packages" :value="packge.id">{{ packge.package_no }}</option>
               </select>
             </div>
             <div class="form-group col-12 col-md-6">

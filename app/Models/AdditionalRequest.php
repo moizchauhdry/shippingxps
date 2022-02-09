@@ -15,4 +15,9 @@ class AdditionalRequest extends Model
     {
         return $this->hasMany(AdditionalRequestComment::class);
     }
+
+    public function package()
+    {
+        return $this->belongsTo(Package::class);
+    }
 }

@@ -18,9 +18,9 @@ class AdditionalRequestController extends Controller
 
         $user = \Auth::user();
         if ($user->type == 'admin') {
-            $additionalRequests = AdditionalRequest::all();
+            $additionalRequests = AdditionalRequest::with('package')->get();
         } else {
-            $additionalRequests = AdditionalRequest::where('user_id', $user->id)->get();
+            $additionalRequests = AdditionalRequest::with('package')->where('user_id', $user->id)->get();
         }
         return Inertia::render('AdditionalRequest/Index', [
             'additionalRequests' => $additionalRequests,

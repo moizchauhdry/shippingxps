@@ -24,7 +24,7 @@
           <tbody>
           <tr v-for="request in additionalRequests" :key="request.id">
             <td>{{ request.id }}</td>
-            <td>{{ request.package_id }}</td>
+            <td>{{ request.package.package_no }}</td>
             <td>{{ request.tracking_no }}</td>
             <td>{{ request.serial_no }}</td>
             <td>{{ request.message }}</td>

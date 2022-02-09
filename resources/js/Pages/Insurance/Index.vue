@@ -23,7 +23,7 @@
           <tbody>
           <tr v-for="insurance in insurances" :key="insurance.id">
             <td>{{ insurance.id }}</td>
-            <td>{{ insurance.package_id }}</td>
+            <td>{{ insurance.package.package_no }}</td>
             <td>{{ insurance.insurance_amount }}</td>
             <td>{{ insurance.shipping_service }}</td>
             <td>
