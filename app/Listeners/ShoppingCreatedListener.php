@@ -31,7 +31,7 @@ class ShoppingCreatedListener
      */
     public function handle(ShoppingCreatedEvent $event)
     {
-        $admins = User::where(['type' => 'admin'])->get();
+        $admins = User::whereIn('type',['admin','manager'])->get();
         Notification::send($admins, new ShoppingCreatedNotification($event->order));
 
         $user = $event->order->customer;

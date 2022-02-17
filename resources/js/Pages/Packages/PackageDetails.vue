@@ -149,7 +149,7 @@
         </div>
 
         <template v-if="this.hasConsolidationRequest">
-          <template v-if="$page.props.auth.user.type == 'admin'">
+          <template v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">
             <template v-if="packag.status == 'open' || packag.status == 'consolidated'">
               <div class="row" style="margin-top:20px;">
                 <div class="col-md-12">
@@ -264,7 +264,7 @@
         </template>
 
         <template v-if="packag.status != 'shipped'">
-          <div class="row" v-show="($page.props.auth.user.type == 'customer') || (($page.props.auth.user.type == 'admin') && (service_requests.length > 0))">
+          <div class="row" v-show="($page.props.auth.user.type == 'customer') || (($page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager') && (service_requests.length > 0))">
             <div class="col-md-12">
               <div class="card">
                 <div class="card-header">
@@ -330,7 +330,7 @@
                       </div>
                     </template>
                     <template v-if="service_requests.length > 0">
-                      <div v-bind:class="{ 'col-md-8': $page.props.auth.user.type == 'admin', 'col-md-12': $page.props.auth.user.type == 'customer' }">
+                      <div v-bind:class="{ 'col-md-8': $page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager', 'col-md-12': $page.props.auth.user.type == 'customer' }">
                         <table class="table table-striped">
                           <thead>
                           <tr>
@@ -340,7 +340,7 @@
                                 Your Message
                               </th>
                             </template>
-                            <template v-if="$page.props.auth.user.type == 'admin'">
+                            <template v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">
                               <th scope="col">
                                 Customer Message
                               </th>
@@ -348,7 +348,7 @@
                             <th scope="col">Admin Response</th>
                             <th scope="col">Status</th>
                             <th scope="col">Charges</th>
-                            <template v-if="$page.props.auth.user.type == 'admin'">
+                            <template v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">
                               <th scope="col">
                               </th>
                             </template>
@@ -372,7 +372,7 @@
                               $ {{ request.price }}
                             </td>
                             <td>
-                              <template v-if="$page.props.auth.user.type == 'admin' && request.status == 'pending'">
+                              <template v-if="($page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager' )&& request.status == 'pending'">
                                 <a v-on:click="setServiceResponse(request)" class="link-primary">Respond</a>
                               </template>
                             </td>
@@ -381,7 +381,7 @@
                         </table>
                       </div>
                     </template>
-                    <div v-if="$page.props.auth.user.type == 'admin'" class="col-md-4">
+                    <div v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'" class="col-md-4">
                       <template v-if="form_respond.request !=null">
                         <h3> Handle Service Request </h3>
                         <form @submit.prevent="submitRespondForm">
@@ -609,7 +609,7 @@
           </div>
         </div>
 
-        <div class="row" v-if="packag.status =='labeled' && $page.props.auth.user.type == 'admin'">
+        <div class="row" v-if="packag.status =='labeled' && ($page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager')">
           <div class="col-md-12">
             <div class="card">
               <div class="card-header">

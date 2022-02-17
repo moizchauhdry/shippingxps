@@ -5,7 +5,7 @@
         Additional Request
         <div class="float-right">
           <inertia-link :href="route('additional-request.create')"
-                        v-if="$page.props.auth.user.type != 'admin'"
+                        v-if="$page.props.auth.user.type == 'customer'"
                         class="btn btn-primary float-right">Request</inertia-link>
         </div>
       </div>

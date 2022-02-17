@@ -24,7 +24,7 @@
 							<ul class="social-icons social-icons-clean social-icons-clean-with-border social-icons-medium social-icons-icon-light mb-3">
 								<li class="social-icons-facebook"><a href="https://www.facebook.com/Shippingxps" target="_blank" title="Facebook" data-cursor-effect-hover="fit"><i class="fab fa-facebook-f"></i></a></li>
 								<li class="social-icons-twitter mx-2"><a href="http://www.twitter.com/" target="_blank" title="Twitter" data-cursor-effect-hover="fit"><i class="fab fa-twitter"></i></a></li>
-								<li class="social-icons-instagram"><a href="https://www.instagram.com/shippingxps/" target="_blank" title="instagram" data-cursor-effect-hover="fit"><i class="fab fa-instagram"></i></a></li>
+								<li class="social-icons-instagram"><a href="https://instagram.com/shippingxps" target="_blank" title="instagram" data-cursor-effect-hover="fit"><i class="fab fa-instagram"></i></a></li>
 								<!-- <li class="social-icons-linkedin"><a href="http://www.linkedin.com/" target="_blank" title="Linkedin" data-cursor-effect-hover="fit"><i class="fab fa-linkedin-in"></i></a></li> -->
 								<li class="social-icons-youtube"><a href="http://www.youtube.com/" target="_blank" title="youtube" data-cursor-effect-hover="fit"><i class="fab fa-youtube"></i></a></li>
 								<!-- <li class="social-icons-pinterest"><a href="http://www.pinterest.com/" target="_blank" title="pinterest" data-cursor-effect-hover="fit"><i class="fab fa-pinterest"></i></a></li> -->

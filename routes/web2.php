@@ -83,6 +83,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('payment')->group(function () {
         Route::any('/setup', [\App\Http\Controllers\PaymentController::class, 'index'])->name('payment.index');
         Route::post('pay', [\App\Http\Controllers\PaymentController::class,  'pay'])->name('payment.pay');
+        Route::post('payPalSuccess', [\App\Http\Controllers\PaymentController::class,  'payPalSuccess'])->name('payment.payPalSuccess');
         Route::any('list', [\App\Http\Controllers\PaymentController::class,  'getPayments'])->name('payments.getPayments');
         Route::get('PaymentSuccess/{id}', [\App\Http\Controllers\PaymentController::class,  'PaymentSuccess'])->name('payments.PaymentSuccess');
         Route::post('check/coupon', [\App\Http\Controllers\PaymentController::class, 'checkCoupon'])->name('checkCoupon');

@@ -29,7 +29,7 @@ class PackageShippingServiceListener
      */
     public function handle(PackageShippingServiceSelected $event)
     {
-        $admins = User::where(['type' => 'admin'])->get();
+        $admins = User::whereIn('type',['admin','manager'])->get();
         Notification::send($admins, new PackageShippingServiceNotification($event->package));
     }
 }

@@ -30,7 +30,7 @@ class ChangesAcceptedByCustomerListener
     {
         $order = $event->order;
         \Log::info($order);
-        $admins = User::where('type','admin')->get();
+        $admins = User::whereIn('type',['admin','manager'])->get();
         \Notification::send($admins,new NotifyOrderChangesAcceptedByCustomerToAdmin($order));
 
     }

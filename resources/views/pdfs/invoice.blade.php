@@ -43,7 +43,7 @@
         <td style="width:50%" style="border:none;font-size:7px;text-align:right;">
             <p>{{ date('Y-m-d') }}</p>
             <p>{{ $warehouse->address }}</p>
-            <p>{{ $warehouse->state }},{{ $warehouse->city }}</p>
+            <p>{{ $warehouse->city }},{{ $warehouse->state }},</p>
             <p>{{ $warehouse->country->nicename }}</p>
         </td>
     </tr>
@@ -58,7 +58,7 @@
             <strong>Telephone No.</strong> : {{ $warehouse->phone}}<br>
             <strong>E-mail</strong> : {{ $warehouse->email}}<br>
             <strong>Company Name / Address</strong> :<br>
-            {{ $warehouse->address}},{{ $warehouse->state }},<br>{{ $warehouse->city }},{{ $warehouse->country->nicename }}
+            {{ $warehouse->address}},{{ $warehouse->city }},<br>{{ $warehouse->state }},{{ $warehouse->country->nicename }}
             <br><br>
             <strong>Country</strong> : {{ $warehouse->country->nicename }}<br>
             <strong>Incoterms</strong> : DDU/DAP <br>
@@ -78,6 +78,8 @@
             <strong>Contact Name</strong> : {{ strtoupper($address->fullname) ?? '- -' }}<br>
             <strong>Telephone No.</strong> : {{ $address->phone ?? '- -'}}<br>
             <strong>E-mail</strong> : {{ $user->email ?? '- -'}}<br>
+            <strong>Company Name / Address</strong> :<br>
+            {{ $address->address ?? '- -'}}
             <strong>City</strong> : {{ $address->city ?? '- -'}}<br>
             <strong>State</strong> : {{ $address->state ?? '- -'}}<br>
             <strong>Company Name / Address</strong> :<br>

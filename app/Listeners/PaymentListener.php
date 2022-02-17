@@ -34,7 +34,7 @@ class PaymentListener
     public function handle(PaymentEventHandler $event)
     {
         $payment= $event->payment;
-        $admins = User::where('type','admin')->get();
+        $admins = User::whereIn('type',['admin','manager'])->get();
         \Notification::send($admins,new PaymentNotification($payment));
 
         $user = $payment->customer;

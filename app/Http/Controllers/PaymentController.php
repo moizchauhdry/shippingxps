@@ -341,6 +341,88 @@ class PaymentController extends Controller
 
     }
 
+    public function payPalSuccess(Request $request)
+    {
+        $user = Auth::user();
+        $discount = 0.00;
+        if ($request->has('discount')) {
+            if ($request->discount > 0) {
+                $amt = $request->amount;
+                $discount = $amt * ($request->discount / 100);
+                $request->amount = $amt - $discount;
+            }
+        }
+        $amount = doubleval($request->amount);
+        $discount = (double)number_format($discount,2);
+        $lastPayment = Payment::latest()->first();
+        $invoiceID = sprintf("%05d", ++$lastPayment->id);
+        $payment = new Payment();
+        $payment->customer_id = $user->id;
+        $payment->order_id = \Session::has('order_id') ? \Session::get('order_id') : null;
+        $payment->package_id = \Session::has('package_id') ? \Session::get('package_id') : null;
+        $payment->additional_request_id = \Session::has('additional_request_id') ? \Session::get('additional_request_id') : null;
+        $payment->insurance_id = \Session::has('insurance_id') ? \Session::get('insurance_id') : null;
+        $payment->transaction_id = $invoiceID;
+        $payment->charged_amount = $amount;
+        $payment->discount = $discount;
+        $payment->charged_at = Carbon::now()->format('Y-m-d H:i:s');
+        $payment->save();
+        $invoiceID =  sprintf("%05d",$payment->id);
+        $payment->invoice_id = $invoiceID;
+        $payment->save();
+        if (\Session::has('order_id')) {
+            $id = \Session::get('order_id');
+            $order = Order::find($id);
+            $order->payment_status = "Paid";
+            $order->save();
+        }
+
+        if (\Session::has('additional_request_id')) {
+            $id = \Session::get('additional_request_id');
+            $additionalRequest = AdditionalRequest::find($id);
+            $additionalRequest->payment_status = "Paid";
+            $additionalRequest->save();
+        }
+
+        if (\Session::has('insurance_id')) {
+            $id = \Session::get('insurance_id');
+            $insuranceRequest = InsuranceRequest::find($id);
+            $insuranceRequest->payment_status = "Paid";
+            $insuranceRequest->save();
+            $package = Package::find($insuranceRequest->package_id);
+            $package->payment_status = "Paid";
+            $package->save();
+        }
+
+
+        if (\Session::has('package_id')) {
+            $id = \Session::get('package_id');
+            $package = Package::find($id);
+            $package->payment_status = "Paid";
+            $package->save();
+
+            if ($request->has('coupon_code_id') && $request->has('coupon_code')) {
+                if ($request->coupon_code_id != null) {
+                    $customerCoupon = new CustomerCoupon();
+                    $customerCoupon->customer_id = $user->id;
+                    $customerCoupon->coupon_id = $request->coupon_code_id;
+                    $customerCoupon->save();
+                }
+            }
+        }
+
+        \Log::info('b4 invoice');
+        $this->buildInvoice($payment->id);
+        \Log::info('after invoice');
+
+        \Session::forget(['order_id', 'package_id', 'amount','additional_request_id','insurance_id']);
+        return response()->json([
+            'status' => 1,
+            'message' => 'Please Check card Expiry',
+            'payment_id' => $payment->id,
+        ]);
+    }
+
     public function buildInvoice($id)
     {
         $payment = Payment::find($id);

@@ -362,7 +362,7 @@
                     </div>
                   </div>
                   <div class="order-button">
-                    <input v-if="order.payment_status != 'Paid' && $page.props.auth.user.type == 'admin'" type="submit" value="Update Shopping" class="btn btn-danger"/>
+                    <input v-if="order.payment_status != 'Paid' && ($page.props.auth.user.type == 'admin'  || $page.props.auth.user.type == 'manager')" type="submit" value="Update Shopping" class="btn btn-danger"/>
                     <input v-if="order.payment_status != 'Paid'  && $page.props.auth.user.type == 'customer'" type="button"  v-on:click="updateChanges()"  value="Update Shopping" class="btn btn-danger"/>
                     <template v-if="order.payment_status != 'Paid' && $page.props.auth.user.type == 'customer' && form.updated_by_admin == '1'">
                       <a class="btn btn-primary ml-2" v-on:click="approveChanges()">Approve & Checkout</a>
@@ -371,14 +371,14 @@
                       <a class="btn btn-primary ml-2" v-on:click="approveChanges()">Approve & Checkout</a>
                     </template>
 
-                    <template v-if="form.changes_approved == '1' && $page.props.auth.user.type == 'admin'">
-                      <template v-if="$page.props.auth.user.type == 'admin' && form.status == 'pending'">
+                    <template v-if="form.changes_approved == '1' && ($page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager')">
+                      <template v-if="($page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager') && form.status == 'pending'">
                         <a v-on:click="changeToCompleteShopping()" class="btn btn-primary float-right">
                           <span>Complete Shopping</span>
                         </a>
                       </template>
                     </template>
-                    <template v-else-if="$page.props.auth.user.type == 'admin'">
+                    <template v-else-if="($page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager')">
                       <a class="btn btn-primary float-right disabled" style="cursor: not-allowed">
                         <span>Complete Shopping</span>
                       </a>

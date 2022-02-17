@@ -32,7 +32,7 @@
 					  <tr v-for="page in cms.data" :key="page.id">
 					  	<td>{{ page.id }}</td>
 					  	<td><a :href="page_url(page.post_url)" target="_blank">{{ page.title }}</a></td>
-                        <td>{{ page.description }}</td>
+                        <td>{{ shortDescription(page.description) }}</td>
                         <td>{{ page.created_at }}</td>
 					  	<td>
 					  		<inertia-link :href="route('page_edit',{ id: page.id })" class="btn btn-info">Edit</inertia-link>
@@ -92,6 +92,11 @@
             },
             page_url(url){
                 return '/'+url;
+            },
+            shortDescription(description){
+              let strippedString = description.replace(/(<([^>]+)>)/gi, "");
+              strippedString = strippedString.slice(0,200)
+              return strippedString;
             }
         }
     }

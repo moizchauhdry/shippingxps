@@ -46,9 +46,9 @@
                   </inertia-link>
               </td>
 					  	<td>
-					  		<inertia-link  v-if="$page.props.auth.user.type == 'admin'" :href="route('edit-customer',{ id: customer.id })" class="btn btn-info">Edit</inertia-link> |
-					  		<inertia-link  v-if="$page.props.auth.user.type == 'admin'" href="" class="btn btn-danger" @click="destroy(customer.id)">Delete</inertia-link>|
-					  		<inertia-link  v-if="$page.props.auth.user.type == 'admin'" :href="route('detail-customer',{ id: customer.id })" class="btn btn-info" >Detail</inertia-link>
+					  		<inertia-link  v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'" :href="route('edit-customer',{ id: customer.id })" class="btn btn-info">Edit</inertia-link> |
+					  		<inertia-link  v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'" href="" class="btn btn-danger" @click="destroy(customer.id)">Delete</inertia-link>|
+					  		<inertia-link  v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'" :href="route('detail-customer',{ id: customer.id })" class="btn btn-info" >Detail</inertia-link>
 					  	</td>
 					  </tr>
 					  </tbody>

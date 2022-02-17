@@ -123,7 +123,8 @@
               <div class="row">
                 {{ status }}
                 <div class="col-md-6 offset-md-3">
-                  <a href="https://www.paypal.com/signin" class="btn btn-info w-100" target="_blank">Pay With PayPal</a>
+                  <a href="javascript:void(0)" @click="paymentSuccess">pay Success</a>
+<!--                  <a href="https://www.paypal.com/signin" class="btn btn-info w-100" target="_blank">Pay With PayPal</a>-->
 <!--                  <form method="post" action="https://www.paypal.com/cgi-bin/webscr">
                     <input type="hidden" name="cmd" value="_xclick">
                     &lt;!&ndash; Modify the below items to suit your needs &ndash;&gt;
@@ -133,6 +134,11 @@
                     <input type="hidden" name="return" :value="this.route('payments.PaymentSuccess')">
                     <button class="btn btn-info w-100" type="submit">Pay With Pay Pal</button>
                   </form>-->
+                  <div id="smart-button-container">
+                    <div style="text-align: center;">
+                      <div id="paypal-button-container"></div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -148,6 +154,10 @@
         <div class="overlay__content"><span class="spinner"></span></div>
       </div>
     </div>
+
+
+
+
   </MainLayout>
 </template>
 <style scoped>
@@ -250,6 +260,7 @@ export default {
   mounted() {
     this.coupon_message = '';
     this.coupon_status = 2;
+    this.initPayPalButton(this.amount);
   },
   methods : {
     submit(){
@@ -284,6 +295,7 @@ export default {
         this.coupon_message = info.data.message;
         this.form.discount = info.data.discount;
         this.form.coupon_code_id = info.data.coupon_id
+        this.initPayPalButton(this.from.amount - this.form.discount);
 
       } else {
         console.log(info);
@@ -294,6 +306,49 @@ export default {
 
       }
     },
+    initPayPalButton(amount) {
+
+      paypal.Buttons({
+        style: {
+          shape: 'rect',
+          color: 'gold',
+          layout: 'vertical',
+          label: 'paypal',
+
+        },
+
+        createOrder: function(data, actions) {
+          return actions.order.create({
+            purchase_units: [{"amount":{"currency_code":"USD","value":amount}}]
+          });
+        },
+
+        onApprove: function(data, actions) {
+          return actions.order.capture().then(function(orderData) {
+
+            // Full available details
+            console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+
+            // Show a success message within this page, e.g.
+            const element = document.getElementById('paypal-button-container');
+            element.innerHTML = '';
+            element.innerHTML = '<h3>Thank you for your payment!</h3>';
+
+            // Or go to another URL:  actions.redirect('thank_you.html');
+
+            this.paymentSuccess()
+
+          });
+        },
+
+        onError: function(err) {
+          console.log(err);
+        }
+      }).render('#paypal-button-container');
+    },
+    paymentSuccess(){
+      axios.post(this.route('payment.payPalSuccess'), this.form).then(response => (this.response = response)).finally(() => this.responseFromSubmit());
+    }
   },
 }
 </script>

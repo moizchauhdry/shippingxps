@@ -30,8 +30,8 @@ class ServiceRequstListener
      * @return void
      */
     public function handle(ServiceRequestedEvent $event)
-    {                
-        $admins = User::where(['type' => 'admin'])->get();
+    {
+        $admins = User::whereIn('type',['admin','manager'])->get();
         Notification::send($admins, new ServiceRequestNotification($event->service_request));
     }
 }

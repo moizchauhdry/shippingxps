@@ -24,7 +24,7 @@
           <div class="col-md-3" >
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
               <inertia-link :href="route('orders.create')"
-                            v-if="$page.props.auth.user.type == 'admin'"
+                            v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'"
                             class="btn btn-success float-right">Add New Order</inertia-link>
             </h2>
           </div>
@@ -81,7 +81,7 @@
           </table>
         </template>
 
-        <template v-if="$page.props.auth.user.type == 'admin'">
+        <template v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">
           <ul class="nav nav-pills nav-justified mb-3 mt-3" id="pills-tab " role="tablist">
             <li class="nav-item" role="presentation">
               <button
@@ -138,12 +138,12 @@
                 <thead>
                 <tr>
                   <th scope="col">Order Id</th>
-                  <th v-if="$page.props.auth.user.type == 'admin'" scope="col">Customer Name</th>
+                  <th v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'" scope="col">Customer Name</th>
                   <th scope="col">Order From</th>
                   <th scope="col">Tracking #</th>
                   <th scope="col">Warehouse</th>
                   <th scope="col">Received Date</th>
-                  <template v-if="$page.props.auth.user.type == 'admin'">
+                  <template v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">
                     <th scope="col"></th>
                   </template>
                 </tr>
@@ -151,12 +151,12 @@
                 <tbody>
                 <tr v-for="order in arrived" :key="order.id">
                   <td>{{ order.id }}</td>
-                  <td v-if="$page.props.auth.user.type == 'admin'">{{ order.customer.name }}</td>
+                  <td v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">{{ order.customer.name }}</td>
                   <td>{{ order.received_from }}</td>
                   <td>{{ order.tracking_number_in }}</td>
                   <td>{{ order.warehouse.name }}</td>
                   <td>{{ order.created_at }}</td>
-                  <template v-if="$page.props.auth.user.type == 'admin'">
+                  <template v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">
                     <td>
                       <inertia-link class="link-primary" :href="route('orders.show', order.id)">
                         <span>View</span>
@@ -177,12 +177,12 @@
                 <thead>
                 <tr>
                   <th scope="col">Order Id</th>
-                  <th v-if="$page.props.auth.user.type == 'admin'" scope="col">Customer Name</th>
+                  <th v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'" scope="col">Customer Name</th>
                   <th scope="col">Order From</th>
                   <th scope="col">Tracking #</th>
                   <th scope="col">Warehouse</th>
                   <th scope="col">Received Date</th>
-                  <template v-if="$page.props.auth.user.type == 'admin'">
+                  <template v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">
                     <th scope="col"></th>
                   </template>
                 </tr>
@@ -190,12 +190,12 @@
                 <tbody>
                 <tr v-for="labeler in labeled" :key="labeler.id">
                   <td>{{ labeler.id }}</td>
-                  <td v-if="$page.props.auth.user.type == 'admin'">{{ labeler.customer.name }}</td>
+                  <td v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">{{ labeler.customer.name }}</td>
                   <td>{{ labeler.received_from }}</td>
                   <td>{{ labeler.tracking_number_in }}</td>
                   <td>{{ labeler.warehouse.name }}</td>
                   <td>{{ labeler.created_at }}</td>
-                  <template v-if="$page.props.auth.user.type == 'admin'">
+                  <template v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">
                     <td>
                       <inertia-link class="link-primary" :href="route('orders.show', labeler.id)">
                         <span>View</span>
@@ -215,12 +215,12 @@
                 <thead>
                 <tr>
                   <th scope="col">Order Id</th>
-                  <th v-if="$page.props.auth.user.type == 'admin'" scope="col">Customer Name</th>
+                  <th v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'" scope="col">Customer Name</th>
                   <th scope="col">Order From</th>
                   <th scope="col">Tracking #</th>
                   <th scope="col">Warehouse</th>
                   <th scope="col">Received Date</th>
-                  <template v-if="$page.props.auth.user.type == 'admin'">
+                  <template v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">
                     <th scope="col"></th>
                   </template>
                 </tr>
@@ -228,12 +228,12 @@
                 <tbody>
                 <tr v-for="order in shipped" :key="order.id">
                   <td>{{ order.id }}</td>
-                  <td v-if="$page.props.auth.user.type == 'admin'">{{ order.customer.name }}</td>
+                  <td v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">{{ order.customer.name }}</td>
                   <td>{{ order.received_from }}</td>
                   <td>{{ order.tracking_number_in }}</td>
                   <td>{{ order.warehouse.name }}</td>
                   <td>{{ order.created_at }}</td>
-                  <template v-if="$page.props.auth.user.type == 'admin'">
+                  <template v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">
                     <td>
                       <inertia-link class="link-primary" :href="route('orders.show', order.id)">
                         <span>View</span>
@@ -253,12 +253,12 @@
                 <thead>
                 <tr>
                   <th scope="col">Order Id</th>
-                  <th v-if="$page.props.auth.user.type == 'admin'" scope="col">Customer Name</th>
+                  <th v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'" scope="col">Customer Name</th>
                   <th scope="col">Order From</th>
                   <th scope="col">Tracking #</th>
                   <th scope="col">Warehouse</th>
                   <th scope="col">Received Date</th>
-                  <template v-if="$page.props.auth.user.type == 'admin'">
+                  <template v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">
                     <th scope="col"></th>
                   </template>
                 </tr>
@@ -266,12 +266,12 @@
                 <tbody>
                 <tr v-for="order in rejected" :key="order.id">
                   <td>{{ order.id }}</td>
-                  <td v-if="$page.props.auth.user.type == 'admin'">{{ order.customer.name }}</td>
+                  <td v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">{{ order.customer.name }}</td>
                   <td>{{ order.received_from }}</td>
                   <td>{{ order.tracking_number_in }}</td>
                   <td>{{ order.warehouse.name }}</td>
                   <td>{{ order.created_at }}</td>
-                  <template v-if="$page.props.auth.user.type == 'admin'">
+                  <template v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">
                     <td>
                       <inertia-link class="link-primary" :href="route('orders.show', order.id)">
                         <span>View</span>
