@@ -37,7 +37,7 @@
 
 		<!-- Head Libs -->
 		<script src="{{ asset('theme/vendor/modernizr/modernizr.min.js') }}"></script>
-        <script src="https://www.paypal.com/sdk/js?client-id=Ad_mOnLAjPkl17HazcpuehUPrOIEP9rsM90Ta1BRuUSdvAe14-lcWx1ZWjCcESkSrqjJ_xjnogdy4ft6&enable-funding=venmo&currency=USD" data-sdk-integration-source="button-factory"></script>
+        <script src="https://www.sandbox.paypal.com/sdk/js?client-id=Ad_mOnLAjPkl17HazcpuehUPrOIEP9rsM90Ta1BRuUSdvAe14-lcWx1ZWjCcESkSrqjJ_xjnogdy4ft6&enable-funding=venmo&currency=USD" data-sdk-integration-source="button-factory"></script>
         <!-- Styles -->
         {{-- if default path is public then remove 'public'. from below --}}
         <link rel="stylesheet" href="{{ url(mix('css/app.css')) }}">

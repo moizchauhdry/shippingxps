@@ -307,7 +307,7 @@ export default {
       }
     },
     initPayPalButton(amount) {
-
+      var formData = this.form;
       paypal.Buttons({
         style: {
           shape: 'rect',
@@ -325,7 +325,6 @@ export default {
 
         onApprove: function(data, actions) {
           return actions.order.capture().then(function(orderData) {
-
             // Full available details
             console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
 
@@ -336,8 +335,6 @@ export default {
 
             // Or go to another URL:  actions.redirect('thank_you.html');
 
-            this.paymentSuccess()
-
           });
         },
 
@@ -346,7 +343,8 @@ export default {
         }
       }).render('#paypal-button-container');
     },
-    paymentSuccess(){
+    paymentSuccess(order){
+      this.form.transaction_id = order.id;
       axios.post(this.route('payment.payPalSuccess'), this.form).then(response => (this.response = response)).finally(() => this.responseFromSubmit());
     }
   },

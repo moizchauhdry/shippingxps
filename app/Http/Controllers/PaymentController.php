@@ -343,6 +343,8 @@ class PaymentController extends Controller
 
     public function payPalSuccess(Request $request)
     {
+        dd($request->all());
+
         $user = Auth::user();
         $discount = 0.00;
         if ($request->has('discount')) {
