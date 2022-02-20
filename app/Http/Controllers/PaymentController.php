@@ -343,7 +343,6 @@ class PaymentController extends Controller
 
     public function payPalSuccess(Request $request)
     {
-        dd($request->all());
 
         $user = Auth::user();
         $discount = 0.00;
@@ -364,7 +363,8 @@ class PaymentController extends Controller
         $payment->package_id = \Session::has('package_id') ? \Session::get('package_id') : null;
         $payment->additional_request_id = \Session::has('additional_request_id') ? \Session::get('additional_request_id') : null;
         $payment->insurance_id = \Session::has('insurance_id') ? \Session::get('insurance_id') : null;
-        $payment->transaction_id = $invoiceID;
+        $payment->transaction_id = $request->transaction_id ?? $invoiceID ;
+        $payment->payment_type = 'PayPal';
         $payment->charged_amount = $amount;
         $payment->discount = $discount;
         $payment->charged_at = Carbon::now()->format('Y-m-d H:i:s');

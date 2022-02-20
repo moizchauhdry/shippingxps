@@ -12,7 +12,7 @@ class CMSPageController extends Controller
     //
     public function index(Request $request)
     {
-        $cms = CMSPage::OrderBy('id','DESC')->paginate(15);
+        $cms = CMSPage::OrderBy('id','DESC')->where('status',1)->paginate(15);
         return Inertia::render('pages/list', ['cms' => $cms]);
     }
 

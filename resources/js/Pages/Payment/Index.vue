@@ -36,6 +36,7 @@
               <th>Order</th>
               <th>Package</th>
               <th>Transaction Id</th>
+              <th>Payment Type</th>
               <th>Invoice Id</th>
               <th>Invoice</th>
               <th>Destination Country</th>
@@ -66,6 +67,7 @@
                 <template v-else>- -</template>
               </td>
               <td>{{ item.transaction_id }}</td>
+              <td>{{ item.payment_type }}</td>
               <td>{{ item.invoice_id }}</td>
               <td><a :href="'/public/'+item.invoice_url" target="_blank">View Invoice</a></td>
               <td>{{ item.package != NULL ? getAddress(item.package.address): '- -'  }}</td>

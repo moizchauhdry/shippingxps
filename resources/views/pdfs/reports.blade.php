@@ -22,6 +22,7 @@
     <tr>
         <th>Invoice No.</th>
         <th>Transaction ID</th>
+        <th>Payment Type</th>
         <th>Customer Name</th>
         <th>Suite No</th>
         <th>Tracking No</th>
@@ -37,6 +38,7 @@
         <tr>
             <td>{{ $payment->invoice_id  ?? 'N/A'}}</td>
             <td>{{ $payment->transaction_id  ?? 'N/A'}}</td>
+            <td>{{ $payment->payment_type  ?? 'N/A'}}</td>
             <td>{{ $payment->customer->name   ?? 'N/A'}}</td>
             <td>{{ $payment->customer->suite_no   ?? 'N/A'}}</td>
             <td>{{ $payment->package->tracking_number_out  ?? 'N/A'}}</td>

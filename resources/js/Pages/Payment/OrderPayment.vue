@@ -123,7 +123,7 @@
               <div class="row">
                 {{ status }}
                 <div class="col-md-6 offset-md-3">
-                  <a href="javascript:void(0)" @click="paymentSuccess">pay Success</a>
+                  <a href="javascript:void(0)" id="paymentSuccess" @click="paymentSuccess" class="hidden">pay Success</a>
 <!--                  <a href="https://www.paypal.com/signin" class="btn btn-info w-100" target="_blank">Pay With PayPal</a>-->
 <!--                  <form method="post" action="https://www.paypal.com/cgi-bin/webscr">
                     <input type="hidden" name="cmd" value="_xclick">
@@ -148,7 +148,7 @@
           </div>-->
       </div>
     </div>
-
+    <input type="text" ref="transaction_id" id="transaction_id" class="hidden" @change="getValues()"/>
     <div v-show="overlay === true" class="overlay">
       <div class="overlay__inner">
         <div class="overlay__content"><span class="spinner"></span></div>
@@ -209,6 +209,8 @@ import MainLayout from '@/Layouts/Main'
 import BreezeAuthenticatedLayout from '@/Layouts/Authenticated'
 import BreezeLabel from '@/Components/Label'
 import BreezeValidationErrors from '@/Components/ValidationErrors'
+import $ from 'jquery'
+
 export default {
   components: {
     BreezeAuthenticatedLayout,
@@ -254,13 +256,16 @@ export default {
     status:Object,
     hasPackage:Object,
   },
-  computed:{
+  watch:{
 
   },
   mounted() {
+    var formdata = this.form;
     this.coupon_message = '';
     this.coupon_status = 2;
-    this.initPayPalButton(this.amount);
+    this.initPayPalButton(this.amount,this.route('payment.payPalSuccess'),this.form,this.axios);
+
+
   },
   methods : {
     submit(){
@@ -295,7 +300,8 @@ export default {
         this.coupon_message = info.data.message;
         this.form.discount = info.data.discount;
         this.form.coupon_code_id = info.data.coupon_id
-        this.initPayPalButton(this.from.amount - this.form.discount);
+        let amount = this.amount * this.discount / 100;
+        this.initPayPalButton(amount,this.route('payment.payPalSuccess'),this.form,this.axios);
 
       } else {
         console.log(info);
@@ -306,8 +312,7 @@ export default {
 
       }
     },
-    initPayPalButton(amount) {
-      var formData = this.form;
+    initPayPalButton(amount,route,formData,axios) {
       paypal.Buttons({
         style: {
           shape: 'rect',
@@ -327,7 +332,8 @@ export default {
           return actions.order.capture().then(function(orderData) {
             // Full available details
             console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
-
+            document.getElementById('transaction_id').value = orderData.id;
+            document.getElementById("paymentSuccess").click();
             // Show a success message within this page, e.g.
             const element = document.getElementById('paypal-button-container');
             element.innerHTML = '';
@@ -340,12 +346,21 @@ export default {
 
         onError: function(err) {
           console.log(err);
+        },
+
+        onSuccess: function(order){
+
+          axios.post(this.route('payment.payPalSuccess'), formData).then(response => (this.response = response)).finally(() => this.responseFromSubmit());
         }
       }).render('#paypal-button-container');
     },
-    paymentSuccess(order){
-      this.form.transaction_id = order.id;
+    paymentSuccess(){
+      this.overlay = true;
+      this.form.transaction_id = $('#transaction_id').val();
       axios.post(this.route('payment.payPalSuccess'), this.form).then(response => (this.response = response)).finally(() => this.responseFromSubmit());
+    },
+    getValues(){
+      console.log(document.getElementById('transaction_id'));
     }
   },
 }

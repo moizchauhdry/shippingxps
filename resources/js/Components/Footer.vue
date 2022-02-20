@@ -30,9 +30,13 @@
 								<!-- <li class="social-icons-pinterest"><a href="http://www.pinterest.com/" target="_blank" title="pinterest" data-cursor-effect-hover="fit"><i class="fab fa-pinterest"></i></a></li> -->
 							</ul>
 						</div>
-						<div class="col-lg-4 offset-md-2">
+						<div class="col-lg-3 offset-md-2">
 							<h4 class="font-weight-bold text-4 mb-2">COMPANY</h4>
 							<ul class="list list-icons list-icons-sm">
+                <li>
+                  <i class="fas fa-angle-right text-color-default"></i>
+                  <inertia-link :href="route('page-show','about_us')" class="link-hover-style-1 ms-1" >About Us</inertia-link>
+                </li>
 								<li>
 									<i class="fas fa-angle-right text-color-default"></i>
 									<inertia-link :href="route('homePage')" class="link-hover-style-1 ms-1" >Home</inertia-link>
@@ -46,16 +50,26 @@
 									<inertia-link :href="route('pricing')" class="link-hover-style-1 ms-1" >Services</inertia-link>
 								</li>
 							</ul>
-              <h4 class="font-weight-bold text-4 mt-2 mb-2">SUPPORT</h4>
-              <ul class="list list-icons list-icons-sm">
-                <li>
-                  <i class="fas fa-angle-right text-color-default"></i>
-                  <inertia-link :href="route('page-show','terms_and_conditions')" class="link-hover-style-1 ms-1" >Terms And Conditions</inertia-link>
-                </li>
-              </ul>
+
 						</div>
-						<!-- <div class="col-lg-3">
-							<h4 class="font-weight-bold text-3">OUR SERVICES</h4>
+						 <div class="col-lg-3">
+               <h4 class="font-weight-bold text-4 mb-2">SUPPORT</h4>
+               <ul class="list list-icons list-icons-sm">
+
+                 <li>
+                   <i class="fas fa-angle-right text-color-default"></i>
+                   <inertia-link :href="route('page-show','contact_us')" class="link-hover-style-1 ms-1" >Contact Us</inertia-link>
+                 </li>
+                 <li>
+                   <i class="fas fa-angle-right text-color-default"></i>
+                   <inertia-link :href="route('page-show','terms_and_conditions')" class="link-hover-style-1 ms-1" >Terms And Conditions</inertia-link>
+                 </li>
+                 <li>
+                   <i class="fas fa-angle-right text-color-default"></i>
+                   <inertia-link :href="route('page-show','privacy_policy')" class="link-hover-style-1 ms-1" >Privacy Policy</inertia-link>
+                 </li>
+               </ul>
+<!--							<h4 class="font-weight-bold text-3">OUR SERVICES</h4>
 							<ul class="list list-icons list-icons-sm">
 								<li>
 									<i class="fas fa-angle-right text-color-default"></i>
@@ -75,8 +89,8 @@
 									<a href="/package-returns" class="link-hover-style-1 ms-1 "> Package returns</a>
 								</li>
 
-							</ul>
-						</div> -->
+							</ul>-->
+						</div>
 					</div>
 				</div>
 	

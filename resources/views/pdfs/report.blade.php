@@ -24,28 +24,28 @@
         <td>{{ $payment->invoice_id }}</td>
     </tr>
     <tr>
-        <th style="width:30%">Transaction ID</th>
-        <td>{{ $payment->transaction_id }}</td>
+        <th style="width:30%">Payment Type</th>
+        <td>{{ $payment->payment_type }}</td>
     </tr>
     <tr>
         <th style="width:30%">Customer Name</th>
-        <td>{{ $payment->customer->name  }}</td>
+        <td>{{ $payment->customer->name  ?? 'N/A' }}</td>
     </tr>
     <tr>
         <th style="width:30%">Suite No</th>
-        <td>{{ $payment->customer->suite_no  }}</td>
+        <td>{{ $payment->customer->suite_no  ?? 'N/A' }}</td>
     </tr>
     <tr>
         <th style="width:30%">Tracking No</th>
-        <td>{{ $payment->package->tracking_number_out }}</td>
+        <td>{{ $payment->package->tracking_number_out ?? 'N/A' }}</td>
     </tr>
     <tr>
         <th style="width:30%">Service Name</th>
-        <td>{{ $payment->package->service_label }}</td>
+        <td>{{ $payment->package->service_label ?? 'N/A' }}</td>
     </tr>
     <tr>
         <th style="width:30%">Destination</th>
-        <td>{{ $payment->package->shipping_address }}</td>
+        <td>{{ $payment->package->shipping_address ?? 'N/A' }}</td>
     </tr>
     @if(Auth::user()->type == "admin")
         <tr>
@@ -54,25 +54,25 @@
         </tr>
         <tr>
             <th style="width:30%">Markup Fee (USD)</th>
-            <td>{{ $payment->package->markup_fee }}</td>
+            <td>{{ $payment->package->markup_fee  ?? 'N/A'}}</td>
         </tr>
     @else
         <tr>
             <th style="width:30%">Shipping Charges (USD)</th>
-            <td>{{ $payment->package->shipping_total }}</td>
+            <td>{{ $payment->package->shipping_total  ?? 'N/A'}}</td>
         </tr>
     @endif
     <tr>
         <th style="width:30%">Service Charges (USD)</th>
-        <td>{{ $payment->package->service_charges }}</td>
+        <td>{{ $payment->package->service_charges  ?? 'N/A'}}</td>
     </tr>
     <tr>
         <th style="width:30%">Charged Amount (USD)</th>
-        <td>{{ $payment->charged_amount }}</td>
+        <td>{{ $payment->charged_amount  ?? 'N/A'}}</td>
     </tr>
     <tr>
         <th style="width:30%">Charged Date</th>
-        <td>{{ date('d-m-y H:i:s',strtotime($payment->charged_at))}}</td>
+        <td>{{ date('d-m-y H:i:s',strtotime($payment->charged_at)) ?? 'N/A'}}</td>
     </tr>
 </table>
 
