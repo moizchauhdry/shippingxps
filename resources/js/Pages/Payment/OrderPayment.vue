@@ -149,6 +149,7 @@
       </div>
     </div>
     <input type="text" ref="transaction_id" id="transaction_id" class="hidden" @change="getValues()"/>
+    <textarea name="payment_detail" id="payment_detail" cols="30" rows="10" class="hidden"></textarea>
     <div v-show="overlay === true" class="overlay">
       <div class="overlay__inner">
         <div class="overlay__content"><span class="spinner"></span></div>
@@ -333,6 +334,7 @@ export default {
             // Full available details
             console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
             document.getElementById('transaction_id').value = orderData.id;
+            document.getElementById('payment_detail').value = JSON.stringify(orderData, null, 2);
             document.getElementById("paymentSuccess").click();
             // Show a success message within this page, e.g.
             const element = document.getElementById('paypal-button-container');
@@ -357,6 +359,7 @@ export default {
     paymentSuccess(){
       this.overlay = true;
       this.form.transaction_id = $('#transaction_id').val();
+      this.form.payment_detail = $('#payment_detail').val();
       axios.post(this.route('payment.payPalSuccess'), this.form).then(response => (this.response = response)).finally(() => this.responseFromSubmit());
     },
     getValues(){

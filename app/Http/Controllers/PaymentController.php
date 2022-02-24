@@ -343,7 +343,16 @@ class PaymentController extends Controller
 
     public function payPalSuccess(Request $request)
     {
-
+        $description = json_decode($request->payment_detail, true);
+        $shipping = $description['purchase_units'][0]['shipping'];
+        $billing['email'] = $description['payer']['email_address'] ?? '';
+        $billing['fullname'] = $shipping['name']['full_name'] ?? '';
+        $billing['address'] = null;
+        if(!empty($shipping['address'])){
+            foreach ($shipping['address'] as $key => $address){
+                $billing['address'] .= $address.(($key) == 'country_code'? '': ', ');
+            }
+        }
         $user = Auth::user();
         $discount = 0.00;
         if ($request->has('discount')) {
@@ -414,7 +423,7 @@ class PaymentController extends Controller
         }
 
         \Log::info('b4 invoice');
-        $this->buildInvoice($payment->id);
+        $this->buildInvoice($payment->id,$billing);
         \Log::info('after invoice');
 
         \Session::forget(['order_id', 'package_id', 'amount','additional_request_id','insurance_id']);
@@ -425,7 +434,7 @@ class PaymentController extends Controller
         ]);
     }
 
-    public function buildInvoice($id)
+    public function buildInvoice($id ,$billing = [])
     {
         $payment = Payment::find($id);
         $customer = $payment->customer;
@@ -441,7 +450,8 @@ class PaymentController extends Controller
                 'package' => $package,
                 'customer' => $customer,
                 'address' => $address,
-                'warehouse' => $warehouse
+                'warehouse' => $warehouse,
+                'billing' => $billing
             ])->render();
 
             // return $html;
@@ -457,7 +467,8 @@ class PaymentController extends Controller
                 'order' => $order,
                 'customer' => $customer,
                 'address' => $address,
-                'warehouse' => $warehouse
+                'warehouse' => $warehouse,
+                'billing' => $billing
             ])->render();
         }
 
@@ -470,7 +481,8 @@ class PaymentController extends Controller
                 'additionalRequest' => $additional_request_id,
                 'customer' => $customer,
                 'address' => $address,
-                'warehouse' => $warehouse
+                'warehouse' => $warehouse,
+                'billing' => $billing
             ])->render();
         }
 
@@ -484,7 +496,8 @@ class PaymentController extends Controller
                 'insuranceRequest' => $insurance,
                 'customer' => $customer,
                 'address' => $address,
-                'warehouse' => $warehouse
+                'warehouse' => $warehouse,
+                'billing' => $billing
             ])->render();
         }
 

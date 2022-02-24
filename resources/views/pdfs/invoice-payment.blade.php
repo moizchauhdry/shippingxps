@@ -47,7 +47,16 @@
             Phone: {{ $address->phone ?? '- -' }}<br>
             Email: {{ $customer->email ?? '- -' }}</td>
     </tr>
+    @if(!empty($billing))
+        <tr>
+            <td colspan="2">
+                <h3>Billing :</h3><br>
+                <strong>{{ $billing['fullname'] ?? '- -' }}</strong><br>
+                Address:{{ $billing['address'] ?? '- -' }}<br>
+                Email :{{ $billing['email'] ?? '- -' }}<br>
 
+        </tr>
+    @endif
 
 </table>
 <br>
@@ -97,26 +106,26 @@
             <td>
                 Order Items Total
             </td>
-            <td style="width: 100px">{{ $order->sub_total }}</td>
+            <td style="width: 100px">$ {{ $order->sub_total }}</td>
         </tr>
         <tr>
             <td>
                 Service Charges
             </td>
-            <td style="width: 100px">{{ $order->service_charges }}</td>
+            <td style="width: 100px">$ {{ $order->service_charges }}</td>
         </tr>
         <tr>
             <td>
                 Shipping From Shop
             </td>
-            <td style="width: 100px">{{ $order->shipping_from_shop }}</td>
+            <td style="width: 100px">$ {{ $order->shipping_from_shop }}</td>
         </tr>
         <tr>
             <td>
                 Pickup Charges
             </td>
 
-            <td style="width: 100px">{{ $order->pickup_charges ?? 0.00 }}</td>
+            <td style="width: 100px">$ {{ $order->pickup_charges ?? 0.00 }}</td>
         </tr>
 
     @endisset
@@ -127,7 +136,7 @@
                 Additional Charges For Request - {{ $additionalRequest->message ?? '- -' }}
             </td>
 
-            <td style="width: 100px">{{ $additionalRequest->price }}</td>
+            <td style="width: 100px">$ {{ $additionalRequest->price }}</td>
         </tr>
     @endisset
 
@@ -137,7 +146,7 @@
                 Charges For Insurance Request with Shipping
             </td>
 
-            <td style="width: 100px">{{ $insuranceRequest->amount }}</td>
+            <td style="width: 100px">$ {{ $insuranceRequest->amount }}</td>
         </tr>
     @endisset
 
@@ -169,7 +178,7 @@
         <td>Card</td>
         <td>{{ date('d-m-Y',strtotime($payment->charged_at)) }}</td>
         <td>Payment Complete</td>
-        <td>{{ $payment->charged_amount }}</td>
+        <td>$ {{ $payment->charged_amount }}</td>
     </tr>
 </table>
 <br>
