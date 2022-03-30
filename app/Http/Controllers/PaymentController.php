@@ -160,6 +160,12 @@ class PaymentController extends Controller
         $customerAddress->setZip($request->zip ?? 'None');
         $customerAddress->setCountry($request->country ?? '');
 
+        $billing = [
+            'email' => $request->email ?? $user->email ?? '',
+            'fullname' => $request->first_name.' '.$request->last_name ?? '',
+            'address' => $request->address.', '.$request->city.', '.$request->zip.', '.$request->country ?? '',
+        ];
+
         // Set the customer's identifying information
         $customerData = new AnetAPI\CustomerDataType();
         $customerData->setType("individual");
@@ -189,7 +195,7 @@ class PaymentController extends Controller
 
         // Create the controller and get the response
         $controller = new AnetController\CreateTransactionController($transaction);
-        // $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::SANDBOX);
+        //$response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::SANDBOX);
         /*For Production use the below line */
         $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::PRODUCTION);
         if ($response != null) {
@@ -267,7 +273,7 @@ class PaymentController extends Controller
                     }
 
                     \Log::info('b4 invoice');
-                    $this->buildInvoice($payment->id);
+                    $this->buildInvoice($payment->id,$billing);
                     \Log::info('after invoice');
 
                     \Session::forget(['order_id', 'package_id', 'amount','additional_request_id','insurance_id']);

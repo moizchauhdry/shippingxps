@@ -722,4 +722,14 @@ class HomeController extends Controller
         return redirect('notifications');
 
     }
+
+    public function getMailingAddress()
+    {
+        $response['warehouses'] = Warehouse::all();
+
+        return \response()->json([
+            'status' => true,
+            'data' => $response['warehouses'],
+        ]);
+    }
 }

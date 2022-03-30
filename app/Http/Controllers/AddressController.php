@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Warehouse;
 use Illuminate\Http\Request;
 use \Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -173,7 +174,8 @@ class AddressController extends Controller
 
         $suite_no = Auth::user()->suite_no; 
         
-        $name = Auth::user()->name; 
+        $name = Auth::user()->name;
+        $response['warehouses'] = Warehouse::all();
 
         $addresses = [
             0 =>[
@@ -185,6 +187,8 @@ class AddressController extends Controller
                 'address' =>  $name.'<br> 1217 OLD COOCHS BRIDGE RD <br> SUITE #'.$suite_no.'<br> NEWARK <br> DELAWARE 19713 <br>301 265 0777',
             ]                        
         ];
+
+        $addresses = $response['warehouses'];
 
         /*
         $addresses = [

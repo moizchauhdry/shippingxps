@@ -94,6 +94,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('getShippingAddress/{id}', [\App\Http\Controllers\AddressController::class, 'getShippingAddress'])->name('getShippingAddress');
 
+    Route::get('getMailingAddress',[\App\Http\Controllers\HomeController::class,'getMailingAddress'])->name('getMailingAddress');
+
 });
 
 

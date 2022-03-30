@@ -64,10 +64,10 @@
                    <i class="fas fa-angle-right text-color-default"></i>
                    <inertia-link :href="route('page-show','terms_and_conditions')" class="link-hover-style-1 ms-1" >Terms And Conditions</inertia-link>
                  </li>
-                 <li>
+<!--                 <li>
                    <i class="fas fa-angle-right text-color-default"></i>
                    <inertia-link :href="route('page-show','privacy_policy')" class="link-hover-style-1 ms-1" >Privacy Policy</inertia-link>
-                 </li>
+                 </li>-->
                </ul>
 <!--							<h4 class="font-weight-bold text-3">OUR SERVICES</h4>
 							<ul class="list list-icons list-icons-sm">

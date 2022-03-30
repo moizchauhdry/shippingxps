@@ -102,10 +102,10 @@
 			<div class="col">
 				<h3 class="text-5 text-center text-lg-5 text-xl-5 line-height-3 text-transform-none font-weight-semibold mb-4 mb-lg-5" >Via Trusted Shipping Partners</h3>
 				<div class="row" >
-					<div class="col text-center">
+<!--					<div class="col text-center">
 						<img class="d-inline-block img-fluid" src="/theme/img/demos/business-consulting-3/partner-01.png" alt="" />
 						<p class="text-0 font-weight-medium text-center mt-2">Postal Service</p>
-					</div>
+					</div>-->
 					<div class="col text-center">
 						<img class="d-inline-block img-fluid" src="/theme/img/demos/business-consulting-3/partner-02.png" alt="" />
 						<p class="text-0 font-weight-medium text-center mt-2">DHL Express</p>
@@ -122,10 +122,10 @@
 						<img class="d-inline-block img-fluid" src="/theme/img/demos/business-consulting-3/partner-05.png" alt="" />
 						<p class="text-0 font-weight-medium text-center mt-2">Aramex</p>
 					</div>
-					<div class="col text-center">
+<!--					<div class="col text-center">
 						<img class="d-inline-block img-fluid" src="/theme/img/demos/business-consulting-3/partner-01.png" alt="" />
 						<p class="text-0 font-weight-medium text-center mt-2">Ship7 Delivery</p>
-					</div>
+					</div>-->
 				</div>
 				<p class="font-weight-medium text-center mt-3">* Service offerings may change depending on the destination country. Not all carriers offer services to all countries</p>
 			</div>
