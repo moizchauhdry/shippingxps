@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\GiftCardController;
 
 
 Route::middleware('auth')->group(function () {
@@ -66,6 +67,16 @@ Route::middleware('auth')->group(function () {
         Route::any('/update/{id}', [\App\Http\Controllers\AdditionalRequestController::class, 'update'])->name('additional-request.update');
         Route::any('/changeStatus', [\App\Http\Controllers\AdditionalRequestController::class, 'changeStatus'])->name('additional-request.changeStatus');
         Route::any('/storeComment/{id}', [\App\Http\Controllers\AdditionalRequestController::class, 'storeComment'])->name('additional-request.storeComment');
+    });
+
+    Route::group(['prefix' => 'gift-card', 'as' => 'gift-card.'], function () {
+        Route::get('/', [GiftCardController::class, 'index'])->name('index');
+        Route::any('/create', [GiftCardController::class, 'create'])->name('create');
+        Route::any('/{id}/edit', [GiftCardController::class, 'edit'])->name('edit');
+        Route::any('/update/{id}', [GiftCardController::class, 'update'])->name('update');
+        Route::any('/changeStatus', [GiftCardController::class, 'changeStatus'])->name('changeStatus');
+        Route::any('/storeComment/{id}', [GiftCardController::class, 'storeComment'])->name('storeComment');
+        Route::post('/delete-image', [GiftCardController::class, 'deleteImage'])->name('removeImage');
     });
 
     Route::prefix('insurance')->group(function () {
