@@ -79,8 +79,6 @@ class GiftCardController extends Controller
         
         if ($request->isMethod('POST')) {
 
-            // dd($request->all());
-
             if ($request->has('approve') && $request->approve == 1) {
                 \Session::forget(['order_id','package_id','gift_card_id']);
                 \Session::put('insurance_id', $id);

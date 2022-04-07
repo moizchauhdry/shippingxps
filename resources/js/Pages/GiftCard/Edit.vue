@@ -130,7 +130,7 @@
 						</div>
 
 						<div class="row">
-							<div class="col-md-12">
+							<div class="col-md-12" v-show="gift_card.files.length > 0">
 								<h2
 									class="font-semibold text-xl text-gray-800 leading-tight form-title"
 								>
@@ -147,7 +147,7 @@
 									<img
 										style="width: 100px; height: auto"
 										class="img-thumbnail"
-										:src="imgURL(image.image)"
+										:src="imgURL(image.file_name)"
 										@click="viewImage($event)"
 									/>
 									<a
@@ -308,7 +308,7 @@
 						axios
 							.post(this.route("gift-card.removeImage"), { id: id })
 							.then(({ data }) => {
-								this.order.images.splice(index, 1);
+								this.gift_card.images.splice(index, 1);
 							});
 					}
 				}
