@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\OrderImage;
 use App\Observers\OrderImageObserver;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Schema;
 
 class AppServiceProvider extends ServiceProvider
 {
