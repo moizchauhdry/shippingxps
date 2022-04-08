@@ -15,6 +15,8 @@ use Auth;
 use App\Notifications\GiftCardNotification;
 use Carbon\Carbon;
 use File;
+use Illuminate\Validation\Rule;
+
 
 class GiftCardController extends Controller
 {
@@ -41,7 +43,7 @@ class GiftCardController extends Controller
                 
             $validated_data = $request->validate([
                 'title' => 'required|string|max:150',
-                'type' => 'required|string|in:Physical,Electronic',
+                'type' => 'required|string|in:PHYSICAL,ELECTRONIC',
                 'amount' => 'required|numeric',
                 'qty' => 'required|integer',
                 'notes' => 'required|max:1500',
@@ -79,29 +81,22 @@ class GiftCardController extends Controller
         
         if ($request->isMethod('POST')) {
 
-            if ($request->has('approve') && $request->approve == 1) {
-                \Session::forget(['order_id','package_id','gift_card_id']);
-                \Session::put('insurance_id', $id);
-                return redirect()->route('payment.index', 'amount=' . $gift_card->amount);
-            }
-
             $validated_data = $request->validate([
                 'title' => 'required|string|max:150',
-                'type' => 'required|string|in:Physical,Electronic',
+                'type' => 'required|string|in:PHYSICAL,ELECTRONIC',
                 'amount' => 'required|numeric',
-                'qty' => 'required|integer',
+                'qty' => 'required|integer|between:1,10',
                 'notes' => 'required|max:1500',
-                'status' => 'required|string|in:Accepted,Rejected',
+                'status' => [Rule::requiredIf($user->type == 'admin')],
             ]);
 
-
             $gift_card->update([
-                'title' => $validated_data['title'],
-                'type' => $validated_data['type'],
-                'amount' => $validated_data['amount'],
-                'qty' => $validated_data['qty'],
-                'notes' => $validated_data['notes'],
-                'status' => $validated_data['status'],
+                'title' => $request->title,
+                'type' => $request->type,
+                'amount' => $request->amount,
+                'qty' => $request->qty,
+                'notes' => $request->notes,
+                'status' => $request->status,
             ]);
 
             $files = $request->file();
@@ -151,7 +146,31 @@ class GiftCardController extends Controller
                     $gift_card->status == 'Accepted' ? $gift_card->update(['admin_approved_at' => Carbon::now()]) : $gift_card->update(['admin_approved_at' => NULL]);
                 }
             }
+            
+            if ($request->has('approve') && $request->approve == 1) {
+                \Session::forget(['order_id','package_id','gift_card_id']);
+                \Session::put('insurance_id', $id);
+                
+                $amount = $gift_card->amount * $gift_card->qty;
 
+                if ($amount <= 0) {
+                    return redirect()->back()->with('error', 'OPERRATION FAILED TO PERFORM, AMOUNT MUST BE GREATER THAN 0');
+                }
+
+                if ($amount > 5) {
+                    $percentage_amount =  $amount * 5 / 100;
+                    $final_amount = $amount + $percentage_amount;
+                } else {
+                    $final_amount =  $amount + 5;
+                }
+
+                if ($gift_card->type == 'PHYSICAL') {
+                    $final_amount = $final_amount + 25;
+                }
+
+                return redirect()->route('payment.index', 'amount=' . $final_amount);
+            }
+            
             return redirect()->route('gift-card.index')->with('success', 'Successfully Modified');
         }
 
@@ -194,7 +213,6 @@ class GiftCardController extends Controller
             'message' => $auser . ' has commented on an gift card request. <a href="' . $url . '">Click Here</a>',
         ];
         if ($user->type == 'admin') {
-            // $packages = Package::all();
             $customer = User::find($gift_card->user_id);
             $customer->notify(new GiftCardNotification($data));
         } else {

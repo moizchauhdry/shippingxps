@@ -4,6 +4,7 @@
 			<div class="card-header"><b>Gift Card</b></div>
 			<div class="card-body">
 				<form @submit.prevent="submit" enctype="multipart/form-data">
+					<breeze-validation-errors class="mb-4" />
 					<div class="row">
 						<div class="form-group col-md-6">
 							<label for="title">Title</label>
@@ -13,7 +14,10 @@
 								name="title"
 								id="title"
 								v-model="form.title"
-								required
+								:disabled="
+									gift_card.admin_approved_at != null &&
+									$page.props.auth.user.type == 'customer'
+								"
 							/>
 						</div>
 						<div class="form-group col-md-6">
@@ -23,11 +27,14 @@
 								name="type"
 								v-model="form.type"
 								id="type"
-								required
+								:disabled="
+									gift_card.admin_approved_at != null &&
+									$page.props.auth.user.type == 'customer'
+								"
 							>
 								<option value="" selected>--Select Type--</option>
-								<option value="Physical">Physical</option>
-								<option value="Electronic">Electronic</option>
+								<option value="PHYSICAL">Physical</option>
+								<option value="ELECTRONIC">Electronic</option>
 							</select>
 						</div>
 						<div class="form-group col-md-3">
@@ -39,7 +46,10 @@
 								name="amount"
 								id="amount"
 								v-model="form.amount"
-								required
+								:disabled="
+									gift_card.admin_approved_at != null &&
+									$page.props.auth.user.type == 'customer'
+								"
 							/>
 						</div>
 						<div class="form-group col-md-3">
@@ -50,12 +60,15 @@
 								name="qty"
 								id="qty"
 								v-model="form.qty"
-								required
+								:disabled="
+									gift_card.admin_approved_at != null &&
+									$page.props.auth.user.type == 'customer'
+								"
 							/>
 						</div>
 						<div
 							class="form-group col-md-6"
-							v-show="$page.props.auth.user.type == 'admin'"
+							v-if="$page.props.auth.user.type == 'admin'"
 						>
 							<label for="status">Status</label>
 							<select
@@ -63,7 +76,10 @@
 								name="status"
 								v-model="form.status"
 								id="status"
-								required
+								:disabled="
+									gift_card.admin_approved_at != null &&
+									$page.props.auth.user.type == 'customer'
+								"
 							>
 								<option value="" selected>--Select Status--</option>
 								<option value="Accepted">Accepted</option>
@@ -71,93 +87,94 @@
 							</select>
 						</div>
 
-						<div class="row">
-							<div class="col-md-12">
-								<h2
-									class="font-semibold text-xl text-gray-800 leading-tight form-title"
-								>
-									Gift Card Files
-								</h2>
-							</div>
-							<div class="col-md-6">
-								<a
-									v-on:click="addImage"
-									class="btn btn-primary"
-									style="float: right"
-								>
-									<span>Add More Image </span>
-								</a>
-							</div>
-						</div>
-
-						<div class="row">
-							<div class="col-md-6">
-								<breeze-label for="name" value="Image" />
-							</div>
-						</div>
-						<div
-							v-for="(image, index) in form.images"
-							:key="image.id"
-							class="row"
-						>
-							<div class="col-md-3">
-								<div class="form-group">
-									<input
-										type="file"
-										@input="image.image = $event.target.files[0]"
-									/>
-									<progress
-										v-if="form.progress"
-										:value="form.progress.percentage"
-										max="100"
+						<section v-if="$page.props.auth.user.type == 'admin'">
+							<div class="row">
+								<div class="col-md-12">
+									<h2
+										class="font-semibold text-xl text-gray-800 leading-tight form-title"
 									>
-										{{ form.progress.percentage }}%
-									</progress>
+										Gift Card Files
+									</h2>
 								</div>
-							</div>
-
-							<div class="col-md-1" v-show="index != 0">
-								<div class="form-group">
+								<div class="col-md-6">
 									<a
-										v-on:click="removeImage(index)"
+										v-on:click="addImage"
 										class="btn btn-primary"
-										style="margin-top: 10px"
+										style="float: right"
 									>
-										<span>Remove</span>
+										<span>Add More Image </span>
 									</a>
 								</div>
 							</div>
-						</div>
 
-						<div class="row">
-							<div class="col-md-12" v-show="gift_card.files.length > 0">
-								<h2
-									class="font-semibold text-xl text-gray-800 leading-tight form-title"
-								>
-									Images
-								</h2>
-							</div>
-							<div
-								v-for="(image, index) in gift_card.files"
-								:key="image.id"
-								class="col-md-3"
-							>
-								`
-								<div class="text-center">
-									<img
-										style="width: 100px; height: auto"
-										class="img-thumbnail"
-										:src="imgURL(image.file_name)"
-										@click="viewImage($event)"
-									/>
-									<a
-										href="void(0);"
-										@click="deleteImage($event, index, image.id)"
-										><i class="fa fa-trash"></i
-									></a>
+							<div class="row">
+								<div class="col-md-6">
+									<breeze-label for="name" value="Image" />
 								</div>
 							</div>
-						</div>
+							<div
+								v-for="(image, index) in form.images"
+								:key="image.id"
+								class="row"
+							>
+								<div class="col-md-3">
+									<div class="form-group">
+										<input
+											type="file"
+											@input="image.image = $event.target.files[0]"
+										/>
+										<progress
+											v-if="form.progress"
+											:value="form.progress.percentage"
+											max="100"
+										>
+											{{ form.progress.percentage }}%
+										</progress>
+									</div>
+								</div>
+
+								<div class="col-md-1" v-show="index != 0">
+									<div class="form-group">
+										<a
+											v-on:click="removeImage(index)"
+											class="btn btn-primary"
+											style="margin-top: 10px"
+										>
+											<span>Remove</span>
+										</a>
+									</div>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-md-12" v-show="gift_card.files.length > 0">
+									<h2
+										class="font-semibold text-xl text-gray-800 leading-tight form-title"
+									>
+										Images
+									</h2>
+								</div>
+								<div
+									v-for="(image, index) in gift_card.files"
+									:key="image.id"
+									class="col-md-3"
+								>
+									<div class="text-center">
+										<img
+											style="width: 100px; height: auto"
+											class="img-thumbnail"
+											:src="imgURL(image.file_name)"
+											@click="viewImage($event)"
+										/>
+										<a
+											href="void(0);"
+											@click="deleteImage($event, index, image.id)"
+											><i class="fa fa-trash"></i
+										></a>
+									</div>
+								</div>
+							</div>
+						</section>
 
 						<div class="form-group col-md-12">
 							<label for="notes">Notes</label>
@@ -168,11 +185,22 @@
 								v-model="form.notes"
 								cols="10"
 								rows="5"
-								required
+								:disabled="
+									gift_card.admin_approved_at != null &&
+									$page.props.auth.user.type == 'customer'
+								"
 							></textarea>
 						</div>
 						<div class="form-group col-12">
-							<button type="submit" name="submit" class="btn btn-primary">
+							<button
+								type="submit"
+								name="submit"
+								class="btn btn-primary"
+								v-if="
+									gift_card.admin_approved_at == null ||
+									$page.props.auth.user.type == 'admin'
+								"
+							>
 								Save & Update
 							</button>
 							<button
@@ -180,7 +208,8 @@
 									$page.props.auth.user.type != 'admin' &&
 									form.amount != NULL &&
 									gift_card.payment_status != 'Paid' &&
-									gift_card.admin_approved_at != null
+									gift_card.admin_approved_at != null &&
+									$page.props.auth.user.type == 'customer'
 								"
 								type="button"
 								name="approve"
@@ -241,12 +270,14 @@
 	import MainLayout from "@/Layouts/Main";
 	import BreezeAuthenticatedLayout from "@/Layouts/Authenticated";
 	import BreezeLabel from "@/Components/Label";
+	import BreezeValidationErrors from "@/Components/ValidationErrors";
 
 	export default {
 		components: {
 			BreezeAuthenticatedLayout,
 			MainLayout,
 			BreezeLabel,
+			BreezeValidationErrors,
 		},
 		data() {
 			return {

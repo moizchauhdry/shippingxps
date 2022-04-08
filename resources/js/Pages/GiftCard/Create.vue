@@ -26,8 +26,8 @@
 								required
 							>
 								<option value="" selected>--Select Type--</option>
-								<option value="Physical">Physical</option>
-								<option value="Electronic">Electronic</option>
+								<option value="PHYSICAL">Physical</option>
+								<option value="ELECTRONIC">Electronic</option>
 							</select>
 						</div>
 						<div class="form-group col-md-3">
