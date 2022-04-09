@@ -19,3 +19,4 @@ phpunit.dusk.xml
 /.idea
 /.idea/*
 *.zip
+.htaccess
