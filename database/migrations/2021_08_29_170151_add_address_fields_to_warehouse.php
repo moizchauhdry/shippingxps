@@ -21,6 +21,8 @@ class AddAddressFieldsToWarehouse extends Migration
             $table->string('contact_person',255)->nullable();
             $table->string('email',255)->nullable();
             $table->string('sale_tax',255)->nullable();
+            $table->string('signature',255)->nullable();
+            $table->string('signature_name',255)->nullable();
         });
 
     }

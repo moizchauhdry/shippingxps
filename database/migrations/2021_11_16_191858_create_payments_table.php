@@ -18,10 +18,13 @@ class CreatePaymentsTable extends Migration
             $table->unsignedBigInteger('customer_id');
             $table->unsignedBigInteger('order_id')->nullable();
             $table->unsignedBigInteger('package_id')->nullable();
+            $table->unsignedBigInteger('additional_request_id')->nullable();
+            $table->unsignedBigInteger('insurance_id')->nullable();
             $table->uuid('invoice_id')->nullable();
             $table->string('transaction_id');
             $table->string('card_last4')->nullable();
             $table->string('card_type')->nullable();
+            $table->string('payment_type')->nullable();
             $table->string('invoice_url')->nullable();
             $table->double('charged_amount',10,2);
             $table->double('discount',10,2)->default(0.00);

@@ -13,7 +13,6 @@ class WarehousesTable extends Migration
      */
     public function up()
     {
-            //
         Schema::create('warehouses', function (Blueprint $table) {
             $table->id();
             $table->string('name',32);            
