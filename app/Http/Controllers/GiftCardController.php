@@ -45,7 +45,7 @@ class GiftCardController extends Controller
                 'title' => 'required|string|max:150',
                 'type' => 'required|string|in:PHYSICAL,ELECTRONIC',
                 'amount' => 'required|numeric',
-                'qty' => 'required|integer',
+                'qty' => 'required|integer|between:1,10',
                 'notes' => 'required|max:1500',
             ]);
 
