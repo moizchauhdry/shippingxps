@@ -43,7 +43,8 @@
 													class="nav-link dropdown-toggle"
 													:href="route('pricing')"
 												>
-													<i class="fa fa-cart"></i> &nbsp;&nbsp; Pricing
+													<i class="fa fa-cart"></i> &nbsp;&nbsp; Services &
+													Pricing
 												</inertia-link>
 											</li>
 											<li class="nav-link">

@@ -123,7 +123,7 @@
 							<inertia-link
 								:href="route('pricing')"
 								class="link-hover-style-1 ms-1"
-								>Pricing</inertia-link
+								>Services & Pricing</inertia-link
 							>
 						</li>
 					</ul>

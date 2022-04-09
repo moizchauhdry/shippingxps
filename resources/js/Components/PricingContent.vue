@@ -11,16 +11,6 @@
 					<div class="col text-center">
 						<img
 							class="d-inline-block img-fluid"
-							src="/theme/img/demos/business-consulting-3/partner-01.png"
-							alt=""
-						/>
-						<p class="text-0 font-weight-medium text-center mt-2">
-							Postal Service
-						</p>
-					</div>
-					<div class="col text-center">
-						<img
-							class="d-inline-block img-fluid"
 							src="/theme/img/demos/business-consulting-3/partner-02.png"
 							alt=""
 						/>
@@ -55,16 +45,6 @@
 							alt=""
 						/>
 						<p class="text-0 font-weight-medium text-center mt-2">Aramex</p>
-					</div>
-					<div class="col text-center">
-						<img
-							class="d-inline-block img-fluid"
-							src="/theme/img/demos/business-consulting-3/partner-01.png"
-							alt=""
-						/>
-						<p class="text-0 font-weight-medium text-center mt-2">
-							Ship7 Delivery
-						</p>
 					</div>
 				</div>
 				<p class="font-weight-medium text-center mt-3">
