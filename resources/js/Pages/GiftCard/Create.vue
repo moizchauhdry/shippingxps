@@ -3,7 +3,7 @@
 		<div class="card mt-4 pr-2">
 			<div class="p-2">
 				<h1 class="text-danger font-20">
-					Note: Any gift card purschases will be final save, no return or
+					Note: Any gift card purschases will be final sale, no return or
 					exchange. All gift card $ (Dollar) value are checked prior sending to
 					the customer.
 				</h1>
