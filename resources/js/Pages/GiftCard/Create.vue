@@ -1,6 +1,13 @@
 <template>
 	<MainLayout>
 		<div class="card mt-4 pr-2">
+			<div class="p-2">
+				<h1 class="text-danger font-20">
+					Note: Any gift card purschases will be final save, no return or
+					exchange. All gift card $ (Dollar) value are checked prior sending to
+					the customer.
+				</h1>
+			</div>
 			<div class="card-header">Gift Card</div>
 			<div class="card-body">
 				<form @submit.prevent="submit" enctype="multipart/form-data">
@@ -29,6 +36,11 @@
 								<option value="PHYSICAL">Physical</option>
 								<option value="ELECTRONIC">Electronic</option>
 							</select>
+							<small>
+								1) Physical: Card Amount + 5% Service Charges + 25$ Pickup
+								Charges <br />
+								2) Electronic: Card Amount + 5% Service Charges
+							</small>
 						</div>
 						<div class="form-group col-md-3">
 							<label for="amount">Amount</label>
@@ -73,7 +85,19 @@
 					</div>
 				</form>
 			</div>
-			<div class="card-footer"></div>
+			<div class="card-footer">
+				<h1 class="font-20">Gift Card Samples</h1>
+				<div class="row mb-4">
+					<div class="col-md-3">
+						<h1>Electronic Gift Card - Sample</h1>
+						<img :src="sample_electronic_gc" class="custom-image-preview" />
+					</div>
+					<div class="col-md-3">
+						<h1>Physical Gift Card - Sample</h1>
+						<img :src="sample_physical_gc" class="custom-image-preview" />
+					</div>
+				</div>
+			</div>
 		</div>
 	</MainLayout>
 </template>
@@ -93,6 +117,8 @@
 		},
 		data() {
 			return {
+				sample_electronic_gc: "/images/sample-electronic-gc.jpeg",
+				sample_physical_gc: "/images/sample-physical-gc.jpeg",
 				form: this.$inertia.form({
 					title: "",
 					type: "",
@@ -113,4 +139,16 @@
 	};
 </script>
 
-<style scoped></style>
+<style scoped>
+	.custom-image-preview {
+		width: 300px;
+		height: 300px;
+		border-radius: 10px;
+	}
+	.font-20 {
+		font-size: 20px;
+	}
+	.text-danger {
+		color: red;
+	}
+</style>
