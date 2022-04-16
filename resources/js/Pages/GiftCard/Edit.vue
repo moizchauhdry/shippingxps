@@ -1,6 +1,13 @@
 <template>
 	<MainLayout>
 		<div class="card mt-4 pr-2">
+			<div class="p-2">
+				<h1 class="text-danger font-20">
+					Note: Any gift card purschases will be final save, no return or
+					exchange. All gift card $ (Dollar) value are checked prior sending to
+					the customer.
+				</h1>
+			</div>
 			<div class="card-header"><b>Gift Card</b></div>
 			<div class="card-body">
 				<form @submit.prevent="submit" enctype="multipart/form-data">
@@ -31,11 +38,17 @@
 									gift_card.admin_approved_at != null &&
 									$page.props.auth.user.type == 'customer'
 								"
+								@change="calculate_amount"
 							>
 								<option value="" selected>--Select Type--</option>
 								<option value="PHYSICAL">Physical</option>
 								<option value="ELECTRONIC">Electronic</option>
 							</select>
+							<small>
+								1) Physical: Card Amount + 5% Service Charges + 25$ Pickup
+								Charges <br />
+								2) Electronic: Card Amount + 5% Service Charges
+							</small>
 						</div>
 						<div class="form-group col-md-3">
 							<label for="amount">Amount</label>
@@ -50,6 +63,7 @@
 									gift_card.admin_approved_at != null &&
 									$page.props.auth.user.type == 'customer'
 								"
+								@keyup="calculate_amount"
 							/>
 						</div>
 						<div class="form-group col-md-3">
@@ -64,6 +78,42 @@
 									gift_card.admin_approved_at != null &&
 									$page.props.auth.user.type == 'customer'
 								"
+								@keyup="calculate_amount"
+							/>
+						</div>
+						<div class="form-group col-md-6">
+							<label for="gc_total">Total</label>
+							<input
+								type="number"
+								class="form-control"
+								name="gc_total"
+								id="gc_total"
+								v-model="form.gc_total"
+								disabled
+							/>
+						</div>
+						<div class="form-group col-md-10"></div>
+						<div class="form-group col-md-2">
+							<label for="net_total"
+								><b
+									>Service Charges <small>(5%)</small>:
+									{{ service_charges }}$</b
+								>
+							</label>
+							<br />
+							<div v-if="form.type == 'PHYSICAL'">
+								<label for="net_total"><b>Pickup Charges: 25$</b></label>
+								<br />
+							</div>
+							<br />
+							<label for="net_total"><b>Total Amount:</b></label>
+							<input
+								type="number"
+								class="form-control"
+								name="net_total"
+								id="net_total"
+								v-model="form.net_total"
+								disabled
 							/>
 						</div>
 						<div
@@ -261,7 +311,19 @@
 					</div>
 				</fieldset>
 			</div>
-			<div class="card-footer"></div>
+			<div class="card-footer">
+				<h1 class="font-20">Gift Card Samples</h1>
+				<div class="row mb-4">
+					<div class="col-md-3">
+						<h1>Electronic Gift Card - Sample</h1>
+						<img :src="sample_electronic_gc" class="custom-image-preview" />
+					</div>
+					<div class="col-md-3">
+						<h1>Physical Gift Card - Sample</h1>
+						<img :src="sample_physical_gc" class="custom-image-preview" />
+					</div>
+				</div>
+			</div>
 		</div>
 	</MainLayout>
 </template>
@@ -281,6 +343,9 @@
 		},
 		data() {
 			return {
+				sample_electronic_gc: "/images/sample-electronic-gc.jpeg",
+				sample_physical_gc: "/images/sample-physical-gc.jpeg",
+				service_charges: 0,
 				form: this.$inertia.form({
 					title: this.gift_card.title,
 					type: this.gift_card.type,
@@ -288,7 +353,9 @@
 					qty: this.gift_card.qty,
 					notes: this.gift_card.notes,
 					approve: 0,
-					status: this.gift_card.status,
+					status: this.gift_card.status || "",
+					gc_total: 0,
+					net_total: 0,
 					images: [
 						{
 							image: "",
@@ -355,9 +422,42 @@
 				modal.classList.add("show");
 				$("#imageViewer").show();
 			},
+			calculate_amount() {
+				var percentage_amount = 0;
+				var final_amount = 0;
+
+				this.form.gc_total = this.form.amount * this.form.qty;
+				if (this.form.gc_total > 5) {
+					percentage_amount = (this.form.gc_total * 5) / 100;
+					this.service_charges = percentage_amount;
+					final_amount = this.form.gc_total + percentage_amount;
+				} else {
+					final_amount = this.form.gc_total + 5;
+				}
+
+				if (this.form.type == "PHYSICAL") {
+					final_amount = final_amount + 25;
+				}
+
+				this.form.net_total = final_amount;
+			},
 		},
-		created() {},
+		created() {
+			this.calculate_amount();
+		},
 	};
 </script>
 
-<style scoped></style>
+<style scoped>
+	.custom-image-preview {
+		width: 300px;
+		height: 300px;
+		border-radius: 10px;
+	}
+	.font-20 {
+		font-size: 20px;
+	}
+	.text-danger {
+		color: red;
+	}
+</style>

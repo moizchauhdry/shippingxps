@@ -31,6 +31,7 @@
 								v-model="form.type"
 								id="type"
 								required
+								@change="calculate_amount"
 							>
 								<option value="" selected>--Select Type--</option>
 								<option value="PHYSICAL">Physical</option>
@@ -52,6 +53,7 @@
 								id="amount"
 								v-model="form.amount"
 								required
+								@keyup="calculate_amount"
 							/>
 						</div>
 						<div class="form-group col-md-3">
@@ -61,8 +63,45 @@
 								class="form-control"
 								name="qty"
 								id="qty"
+								min="1"
 								v-model="form.qty"
+								@keyup="calculate_amount"
 								required
+							/>
+						</div>
+						<div class="form-group col-md-6">
+							<label for="gc_total">Total</label>
+							<input
+								type="number"
+								class="form-control"
+								name="gc_total"
+								id="gc_total"
+								v-model="form.gc_total"
+								disabled
+							/>
+						</div>
+						<div class="form-group col-md-10"></div>
+						<div class="form-group col-md-2">
+							<label for="net_total"
+								><b
+									>Service Charges <small>(5%)</small>:
+									{{ service_charges }}$</b
+								>
+							</label>
+							<br />
+							<div v-if="form.type == 'PHYSICAL'">
+								<label for="net_total"><b>Pickup Charges: 25$</b></label>
+								<br />
+							</div>
+							<br />
+							<label for="net_total"><b>Total Amount:</b></label>
+							<input
+								type="number"
+								class="form-control"
+								name="net_total"
+								id="net_total"
+								v-model="form.net_total"
+								disabled
 							/>
 						</div>
 						<div class="form-group col-md-12">
@@ -119,12 +158,15 @@
 			return {
 				sample_electronic_gc: "/images/sample-electronic-gc.jpeg",
 				sample_physical_gc: "/images/sample-physical-gc.jpeg",
+				service_charges: 0,
 				form: this.$inertia.form({
 					title: "",
 					type: "",
 					amount: "",
-					qty: "",
+					qty: 1,
 					notes: "",
+					gc_total: 0,
+					net_total: 0,
 				}),
 			};
 		},
@@ -134,6 +176,25 @@
 		methods: {
 			submit() {
 				this.form.post(this.route("gift-card.create"));
+			},
+			calculate_amount() {
+				var percentage_amount = 0;
+				var final_amount = 0;
+
+				this.form.gc_total = this.form.amount * this.form.qty;
+				if (this.form.gc_total > 5) {
+					percentage_amount = (this.form.gc_total * 5) / 100;
+					this.service_charges = percentage_amount;
+					final_amount = this.form.gc_total + percentage_amount;
+				} else {
+					final_amount = this.form.gc_total + 5;
+				}
+
+				if (this.form.type == "PHYSICAL") {
+					final_amount = final_amount + 25;
+				}
+
+				this.form.net_total = final_amount;
 			},
 		},
 	};
