@@ -30,7 +30,7 @@
 						</li>
 						<li style="font-size: 15px" class="pt-1 pb-1 d-flex mb-0 px-0">
 							<a
-								href="mailto:shippingxps@shippingxpstheme.com"
+								href="mailto:info@shippingxps.com"
 								class="p-0 mr-0 text-color-light font-weight-semibold"
 								>info@shippingxps.com</a
 							>
@@ -39,7 +39,7 @@
 							style="font-size: 15px"
 							class="pt-1 pb-1 d-flex mb-0 font-weight-semibold text-color-light px-0"
 						>
-							3578 W SAVANNA ST , ANAHEIM , State: CA , 92804
+							3578 W SAVANNA ST, ANAHEIM, CA. 92804
 						</li>
 					</ul>
 					<ul
