@@ -116,6 +116,23 @@
 								disabled
 							/>
 						</div>
+
+						<div class="form-group col-md-6">
+							<label for="notes">Notes</label>
+							<textarea
+								class="form-control"
+								name="notes"
+								id="notes"
+								v-model="form.notes"
+								cols="10"
+								rows="5"
+								:disabled="
+									gift_card.admin_approved_at != null &&
+									$page.props.auth.user.type == 'customer'
+								"
+							></textarea>
+						</div>
+
 						<div
 							class="form-group col-md-6"
 							v-if="$page.props.auth.user.type == 'admin'"
@@ -138,109 +155,144 @@
 						</div>
 
 						<section v-if="$page.props.auth.user.type == 'admin'">
-							<div class="row">
-								<div class="col-md-12">
-									<h2
-										class="font-semibold text-xl text-gray-800 leading-tight form-title"
-									>
-										Gift Card Files
-									</h2>
-								</div>
-								<div class="col-md-6">
-									<a
-										v-on:click="addImage"
-										class="btn btn-primary"
-										style="float: right"
-									>
-										<span>Add More Image </span>
-									</a>
-								</div>
-							</div>
-
-							<div class="row">
-								<div class="col-md-6">
-									<breeze-label for="name" value="Image" />
-								</div>
-							</div>
-							<div
-								v-for="(image, index) in form.images"
-								:key="image.id"
-								class="row"
+							<h1
+								class="font-semibold text-xl text-gray-800 leading-tight form-title"
 							>
-								<div class="col-md-3">
-									<div class="form-group">
-										<input
-											type="file"
-											@input="image.image = $event.target.files[0]"
-										/>
-										<progress
-											v-if="form.progress"
-											:value="form.progress.percentage"
-											max="100"
-										>
-											{{ form.progress.percentage }}%
-										</progress>
-									</div>
-								</div>
+								Gift Card Files
+							</h1>
 
-								<div class="col-md-1" v-show="index != 0">
-									<div class="form-group">
+							<h1
+								class="text-danger font-20 mb-4"
+								v-if="gift_card.payment_status != 'Paid'"
+							>
+								The Payment of this request is pending. You can only attach gift
+								card images if customer paid the amount of gift card.
+							</h1>
+
+							<section v-if="gift_card.payment_status == 'Paid'">
+								<div class="row">
+									<div class="col-md-6">
 										<a
-											v-on:click="removeImage(index)"
+											v-on:click="addImage"
 											class="btn btn-primary"
-											style="margin-top: 10px"
+											style="float: right"
 										>
-											<span>Remove</span>
+											<span>Add More Image </span>
 										</a>
 									</div>
 								</div>
-							</div>
 
-							<div class="row">
-								<div class="col-md-12" v-show="gift_card.files.length > 0">
-									<h2
-										class="font-semibold text-xl text-gray-800 leading-tight form-title"
-									>
-										Images
-									</h2>
-								</div>
 								<div
-									v-for="(image, index) in gift_card.files"
+									class="row"
+									v-for="(image, index) in form.images"
 									:key="image.id"
-									class="col-md-3"
 								>
-									<div class="text-center">
-										<img
-											style="width: 100px; height: auto"
-											class="img-thumbnail"
-											:src="imgURL(image.file_name)"
-											@click="viewImage($event)"
-										/>
-										<a
-											href="void(0);"
-											@click="deleteImage($event, index, image.id)"
-											><i class="fa fa-trash"></i
-										></a>
+									<div class="col-md-2">
+										<div class="form-group">
+											<input
+												type="file"
+												@input="image.image = $event.target.files[0]"
+											/>
+											<progress
+												v-if="form.progress"
+												:value="form.progress.percentage"
+												max="100"
+											>
+												{{ form.progress.percentage }}%
+											</progress>
+										</div>
+									</div>
+									<div class="col-md-2" v-show="index != 0">
+										<div class="form-group">
+											<a
+												v-on:click="removeImage(index)"
+												class="btn btn-primary btn-sm"
+											>
+												<span>Remove</span>
+											</a>
+										</div>
 									</div>
 								</div>
-							</div>
+
+								<!-- <div class="row">
+									<div class="col-md-12" v-show="gift_card.files.length > 0">
+										<h2
+											class="font-semibold text-xl text-gray-800 leading-tight form-title"
+										>
+											Images
+										</h2>
+									</div>
+									<div
+										v-for="(image, index) in gift_card.files"
+										:key="image.id"
+										class="col-md-3"
+									>
+										<div>
+											<img
+												style="width: 100px; height: auto"
+												class="img-thumbnail"
+												:src="imgURL(image.file_name)"
+												@click="viewImage($event)"
+											/>
+											<a
+												href="void(0);"
+												@click="deleteImage($event, index, image.id)"
+												><i class="fa fa-trash mr-1"></i>Delete Image</a
+											>
+										</div>
+									</div>
+								</div> -->
+							</section>
 						</section>
 
-						<div class="form-group col-md-12">
-							<label for="notes">Notes</label>
-							<textarea
-								class="form-control"
-								name="notes"
-								id="notes"
-								v-model="form.notes"
-								cols="10"
-								rows="5"
-								:disabled="
-									gift_card.admin_approved_at != null &&
-									$page.props.auth.user.type == 'customer'
-								"
-							></textarea>
+						<div class="row" v-show="gift_card.payment_status == 'Paid'">
+							<table class="table table-striped table-bordered table-sm mb-4">
+								<thead>
+									<tr class="bg-primary text-white">
+										<td colspan="3" class="text-center">GIFT CARD IMAGES</td>
+									</tr>
+									<tr>
+										<th scope="col">Sr #</th>
+										<th scope="col">Image</th>
+										<th
+											scope="col"
+											v-if="$page.props.auth.user.type == 'admin'"
+										>
+											Action
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr
+										v-for="(image, index) in gift_card.files"
+										:key="image.id"
+										v-show="gift_card.files.length > 0"
+									>
+										<th scope="row">00{{ ++index }}</th>
+										<td>
+											<img
+												style="width: 100px; height: auto"
+												class="img-thumbnail"
+												:src="imgURL(image.file_name)"
+												@click="viewImage($event)"
+											/>
+											{{ image.file_name }}
+										</td>
+										<td v-if="$page.props.auth.user.type == 'admin'">
+											<a
+												href="void(0);"
+												@click="deleteImage($event, index, image.id)"
+												><i class="fa fa-trash mr-1"></i>Delete Image</a
+											>
+										</td>
+									</tr>
+									<tr v-show="gift_card.files.length == 0">
+										<td colspan="3" class="text-center">NO FILES ATTACHED</td>
+									</tr>
+								</tbody>
+							</table>
 						</div>
+
 						<div class="form-group col-12">
 							<button
 								type="submit"

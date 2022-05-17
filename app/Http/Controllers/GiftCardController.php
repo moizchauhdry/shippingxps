@@ -16,7 +16,7 @@ use App\Notifications\GiftCardNotification;
 use Carbon\Carbon;
 use File;
 use Illuminate\Validation\Rule;
-
+use Session;
 
 class GiftCardController extends Controller
 {
@@ -24,15 +24,14 @@ class GiftCardController extends Controller
     {
         $user = Auth::user();
         if ($user->type == 'admin') {
-            $gift_cards = GiftCard::orderBy('id','desc')->get();
+            $gift_cards = GiftCard::orderBy('id', 'desc')->get();
         } else {
             $gift_cards = GiftCard::where('user_id', $user->id)->get();
         }
-        
-        return Inertia::render('GiftCard/Index',[
+
+        return Inertia::render('GiftCard/Index', [
             'gift_cards' => $gift_cards,
         ]);
-
     }
 
     public function create(Request $request)
@@ -40,7 +39,7 @@ class GiftCardController extends Controller
         $user = Auth::user();
 
         if ($request->isMethod('POST')) {
-                
+
             $validated_data = $request->validate([
                 'title' => 'required|string|max:150',
                 'type' => 'required|string|in:PHYSICAL,ELECTRONIC',
@@ -74,11 +73,11 @@ class GiftCardController extends Controller
         return Inertia::render('GiftCard/Create');
     }
 
-    public function edit(Request $request,$id)
+    public function edit(Request $request, $id)
     {
         $user = Auth::user();
         $gift_card = GiftCard::with('files')->findOrFail($id);
-        
+
         if ($request->isMethod('POST')) {
 
             $validated_data = $request->validate([
@@ -114,13 +113,13 @@ class GiftCardController extends Controller
                     $gift_card_file = new GiftCardFile();
                     $gift_card_file->file_name = $file_name;
                     $gift_card_file->gift_card_id = $gift_card->id;
-                    
+
                     if ($key == 0) {
                         $gift_card_file->display = 1;
                     } else {
                         $gift_card_file->display = 0;
                     }
-                    
+
                     $gift_card_file->save();
                 }
             }
@@ -146,13 +145,12 @@ class GiftCardController extends Controller
                     $gift_card->status == 'Accepted' ? $gift_card->update(['admin_approved_at' => Carbon::now()]) : $gift_card->update(['admin_approved_at' => NULL]);
                 }
             }
-            
-            if ($request->has('approve') && $request->approve == 1) {
-                \Session::forget(['order_id','package_id','gift_card_id']);
-                \Session::put('insurance_id', $id);
-                
-                $amount = $gift_card->amount * $gift_card->qty;
 
+            if ($request->has('approve') && $request->approve == 1) {
+                Session::forget(['gift_card_id']);
+                Session::put('gift_card_id', $id);
+
+                $amount = $gift_card->amount * $gift_card->qty;
                 if ($amount <= 0) {
                     return redirect()->back()->with('error', 'OPERRATION FAILED TO PERFORM, AMOUNT MUST BE GREATER THAN 0');
                 }
@@ -170,12 +168,12 @@ class GiftCardController extends Controller
 
                 return redirect()->route('payment.index', 'amount=' . $final_amount);
             }
-            
+
             return redirect()->route('gift-card.index')->with('success', 'Successfully Modified');
         }
 
         $gift_card = GiftCard::find($id);
-        $comments = GiftCardComment::where('gift_card_id',$gift_card->id)->with('user')->orderBy('id','desc')->get();
+        $comments = GiftCardComment::where('gift_card_id', $gift_card->id)->with('user')->orderBy('id', 'desc')->get();
 
         $images = [];
         foreach ($gift_card->files as $image) {
@@ -184,7 +182,7 @@ class GiftCardController extends Controller
                 'image' => $image->image,
             ];
         }
-        
+
         return Inertia::render('GiftCard/Edit', [
             'gift_card' => $gift_card,
             'comments' => $comments,
@@ -222,7 +220,7 @@ class GiftCardController extends Controller
             }
         }
         $gift_card = GiftCard::find($id);
-        $comments = GiftCardComment::where('gift_card_id',$gift_card->id)->with('user')->orderBy('id','desc')->get();
+        $comments = GiftCardComment::where('gift_card_id', $gift_card->id)->with('user')->orderBy('id', 'desc')->get();
 
         return Inertia::render('GiftCard/Edit', [
             'gift_card' => $gift_card,

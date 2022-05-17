@@ -21,6 +21,7 @@
 							<th>Type</th>
 							<th>Amount ($)</th>
 							<th>Quantity</th>
+							<th>Payment Status</th>
 							<th>Notes</th>
 							<th>Action</th>
 						</tr>
@@ -32,10 +33,14 @@
 							<td>{{ card.type }}</td>
 							<td>{{ card.amount }}</td>
 							<td>{{ card.qty }}</td>
+							<td>
+								<span class="badge badge-secondary">
+									{{ card.payment_status }}
+								</span>
+							</td>
 							<td>{{ card.notes }}</td>
 							<td>
 								<inertia-link
-									v-show="card.payment_status != 'Paid'"
 									:href="route('gift-card.edit', card.id)"
 									class="btn btn-primary float-right"
 									>Edit</inertia-link
