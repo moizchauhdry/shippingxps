@@ -79,14 +79,20 @@ class PaymentNotification extends Notification
                 'message' => 'Customer has paid for <strong>Insurance Request ' . $this->payment->insurance_id . '</strong>, Click here link  <a class="link-primary" href="' . $url . '" >Request # ' . $this->payment->insurance_id . '</a>',
                 'url' => $url
             ];
-        }elseif ($this->payment->additional_request_id != null) {
+        } elseif ($this->payment->additional_request_id != null) {
             $url = route("additional-request.edit", $this->payment->additional_request_id);
             return [
                 'additional_request_id' => $this->payment->additional_request_id,
                 'message' => 'Customer has paid for <strong>Request ' . $this->payment->additional_request_id . '</strong>, Click here link  <a class="link-primary" href="' . $url . '" >Request # ' . $this->payment->additional_request_id . '</a>',
                 'url' => $url
             ];
+        } elseif ($this->payment->gift_card_id != null) {
+            $url = route("gift-card.edit", $this->payment->gift_card_id);
+            return [
+                'gift_card_id' => $this->payment->gift_card_id,
+                'message' => 'Customer has paid for <strong>Gift Card ' . $this->payment->gift_card_id . '</strong>, Click here link  <a class="link-primary" href="' . $url . '" >Request # ' . $this->payment->gift_card_id . '</a>',
+                'url' => $url
+            ];
         }
-
     }
 }

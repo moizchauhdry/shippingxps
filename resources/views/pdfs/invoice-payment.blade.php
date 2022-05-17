@@ -1,5 +1,7 @@
 <style>
-    table.border,.border  th,.border  td {
+    table.border,
+    .border th,
+    .border td {
         border: 1px solid black;
         border-collapse: collapse;
     }
@@ -17,24 +19,26 @@
 <br>
 <strong>Invoice ID : </strong> {{ $payment->invoice_id }}
 <table class="border" style="width: 100%">
-   <tr>
+    <tr>
         <td colspan="2">
             <h3>Invoiced From</h3><br>
             <strong>ShippingXPS</strong><br>
             {{ $package->warehouse->name ?? $order->warehouse->name ?? $warehouse->name ?? '- -' }}<br>
             Address:
             @if(isset($package->warehouse))
-                {{ $package->warehouse->address}},{{ $package->warehouse->city }},{{ $package->warehouse->state }}{{ ','.$package->warehouse->zip ?? '' }}
+            {{ $package->warehouse->address}},{{ $package->warehouse->city }},{{ $package->warehouse->state }}{{
+            ','.$package->warehouse->zip ?? '' }}
             @elseif(isset($order->warehouse))
-                {{ $order->warehouse->address}},{{ $order->warehouse->city }},{{ $order->warehouse->state }}{{ ','.$order->warehouse->zip ?? '' }}
+            {{ $order->warehouse->address}},{{ $order->warehouse->city }},{{ $order->warehouse->state }}{{
+            ','.$order->warehouse->zip ?? '' }}
             @elseif(isset($warehouse))
-                {{ $warehouse->address}},{{ $warehouse->city }},{{ $warehouse->state }}{{ ','.$warehouse->zip ?? '' }}
+            {{ $warehouse->address}},{{ $warehouse->city }},{{ $warehouse->state }}{{ ','.$warehouse->zip ?? '' }}
             @else
-                - -
+            - -
             @endif
             <br>
-            Phone: {{ $package->warehouse->phone ?? $order->warehouse->phone ?? $warehouse->phone  ?? '- -'   }}<br>
-            Email : {{ $package->warehouse->email ?? $order->warehouse->email ?? $warehouse->email ?? '- -'   }}
+            Phone: {{ $package->warehouse->phone ?? $order->warehouse->phone ?? $warehouse->phone ?? '- -' }}<br>
+            Email : {{ $package->warehouse->email ?? $order->warehouse->email ?? $warehouse->email ?? '- -' }}
         </td>
 
 
@@ -45,17 +49,18 @@
             <strong>{{ $address->fullname ?? '- -' }}</strong><br>
             Address:{{ $address->address ?? '- -' }}<br>
             Phone: {{ $address->phone ?? '- -' }}<br>
-            Email: {{ $customer->email ?? '- -' }}</td>
+            Email: {{ $customer->email ?? '- -' }}
+        </td>
     </tr>
     @if(!empty($billing))
-        <tr>
-            <td colspan="2">
-                <h3>Billing :</h3><br>
-                <strong>{{ $billing['fullname'] ?? '- -' }}</strong><br>
-                Address:{{ $billing['address'] ?? '- -' }}<br>
-                Email :{{ $billing['email'] ?? '- -' }}<br>
+    <tr>
+        <td colspan="2">
+            <h3>Billing :</h3><br>
+            <strong>{{ $billing['fullname'] ?? '- -' }}</strong><br>
+            Address:{{ $billing['address'] ?? '- -' }}<br>
+            Email :{{ $billing['email'] ?? '- -' }}<br>
 
-        </tr>
+    </tr>
     @endif
 
 </table>
@@ -63,7 +68,7 @@
 <strong>Charges</strong>
 <table class="border" style="width: 100%">
     <tbody>
-    @isset($package)
+        @isset($package)
         <tr>
             <td>
                 Mail Fee
@@ -79,19 +84,19 @@
             <td style="width: 100px">${{ $package->storage_fee }}</td>
         </tr>
         @foreach($package->serviceRequests as $item)
-            <tr>
-                <td>
-                    {{ $item->service->title }}
-                </td>
+        <tr>
+            <td>
+                {{ $item->service->title }}
+            </td>
 
-                <td style="width: 100px">
-                    @if($item->service->id == 1)
-                        ${{ $item->service->price + $package->orders->count() * 1.5 }}
-                    @else
-                        ${{ $item->service->price }}
-                    @endif
-                </td>
-            </tr>
+            <td style="width: 100px">
+                @if($item->service->id == 1)
+                ${{ $item->service->price + $package->orders->count() * 1.5 }}
+                @else
+                ${{ $item->service->price }}
+                @endif
+            </td>
+        </tr>
         @endforeach
         <tr>
             <td>
@@ -99,9 +104,9 @@
             </td>
             <td style="width: 100px">${{ $package->shipping_charges }}</td>
         </tr>
-    @endisset
+        @endisset
 
-    @isset($order)
+        @isset($order)
         <tr>
             <td>
                 Order Items Total
@@ -128,9 +133,9 @@
             <td style="width: 100px">$ {{ $order->pickup_charges ?? 0.00 }}</td>
         </tr>
 
-    @endisset
+        @endisset
 
-    @isset($additionalRequest)
+        @isset($additionalRequest)
         <tr>
             <td>
                 Additional Charges For Request - {{ $additionalRequest->message ?? '- -' }}
@@ -138,9 +143,9 @@
 
             <td style="width: 100px">$ {{ $additionalRequest->price }}</td>
         </tr>
-    @endisset
+        @endisset
 
-    @isset($insuranceRequest)
+        @isset($insuranceRequest)
         <tr>
             <td>
                 Charges For Insurance Request with Shipping
@@ -148,19 +153,32 @@
 
             <td style="width: 100px">$ {{ $insuranceRequest->amount }}</td>
         </tr>
-    @endisset
+        @endisset
+
+        @isset($gift_card)
+        <tr>
+            <td>
+                Charges For Gift Card with Shipping
+            </td>
+
+            <td style="width: 100px">$ {{ $gift_card->amount }}</td>
+        </tr>
+        @endisset
 
     </tbody>
 </table>
 <table style="width: 100%">
     <tr>
-        <td style="text-align: right">Sub Total :  </td><td style="width: 100px">${{ $payment->charged_amount + $payment->discount }}</td>
+        <td style="text-align: right">Sub Total : </td>
+        <td style="width: 100px">${{ $payment->charged_amount + $payment->discount }}</td>
     </tr>
     <tr>
-        <td style="text-align: right">Discount :  </td><td style="width: 100px">${{  $payment->discount }}</td>
+        <td style="text-align: right">Discount : </td>
+        <td style="width: 100px">${{ $payment->discount }}</td>
     </tr>
     <tr>
-        <td style="text-align: right">Grand Total :  </td><td style="width: 100px">${{ $payment->charged_amount }}</td>
+        <td style="text-align: right">Grand Total : </td>
+        <td style="width: 100px">${{ $payment->charged_amount }}</td>
     </tr>
 </table>
 <br>

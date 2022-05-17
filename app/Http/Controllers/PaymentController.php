@@ -7,6 +7,7 @@ use App\Models\AdditionalRequest;
 use App\Models\Address;
 use App\Models\Coupon;
 use App\Models\CustomerCoupon;
+use App\Models\GiftCard;
 use App\Models\InsuranceRequest;
 use App\Models\Order;
 use App\Models\Package;
@@ -25,18 +26,15 @@ use SebastianBergmann\LinesOfCode\LinesOfCode;
 
 class PaymentController extends Controller
 {
-    //
-
-
     public function index(Request $request)
     {
-        if($request->has('package_id')){
-            \Session::forget(['order_id','additional_request_id','insurance_id']);
+        if ($request->has('package_id')) {
+            \Session::forget(['order_id', 'additional_request_id', 'insurance_id']);
         }
-        if(\Session::has('order_id')){
-            \Session::forget(['package_id','additional_request_id','insurance_id']);
+        if (\Session::has('order_id')) {
+            \Session::forget(['package_id', 'additional_request_id', 'insurance_id']);
         }
-        if ($request->has('package_id') || \Session::has('order_id') || \Session::has('additional_request_id') || \Session::has('insurance_id')) {
+        if ($request->has('package_id') || \Session::has('order_id') || \Session::has('additional_request_id') || \Session::has('insurance_id') || \Session::has('gift_card_id')) {
             \Session::put('amount', $request->amount);
             if ($request->has('status')) {
                 $status = $request->status;
@@ -48,19 +46,22 @@ class PaymentController extends Controller
                 \Session::put('package_id', $request->package_id);
             }
 
-            return Inertia::render('Payment/OrderPayment',
+            return Inertia::render(
+                'Payment/OrderPayment',
                 [
                     'amount' => $request->amount,
                     'status' => $status,
                     'hasInsurance' => \Session::has('insurance_id') ? 1 : 0,
                     'hasRequest' => \Session::has('additional_request_id') ? 1 : 0,
                     'hasPackage' => $request->has('package_id') ? 1 : 0,
-                ]);
+                ]
+            );
         } else {
             return redirect()->back()->with('error', 'Something went wrong');
         }
     }
 
+    // AUTHORIZE NET - PAYMENT SUCCESS
     public function pay(Request $request)
     {
         $cardNos = [
@@ -80,7 +81,8 @@ class PaymentController extends Controller
             '3088000000000017',
             '5424000000000015',
             '2223000010309703',
-            '2223000010309711'];
+            '2223000010309711'
+        ];
 
 
         /*if (in_array($request->card_no, $cardNos)) {
@@ -111,9 +113,9 @@ class PaymentController extends Controller
         }
 
         $amount = doubleval($request->amount);
-        $discount = (double)number_format($discount,2);
-        \Log::info('amount = '. $request->amount );
-        \Log::info('amount = '. $amount . ', discount = '.$discount);
+        $discount = (float)number_format($discount, 2);
+        \Log::info('amount = ' . $request->amount);
+        \Log::info('amount = ' . $amount . ', discount = ' . $discount);
 
 
 
@@ -162,8 +164,8 @@ class PaymentController extends Controller
 
         $billing = [
             'email' => $request->email ?? $user->email ?? '',
-            'fullname' => $request->first_name.' '.$request->last_name ?? '',
-            'address' => $request->address.', '.$request->city.', '.$request->zip.', '.$request->country ?? '',
+            'fullname' => $request->first_name . ' ' . $request->last_name ?? '',
+            'address' => $request->address . ', ' . $request->city . ', ' . $request->zip . ', ' . $request->country ?? '',
         ];
 
         // Set the customer's identifying information
@@ -220,6 +222,7 @@ class PaymentController extends Controller
                     $payment->package_id = \Session::has('package_id') ? \Session::get('package_id') : null;
                     $payment->additional_request_id = \Session::has('additional_request_id') ? \Session::get('additional_request_id') : null;
                     $payment->insurance_id = \Session::has('insurance_id') ? \Session::get('insurance_id') : null;
+                    $payment->gift_card_id = \Session::has('gift_card_id') ? \Session::get('gift_card_id') : null;
                     $payment->transaction_id = $response->getTransactionResponse()->getTransId();
                     $payment->charged_amount = $amount;
                     $payment->discount = $discount;
@@ -255,6 +258,13 @@ class PaymentController extends Controller
                         $package->save();
                     }
 
+                    if (\Session::has('gift_card_id')) {
+                        $id = \Session::get('gift_card_id');
+                        $gift_card = GiftCard::find($id);
+                        $gift_card->payment_status = "Paid";
+                        $gift_card->save();
+                    }
+
 
                     if (\Session::has('package_id')) {
                         $id = \Session::get('package_id');
@@ -273,17 +283,15 @@ class PaymentController extends Controller
                     }
 
                     \Log::info('b4 invoice');
-                    $this->buildInvoice($payment->id,$billing);
+                    $this->buildInvoice($payment->id, $billing);
                     \Log::info('after invoice');
 
-                    \Session::forget(['order_id', 'package_id', 'amount','additional_request_id','insurance_id']);
+                    \Session::forget(['order_id', 'package_id', 'amount', 'additional_request_id', 'insurance_id', 'gift_card_id']);
                     return response()->json([
                         'status' => 1,
                         'message' => 'Please Check card Expiry',
                         'payment_id' => $payment->id,
                     ]);
-
-
                 } else {
                     //  echo "Transaction Failed \n";
                     if ($tresponse->getErrors() != null) {
@@ -343,10 +351,9 @@ class PaymentController extends Controller
             ]);
             // return redirect()->back()->with(['error' => ]);
         }*/
-
-
     }
 
+    // PAYPAL - PAYMENT SUCCESS
     public function payPalSuccess(Request $request)
     {
         $description = json_decode($request->payment_detail, true);
@@ -354,9 +361,9 @@ class PaymentController extends Controller
         $billing['email'] = $description['payer']['email_address'] ?? '';
         $billing['fullname'] = $shipping['name']['full_name'] ?? '';
         $billing['address'] = null;
-        if(!empty($shipping['address'])){
-            foreach ($shipping['address'] as $key => $address){
-                $billing['address'] .= $address.(($key) == 'country_code'? '': ', ');
+        if (!empty($shipping['address'])) {
+            foreach ($shipping['address'] as $key => $address) {
+                $billing['address'] .= $address . (($key) == 'country_code' ? '' : ', ');
             }
         }
         $user = Auth::user();
@@ -369,7 +376,7 @@ class PaymentController extends Controller
             }
         }
         $amount = doubleval($request->amount);
-        $discount = (double)number_format($discount,2);
+        $discount = (float)number_format($discount, 2);
         $lastPayment = Payment::latest()->first();
         $invoiceID = sprintf("%05d", ++$lastPayment->id);
         $payment = new Payment();
@@ -378,13 +385,14 @@ class PaymentController extends Controller
         $payment->package_id = \Session::has('package_id') ? \Session::get('package_id') : null;
         $payment->additional_request_id = \Session::has('additional_request_id') ? \Session::get('additional_request_id') : null;
         $payment->insurance_id = \Session::has('insurance_id') ? \Session::get('insurance_id') : null;
-        $payment->transaction_id = $request->transaction_id ?? $invoiceID ;
+        $payment->gift_card_id = \Session::has('gift_card_id') ? \Session::get('gift_card_id') : null;
+        $payment->transaction_id = $request->transaction_id ?? $invoiceID;
         $payment->payment_type = 'PayPal';
         $payment->charged_amount = $amount;
         $payment->discount = $discount;
         $payment->charged_at = Carbon::now()->format('Y-m-d H:i:s');
         $payment->save();
-        $invoiceID =  sprintf("%05d",$payment->id);
+        $invoiceID =  sprintf("%05d", $payment->id);
         $payment->invoice_id = $invoiceID;
         $payment->save();
         if (\Session::has('order_id')) {
@@ -411,6 +419,12 @@ class PaymentController extends Controller
             $package->save();
         }
 
+        if (\Session::has('gift_card_id')) {
+            $id = \Session::get('gift_card_id');
+            $gift_card = GiftCard::find($id);
+            $gift_card->payment_status = "Paid";
+            $gift_card->save();
+        }
 
         if (\Session::has('package_id')) {
             $id = \Session::get('package_id');
@@ -429,10 +443,10 @@ class PaymentController extends Controller
         }
 
         \Log::info('b4 invoice');
-        $this->buildInvoice($payment->id,$billing);
+        $this->buildInvoice($payment->id, $billing);
         \Log::info('after invoice');
 
-        \Session::forget(['order_id', 'package_id', 'amount','additional_request_id','insurance_id']);
+        \Session::forget(['order_id', 'package_id', 'amount', 'additional_request_id', 'insurance_id', 'gift_card_id']);
         return response()->json([
             'status' => 1,
             'message' => 'Please Check card Expiry',
@@ -440,7 +454,7 @@ class PaymentController extends Controller
         ]);
     }
 
-    public function buildInvoice($id ,$billing = [])
+    public function buildInvoice($id, $billing = [])
     {
         $payment = Payment::find($id);
         $customer = $payment->customer;
@@ -507,23 +521,36 @@ class PaymentController extends Controller
             ])->render();
         }
 
+        if ($payment->gift_card_id != null) {
+            $gift_card = $payment->giftCard;
+
+            $html = view('pdfs.invoice-payment', [
+                'payment' => $payment,
+                'warehouse' => $warehouse,
+                'gift_card' => $gift_card,
+                'customer' => $customer,
+                'address' => $address,
+                'billing' => $billing
+            ])->render();
+        }
+
         \Log::info('b4 writing');
         try {
             $mpdf = new \Mpdf\Mpdf();
             $mpdf->WriteHTML($html);
             $mpdf->SetHTMLFooter('<table style="position: absolute;width: 100%;bottom: 0px">
-    <tr>
-        <th colspan="3" style="text-align: center">
-            THANK YOU FOR YOUR BUSINESS
-            <br><br>
-        </th>
-    </tr>
-    <tr>
-        <th style="text-align: center;font-size: 12px;font-weight: normal">+1 657-201-7881</th>
-        <th style="text-align: center;font-size: 12px;font-weight: normal">shippingxps.com</th>
-        <th style="text-align: center;font-size: 12px;font-weight: normal">info@shippingxps.com</th>
-    </tr>
-</table>');
+                <tr>
+                    <th colspan="3" style="text-align: center">
+                        THANK YOU FOR YOUR BUSINESS
+                        <br><br>
+                    </th>   
+                </tr>
+                <tr>
+                    <th style="text-align: center;font-size: 12px;font-weight: normal">+1 657-201-7881</th>
+                    <th style="text-align: center;font-size: 12px;font-weight: normal">shippingxps.com</th>
+                    <th style="text-align: center;font-size: 12px;font-weight: normal">info@shippingxps.com</th>
+                </tr>
+            </table>');
             $mpdf->Output('public/invoices/pdf/' . $payment->invoice_id . '.pdf', \Mpdf\Output\Destination::FILE);
         } catch (\Throwable $e) {
             \Log::info($e);
@@ -533,7 +560,6 @@ class PaymentController extends Controller
         $payment->save();
 
         event(new PaymentEventHandler($payment));
-
     }
 
     public function getPayments(Request $request)
@@ -542,21 +568,25 @@ class PaymentController extends Controller
 
         if ($user->type == 'admin') {
             $payments = Payment::with(['customer', 'package' => function ($query) {
-                $query->with('address',function ($qry){ $qry->with('country'); });
+                $query->with('address', function ($qry) {
+                    $qry->with('country');
+                });
             }, 'order'])->orderByDesc('id');
         } else {
             $payments = Payment::with(['customer', 'package' => function ($query) {
-                $query->with('address',function ($qry){ $qry->with('country'); });
+                $query->with('address', function ($qry) {
+                    $qry->with('country');
+                });
             }, 'order'])->where('customer_id', $user->id)->orderByDesc('id');
         }
 
-        if($request->isMethod('post')) {
+        if ($request->isMethod('post')) {
 
-            $payments = $this->searchPayments($request,$payments);
+            $payments = $this->searchPayments($request, $payments);
 
             $perPage = 10;
 
-            if($request->has('per_page') && $request->get('per_page') != NULL){
+            if ($request->has('per_page') && $request->get('per_page') != NULL) {
                 $perPage = $request->get('per_page');
             }
 
@@ -567,15 +597,9 @@ class PaymentController extends Controller
         return Inertia::render('Payment/Index', ['payments' => $payments->paginate(10)]);
     }
 
-    /* Coupon Mangement */
-
+    // PAYMENT SUCCESS PAGE FOR BOTH PAYPAL & AUTHORIZE 
     public function paymentSuccess($id)
     {
-        /*if (\Session::has('payment')) {
-            $payment = \Session::get('payment');
-        } else {
-            $payment = null;
-        }*/
         $payment = Payment::find($id);
 
         if ($payment != null) {
@@ -618,7 +642,6 @@ class PaymentController extends Controller
                         'coupon_id' => $coupon->id,
                     ]);
                 }
-
             } else {
                 return response()->json([
                     'status' => 0,
@@ -631,12 +654,11 @@ class PaymentController extends Controller
                 'message' => 'Coupon is invalid',
             ]);
         }
-
     }
 
     public function generateReport($paymentID)
     {
-        $payment = Payment::where('id',$paymentID)->with(['customer', 'package', 'order'])->first();
+        $payment = Payment::where('id', $paymentID)->with(['customer', 'package', 'order'])->first();
 
 
         $html = view('pdfs.report', [
@@ -649,11 +671,10 @@ class PaymentController extends Controller
             $mpdf = new \Mpdf\Mpdf();
             $mpdf->SetFooter('ShippingXPS||Payment Report');
             $mpdf->WriteHTML($html);
-            $mpdf->Output($payment->customer->name .'_'.Carbon::now()->format('Ymdhis'). '.pdf', \Mpdf\Output\Destination::INLINE);
+            $mpdf->Output($payment->customer->name . '_' . Carbon::now()->format('Ymdhis') . '.pdf', \Mpdf\Output\Destination::INLINE);
         } catch (\Throwable $e) {
             \Log::info($e);
         }
-
     }
 
     public function generateReportList()
@@ -671,13 +692,13 @@ class PaymentController extends Controller
             // $mpdf->showWatermarkImage = true;
             $mpdf->SetFooter('ShippingXPS|Payment Report|{PAGENO}');
             $mpdf->WriteHTML($html);
-            $mpdf->Output('Payment_Report_'.Carbon::now()->format('Ymdhis'). '.pdf', \Mpdf\Output\Destination::INLINE);
+            $mpdf->Output('Payment_Report_' . Carbon::now()->format('Ymdhis') . '.pdf', \Mpdf\Output\Destination::INLINE);
         } catch (\Throwable $e) {
             \Log::info($e);
         }
     }
 
-    public function searchPayments(Request $request,$payments)
+    public function searchPayments(Request $request, $payments)
     {
         if ($request->has('search') && $request->search != null) {
             $search = $request->search;
@@ -690,9 +711,9 @@ class PaymentController extends Controller
             })
                 ->orWhereHas('customer', function ($qry) use ($search) {
                     $qry->where('name', 'LIKE', '%' . $search . '%');
-                    if(is_numeric($search)){
+                    if (is_numeric($search)) {
                         $s = (int)$search;
-                        $s =$s - 4000;
+                        $s = $s - 4000;
                         $qry->orWhere('id', 'LIKE', '%' . $s . '%');
                     }
                 })
