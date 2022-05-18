@@ -754,4 +754,58 @@ class PaymentController extends Controller
 
         return $payments;
     }
+
+    public function invoice($id)
+    {
+        $billing = [];
+        $package = null;
+        $order = null;
+        $additionalRequest = null;
+        $insurance = null;
+        $giftCard = null;
+
+        $payment = Payment::findOrFail($id);
+        $customer = $payment->customer;
+        $warehouse = Warehouse::first();
+        $address = Address::where('user_id', $customer->id)->first();
+
+        if (isset($payment->package_id)) {
+            $package = $payment->package;
+        }
+
+        if (isset($payment->order_id)) {
+            $order = $payment->order;
+        }
+
+        if (isset($payment->additional_request_id)) {
+            $additionalRequest = $payment->additionalRequest;
+        }
+
+        if (isset($payment->insurance_id)) {
+            $insurance = $payment->insuranceRequest;
+            $warehouse = Warehouse::find($insurance->package->warehouse_id);
+        }
+
+        if (isset($payment->gift_card_id)) {
+            $giftCard = $payment->giftCard;
+        }
+
+        view()->share([
+            'payment' => $payment,
+            'package' => $package,
+            'customer' => $customer,
+            'address' => $address,
+            'warehouse' => $warehouse,
+            'billing' => $billing,
+            'address' => $address,
+            'order' => $order,
+            'additionalRequest' => $additionalRequest,
+            'insuranceRequest' => $insurance,
+            'giftCard' => $giftCard,
+        ]);
+
+        $pdf = PDF::loadView('pdfs.invoice-payment');
+        $pdf->setPaper('A4', 'portrait');
+        return $pdf->stream('SHIPPING-XPS-INVOICE.pdf', array("Attachment" => false));
+    }
 }

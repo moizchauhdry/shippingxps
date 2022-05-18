@@ -98,15 +98,15 @@ Route::middleware('auth')->group(function () {
         Route::any('list', [\App\Http\Controllers\PaymentController::class,  'getPayments'])->name('payments.getPayments');
         Route::get('PaymentSuccess/{id}', [\App\Http\Controllers\PaymentController::class,  'PaymentSuccess'])->name('payments.PaymentSuccess');
         Route::post('check/coupon', [\App\Http\Controllers\PaymentController::class, 'checkCoupon'])->name('checkCoupon');
-        Route::get('invoice/{id}', [\App\Http\Controllers\PaymentController::class, 'buildInvoice'])->name('buildInvoice');
+        // Route::get('invoice/{id}', [\App\Http\Controllers\PaymentController::class, 'buildInvoice'])->name('buildInvoice');
+        Route::get('invoice/{id}', [\App\Http\Controllers\PaymentController::class, 'invoice'])->name('payment.invoice');
         Route::get('generateReport/{id}', [\App\Http\Controllers\PaymentController::class, 'generateReport'])->name('generateReport');
         Route::any('generateReportList', [\App\Http\Controllers\PaymentController::class, 'generateReportList'])->name('generateReportList');
     });
 
     Route::get('getShippingAddress/{id}', [\App\Http\Controllers\AddressController::class, 'getShippingAddress'])->name('getShippingAddress');
 
-    Route::get('getMailingAddress',[\App\Http\Controllers\HomeController::class,'getMailingAddress'])->name('getMailingAddress');
-
+    Route::get('getMailingAddress', [\App\Http\Controllers\HomeController::class, 'getMailingAddress'])->name('getMailingAddress');
 });
 
 
