@@ -36,6 +36,6 @@ class Payment extends Model
 
     public function giftCard()
     {
-        return $this->belongsTo(giftCard::class, 'gift_card_id');
+        return $this->belongsTo(GiftCard::class, 'gift_card_id');
     }
 }
