@@ -197,10 +197,9 @@
 							SHIPPING YOUR PACKAGES HOME
 						</h2>
 						<p style="line-height: 1.5; font-size: 22px">
-							We will send your packages to your location with the carrier
-							method you choose from a variety of our trustworthy partners. Once
-							packages your leave ShippingXPS, packages will be delivered as
-							little as 2-4 days worldwide.
+							We will send your packages to your location with the carrier method you choose from a variety
+							of our trustworthy partners. Once your packages leave ShippingXPS, packages will be
+							delivered as little as 2-4 days worldwide.
 						</p>
 					</div>
 					<div class="col-sm-12 col-md-4 p-0 order-1 order-md-2">

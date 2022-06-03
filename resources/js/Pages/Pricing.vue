@@ -13,7 +13,7 @@
         <div class="row mb-4">
           <div class="col-md-12 align-self-center p-static order-2 text-center">
             <h1 class="font-weight-bold text-color-dark text-10">Shipping Calculator</h1>
-            <p class="text-4 font-weight-medium mt-3 mb-0">Feel free to shop from USA and get your packages delivered to your doorstep with ease and without worry. </p>
+            <p class="text-4 font-weight-medium mt-3 mb-0">Shop from the USA and get your packages delivered to your doorstep with ease and without worry. </p>
           </div>
         </div>
       </div>

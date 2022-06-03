@@ -12,7 +12,7 @@
 					<div class="container pb-5 my-3">
 						<div class="row mb-4">
 							<div class="col-md-12 align-self-center p-static order-2 text-center">
-								<h1 class="font-weight-bold text-color-dark text-10">Pricing</h1>
+								<h1 class="font-weight-bold text-color-dark text-10">Services & Pricing</h1>
 								<p class="text-4 font-weight-medium mt-3 mb-0">Everyone gets treated as Premium Customer. DON’T PAY EXTRA when you can get same PREMIUM service for FREE!</p>
                                 <p class="text-4 font-weight-medium mt-3 mb-0"><strong>NO HIDDEN FEES</strong> in shipping price. You only pay for the services you order. </p>
 							</div>
