@@ -202,6 +202,7 @@ export default {
       isLoading: false,
       fullPage: true,
       serverError: '',
+      services: {},
       form: this.$inertia.form({
         ship_from: '',
         ship_to: '',
@@ -223,7 +224,7 @@ export default {
     phpVersion: String,
     warehouses: Object,
     countries: Object,
-    services: Object
+    // services: Object
   },
 
   methods: {
@@ -244,6 +245,7 @@ export default {
       };
       axios.get(this.route('getServicesList')).then(response => {
         console.log(response.data.services)
+        this.services = response.data.services;
         response.data.services.forEach((ele, index) => {
           console.log(ele);
           quote_params.service = ele;
