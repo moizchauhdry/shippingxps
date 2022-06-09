@@ -199,7 +199,7 @@
                 {{--<strong>Signature</strong>:<br> @if(isset($package->package_handler_id) &&
                 $package->package_handler_id
                 != NULL) {{ $package->packageHandler->name }} @endif--}}
-                <strong>Signature</strong>:<br> <b>{{ $warehouse->signature_name ?? '' }}</b>
+                <strong>Signature</strong>:<br> <b>{{ $warehouse->contact_person ?? '' }}</b>
             </td>
             <td colspan="6" style="height:80px;border-left:none;text-align: right">
                 <img style="height: 75px; width: auto;margin-right:10px"

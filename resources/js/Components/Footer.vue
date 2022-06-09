@@ -39,7 +39,7 @@
 							style="font-size: 15px"
 							class="pt-1 pb-1 d-flex mb-0 font-weight-semibold text-color-light px-0"
 						>
-							3578 W SAVANNA ST, ANAHEIM, CA. 92804
+							15102 Eden st Westminster California 92683
 						</li>
 					</ul>
 					<ul
