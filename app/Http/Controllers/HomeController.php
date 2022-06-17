@@ -410,7 +410,7 @@ class HomeController extends Controller
         $height = $request->input('height');
         $zipcode = $request->input('zipcode');
         $cityName = $request->has('city')? $request->city : null;
-        $is_residential = $request->input('is_residential') ? true : false;
+        $is_residential = $request->boolean('is_residential');
 
 
         //$declared_value = $request->input('declared_value');

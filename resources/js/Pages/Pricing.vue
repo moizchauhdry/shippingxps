@@ -214,7 +214,7 @@ export default {
         length: '',
         width: '',
         height: '',
-        is_residential:''
+        is_residential:false
       })
     };
   },
@@ -245,7 +245,7 @@ export default {
         width: this.form.width,
         height: this.form.height,
         zipcode: this.form.zipcode,
-        is_residential: this.form.is_residential,
+        is_residential: Boolean(this.form.is_residential),
       };
       axios.get(this.route('getServicesList')).then(response => {
         console.log(response.data.services)
