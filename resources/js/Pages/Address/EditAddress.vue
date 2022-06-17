@@ -50,8 +50,8 @@
                     <div class="form-group">
                       <breeze-label for="Commercial/Residential" value="Commercial/Residential" />
                       <select class="form-control" v-model="form.is_residential">
-                          <option :value="false">Commercial</option>
-                        <option :value="true">Residential</option>
+                          <option value="0">Commercial</option>
+                        <option value="1">Residential</option>
                       </select>
                     </div>
 
@@ -102,7 +102,7 @@
                     city: this.address.city,
                     phone: this.address.phone,
                     address: this.address.address,
-                    is_residential: Boolean(this.address.is_residential),
+                    is_residential: this.address.is_residential,
                 })
             };
         },
