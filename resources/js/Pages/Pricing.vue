@@ -58,7 +58,9 @@
                         <input v-model="form.zipcode" type="text" class="form-control text-dark text-4 mt-2" name="zip" placeholder="">
                       </div>
                     </div>
-
+                    <div class="form-heading text-center mt-5">
+                      <span class="text-6 text-light font-weight-bold"> <input type="checkbox" name="is_residential" v-model="form.is_residential" style="line-height: 1;vertical-align: unset;">&nbsp;&nbsp;Residential</span>
+                    </div>
                     <div class="form-heading text-center mt-5">
                       <h6 class="text-6 text-primary font-weight-bold">Tell us about the package size and weight...</h6>
                     </div>
@@ -211,7 +213,8 @@ export default {
         unit: 'lb_',
         length: '',
         width: '',
-        height: ''
+        height: '',
+        is_residential:''
       })
     };
   },
@@ -242,6 +245,7 @@ export default {
         width: this.form.width,
         height: this.form.height,
         zipcode: this.form.zipcode,
+        is_residential: this.form.is_residential,
       };
       axios.get(this.route('getServicesList')).then(response => {
         console.log(response.data.services)

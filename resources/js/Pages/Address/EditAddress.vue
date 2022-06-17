@@ -47,6 +47,10 @@
                       <input name="city" id="city" type="text" class="form-control" placeholder="City" v-model="form.city" required />
                     </div>
 
+                    <div class="form-group">
+                      <input type="checkbox" v-model="form.is_residential" style="line-height: 1;vertical-align: unset;">&nbsp;&nbsp;Residential
+                    </div>
+
                      <div class="form-group">
                       <breeze-label for="phone" value="Phone" />
                       <input name="phone" id="phone" type="text" class="form-control" placeholder="Phone" v-model="form.phone" required />
@@ -94,6 +98,7 @@
                     city: this.address.city,
                     phone: this.address.phone,
                     address: this.address.address,
+                    is_residential: Boolean(this.address.is_residential),
                 })
             };
         },

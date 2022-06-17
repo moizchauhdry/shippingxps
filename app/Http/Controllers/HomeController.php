@@ -394,7 +394,6 @@ class HomeController extends Controller
     }
 
     public function getQuote(Request $request){
-
         $service = $request->get('service');
 
         $service = json_decode($service);
@@ -411,6 +410,7 @@ class HomeController extends Controller
         $height = $request->input('height');
         $zipcode = $request->input('zipcode');
         $cityName = $request->has('city')? $request->city : null;
+        $is_residential = $request->input('is_residential') ? true : false;
 
 
         //$declared_value = $request->input('declared_value');
@@ -418,7 +418,7 @@ class HomeController extends Controller
         $declared_value = '10.0';
 
         $warehouse = Warehouse::where('id',$ship_from)->first();
-        
+
         $country = Country::where('id',$ship_to)->first();
 
         $units = explode('_',$units);
@@ -436,7 +436,7 @@ class HomeController extends Controller
 
         $sender = [
             "country" =>  'US',
-            "zip" => empty($warehouse->zip) ? 'null': $warehouse->zip,
+            "zip" => '92804',
         ];
 
         $receiver = [
@@ -467,8 +467,8 @@ class HomeController extends Controller
             "packageTypeCode" => $service->packageTypeCode,
             "sender" => $sender,
             "receiver" => $receiver,
-            "residential" => true,
-            "signatureOptionCode" => "DIRECT",
+            "residential" => $is_residential,
+            "signatureOptionCode" => null,
             "contentDescription" => "stuff and things",
             "weightUnit" => $weight_unit,
             "dimUnit" => $dimention_unit,
@@ -476,7 +476,7 @@ class HomeController extends Controller
             "customsCurrency"=> "USD",
             "pieces"  => $pieces,
             "billing" => [
-                "party" => "receiver"
+                "party" => "sender"
             ]
         ];
         $service_rate = [];
@@ -491,7 +491,8 @@ class HomeController extends Controller
             ]);
 
             $response = $request ? $request->getBody()->getContents() : null;
-
+            \Log::info($post_params);
+            \Log::info($response);
             $response = json_decode($response);
 
             $markup_amount = $response->totalAmount*((int)$markup/100);
@@ -545,9 +546,9 @@ class HomeController extends Controller
     /**
      * Not used now, using getQuote for single service at atime. 
      */
-    
+
     public function getQuotes(Request $request){
-      
+
       $markup = SiteSetting::getByName('markup');
       $ship_from= $request->input('ship_from');
       $ship_to = $request->input('ship_to');
@@ -570,7 +571,7 @@ class HomeController extends Controller
           'Authorization' => 'Bearer ' . $this->token
       ];
       $client = new Client();
-      
+
       $request = $client->get('https://xpsshipper.com/restapi/v1/customers/'.$this->customer_id.'/services', [
           'headers' => $headers,
           'http_errors' => true,
@@ -581,7 +582,7 @@ class HomeController extends Controller
 
       echo '<pre>';
       print_r($response->services);
-      exit; 
+      exit;
 
       $service_rates = [];
       $errors = [];
@@ -605,8 +606,8 @@ class HomeController extends Controller
       ];
       foreach($response->services as $service){
           if (!empty($service->carrierCode) && strpos($service->serviceCode, 'international') !== false) {
-                      
-            $post_params = [          
+
+            $post_params = [
                 "carrierCode" => $service->carrierCode,
                 "serviceCode" =>  $service->serviceCode,
                 "packageTypeCode" => $this->getPackageTypeCode($service),
@@ -630,10 +631,10 @@ class HomeController extends Controller
                   'body' => json_encode($post_params),
                   'http_errors' => true,
               ]);
-        
+
               $response = $request ? $request->getBody()->getContents() : null;
               $response = json_decode($response);
-              $markup_amount = $response->totalAmount*((int)$markup/100); 
+              $markup_amount = $response->totalAmount*((int)$markup/100);
               $total = $response->totalAmount+$markup_amount;
               $total = number_format($total,2);
               $service_rates[] = [
@@ -646,32 +647,32 @@ class HomeController extends Controller
                 'baseAmount' => $response->baseAmount,
               ];
             }catch(\Exception $ex){
-                
+
               $ex_message = $ex->getMessage();
               $pos = strpos($ex_message,'{"error":"');
-                      
+
               $pos1 = strpos($ex_message,'"errorCategory"');
               $length = $pos1-($pos+12);
-      
+
               $message = substr($ex_message,$pos+10,$length);
-      
+
               $errors[] = [
                 'label' => $service->serviceLabel,
                 'serviceCode' => $service->serviceCode,
                 'message' => $message,
               ];
-      
-            }   
+
+            }
           }
         }
-      
+
         return response()->json([
         'status' => TRUE,
         'services' => $service_rates,
         'errors' => $errors,
-      ]);                                                                                                                                                                                                                                                                                                                                         
+      ]);
     }
-    
+
 
 
 
@@ -695,7 +696,7 @@ class HomeController extends Controller
     }
 
     public function notifications() {
-        
+
         $notifications = \auth()->user()->notifications()->orderBy('created_at', 'DESC')->get();
 
         return Inertia::render('Notifications',[
@@ -712,13 +713,13 @@ class HomeController extends Controller
     public function markRead(Request $request){
 
         $id = $request->input('notification_id');
-        
+
         $notification = auth()->user()->notifications()->where('id', $id)->first();
 
         if($notification){
             $notification->markAsRead();
         }
-        
+
         return redirect('notifications');
 
     }

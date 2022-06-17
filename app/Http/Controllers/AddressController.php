@@ -57,6 +57,7 @@ class AddressController extends Controller
             'city' => 'required|string',
             'phone' => 'required|string',
             'address' => 'required|string',
+            'is_residential' => 'required|boolean',
         ]);
 
         $address = new Address();
@@ -67,6 +68,7 @@ class AddressController extends Controller
         $address->city = $validated['city'];
         $address->phone = $validated['phone'];
         $address->address = $validated['address'];
+        $address->is_residential = $validated['is_residential'];
 
         $address->save();
         
@@ -103,6 +105,7 @@ class AddressController extends Controller
             'city' => $model->city,
             'phone' => $model->phone,
             'address' => $model->address,
+            'is_residential' => $model->is_residential,
         ];
 
         $countries = Country::all(['id','nicename as name'])->toArray();
@@ -135,6 +138,7 @@ class AddressController extends Controller
             'city' => 'required|string',
             'phone' => 'required|string',
             'address' => 'required|string',
+            'is_residential' => 'required|boolean',
         ]);
 
 
@@ -145,6 +149,7 @@ class AddressController extends Controller
         $address->city = $validated['city'];
         $address->phone = $validated['phone'];
         $address->address = $validated['address'];
+        $address->is_residential = $validated['is_residential'];
 
         $address->update();
 

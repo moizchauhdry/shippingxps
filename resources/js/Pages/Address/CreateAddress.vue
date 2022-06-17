@@ -37,6 +37,10 @@
                       <input name="state" id="state" type="text" class="form-control" placeholder="State" v-model="form.state" />
                     </div>
 
+                    <div class="form-group">
+                      <input type="checkbox" name="is_residential" v-model="form.is_residential" style="line-height: 1;vertical-align: unset;">&nbsp;&nbsp;Residential
+                    </div>
+
                    <div class="form-group">
                       <breeze-label for="country" value="Country" />
                       <select required  v-model="form.country_id" class="form-control" aria-label="Default select example">
@@ -93,6 +97,7 @@
                     city: '',
                     phone: '',
                     address: '',
+                    is_residential:''
                 })
             };
         },

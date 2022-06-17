@@ -832,6 +832,7 @@ export default {
         height: this.packag.package_height,
         zipcode: null,
         city : this.packag.address.city,
+        is_residential : this.packag.address.is_residential,
       };
       axios.get(this.route('getServicesList')).then(response => {
         console.log(response.data.services)
