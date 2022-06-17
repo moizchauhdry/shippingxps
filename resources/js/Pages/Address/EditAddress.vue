@@ -48,7 +48,11 @@
                     </div>
 
                     <div class="form-group">
-                      <input type="checkbox" v-model="form.is_residential" style="line-height: 1;vertical-align: unset;">&nbsp;&nbsp;Residential
+                      <breeze-label for="Commercial/Residential" value="Commercial/Residential" />
+                      <select class="form-control" v-model="form.is_residential">
+                          <option :value="false">Commercial</option>
+                        <option :value="true">Residential</option>
+                      </select>
                     </div>
 
                      <div class="form-group">

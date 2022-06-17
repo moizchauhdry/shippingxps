@@ -18,5 +18,6 @@ phpunit.dusk.xml
 /uploads
 /.idea
 /.idea/*
+.idea/*
 *.zip
 .htaccess
