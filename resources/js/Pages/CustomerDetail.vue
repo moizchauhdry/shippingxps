@@ -50,7 +50,7 @@
             </tbody>
           </table>
 
-          <table class="table table-responsive table-bordered table-hover">
+          <!-- <table class="table table-responsive table-bordered table-hover">
             <thead>
             <tr>
               <th colspan="7" class="bg-dark text-white">Orders</th>
@@ -90,7 +90,7 @@
               </tr>
               </tbody>
             </template>
-          </table>
+          </table> -->
 
         </div>
         <div class="card-footer">

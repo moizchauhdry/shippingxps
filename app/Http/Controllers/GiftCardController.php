@@ -24,9 +24,9 @@ class GiftCardController extends Controller
     {
         $user = Auth::user();
         if ($user->type == 'admin') {
-            $gift_cards = GiftCard::orderBy('id', 'desc')->get();
+            $gift_cards = GiftCard::with('user')->orderBy('id', 'desc')->get();
         } else {
-            $gift_cards = GiftCard::where('user_id', $user->id)->get();
+            $gift_cards = GiftCard::with('user')->where('user_id', $user->id)->get();
         }
 
         return Inertia::render('GiftCard/Index', [
@@ -76,7 +76,7 @@ class GiftCardController extends Controller
     public function edit(Request $request, $id)
     {
         $user = Auth::user();
-        $gift_card = GiftCard::with('files')->findOrFail($id);
+        $gift_card = GiftCard::with('files', 'user')->findOrFail($id);
 
         if ($request->isMethod('POST')) {
 

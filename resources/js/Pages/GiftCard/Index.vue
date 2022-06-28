@@ -17,6 +17,7 @@
 					<thead>
 						<tr>
 							<th>ID</th>
+							<th>Customer</th>
 							<th>Title</th>
 							<th>Type</th>
 							<th>Amount ($)</th>
@@ -29,6 +30,10 @@
 					<tbody>
 						<tr v-for="card in gift_cards" :key="card.id">
 							<td>{{ card.id }}</td>
+							<td>
+								<inertia-link :href="route('detail-customer', card.user.id)" class="btn btn-link">
+								{{ card.user.name }}</inertia-link>
+							</td>
 							<td>{{ card.title }}</td>
 							<td>{{ card.type }}</td>
 							<td>{{ card.amount }}</td>
