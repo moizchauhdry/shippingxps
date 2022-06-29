@@ -378,6 +378,7 @@
 			</div>
 		</div>
 	</MainLayout>
+	<ImageViewer></ImageViewer>
 </template>
 
 <script>
@@ -385,6 +386,8 @@
 	import BreezeAuthenticatedLayout from "@/Layouts/Authenticated";
 	import BreezeLabel from "@/Components/Label";
 	import BreezeValidationErrors from "@/Components/ValidationErrors";
+	import ImageViewer from '@/Components/ImageViewer'
+	import $ from 'jquery'
 
 	export default {
 		components: {
@@ -392,6 +395,7 @@
 			MainLayout,
 			BreezeLabel,
 			BreezeValidationErrors,
+			ImageViewer
 		},
 		data() {
 			return {
