@@ -17,7 +17,7 @@
                 </div>
 
                 <table class="table table-striped">
-                    <thead>
+                    <thead class="text-center">
                         <tr>
                         <th scope="col">#</th>
                         <th scope="col">Package</th>
@@ -27,12 +27,16 @@
                         <th scope="col"></th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="text-center">
                     <tr v-for="pkg in packages.data" :key="pkg.id">
                         <td>{{ pkg.id }}</td>
                         <td>{{ pkg.package_no }}</td>
                         <td>{{ pkg.warehouse.name }}</td>
-                        <td>{{ pkg.customer.name }}</td>
+                        <td>
+                            <inertia-link :href="route('detail-customer', pkg.customer.id)" class="btn btn-link">
+                            # {{ siuteNum(pkg.customer.id) }} - {{ pkg.customer.name }} 
+                            </inertia-link>
+                        </td>
                         <td>
                             <span v-bind:class="getLabelClass(pkg.status)">{{ pkg.status }}</span>
                         </td>
@@ -121,6 +125,9 @@
                     return "/uploads/"+pkg.image;
                 }
                 return "/uploads/no-image.jpg";
+            },
+            siuteNum(user_id){
+                return 4000 + user_id;
             },
         }
     }

@@ -8,7 +8,7 @@ use Illuminate\Notifications\Notifiable;
 
 class AdditionalRequest extends Model
 {
-    use HasFactory,Notifiable;
+    use HasFactory, Notifiable;
     protected $guarded = [];
 
     public function comments()
@@ -19,5 +19,10 @@ class AdditionalRequest extends Model
     public function package()
     {
         return $this->belongsTo(Package::class);
+    }
+
+    public function customer()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 }

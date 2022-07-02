@@ -24,7 +24,7 @@
         </div>
 
         <table class="table table-striped">
-          <thead>
+          <thead class="text-center">
             <tr>
               <th scope="col">#</th>
               <th scope="col">Warehouse Name</th>
@@ -37,11 +37,15 @@
               <th scope="col"></th>
             </tr>
           </thead>
-          <tbody>
+          <tbody class="text-center">
             <tr v-for="order in orders.data" :key="order.id">
               <td>{{ order.id }}</td>
               <td>{{ order.warehouse.name }}</td>
-              <td v-if="order.customer">{{ order.customer.name }}</td>
+              <td v-if="order.customer">
+                  <inertia-link :href="route('detail-customer', order.customer.id)" class="btn btn-link">
+                  # {{ siuteNum(order.customer.id) }} - {{ order.customer.name }} 
+                  </inertia-link>
+              </td>
               <td class="capitalize">{{ order.order_origin }}</td>
               <td class="capitalize"> <span v-bind:class="getLabelClass(order.status)" >{{ order.status }}</span></td>
               <td>
@@ -142,7 +146,10 @@ export default {
         default:
           return 'label bg-primary';
       }
-    }
+    },    
+    siuteNum(user_id){
+      return 4000 + user_id;
+    },
   }
 }
 </script>

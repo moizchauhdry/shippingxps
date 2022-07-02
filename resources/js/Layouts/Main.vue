@@ -238,16 +238,13 @@
 					</inertia-link>
 
 					<inertia-link
-						v-if="
-							$page.props.auth.user.type == 'admin' ||
-							$page.props.auth.user.type == 'manager'
-						"
+						v-if="$page.props.auth.user.type == 'admin'"
 						class="nav-link"
 						:href="route('pages_list')"
 						:class="{ active: route().current('pages_list') }"
 						:active="route().current('pages_list')"
 					>
-						<i class="fas fa-external-link-alt"></i><span>Manages Pages</span>
+						<i class="fas fa-external-link-alt"></i><span>Manage Pages</span>
 					</inertia-link>
 
 					<inertia-link

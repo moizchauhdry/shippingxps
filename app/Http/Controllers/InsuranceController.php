@@ -19,15 +19,14 @@ class InsuranceController extends Controller
     {
         $user = \Auth::user();
         if ($user->type == 'admin') {
-            $insurance = InsuranceRequest::with('package')->get();
+            $insurance = InsuranceRequest::with('package', 'customer')->get();
         } else {
-            $insurance = InsuranceRequest::with('package')->where('customer_id', $user->id)->get();
+            $insurance = InsuranceRequest::with('package', 'customer')->where('customer_id', $user->id)->get();
         }
 
-        return Inertia::render('Insurance/Index',[
+        return Inertia::render('Insurance/Index', [
             'insurances' => $insurance,
         ]);
-
     }
 
 
@@ -71,20 +70,20 @@ class InsuranceController extends Controller
         }
 
         $shippingServices  = collect(Shipping::getShippingServices())->pluck('serviceLabel');
-        return Inertia::render('Insurance/Create',[
+        return Inertia::render('Insurance/Create', [
             'shipping_services' => $shippingServices,
             'packages' => $packages,
         ]);
     }
 
-    public function edit(Request $request,$id)
+    public function edit(Request $request, $id)
     {
         $user = \Auth::user();
         $insuranceRequest = InsuranceRequest::find($id);
         if ($request->isMethod('POST')) {
 
             if ($request->has('approve') && $request->approve == 1) {
-                \Session::forget(['order_id','package_id','additional_request_id']);
+                \Session::forget(['order_id', 'package_id', 'additional_request_id']);
                 \Session::put('insurance_id', $id);
                 return redirect()->route('payment.index', 'amount=' . $insuranceRequest->amount);
             }
@@ -132,7 +131,7 @@ class InsuranceController extends Controller
             $packages = Package::where('customer_id', $user->id)->get();
         }
         $insuranceRequest = InsuranceRequest::find($id);
-        $comments = InsuranceRequestComment::where('insurance_request_id',$insuranceRequest->id)->with('user')->orderBy('id','desc')->get();
+        $comments = InsuranceRequestComment::where('insurance_request_id', $insuranceRequest->id)->with('user')->orderBy('id', 'desc')->get();
         $shippingServices  = collect(Shipping::getShippingServices())->pluck('serviceLabel');
         return Inertia::render('Insurance/Edit', [
             'insuranceRequest' => $insuranceRequest,
@@ -174,9 +173,9 @@ class InsuranceController extends Controller
             $packages = Package::where('customer_id', $user->id)->get();
         }
         $insuranceRequest = InsuranceRequest::find($id);
-        $comments = InsuranceRequestComment::where('insurance_request_id',$insuranceRequest->id)->with('user')->orderBy('id','desc')->get();
+        $comments = InsuranceRequestComment::where('insurance_request_id', $insuranceRequest->id)->with('user')->orderBy('id', 'desc')->get();
 
-        return redirect()->route('insurance.edit',$insuranceRequest->id)->with('success','Comment Added Successfully');
+        return redirect()->route('insurance.edit', $insuranceRequest->id)->with('success', 'Comment Added Successfully');
     }
 
     public function loadComments($id)

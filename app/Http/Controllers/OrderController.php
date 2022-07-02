@@ -34,15 +34,15 @@ class OrderController extends Controller
 
         $customers = User::where('type', '=', 'customer')->select(['id', 'name'])->get()->toArray();
 
-        if(Auth::check()){
+        if (Auth::check()) {
             $user = Auth::user();
-        }else{
-            redirect()->back()->with('errors','Login to continue');
+        } else {
+            redirect()->back()->with('errors', 'Login to continue');
         }
 
-        if($user->type == 'customer'){
+        if ($user->type == 'customer') {
             $orders = Order::where('customer_id', $user->id);
-            $orders = $this->searchResults($request,$orders);
+            $orders = $this->searchResults($request, $orders);
 
             return Inertia::render('Orders/OrdersList', [
                 'search' => $search,
@@ -53,43 +53,44 @@ class OrderController extends Controller
                 'labeled' => '',
                 'shipped' => ''
             ]);
-        }else{
-            $arrived = Order::select('orders.*','orders.warehouse_id','orders.customer_id','users.name','warehouses.name')->where('status','arrived');
-            $arrived = $this->searchResults($request,$arrived);
-            $labeled = Order::select('orders.*','orders.warehouse_id','orders.customer_id','users.name','warehouses.name')->where('status','labeled');
-            $labeled = $this->searchResults($request,$labeled);
-            $shipped = Order::select('orders.*','orders.warehouse_id','orders.customer_id','users.name','warehouses.name')->where('status','shipped');
-            $shipped = $this->searchResults($request,$shipped);
-            $rejected = Order::select('orders.*','orders.warehouse_id','orders.customer_id','users.name','warehouses.name')->where('status','rejected');
-            $rejected = $this->searchResults($request,$rejected);
+        } else {
+            $arrived = Order::select('orders.*', 'orders.warehouse_id', 'orders.customer_id', 'users.name', 'warehouses.name')->where('status', 'arrived');
+            $arrived = $this->searchResults($request, $arrived);
+            $labeled = Order::select('orders.*', 'orders.warehouse_id', 'orders.customer_id', 'users.name', 'warehouses.name')->where('status', 'labeled');
+            $labeled = $this->searchResults($request, $labeled);
+            $shipped = Order::select('orders.*', 'orders.warehouse_id', 'orders.customer_id', 'users.name', 'warehouses.name')->where('status', 'shipped');
+            $shipped = $this->searchResults($request, $shipped);
+            $rejected = Order::select('orders.*', 'orders.warehouse_id', 'orders.customer_id', 'users.name', 'warehouses.name')->where('status', 'rejected');
+            $rejected = $this->searchResults($request, $rejected);
 
             return Inertia::render('Orders/OrdersList', [
                 'search' => $search,
                 'orders' => '',
                 'customers' => $customers,
                 'customer_id' => $customer_id,
-                'arrived' => $arrived->where('status','arrived')->orderBy('orders.id', 'desc')->get(),
-                'labeled' => $labeled->where('status','labeled')->orderBy('orders.id', 'desc')->get(),
-                'shipped' => $shipped->where('status','shipped')->orderBy('orders.id', 'desc')->get(),
-                'rejected' => $rejected->where('status','rejected')->orderBy('orders.id', 'desc')->get()
+                'arrived' => $arrived->where('status', 'arrived')->orderBy('orders.id', 'desc')->get(),
+                'labeled' => $labeled->where('status', 'labeled')->orderBy('orders.id', 'desc')->get(),
+                'shipped' => $shipped->where('status', 'shipped')->orderBy('orders.id', 'desc')->get(),
+                'rejected' => $rejected->where('status', 'rejected')->orderBy('orders.id', 'desc')->get()
             ]);
         }
-
     }
 
-    public function searchResults(Request $request,$orders)
+    public function searchResults(Request $request, $orders)
     {
-        $orders->join('users','orders.customer_id','=','users.id');
-        $orders->join('warehouses','orders.warehouse_id','=','warehouses.id');
-        if($request->has('search') && !empty($request->search)){
+        $suite_number = intval($request->search) - 4000;
+
+        $orders->join('users', 'orders.customer_id', '=', 'users.id');
+        $orders->join('warehouses', 'orders.warehouse_id', '=', 'warehouses.id');
+        if ($request->has('search') && !empty($request->search)) {
             $search = $request->search;
             $search = trim($search);
-            $orders->where ( 'users.name', 'LIKE', '%' . $search . '%' )
-                ->orWhere ( 'orders.received_from', 'LIKE', '%' . $search . '%' )
+            $orders->where('users.id', $suite_number)
+                ->orWhere('users.name', 'LIKE', '%' . $search . '%')
+                ->orWhere('orders.received_from', 'LIKE', '%' . $search . '%')
                 ->orWhere('warehouses.name', 'LIKE', '%' . $search . '%');
         }
         return $orders->with(['customer', 'warehouse']);
-
     }
 
     /**
@@ -176,7 +177,6 @@ class OrderController extends Controller
                 $package->warehouse_id = $validated['warehouse_id'];
                 $package->status = 'open';
                 $package->save();
-
             }
 
             $order = new Order();
@@ -270,13 +270,11 @@ class OrderController extends Controller
             event(new OrderCreatedEvent($order));
 
             return redirect('orders')->with('success', 'Order Added!');
-
         } catch (\Exception $e) {
-//            dd($e);
+            //            dd($e);
             DB::rollBack();
             return redirect('orders')->with('error', 'Something went wrong');
         }
-
     }
 
 
@@ -346,7 +344,6 @@ class OrderController extends Controller
             'status_list' => $this->status_list,
             'warehouses' => $warehouses
         ]);
-
     }
 
 
@@ -479,7 +476,6 @@ class OrderController extends Controller
                 */
 
                 $order_item->save();
-
             }
 
             DB::commit();
@@ -491,7 +487,6 @@ class OrderController extends Controller
             DB::rollBack();
             return redirect('orders')->with('error', $e->getMessage());
         }
-
     }
 
     /**
@@ -511,7 +506,6 @@ class OrderController extends Controller
         $order->delete();
 
         return back()->with('success', 'Order deleted!');
-
     }
 
     public function removeItem(Request $request)
@@ -526,5 +520,4 @@ class OrderController extends Controller
         $image_id = $request->input('id');
         OrderImage::find($image_id)->delete();
     }
-
 }

@@ -12,6 +12,10 @@
             </thead>
             <tbody>
             <tr>
+              <th>Suite #</th>
+              <td>{{ suiteNumber(customer.id) }}</td>
+            </tr>
+            <tr>
               <th>Name</th>
               <td>{{ customer.name }}</td>
             </tr>
@@ -115,7 +119,11 @@ export default {
     auth: Object,
     customer: Object,
   },
-  methods: {}
+  methods: {
+    suiteNumber(user_id){
+      return 4000 + user_id;
+    },
+  }
 }
 </script>
 

@@ -138,7 +138,8 @@
                 <thead>
                 <tr>
                   <th scope="col">Order Id</th>
-                  <th v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'" scope="col">Customer Name</th>
+                  <th v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'" scope="col">
+                  Customer Name</th>
                   <th scope="col">Order From</th>
                   <th scope="col">Tracking #</th>
                   <th scope="col">Warehouse</th>
@@ -151,7 +152,11 @@
                 <tbody>
                 <tr v-for="order in arrived" :key="order.id">
                   <td>{{ order.id }}</td>
-                  <td v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">{{ order.customer.name }}</td>
+                  <td v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">
+                    <inertia-link :href="route('detail-customer', order.customer.id)" class="btn btn-link">
+                    # {{ siuteNum(order.customer.id) }} - {{ order.customer.name }} 
+                    </inertia-link>
+                  </td>
                   <td>{{ order.received_from }}</td>
                   <td>{{ order.tracking_number_in }}</td>
                   <td>{{ order.warehouse.name }}</td>
@@ -190,7 +195,11 @@
                 <tbody>
                 <tr v-for="labeler in labeled" :key="labeler.id">
                   <td>{{ labeler.id }}</td>
-                  <td v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">{{ labeler.customer.name }}</td>
+                  <td v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">
+                      <inertia-link :href="route('detail-customer', labeler.customer.id)" class="btn btn-link">
+                      # {{ siuteNum(labeler.customer.id) }} - {{ labeler.customer.name }} 
+                      </inertia-link>
+                  </td>
                   <td>{{ labeler.received_from }}</td>
                   <td>{{ labeler.tracking_number_in }}</td>
                   <td>{{ labeler.warehouse.name }}</td>
@@ -228,7 +237,11 @@
                 <tbody>
                 <tr v-for="order in shipped" :key="order.id">
                   <td>{{ order.id }}</td>
-                  <td v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">{{ order.customer.name }}</td>
+                  <td v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">
+                    <inertia-link :href="route('detail-customer', order.customer.id)" class="btn btn-link">
+                      # {{ siuteNum(order.customer.id) }} - {{ order.customer.name }} 
+                      </inertia-link>
+                  </td>
                   <td>{{ order.received_from }}</td>
                   <td>{{ order.tracking_number_in }}</td>
                   <td>{{ order.warehouse.name }}</td>
@@ -266,7 +279,11 @@
                 <tbody>
                 <tr v-for="order in rejected" :key="order.id">
                   <td>{{ order.id }}</td>
-                  <td v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">{{ order.customer.name }}</td>
+                  <td v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">
+                      <inertia-link :href="route('detail-customer', order.customer.id)" class="btn btn-link">
+                      # {{ siuteNum(order.customer.id) }} - {{ order.customer.name }} 
+                      </inertia-link>
+                  </td>
                   <td>{{ order.received_from }}</td>
                   <td>{{ order.tracking_number_in }}</td>
                   <td>{{ order.warehouse.name }}</td>
@@ -393,7 +410,10 @@ export default {
       }else{
         return 'tab-pane fade';
       }
-    }
+    },
+    siuteNum(user_id){
+          return 4000 + user_id;
+      },
   }
 }
 </script>

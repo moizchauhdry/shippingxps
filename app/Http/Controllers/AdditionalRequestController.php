@@ -18,9 +18,9 @@ class AdditionalRequestController extends Controller
 
         $user = \Auth::user();
         if ($user->type == 'admin') {
-            $additionalRequests = AdditionalRequest::with('package')->get();
+            $additionalRequests = AdditionalRequest::with('package', 'customer')->get();
         } else {
-            $additionalRequests = AdditionalRequest::with('package')->where('user_id', $user->id)->get();
+            $additionalRequests = AdditionalRequest::with('package', 'customer')->where('user_id', $user->id)->get();
         }
         return Inertia::render('AdditionalRequest/Index', [
             'additionalRequests' => $additionalRequests,
@@ -71,12 +71,10 @@ class AdditionalRequestController extends Controller
             'additionalRequest' => [],
             'packages' => $packages,
         ]);
-
     }
 
     public function store(Request $request)
     {
-
     }
 
     public function edit(Request $request, $id)
@@ -86,7 +84,7 @@ class AdditionalRequestController extends Controller
         if ($request->isMethod('POST')) {
 
             if ($request->has('approve') && $request->approve == 1) {
-                \Session::forget(['order_id','package_id', 'insurance_id']);
+                \Session::forget(['order_id', 'package_id', 'insurance_id']);
                 \Session::put('additional_request_id', $id);
                 return redirect()->route('payment.index', 'amount=' . $additionalRequest->price);
             }
@@ -134,7 +132,7 @@ class AdditionalRequestController extends Controller
             $packages = Package::where('customer_id', $user->id)->get();
         }
         $additionalRequest = AdditionalRequest::find($id);
-        $comments = AdditionalRequestComment::where('additional_request_id',$additionalRequest->id)->with('user')->orderBy('id','desc')->get();
+        $comments = AdditionalRequestComment::where('additional_request_id', $additionalRequest->id)->with('user')->orderBy('id', 'desc')->get();
         return Inertia::render('AdditionalRequest/Edit', [
             'additionalRequest' => $additionalRequest,
             'packages' => $packages,
@@ -144,7 +142,6 @@ class AdditionalRequestController extends Controller
 
     public function update(Request $request, $id)
     {
-
     }
 
     public function changeStatus(Request $request)
@@ -191,7 +188,7 @@ class AdditionalRequestController extends Controller
             $packages = Package::where('customer_id', $user->id)->get();
         }
         $additionalRequest = AdditionalRequest::find($id);
-        $comments = AdditionalRequestComment::where('additional_request_id',$additionalRequest->id)->with('user')->orderBy('id','desc')->get();
+        $comments = AdditionalRequestComment::where('additional_request_id', $additionalRequest->id)->with('user')->orderBy('id', 'desc')->get();
 
         return Inertia::render('AdditionalRequest/Edit', [
             'additionalRequest' => $additionalRequest,

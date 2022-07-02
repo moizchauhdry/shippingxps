@@ -32,36 +32,37 @@ class ShopController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index() {
-        
-        $orders = Order::with(['customer','warehouse'])->whereIn('order_type', ['shopping', 'pickup']);
+    public function index()
+    {
+        $orders = Order::with(['customer', 'warehouse'])->whereIn('order_type', ['shopping', 'pickup']);
 
         $search = '';
 
-        if(isset($_GET['search']) && !empty($_GET['search'])){
+        if (isset($_GET['search']) && !empty($_GET['search'])) {
 
             $search = $_GET['search'];
-
+            $suite_number = intval($search) - 4000;
+            $orders->join('users', 'orders.customer_id', '=', 'users.id');
             $orders->where(
-                function($query) use ($search) {
-
-                    return $query
-                        ->orWhere('site_name', 'LIKE', "%$search%")
-                        ->orWhere('site_url', 'LIKE', "%$search%")
-                        ->orWhere('shipping_from_shop', 'LIKE', "%$search%");
+                function ($query) use ($search, $suite_number) {
+                    return $query->where('users.id', $suite_number)
+                        ->orWhere('users.name', 'LIKE', "%$search%")
+                        ->orWhere('orders.site_name', 'LIKE', "%$search%")
+                        ->orWhere('orders.site_url', 'LIKE', "%$search%")
+                        ->orWhere('orders.shipping_from_shop', 'LIKE', "%$search%");
                 }
             );
         }
 
-        if(auth()->user()->type === 'customer') {
-            $orders->where('customer_id', auth()->user()->id);
+        if (auth()->user()->type === 'customer') {
+            $orders->where('orders.customer_id', auth()->user()->id);
         }
 
-        $orders->orderBy('id', 'DESC');
+        $orders->orderBy('orders.id', 'DESC');
 
         $orders = $orders->paginate(25);
 
-        return Inertia::render('ShopForMe/OrdersList',[
+        return Inertia::render('ShopForMe/OrdersList', [
             'search' => $search,
             'orders' => $orders
         ]);
@@ -72,11 +73,12 @@ class ShopController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create() {
-        $additional_pickup_charges = SiteSetting::where('name','additional_pickup_charges')->first()->value;
+    public function create()
+    {
+        $additional_pickup_charges = SiteSetting::where('name', 'additional_pickup_charges')->first()->value;
         $warehouses = Warehouse::all();
         $stores = Store::all();
-        return Inertia::render('ShopForMe/CreateOrder',[
+        return Inertia::render('ShopForMe/CreateOrder', [
             'warehouses' => $warehouses,
             'stores' => $stores,
             'additional_pickup_charges' => $additional_pickup_charges,
@@ -89,8 +91,9 @@ class ShopController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request) {
-//         dd($request->all());
+    public function store(Request $request)
+    {
+        //         dd($request->all());
         $request->validate([
             'form_type' => 'required|in:shopping,pickup',
             'warehouse_id' => 'required',
@@ -145,7 +148,7 @@ class ShopController extends Controller
                 'coupon_id' => $coupon->id,
             ]);*/
 
-            foreach($request->items as $item){
+            foreach ($request->items as $item) {
 
                 $order_item = new OrderItem();
 
@@ -163,19 +166,19 @@ class ShopController extends Controller
 
             $files = $request->file();
 
-            if($order->order_type == 'pickup'){
+            if ($order->order_type == 'pickup') {
 
-                if(isset($files['image'])){
-                    
+                if (isset($files['image'])) {
+
                     $image_object = $files['image'];
 
-                    $file_name = time().'_'.$image_object->getClientOriginalName();
+                    $file_name = time() . '_' . $image_object->getClientOriginalName();
                     $image_object->storeAs('uploads', $file_name);
 
-                    if($_SERVER['HTTP_HOST'] == 'localhost:8000'){
-                        File::move(storage_path('app/uploads/'.$file_name), public_path('/public/uploads/'.$file_name) );
-                    }else{
-                        File::move(storage_path('app/uploads/'.$file_name), public_path('../public/uploads/'.$file_name) );
+                    if ($_SERVER['HTTP_HOST'] == 'localhost:8000') {
+                        File::move(storage_path('app/uploads/' . $file_name), public_path('/public/uploads/' . $file_name));
+                    } else {
+                        File::move(storage_path('app/uploads/' . $file_name), public_path('../public/uploads/' . $file_name));
                     }
 
                     $order_image = new OrderImage();
@@ -183,16 +186,15 @@ class ShopController extends Controller
                     $order_image->order_id = $order->id;
                     $order_image->display = 1;
                     $order_image->display = 0;
-                    $order_image->save();                
+                    $order_image->save();
                 }
-            }            
+            }
 
             DB::commit();
 
             event(new ShoppingCreatedEvent($order));
 
             return redirect('shop-for-me')->with('success', 'Order Added!');
-
         } catch (\Exception $e) {
             // dd($e);
             DB::rollBack();
@@ -206,16 +208,17 @@ class ShopController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id) {
+    public function show($id)
+    {
 
-        $order = Order::with(['customer','images','items','store','warehouse','package'])->findOrFail($id);
-        $additional_pickup_charges = SiteSetting::where('name','additional_pickup_charges')->first()->value;
+        $order = Order::with(['customer', 'images', 'items', 'store', 'warehouse', 'package'])->findOrFail($id);
+        $additional_pickup_charges = SiteSetting::where('name', 'additional_pickup_charges')->first()->value;
 
         // echo '<pre>';
         // print_r($order);
         // exit; 
 
-        return Inertia::render('ShopForMe/OrderDetail',[
+        return Inertia::render('ShopForMe/OrderDetail', [
             'order' => $order,
             'additional_pickup_charges' => $additional_pickup_charges,
         ]);
@@ -227,17 +230,18 @@ class ShopController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id) {
+    public function edit($id)
+    {
 
         $model = order::find($id);
-        $additional_pickup_charges = SiteSetting::where('name','additional_pickup_charges')->first()->value;
+        $additional_pickup_charges = SiteSetting::where('name', 'additional_pickup_charges')->first()->value;
 
         $items = [];
 
         $price = $model->items->sum('unit_price');
         $price_with_tax = $model->items->sum('price_with_tax');
 
-        foreach($model->items as $item){
+        foreach ($model->items as $item) {
             $items[] = [
                 'id' => $item->id,
                 'name' => $item->name,
@@ -252,7 +256,7 @@ class ShopController extends Controller
 
         $images = [];
 
-        foreach($model->images as $image){
+        foreach ($model->images as $image) {
             $images[] = [
                 'id' => $image->id,
                 'image' => $image->image,
@@ -277,40 +281,39 @@ class ShopController extends Controller
             'pickup_date' => $model->pickup_date,
             'pickup_charges' => $model->pickup_charges,
             'pickup_type' => $model->pickup_type,
-            'store_name'=>$model->store_name,
-            'sub_total'=>$model->sub_total,
-            'grand_total'=>$model->grand_total,
-            'service_charges'=>$model->service_charges,
-            'is_service_charges'=>$model->is_service_charges,
-            'discount'=>$model->discount,
-            'receipt_url'=>$model->receipt_url,
-            'payment_status'=>$model->payment_status,
+            'store_name' => $model->store_name,
+            'sub_total' => $model->sub_total,
+            'grand_total' => $model->grand_total,
+            'service_charges' => $model->service_charges,
+            'is_service_charges' => $model->is_service_charges,
+            'discount' => $model->discount,
+            'receipt_url' => $model->receipt_url,
+            'payment_status' => $model->payment_status,
             'image' => '',
             'items' => $items,
             'images' => $images,
         ];
 
-        if(Auth::user()->type != 'admin'){
+        if (Auth::user()->type != 'admin') {
             $order['is_changed'] = $model->is_changed;
             $order['updated_by_admin'] = $model->updated_by_admin;
             $order['changes_approved'] = $model->changes_approved;
-
-        }else{
+        } else {
             $order['changes_approved'] = $model->changes_approved;
         }
 
-        $warehouses = Warehouse::select(['id','name','sale_tax'])->get()->toArray();
-        $stores = Store::select(['id','name'])->get()->toArray();
+        $warehouses = Warehouse::select(['id', 'name', 'sale_tax'])->get()->toArray();
+        $stores = Store::select(['id', 'name'])->get()->toArray();
 
         // echo '<pre>';
         // print_r($order);
         // exit;
 
-        if($model->order_type == 'order'){
-            return redirect()->back()->with('error','You Have No Longer Access to that page.');
+        if ($model->order_type == 'order') {
+            return redirect()->back()->with('error', 'You Have No Longer Access to that page.');
         }
 
-        return Inertia::render('ShopForMe/EditOrder',[
+        return Inertia::render('ShopForMe/EditOrder', [
             'order' => $order,
             'warehouses' => $warehouses,
             'stores' => $stores,
@@ -325,11 +328,12 @@ class ShopController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function updateOrder(Request $request) {
+    public function updateOrder(Request $request)
+    {
         // dd($request->all());
         $id = $request->input('id');
         $order = Order::findOrFail($id);
-        $rules =[
+        $rules = [
             'form_type' => 'required|in:shopping,pickup',
             'warehouse_id' => 'required',
             'notes' => 'nullable',
@@ -342,7 +346,7 @@ class ShopController extends Controller
             'receipt_url' => 'required_if:is_complete_shopping,1'
         ];
 
-        $validator = Validator::make($request->all(), $rules , $message = [
+        $validator = Validator::make($request->all(), $rules, $message = [
             'receipt_url.required_if' => 'image of an order is missing',
         ]);
 
@@ -350,25 +354,25 @@ class ShopController extends Controller
             return redirect()->back()->withErrors($validator)->withInput($request->all());
         }
 
-        $isAdmin = (Auth::user()->type == 'admin') ? true : false ;
+        $isAdmin = (Auth::user()->type == 'admin') ? true : false;
         try {
             DB::beginTransaction();
 
             $order->warehouse_id = $request->warehouse_id;
             $order->notes = $request->notes;
 
-            if(!$isAdmin && $request->has('changes_approved')){
+            if (!$isAdmin && $request->has('changes_approved')) {
                 $order->changes_approved = $request->changes_approved;
                 $order->updated_by_admin = false;
                 $order->is_changed = false;
             }
-            
-            if(isset($request->shipping_from_shop)){
+
+            if (isset($request->shipping_from_shop)) {
                 $order->shipping_from_shop = $request->shipping_from_shop;
             }
-            if(isset($request->sales_tax)){
+            if (isset($request->sales_tax)) {
                 $order->sales_tax = $request->sales_tax;
-            }            
+            }
 
             if ($request->form_type == 'shopping') {
                 $order->order_type = 'shopping';
@@ -385,11 +389,11 @@ class ShopController extends Controller
                 $order->pickup_date = $request->pickup_date;
                 $order->pickup_charges = $request->pickup_charges;
             }
-                $order->sub_total = $request->sub_total;
-                $order->grand_total = $request->grand_total;
-                $order->service_charges = $request->service_charges;
-                $order->is_service_charges = $request->is_service_charges;
-                $order->discount = $request->discount;
+            $order->sub_total = $request->sub_total;
+            $order->grand_total = $request->grand_total;
+            $order->service_charges = $request->service_charges;
+            $order->is_service_charges = $request->is_service_charges;
+            $order->discount = $request->discount;
 
 
             if ($request->is_complete_shopping == 1) {
@@ -399,42 +403,41 @@ class ShopController extends Controller
                     'customer_id' => $order->customer_id,
                     'warehouse_id' => $request->input('warehouse_id')
                 ])->get()->first();
-    
-    
-                if(!is_object($package)){
-    
+
+
+                if (!is_object($package)) {
+
                     $count = Package::where([
                         'customer_id' => $order->customer_id,
                     ])->count();
-    
-                    $next = (int) $count +1;
+
+                    $next = (int) $count + 1;
                     $package = new Package();
-    
-                    $package->package_no = 'Pkg-'.$order->customer_id.'-'.$next;
+
+                    $package->package_no = 'Pkg-' . $order->customer_id . '-' . $next;
                     $package->customer_id = $order->customer_id;
                     $package->warehouse_id =  $request->input('warehouse_id');
                     $package->status = 'open';
                     $package->package_handler_id = ($isAdmin) ? Auth::user()->id : null;
                     $package->save();
-    
                 }
 
-                if($order->order_origin == 'shopping'){
+                if ($order->order_origin == 'shopping') {
                     $order->received_from = $order->site_name;
-                }else if($order->order_origin == 'pickup'){
+                } else if ($order->order_origin == 'pickup') {
                     $order->received_from = $order->store->name;
                 }
 
                 $files = $request->file();
 
-                if(isset($files['receipt_url'])){
+                if (isset($files['receipt_url'])) {
                     $image_object = $files['receipt_url'];
-                    $file_name = time().'_'.$image_object->getClientOriginalName();
+                    $file_name = time() . '_' . $image_object->getClientOriginalName();
                     $image_object->storeAs('uploads', $file_name);
-                    if($_SERVER['HTTP_HOST'] == 'localhost:8000'){
-                        File::move(storage_path('app/uploads/'.$file_name), public_path('/uploads/'.$file_name) );
-                    }else{
-                        File::move(storage_path('app/uploads/'.$file_name), public_path('../uploads/'.$file_name) );
+                    if ($_SERVER['HTTP_HOST'] == 'localhost:8000') {
+                        File::move(storage_path('app/uploads/' . $file_name), public_path('/uploads/' . $file_name));
+                    } else {
+                        File::move(storage_path('app/uploads/' . $file_name), public_path('../uploads/' . $file_name));
                     }
                     $order->receipt_url = $file_name;
                 }
@@ -446,7 +449,6 @@ class ShopController extends Controller
                 $order->save();
 
                 event(new ShoppingCompletedEvent($order));
-
             }
 
             $order->save();
@@ -457,14 +459,14 @@ class ShopController extends Controller
 
             $items = $request->items;
 
-            foreach($items as $item){
+            foreach ($items as $item) {
 
                 $item_id = isset($item['id']) ? (int) $item['id'] : 0;
 
                 $order_item = OrderItem::find($item_id);
                 //update if existing, else creat new.
 
-                if(!is_object($order_item)){
+                if (!is_object($order_item)) {
                     $order_item = new OrderItem();
                 }
 
@@ -480,24 +482,23 @@ class ShopController extends Controller
                 $order_item->save();
 
                 $orderItemChanges[] = $order_item->wasChanged();
-
             }
 
 
 
-            if($request->is_complete_shopping != 1 && $isAdmin){
+            if ($request->is_complete_shopping != 1 && $isAdmin) {
 
                 $order->updated_by_admin = true;
                 $order->changes_approved = false;
 
-                if($checkChanges != null || $orderItemChanges != null){
+                if ($checkChanges != null || $orderItemChanges != null) {
                     $order->is_changed = true;
                     $order->save();
                 }
                 event(new OrderChangesByAdminEvent($order));
             }
 
-            if(!$isAdmin && $request->has('changes_approved')){
+            if (!$isAdmin && $request->has('changes_approved')) {
                 event(new OrderChangesAcceptedByCustomerEvent($order));
             }
 
@@ -505,17 +506,17 @@ class ShopController extends Controller
 
                 $files = $request->file();
 
-                if(isset($files['image'])){
-                    
+                if (isset($files['image'])) {
+
                     $image_object = $files['image'];
 
-                    $file_name = time().'_'.$image_object->getClientOriginalName();
+                    $file_name = time() . '_' . $image_object->getClientOriginalName();
                     $image_object->storeAs('uploads', $file_name);
 
-                    if($_SERVER['HTTP_HOST'] == 'localhost:8000'){
-                        File::move(storage_path('app/uploads/'.$file_name), public_path('/uploads/'.$file_name) );
-                    }else{
-                        File::move(storage_path('app/uploads/'.$file_name), public_path('../uploads/'.$file_name) );
+                    if ($_SERVER['HTTP_HOST'] == 'localhost:8000') {
+                        File::move(storage_path('app/uploads/' . $file_name), public_path('/uploads/' . $file_name));
+                    } else {
+                        File::move(storage_path('app/uploads/' . $file_name), public_path('../uploads/' . $file_name));
                     }
 
                     $order_image = new OrderImage();
@@ -523,27 +524,27 @@ class ShopController extends Controller
                     $order_image->order_id = $order->id;
                     $order_image->display = 1;
                     $order_image->display = 0;
-                    $order_image->save();                
+                    $order_image->save();
                 }
             }
 
             DB::commit();
-            if(!$isAdmin && $request->has('changes_approved') && $request->get('changes_approved') == 1){
-                \Session::put('order_id',$order->id);
-                return redirect()->route('payment.index','amount='.$order->grand_total);
-            }else{
+            if (!$isAdmin && $request->has('changes_approved') && $request->get('changes_approved') == 1) {
+                \Session::put('order_id', $order->id);
+                return redirect()->route('payment.index', 'amount=' . $order->grand_total);
+            } else {
                 return redirect('shop-for-me')->with('success', 'Order Updated !');
             }
-
         } catch (\Exception $e) {
-            return redirect('shop-for-me')->with('error', 'Something went wrong: '. $e->getMessage());
+            return redirect('shop-for-me')->with('error', 'Something went wrong: ' . $e->getMessage());
             DB::rollBack();
         }
     }
 
 
-    public function filterStores($id) {
-        $stores = Store::where('warehouse_id', $id)->get();        
+    public function filterStores($id)
+    {
+        $stores = Store::where('warehouse_id', $id)->get();
         return response()->json([
             'status' => 200,
             'stores' => $stores
@@ -568,37 +569,35 @@ class ShopController extends Controller
         $customer = Auth::user();
         $code = $request->code;
 
-        $coupon = Coupon::where('code',$code)->first();
+        $coupon = Coupon::where('code', $code)->first();
 
-        if($coupon != null){
-            $strCheck = strcmp($code,$coupon->code);
-            if($strCheck == 0){
-                $checkCode = CustomerCoupon::where('coupon_id',$coupon->id)->where('customer_id',$customer->id)->get();
-                if($checkCode->count() > 0){
+        if ($coupon != null) {
+            $strCheck = strcmp($code, $coupon->code);
+            if ($strCheck == 0) {
+                $checkCode = CustomerCoupon::where('coupon_id', $coupon->id)->where('customer_id', $customer->id)->get();
+                if ($checkCode->count() > 0) {
                     return response()->json([
                         'status' => 0,
                         'message' => 'Coupon already used',
                     ]);
-                }else{
+                } else {
                     return response()->json([
                         'status' => 1,
                         'message' => 'Coupon Applied',
                         'discount' => $coupon->discount,
                     ]);
                 }
-
-            }else{
+            } else {
                 return response()->json([
                     'status' => 0,
                     'message' => 'Coupon is invalid',
                 ]);
             }
-        }else{
+        } else {
             return response()->json([
                 'status' => 0,
                 'message' => 'Coupon is invalid',
             ]);
         }
-
     }
 }

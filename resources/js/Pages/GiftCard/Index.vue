@@ -14,7 +14,7 @@
 			</div>
 			<div class="card-body">
 				<table class="table table-responsive">
-					<thead>
+					<thead class="text-center">
 						<tr>
 							<th>ID</th>
 							<th>Customer</th>
@@ -27,12 +27,13 @@
 							<th>Action</th>
 						</tr>
 					</thead>
-					<tbody>
+					<tbody class="text-center">
 						<tr v-for="card in gift_cards" :key="card.id">
 							<td>{{ card.id }}</td>
 							<td>
 								<inertia-link :href="route('detail-customer', card.user.id)" class="btn btn-link">
-								{{ card.user.name }}</inertia-link>
+								# {{ siuteNum(card.user.id) }} - {{ card.user.name }} 
+								</inertia-link>
 							</td>
 							<td>{{ card.title }}</td>
 							<td>{{ card.type }}</td>
@@ -99,6 +100,9 @@
 					.catch(function (error) {
 						console.log(error);
 					});
+			},
+			siuteNum(user_id){
+				return 4000 + user_id;
 			},
 		},
 	};

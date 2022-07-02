@@ -15,6 +15,7 @@
           <tr>
             <th>ID</th>
             <th>Package ID</th>
+            <th>Customer</th>
             <th>Insurance Amount</th>
             <th>Shipping Service</th>
             <th>Action</th>
@@ -23,6 +24,11 @@
           <tbody>
           <tr v-for="insurance in insurances" :key="insurance.id">
             <td>{{ insurance.id }}</td>
+            <td>
+                <inertia-link :href="route('detail-customer', insurance.customer.id)" class="btn btn-link">
+                # {{ siuteNum(insurance.customer.id) }} - {{ insurance.customer.name }} 
+                </inertia-link>
+            </td>
             <td>{{ insurance.package.package_no }}</td>
             <td>{{ insurance.insurance_amount }}</td>
             <td>{{ insurance.shipping_service }}</td>
@@ -76,7 +82,10 @@ export default {
       }).catch(function (error) {
         console.log(error);
       });
-    }
+    },
+    siuteNum(user_id){
+      return 4000 + user_id;
+    },
   }
 
 }

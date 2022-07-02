@@ -15,6 +15,7 @@
           <tr>
             <th>ID</th>
             <th>Package ID</th>
+            <th>Customer</th>
             <th>Tracking No.</th>
             <th>Serial No</th>
             <th>Request Message</th>
@@ -25,6 +26,11 @@
           <tr v-for="request in additionalRequests" :key="request.id">
             <td>{{ request.id }}</td>
             <td>{{ request.package.package_no }}</td>
+            <td>
+                  <inertia-link :href="route('detail-customer', request.customer.id)" class="btn btn-link">
+                  # {{ siuteNum(request.customer.id) }} - {{ request.customer.name }} 
+                  </inertia-link>
+            </td>
             <td>{{ request.tracking_no }}</td>
             <td>{{ request.serial_no }}</td>
             <td>{{ request.message }}</td>
@@ -76,7 +82,10 @@ export default {
       }).catch(function (error) {
         console.log(error);
       });
-    }
+    },
+    siuteNum(user_id){
+      return 4000 + user_id;
+    },
   }
 
 }
