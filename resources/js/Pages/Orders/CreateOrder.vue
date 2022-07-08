@@ -49,7 +49,7 @@
                       <div class="col-md-6">
                         <div class="form-group">
                           <breeze-label for="warehouse_id" value="Weight Unit"/>
-                          <select name="weight_unit" class="form-select" v-model="form.weight_unit" required>
+                          <select name="weight_unit" class="form-select" v-model="form.weight_unit" required @change="changeDimention($event)">
                             <option value="lb">Lb</option>
                             <option value="kg">Kg</option>
                           </select>
@@ -59,7 +59,7 @@
                       <div class="col-md-6">
                         <div class="form-group">
                           <breeze-label for="dim_unit" value="Dimention Unit"/>
-                          <select name="dim_unit" class="form-select" v-model="form.dim_unit" required>
+                          <select name="dim_unit" class="form-select" v-model="form.dim_unit" :readonly="1" :disabled="1">
                             <option value="in">Inch</option>
                             <option value="cm">Cm</option>
                           </select>
@@ -382,6 +382,11 @@ export default {
 
       this.form.grand_total = sum;
     },
+    changeDimention(event){
+      console.log(event.target.value);
+
+      this.form.dim_unit =  event.target.value == 'kg' ? 'cm' : 'in'
+    }
   }
 }
 </script>

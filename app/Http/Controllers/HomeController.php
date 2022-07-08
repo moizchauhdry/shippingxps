@@ -404,7 +404,7 @@ class HomeController extends Controller
         $ship_from= $request->input('ship_from');
         $ship_to = $request->input('ship_to');
         $weight = $request->input('weight');
-        $units = $request->input('weight_unit','lb_in');
+        $units = $request->input('weight_unit');
         $length = $request->input('length');
         $width = $request->input('width');
         $height = $request->input('height');

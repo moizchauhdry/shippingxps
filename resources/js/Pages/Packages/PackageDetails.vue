@@ -167,7 +167,7 @@
                           <div class="col-md-2">
                             <div class="form-group">
                               <breeze-label for="warehouse_id" value="Weight Unit"/>
-                              <select name="weight_unit" class="form-select" v-model="form_consolidate.weight_unit" required>
+                              <select name="weight_unit" class="form-select" v-model="form_consolidate.weight_unit" required @change="changeDimention($event)">
                                 <option value="lb">Lb</option>
                                 <option value="kg">Kg</option>
                               </select>
@@ -183,7 +183,7 @@
                           <div class="col-md-2">
                             <div class="form-group">
                               <breeze-label for="dim_unit" value="Dimention Unit"/>
-                              <select name="dim_unit" class="form-select" v-model="form_consolidate.dim_unit"  required>
+                              <select name="dim_unit" class="form-select" v-model="form_consolidate.dim_unit"   readonly :disabled="1">
                                 <option value="in">Inch</option>
                                 <option value="cm">Cm</option>
                               </select>
@@ -826,7 +826,8 @@ export default {
         ship_from: this.packag.warehouse_id,
         ship_to: this.packag.address.country_id,
         weight: this.packag.package_weight,
-        unit: this.form.unit,
+        unit: this.packag.weight_unit,
+        weight_unit: this.packag.weight_unit +"_"+ this.packag.dim_unit,
         length: this.packag.package_length,
         width: this.packag.package_width,
         height: this.packag.package_height,
@@ -1030,6 +1031,11 @@ export default {
         },
       }).then((response) => {this.storage_fee = response.data});
     },
+    changeDimention(event){
+      console.log(event.target.value);
+
+      this.form_consolidate.dim_unit =  event.target.value == 'kg' ? 'cm' : 'in'
+    }
     /*imgURL(url) {
       return "/public" + url;
     },*/
