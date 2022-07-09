@@ -217,7 +217,7 @@
             </th>
         </tr>
         <tr>
-            <th style="text-align: center;font-size: 12px;font-weight: normal">+8056660828</th>
+            <th style="text-align: center;font-size: 12px;font-weight: normal">+1-657-210-1801</th>
             <th style="text-align: center;font-size: 12px;font-weight: normal">shippingxps.com</th>
             <th style="text-align: center;font-size: 12px;font-weight: normal">info@shippingxps.com</th>
         </tr>

@@ -25,7 +25,7 @@
 							<a
 								href="tel:+16572017881"
 								class="p-0 mr-0 text-color-light font-weight-semibold"
-								>+8056660828</a
+								>+1-657-210-1801</a
 							>
 						</li>
 						<li style="font-size: 15px" class="pt-1 pb-1 d-flex mb-0 px-0">
