@@ -8,80 +8,73 @@
             <form @submit.prevent="submit">
           
             <div class="order-form">
-                <h2>Create New User</h2>
-              <h5>{{ form.name }}</h5>
-              <div class="row">
-                <div class="col-md-4">
-                  <div class="form-group">
-                    <label>Name</label>
-                    <input name="name" id="name" type="text" class="form-control" placeholder="Full Name" v-model="form.name" required />
-                  </div>
-
-                  <div class="form-group">
-                    <label>Address</label>
-                    <input name="address1" id="address1" type="text" class="form-control" placeholder="Address" v-model="form.address1" required />
-                  </div>
-
-                  <div class="form-group">
-                    <label>City</label>
-                    <input name="city" id="city" type="text" class="form-control" placeholder="city" v-model="form.city" required />
-                  </div>
-
-                  <div class="form-group">
-                    <label>State</label>
-                    <input name="state" id="state" type="text" class="form-control" placeholder="state" v-model="form.state" required />
-                  </div>
-
-                  <div class="form-group">
-                    <label>Country</label>
-                    <input name="country" id="country" type="text" class="form-control" placeholder="country" v-model="form.country" />
-                  </div>
-
+                <div class="row">
+                  <h1>Create New User</h1>
                 </div>
-                <div class="col-md-4">
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Name</label>
+                      <input name="name" id="name" type="text" class="form-control" placeholder="Full Name" v-model="form.name" required />
+                    </div>
 
-                  <div class="form-group">
-                    <label>postal Code</label>
-                    <input name="postal_code" id="postal_code" type="text" class="form-control" placeholder="postal_code" v-model="form.postal_code" />
+                    <div class="form-group">
+                      <label>Address</label>
+                      <input name="address1" id="address1" type="text" class="form-control" placeholder="Address" v-model="form.address1" required />
+                    </div>
+
+                    <div class="form-group">
+                      <label>City</label>
+                      <input name="city" id="city" type="text" class="form-control" placeholder="city" v-model="form.city" required />
+                    </div>
+
+                    <div class="form-group">
+                      <label>State</label>
+                      <input name="state" id="state" type="text" class="form-control" placeholder="state" v-model="form.state" required />
+                    </div>
+
+                    <div class="form-group">
+                      <label>Country</label>
+                      <input name="country" id="country" type="text" class="form-control" placeholder="country" v-model="form.country" />
+                    </div>
+
                   </div>
+                  <div class="col-md-4">
 
-                  <div class="form-group">
-                    <label>Phone no</label>
-                    <input name="phone_no" id="phone_no" type="text" class="form-control" placeholder="phone_no" v-model="form.phone_no" />
+                    <div class="form-group">
+                      <label>Postal Code</label>
+                      <input name="postal_code" id="postal_code" type="text" class="form-control" placeholder="Postal code" v-model="form.postal_code" />
+                    </div>
+
+                    <div class="form-group">
+                      <label>Phone no</label>
+                      <input name="phone_no" id="phone_no" type="text" class="form-control" placeholder="Phone no" v-model="form.phone_no" />
+                    </div>
+
+                    <div class="form-group">
+                      <label>Email</label>
+                      <input name="email" id="email" type="text" class="form-control" autocomplete="off" placeholder="email" v-model="form.email" required />
+                    </div>
+
+                    <div class="form-group">
+                      <label>Password</label>
+                      <input name="password" id="password" type="password" class="form-control" placeholder="password" v-model="form.password" required />
+                    </div>
+
+                    <div class="form-group">
+                      <label>User Type</label>
+                      <select name="type" id="type" class="form-control" v-model="form.type">
+                          <option value="customer" selected>Customer</option>
+                          <option value="admin" v-if="$page.props.auth.user.type == 'admin'">Admin User</option>
+                          <option value="manager"  v-if="$page.props.auth.user.type == 'admin'">Warehouse Manager</option>
+                      </select>
+                    </div>
                   </div>
-
-                  <div class="form-group">
-                    <label>Email</label>
-                    <input name="email" id="email" type="text" class="form-control" placeholder="email" v-model="form.email" required />
-                  </div>
-
-                  <div class="form-group">
-                    <label>Password</label>
-                    <input name="password" id="password" type="password" class="form-control" placeholder="password" v-model="form.password" required />
-                  </div>
-
-                  <div class="form-group">
-                    <label>User Type</label>
-                    <select name="type" id="type" class="form-control" v-model="form.type">
-                        <option value="customer" selected>Customer</option>
-                        <option value="admin" v-if="$page.props.auth.user.type == 'admin'">Admin User</option>
-                        <option value="manager"  v-if="$page.props.auth.user.type == 'admin'">Warehouse Manager</option>
-                    </select>
-                  </div>
-
-
-
                 </div>
-                </div>
-                
-
             </div>
-
-          
-            <div class="order-button text-center">
-              <input type="submit" value="Add New User" class="btn btn-danger" />
-            </div>
-           
+            <div class="order-button">
+              <input type="submit" value="Save & Submit" class="btn btn-danger" />
+            </div>           
           </form>
         </div>
       </div>
@@ -93,6 +86,7 @@
     import MainLayout from '@/Layouts/Main'
     import Editor from '@tinymce/tinymce-vue'
     import BreezeValidationErrors from '@/Components/ValidationErrors'
+    
     export default {
         components: {
             MainLayout,
