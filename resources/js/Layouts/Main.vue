@@ -154,9 +154,7 @@
 					<inertia-link
 						class="nav-link"
 						v-if="
-							$page.props.auth.user.type == 'admin' ||
-							$page.props.auth.user.type == 'manager'
-						"
+							$page.props.auth.user.type == 'admin'"
 						:href="route('shop-for-me.index')"
 						:class="{
 							active:
@@ -200,6 +198,8 @@
 
 					<inertia-link
 						class="nav-link"
+						v-if="
+							$page.props.auth.user.type != 'manager'"
 						:href="route('additional-request.index')"
 						:class="{
 							active:
@@ -215,6 +215,8 @@
 
 					<inertia-link
 						class="nav-link"
+						v-if="
+							$page.props.auth.user.type != 'manager'"
 						:href="route('gift-card.index')"
 						:class="{
 							active:
@@ -261,10 +263,6 @@
 					>
 						<i class="fas fa-external-link-alt"></i><span>Manage Services</span>
 					</inertia-link>
-
-					<!-- <inertia-link v-if="$page.props.auth.user.type == 'admin'" class="nav-link" :href="route('pages_list')" :class="{active: route().current('pages_list')}" :active="route().current('pages_list')">
-            <i class="fas fa-external-link-alt"></i><span>Manage Pages</span>
-          </inertia-link>-->
 
 					<inertia-link
 						v-if="
@@ -356,8 +354,7 @@
 
 					<inertia-link
 						v-if="
-							$page.props.auth.user.type != 'admin' ||
-							$page.props.auth.user.type != 'manager'
+							$page.props.auth.user.type != 'admin'
 						"
 						class="nav-link"
 						:href="route('addresses')"
