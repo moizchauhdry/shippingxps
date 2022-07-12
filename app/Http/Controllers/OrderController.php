@@ -478,6 +478,21 @@ class OrderController extends Controller
                 $order_item->save();
             }
 
+            if(isset($order->package_id)){
+                $package = Package::find($order->package_id);
+
+                if(count($package->orders) == 1){
+                    $package->weight_unit = $validated['weight_unit'];
+                    $package->dim_unit = $validated['dim_unit'];
+                    $package->package_weight = $validated['package_weight'];
+                    $package->package_length = $validated['package_length'];
+                    $package->package_width = $validated['package_width'];
+                    $package->package_height = $validated['package_height'];
+                    $package->save();
+                }
+
+            }
+
             DB::commit();
 
             event(new OrderUpdatedEvent($order));

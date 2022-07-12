@@ -89,7 +89,7 @@
                           Weight
                         </td>
                         <td>
-                          {{ packag.package_weight }}
+                          {{ packag.package_weight }} {{ packag.weight_unit}}
                         </td>
                       </tr>
                       <tr>
@@ -112,8 +112,14 @@
                       </template>
                       </tbody>
                     </table>
-                    <template v-if="(packag.status == 'filled')&&(packag.package_length !=='' && packag.package_width !=='' && packag.package_height !=='')">
+                    <template v-if="((packag.status == 'filled' && packag.orders.length == 1) || packag.status == 'consolidated')&&((packag.package_length !=='' && packag.package_length !== 0) && (packag.package_width !=='' && packag.package_width !== 0) && (packag.package_height !=='' && packag.package_height !== 0)) ">
                       <a class="btn btn-success" v-on:click="getShippingRates()">Get Shipping Rates</a>
+                    </template>
+                    <template v-else-if="packag.orders.length > 1 && packag.status == 'filled'" >
+                      <strong>Please get your package consolidated before getting shipping rates</strong>
+                    </template>
+                    <template v-else-if="packag.orders.length == 1 && packag.status == 'filled'">
+                        <strong>Your package needs an update before getting shipping rates</strong>
                     </template>
                   </div>
                   <div class="col-md-7">
@@ -150,7 +156,7 @@
 
         <template v-if="this.hasConsolidationRequest">
           <template v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">
-            <template v-if="packag.status == 'open' || packag.status == 'consolidated'">
+            <template v-if="packag.status == 'open' || ( packag.status == 'filled' && packag.orders.length > 1) || packag.status != 'consolidated'">
               <div class="row" style="margin-top:20px;">
                 <div class="col-md-12">
 
@@ -242,7 +248,7 @@
                             Weight
                           </td>
                           <td>
-                            {{ packag.package_weight }}
+                            {{ packag.package_weight }} {{ packag.weight_unit}}
                           </td>
                         </tr>
                         <tr>
