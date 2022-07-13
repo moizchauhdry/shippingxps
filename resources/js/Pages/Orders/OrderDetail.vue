@@ -44,7 +44,7 @@
               <tbody>
               <tr>
                 <td>Weight</td>
-                <td>{{ order.package_weight }} {{ order.weight_unit }}</td>
+                <td>{{ parseFloat(order.package_weight).toFixed(2) }} {{ order.weight_unit }}</td>
               </tr>
               <tr>
                 <td>Length</td>

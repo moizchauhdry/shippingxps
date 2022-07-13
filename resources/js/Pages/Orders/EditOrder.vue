@@ -55,7 +55,7 @@
 
                     <div class="form-group">
                       <breeze-label for="package_weight" value="Package Weight" />
-                      <input v-model="form.package_weight" name="package_weight" id="package_weight" type="number" class="form-control" placeholder="Package Weight" min="1" required />
+                      <input v-model="form.package_weight" name="package_weight" id="package_weight" type="number" class="form-control" placeholder="Package Weight" min="1" step="0.01" required />
                     </div>
                   </div>
 
