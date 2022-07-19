@@ -190,7 +190,7 @@ class PackageController extends Controller
 
         foreach ($addresses as $address) {
 
-            $full_address = $address->fullname . " " . $address->address . "<br>" . $address->city . " " . $address->state . " " . $address->country->nicename . "<br>" . $address->phone;
+            $full_address = $address->fullname . " " . $address->address . "<br>" . $address->city . " " . $address->state . " " . $address->zip_code . " " . $address->country->nicename . "<br>" . $address->phone;
 
             if ($selected_address == '') {
                 $selected_address = $full_address;
@@ -199,7 +199,7 @@ class PackageController extends Controller
 
             $address_book[$address->id] = [
                 'id' => $address->id,
-                'label' => $address->fullname . " " . $address->city . " " . $address->state,
+                'label' => $address->fullname . ", " . $address->city . ", " . $address->state . ", " . $address->zip_code,
                 'full_address' => $full_address
             ];
         }

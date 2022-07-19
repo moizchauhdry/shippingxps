@@ -48,6 +48,11 @@
                     </div>
 
                     <div class="form-group">
+                      <breeze-label for="zip_code" value="Zip Code" />
+                      <input name="zip_code" id="zip_code" type="text" class="form-control" placeholder="Zip Code" v-model="form.zip_code" required />
+                    </div>
+
+                    <div class="form-group">
                       <breeze-label for="Commercial/Residential" value="Commercial/Residential" />
                       <select class="form-control" v-model="form.is_residential">
                           <option value="0">Commercial</option>
@@ -100,6 +105,7 @@
                     country_id: this.address.country_id,
                     state: this.address.state,
                     city: this.address.city,
+                    zip_code: this.address.zip_code,
                     phone: this.address.phone,
                     address: this.address.address,
                     is_residential: this.address.is_residential,

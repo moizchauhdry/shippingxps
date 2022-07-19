@@ -55,6 +55,7 @@ class AddressController extends Controller
             'country_id' => 'required',
             'state' => 'nullable|string',
             'city' => 'required|string',
+            'zip_code' => 'required|string',
             'phone' => 'required|string',
             'address' => 'required|string',
             'is_residential' => 'required|boolean',
@@ -66,6 +67,7 @@ class AddressController extends Controller
         $address->country_id = $validated['country_id'];
         $address->state = $validated['state'];
         $address->city = $validated['city'];
+        $address->zip_code = $validated['zip_code'];
         $address->phone = $validated['phone'];
         $address->address = $validated['address'];
         $address->is_residential = $validated['is_residential'];
@@ -103,6 +105,7 @@ class AddressController extends Controller
             'country_id' => $model->country_id,
             'state' => $model->state,
             'city' => $model->city,
+            'zip_code' => $model->zip_code,
             'phone' => $model->phone,
             'address' => $model->address,
             'is_residential' => $model->is_residential,
@@ -136,6 +139,7 @@ class AddressController extends Controller
             'country_id' => 'required',
             'state' => 'required|string',
             'city' => 'required|string',
+            'zip_code' => 'required|string',
             'phone' => 'required|string',
             'address' => 'required|string',
             'is_residential' => 'required|boolean',
@@ -147,6 +151,7 @@ class AddressController extends Controller
         $address->country_id = $validated['country_id'];
         $address->state = $validated['state'];
         $address->city = $validated['city'];
+        $address->zip_code = $validated['zip_code'];
         $address->phone = $validated['phone'];
         $address->address = $validated['address'];
         $address->is_residential = $validated['is_residential'];

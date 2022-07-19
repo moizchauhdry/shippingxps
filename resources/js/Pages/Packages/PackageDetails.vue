@@ -476,12 +476,17 @@
                         </tr>
                         <tr>
                           <td colspan="2">
-                            {{ packag.address.country }}
+                            {{ packag.address.country_name }}
                           </td>
                         </tr>
                         <tr>
                           <td colspan="2">
                             Phone : {{ packag.address.phone }}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td colspan="2">
+                            Zip Code : {{ packag.address.zip_code }}
                           </td>
                         </tr>
                         </tbody>
@@ -837,7 +842,7 @@ export default {
         length: this.packag.package_length,
         width: this.packag.package_width,
         height: this.packag.package_height,
-        zipcode: null,
+        zipcode: this.packag.address.zip_code,
         city : this.packag.address.city,
         is_residential : this.packag.address.is_residential,
       };

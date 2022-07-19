@@ -22,9 +22,20 @@
                       <input name="fullname" id="fullname" type="text" class="form-control" placeholder="Full Name" v-model="form.fullname" required />
                     </div>
 
+
+
                     <div class="form-group">
-                      <breeze-label for="address" value="Address 1" />
-                      <input name="address" id="address1" type="text" class="form-control" placeholder="Address" v-model="form.address" required />
+                      <breeze-label for="country" value="Country" />
+                      <select required  v-model="form.country_id" class="form-control" aria-label="Default select example">
+                        <template v-for="country in countries" :key="country">
+                          <option  :value="country.id" >{{ country.name}}</option>
+                        </template>
+                      </select>
+                    </div>
+
+                    <div class="form-group">
+                      <breeze-label for="state" value="State" />
+                      <input name="state" id="state" type="text" class="form-control" placeholder="State" v-model="form.state" />
                     </div>
 
                     <div class="form-group">
@@ -33,8 +44,8 @@
                     </div>
 
                     <div class="form-group">
-                      <breeze-label for="state" value="State" />
-                      <input name="state" id="state" type="text" class="form-control" placeholder="State" v-model="form.state" />
+                      <breeze-label for="zip_code" value="Zip Code" />
+                      <input name="zip_code" id="zip_code" type="text" class="form-control" placeholder="ZipCode" v-model="form.zip_code" required/>
                     </div>
 
                     <div class="form-group">
@@ -45,14 +56,7 @@
                       </select>
                     </div>
 
-                   <div class="form-group">
-                      <breeze-label for="country" value="Country" />
-                      <select required  v-model="form.country_id" class="form-control" aria-label="Default select example">
-                        <template v-for="country in countries" :key="country">
-                          <option  :value="country.id" >{{ country.name}}</option>
-                        </template>
-                      </select>
-                    </div>
+
 
                     <!-- <div class="form-group">
                       <breeze-label for="country" value="Country" />
@@ -62,6 +66,11 @@
                      <div class="form-group">
                       <breeze-label for="phone" value="Phone" />
                       <input name="phone" id="phone" type="text" class="form-control" placeholder="Phone" v-model="form.phone" required />
+                    </div>
+
+                    <div class="form-group">
+                      <breeze-label for="address" value="Address 1" />
+                      <input name="address" id="address1" type="text" class="form-control" placeholder="Address" v-model="form.address" required />
                     </div>
 
                   </div>                
@@ -101,6 +110,7 @@
                     city: '',
                     phone: '',
                     address: '',
+                    zip_code: '',
                     is_residential:''
                 })
             };

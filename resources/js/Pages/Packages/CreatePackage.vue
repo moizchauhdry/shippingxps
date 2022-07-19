@@ -266,6 +266,10 @@
             selectAddress(event){                
                 var address = this.address_book[event.target.value];
                 this.current_address = address.full_address;
+              console.log('target value ' + event.target.value)
+              console.log('old value ' + this.form.address_book_id)
+              this.form.address_book_id = event.target.value
+              console.log('new value ' + this.form.address_book_id)
             }
         },
         computed: {

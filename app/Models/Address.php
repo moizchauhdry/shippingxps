@@ -9,7 +9,15 @@ class Address extends Model
 {
     use HasFactory;
 
+    protected $appends = ['country_name'];
+
     public function country(){
         return $this->belongsTo(Country::class);
+    }
+
+
+    public function getCountryNameAttribute()
+    {
+        return ucwords($this->country->name) ?? 'N/A';
     }
 }

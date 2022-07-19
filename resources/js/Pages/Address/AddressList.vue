@@ -17,6 +17,7 @@
                             <th scope="col">Country</th>
                             <th scope="col">State</th>
                             <th scope="col">City</th>
+                            <th scope="col">Zip Code</th>
                             <th scope="col">Phone</th>
                             <th scope="col">Address</th>
                             <th scope="col">Actions</th>
@@ -29,6 +30,7 @@
                             <td>{{ address.country.nicename }}</td>
                             <td>{{ address.state }}</td>
                             <td>{{ address.city }}</td>
+                            <td>{{ address.zip_code }}</td>
                             <td>{{ address.phone }}</td>
                             <td>{{ address.address }}</td>
                             <td>
