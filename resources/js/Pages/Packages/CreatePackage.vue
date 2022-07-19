@@ -232,6 +232,10 @@
         },
         methods : {
           	submit() {
+              if(this.printable.includes(this.packag.status)){
+                alert('Customs declaration form already filled and package has been processed. Changes will not be saved.');
+                return false;
+              }
               this.form.post(this.route('package.store'))
             },
             addItem(){
