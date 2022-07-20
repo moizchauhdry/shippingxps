@@ -97,13 +97,13 @@
 
                       <div class="col-md-1">
                         <div class="form-group">
-                          <input v-model="item.quantity" name="quantity" min="0" id="quantity" type="number" class="form-control" placeholder="Qty" required />
+                          <input v-model="item.quantity" name="quantity" min="1" id="quantity" type="number" class="form-control" placeholder="Qty" required />
                         </div>
                       </div>
 
                       <div class="col-md-2">
                         <div class="form-group">
-                          <input v-model="item.unit_price" name="value" min="0" id="value" type="number" class="form-control" placeholder="Value" required />
+                          <input v-model="item.unit_price" name="value" min="1" id="value" type="number" class="form-control" placeholder="Value" required />
                         </div>
                       </div>
 
