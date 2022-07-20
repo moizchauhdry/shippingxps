@@ -19,13 +19,12 @@ class AddressController extends Controller
      */
     public function index()
     {
-        
-        $addresses = Address::with('country')->where('user_id',Auth::user()->id)->get();
 
-        return Inertia::render('Address/AddressList',[
+        $addresses = Address::with('country')->where('user_id', Auth::user()->id)->get();
+
+        return Inertia::render('Address/AddressList', [
             'addresses' => $addresses
-        ]);    
-
+        ]);
     }
 
     /**
@@ -34,12 +33,12 @@ class AddressController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create()
-    {  
-        $countries = Country::all(['id','nicename as name'])->toArray();
+    {
+        $countries = Country::all(['id', 'nicename as name'])->toArray();
 
-        return Inertia::render('Address/CreateAddress',[
+        return Inertia::render('Address/CreateAddress', [
             'countries' => $countries,
-        ]);  
+        ]);
     }
 
     /**
@@ -73,8 +72,8 @@ class AddressController extends Controller
         $address->is_residential = $validated['is_residential'];
 
         $address->save();
-        
-        return redirect('addresses')->with('success','Address Created Successfully.');  
+
+        return redirect('addresses')->with('success', 'Address Created Successfully.');
     }
 
     /**
@@ -96,7 +95,7 @@ class AddressController extends Controller
      */
     public function edit($id)
     {
-        
+
         $model = Address::find($id);
 
         $address = [
@@ -111,13 +110,12 @@ class AddressController extends Controller
             'is_residential' => $model->is_residential,
         ];
 
-        $countries = Country::all(['id','nicename as name'])->toArray();
+        $countries = Country::all(['id', 'nicename as name'])->toArray();
 
-        return Inertia::render('Address/EditAddress',[
+        return Inertia::render('Address/EditAddress', [
             'address' => $address,
             'countries' => $countries
-        ]);  
-
+        ]);
     }
 
     /**
@@ -159,7 +157,6 @@ class AddressController extends Controller
         $address->update();
 
         return redirect('addresses')->with('success', 'Address Updated!');
-        
     }
 
     /**
@@ -170,7 +167,7 @@ class AddressController extends Controller
      */
     public function destroy($id)
     {
-        
+
         Address::find($id)->delete();
 
         return back()->with('success', 'Address deleted!');
@@ -179,23 +176,24 @@ class AddressController extends Controller
 
     }
 
-    public function suite(){
+    public function suite()
+    {
 
 
-        $suite_no = Auth::user()->suite_no; 
-        
+        $suite_no = Auth::user()->suite_no;
+
         $name = Auth::user()->name;
         $response['warehouses'] = Warehouse::all();
 
         $addresses = [
-            0 =>[
+            0 => [
                 'name' => 'New Jersey Address',
-                'address' =>  $name.' <br> 4 TAFT RD,<br> SUITE #'.$suite_no.'<br> TOTOWA <br> NEW JERSEY 07512 <br> 302 265 0777'
-            ], 
+                'address' =>  $name . ' <br> 4 TAFT RD,<br> SUITE #' . $suite_no . '<br> TOTOWA <br> NEW JERSEY 07512 <br> 302 265 0777'
+            ],
             1 => [
                 'name' => 'Tax Free Delaware Address',
-                'address' =>  $name.'<br> 1217 OLD COOCHS BRIDGE RD <br> SUITE #'.$suite_no.'<br> NEWARK <br> DELAWARE 19713 <br>301 265 0777',
-            ]                        
+                'address' =>  $name . '<br> 1217 OLD COOCHS BRIDGE RD <br> SUITE #' . $suite_no . '<br> NEWARK <br> DELAWARE 19713 <br>301 265 0777',
+            ]
         ];
 
         $addresses = $response['warehouses'];
@@ -223,20 +221,19 @@ class AddressController extends Controller
         ];
         */
 
-        return Inertia::render('Address/SuiteAddress',[
+        return Inertia::render('Address/SuiteAddress', [
             'addresses' => $addresses
-        ]);    
-
+        ]);
     }
 
     public function getShippingAddress($id)
     {
         $address = Address::find($id);
 
-        if($address != NULL){
-            return response()->json(['status'=> true,'address'=>$address]);
-        }else{
-            return response()->json(['status'=> false,'address'=> NULL]);
+        if ($address != NULL) {
+            return response()->json(['status' => true, 'address' => $address]);
+        } else {
+            return response()->json(['status' => false, 'address' => NULL]);
         }
     }
 }

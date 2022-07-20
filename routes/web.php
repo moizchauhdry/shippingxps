@@ -180,10 +180,10 @@ Route::get('page/{slug}', 'CMSPageController@show')->name('page-show');
 
 //Route::get('{post_url}', 'PostController@index');
 
-Route::get('/clear-cache', function () {
-    \Artisan::call('cache:clear');
-    \Artisan::call('route:clear');
-    \Artisan::call('view:clear');
-    \Artisan::call('optimize:clear');
-    return 'Cache Cleared';
-});
+// Route::get('/clear-cache', function () {
+//     \Artisan::call('cache:clear');
+//     \Artisan::call('route:clear');
+//     \Artisan::call('view:clear');
+//     \Artisan::call('optimize:clear');
+//     return 'Cache Cleared';
+// });
