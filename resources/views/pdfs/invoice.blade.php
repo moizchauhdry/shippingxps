@@ -95,10 +95,9 @@
                 <strong>Telephone No.</strong> : {{ $address->phone ?? '- -'}}<br>
                 <strong>E-mail</strong> : {{ $user->email ?? '- -'}}<br>
                 <strong>Company Name / Address</strong> :<br>
-                {{ $address->address ?? '- -'}}
-                <strong>City</strong> : {{ $address->city ?? '- -'}}<br>
-                <strong>State</strong> : {{ $address->state ?? '- -'}}<br>
-                <br><br>
+                {{ $address->address ?? '- -'}} <br>
+                <strong>City</strong> : {{ $address->city ?? '- -'}} <br>
+                <strong>State</strong> : {{ $address->state ?? '- -'}} <br> <br>
                 <strong>Country</strong> : {{ $address->country->name ?? '- -' }}
             </td>
 
