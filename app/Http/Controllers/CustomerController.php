@@ -16,8 +16,9 @@ use PDF;
 class CustomerController extends Controller
 {
 
-    public function showPDF(Request $request){
-        $data = array('idd'=>'balack');
+    public function showPDF(Request $request)
+    {
+        $data = array('idd' => 'balack');
         $pdf = PDF::loadView('pdf.invoice', $data);
         return $pdf->download('invoice.pdf');
     }
@@ -29,10 +30,10 @@ class CustomerController extends Controller
      */
     public function users(Request $request)
     {
-        $users = User::where('type','!=','customer');
-        if(isset($_GET['search']) && !empty($_GET['search'])){
+        $users = User::where('type', '!=', 'customer');
+        if (isset($_GET['search']) && !empty($_GET['search'])) {
             $search = intval($_GET['search']) - 4000;
-            $users = $users->where('id',$search);
+            $users = $users->where('id', $search);
         }
         $users = $users->paginate(25);
         return Inertia::render('Users/Users', compact('users'));
@@ -45,20 +46,21 @@ class CustomerController extends Controller
     public function createUser(Request $request)
     {
         return Inertia::render('Users/Create');
-    }    
+    }
 
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function editUser(Request $request , $id)
+    public function editUser(Request $request, $id)
     {
         $user = User::findOrfail($id);
-        return Inertia::render('Users/Edit',compact('user'));
-    }    
+        return Inertia::render('Users/Edit', compact('user'));
+    }
 
-    public function saveUser(Request $request){
+    public function saveUser(Request $request)
+    {
         $request->validate([
             'name' => 'required|string|max:255',
             'address1' => 'required|string|max:255',
@@ -84,13 +86,14 @@ class CustomerController extends Controller
             'type' => $request->type,
         ]);
 
-        if( $user == null)
-            return redirect('manage-users')->with('error','User Created Failed');
-        else    
-            return redirect('manage-users')->with('success','User Created Successfully');
+        if ($user == null)
+            return redirect('manage-users')->with('error', 'User Created Failed');
+        else
+            return redirect('manage-users')->with('success', 'User Created Successfully');
     }
 
-    public function updateUser(Request $request){
+    public function updateUser(Request $request)
+    {
 
         $request->validate([
             'name' => 'required|string|max:255',
@@ -103,7 +106,7 @@ class CustomerController extends Controller
             'email' => 'email|string|max:255',
         ]);
 
-        
+
         $user = User::where('id', $request->id)->update([
             'name' => $request->name,
             'address1' => $request->address1,
@@ -116,19 +119,19 @@ class CustomerController extends Controller
             'type' => $request->type,
         ]);
 
-        if( $user == null)
-            return redirect('manage-users')->with('error','User Created Failed');
-        else    
-            return redirect('manage-users')->with('success','User Created Successfully');
-    }    
+        if ($user == null)
+            return redirect('manage-users')->with('error', 'User Created Failed');
+        else
+            return redirect('manage-users')->with('success', 'User Created Successfully');
+    }
 
-    public function deleteUser($id){
+    public function deleteUser($id)
+    {
 
         $user = User::find($id);
         $user->delete();
 
-        return redirect('manage-users')->with('success','User Deleted Successfully');
-
+        return redirect('manage-users')->with('success', 'User Deleted Successfully');
     }
     /**
      * Display a listing of the resource.
@@ -138,22 +141,21 @@ class CustomerController extends Controller
     public function index(Request $request)
     {
 
-        
+
         $search = '';
-        $customers = User::where('type','!=','admin');
-        if(isset($_GET['search']) && !empty($_GET['search'])){
+        $customers = User::where('type', '!=', 'admin');
+        if (isset($_GET['search']) && !empty($_GET['search'])) {
             $search = $_GET['search'];
             $search_id = intval($search) - 4000;
-            $customers = $customers->where('id',$search_id);
+            $customers = $customers->where('id', $search_id);
         }
-        
+
         $customers = $customers->paginate(25);
 
         return Inertia::render('Customers', [
             'customers' => $customers,
-            'search'=> $search
+            'search' => $search
         ]);
-
     }
 
     /**
@@ -174,14 +176,14 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-    $request->validate([
+        $request->validate([
             'first_name' => 'required|string|max:255'
         ]);
 
         $user = Lead::create([
             'first_name' => $request->first_name
         ]);
-         return redirect('leads');
+        return redirect('leads');
     }
 
     /**
@@ -204,9 +206,9 @@ class CustomerController extends Controller
      */
     public function edit($id)
     {
-         $customer = User::find($id);
-         return Inertia::render('EditCustomer', ['customer' => $customer]);       
-    }  
+        $customer = User::find($id);
+        return Inertia::render('EditCustomer', ['customer' => $customer]);
+    }
 
 
     /**
@@ -218,10 +220,10 @@ class CustomerController extends Controller
      */
     public function update(Request $request, $id)
     {
-       // dd($request->all());
+        // dd($request->all());
         if ($request->has('id')) {
             User::find($request->input('id'))->update($request->all());
-            return redirect('customers')->with('success','Customer Updated Successfully.');
+            return redirect('customers')->with('success', 'Customer Updated Successfully.');
         }
     }
 
@@ -233,8 +235,8 @@ class CustomerController extends Controller
      */
     public function destroy($id)
     {
-          $lead = User::find($id);
-          $lead->delete();
-          return redirect('customers')->with('success','Customer Deleted Successfully.');
+        $lead = User::find($id);
+        $lead->delete();
+        return redirect('customers')->with('success', 'Customer Deleted Successfully.');
     }
 }
