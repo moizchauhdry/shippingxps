@@ -663,7 +663,8 @@
                 <div class="row">
                   <div v-for="image in images" :key="'image'+image.order_id" class="col-md-2">
                     <div class="text-center">
-                      <img style="width:150px;height:auto;" class="img-thumbnail" :src="imgURL(image.img_url)"/>
+                      <!-- <img style="width:150px;height:auto;" class="img-thumbnail" :src="imgURL(image.img_url)"/> -->
+                        <img style="width:100px;height:auto;" class="img-thumbnail" @click="viewImage($event)" :src="imgURL(image.img_url)"/>
                     </div>
                   </div>
                 </div>
@@ -671,11 +672,11 @@
             </div>
           </div>
         </div>
-
-
       </div>
     </div>
   </MainLayout>
+    <ImageViewer></ImageViewer>
+
 </template>
 
 <style scoped>
@@ -704,12 +705,15 @@
 import MainLayout from '@/Layouts/Main'
 import BreezeAuthenticatedLayout from '@/Layouts/Authenticated'
 import BreezeLabel from '@/Components/Label'
+import ImageViewer from '@/Components/ImageViewer'
+import $ from 'jquery'
 
 export default {
   components: {
     BreezeAuthenticatedLayout,
     MainLayout,
-    BreezeLabel
+    BreezeLabel,
+    ImageViewer
   },
   data() {
     return {
@@ -981,6 +985,14 @@ export default {
     },
     imgURL(url) {
       return "/public/uploads/" + url;
+    },
+    viewImage(event) {
+      console.log(event.target.src);
+      var modal = document.getElementById('imageViewer');
+      var imageSRC = document.querySelector('#imageViewer img')
+      imageSRC.src = event.target.src;
+      modal.classList.add('show');
+      $('#imageViewer').show();
     },
     makePackageUrl(order_id) {
       return route('package.create') + '?order_id=' + order_id;
