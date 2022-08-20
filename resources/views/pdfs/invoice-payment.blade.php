@@ -59,29 +59,21 @@
         <tr>
             <td colspan="2">
                 <h3>Ship To:</h3>
-                <strong>{{ $address->fullname ?? '- -' }}</strong><br>
-                Address:{{ $address->address ?? '- -' }}<br>
-                Phone: {{ $address->phone ?? '- -' }}<br>
-                Email: {{ $address->email ?? $customer->email ?? '- -' }}
+                <strong>{{ $address->fullname ?? '-' }}</strong><br>
+                Address:{{ $address->address ?? '-' }}<br>
+                Phone: {{ $address->phone ?? '-' }}<br>
+                Email: {{ $address->email ?? $customer->email ?? '-' }}
             </td>
             <td colspan="2">
                 <h3>Bill To:</h3>
-                <strong>{{ $billing->fullname ?? '- -' }}</strong><br>
-                Address:{{ $billing->address ?? '- -' }}<br>
-                Phone: {{ $billing->phone ?? '- -' }}<br>
-                Email: {{ $billing->email ?? '- -' }}
+                <strong>{{ $billing->fullname ?? '-' }}</strong><br>
+                Address:{{ $billing->address ?? '-' }}<br>
+                @if (isset($billing->phone))
+                Phone: {{ $billing->phone ?? '-' }}<br>
+                @endif
+                Email: {{ $billing->email ?? '-' }}
             </td>
         </tr>
-        {{-- @if(!empty($billing))
-        <tr>
-            <td colspan="2">
-                <h3>Billing :</h3><br>
-                <strong>{{ $billing['fullname'] ?? '- -' }}</strong><br>
-                Address:{{ $billing['address'] ?? '- -' }}<br>
-                Email :{{ $billing['email'] ?? '- -' }}<br>
-        </tr>
-        @endif --}}
-
     </table>
     <br>
     {{-- <strong>Charges</strong> --}}
