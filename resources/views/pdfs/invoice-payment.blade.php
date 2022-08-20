@@ -62,14 +62,14 @@
                 <strong>{{ $address->fullname ?? '- -' }}</strong><br>
                 Address:{{ $address->address ?? '- -' }}<br>
                 Phone: {{ $address->phone ?? '- -' }}<br>
-                Email: {{ $customer->email ?? '- -' }}
+                Email: {{ $address->email ?? $customer->email ?? '- -' }}
             </td>
             <td colspan="2">
                 <h3>Bill To:</h3>
-                <strong>{{ $address->fullname ?? '- -' }}</strong><br>
-                Address:{{ $address->address ?? '- -' }}<br>
-                Phone: {{ $address->phone ?? '- -' }}<br>
-                Email: {{ $customer->email ?? '- -' }}
+                <strong>{{ $billing->fullname ?? '- -' }}</strong><br>
+                Address:{{ $billing->address ?? '- -' }}<br>
+                Phone: {{ $billing->phone ?? '- -' }}<br>
+                Email: {{ $billing->email ?? '- -' }}
             </td>
         </tr>
         {{-- @if(!empty($billing))
