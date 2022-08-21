@@ -24,7 +24,16 @@
                       <span :class="coupon_status == 0 ? 'text-red-600' : 'text-green-600'" >{{ coupon_message }}</span><br>
                       <label class="btn btn-primary mt-1 mb-2 " @click="checkCouponCode">Apply Coupon</label>
                     </div>
-                    <div class="row">
+                    <template v-if="hasPackage == 0">
+                      <breeze-label value="Shipping Address"/>
+                      <select v-on:change="selectAddress($event)" name="shipping_address_id" class="form-select"  v-model="shipping_address_id" required>
+                      <template v-for="(address) in shippingAddress" :key="address.id">
+                        <option  :value="address.id" >{{ address.label}}</option>
+                      </template>
+                    </select>
+                      <hr class="mb-3 mt-3">
+                    </template>
+                    <div v-if="hasPackage == 1 || form.shipping_address_id != null" class="row">
                       <div class="col-12" v-if="status != undefined">
                         <p style="color:red;">{{ status.message[0].text }}</p>
                       </div>
@@ -119,8 +128,8 @@
                   </div>
                 </div>
               </form>
-              <hr>
-              <div class="row">
+              <hr class="mb-3 mt-3">
+              <div v-show="hasPackage == 1 || form.shipping_address_id != null" class="row">
                 {{ status }}
                 <div class="col-md-6 offset-md-3">
                   <a href="javascript:void(0)" id="paymentSuccess" @click="paymentSuccess" class="hidden">pay Success</a>
@@ -230,6 +239,7 @@ export default {
       coupon_message : '',
       card_max:16,
       card_csv_max:3,
+      shipping_address_id:null,
       hasPackage : this.hasPackage,
       form: this.$inertia.form({
         amount:this.amount,
@@ -249,6 +259,7 @@ export default {
         coupon_code : '',
         coupon_code_id : '',
         discount:0.00,
+        shipping_address_id:null,
       })
     };
   },
@@ -256,8 +267,9 @@ export default {
     amount:Object,
     status:Object,
     hasPackage:Object,
+    shippingAddress:Object,
   },
-  watch:{
+  watch: {
 
   },
   mounted() {
@@ -271,6 +283,9 @@ export default {
   methods : {
     submit(){
       // this.form.post(this.route('payment.pay'))
+      if(this.hasPackage == 0 && this.form.shipping_address_id == null){
+        alert('Please Select Shipping Address first.')
+      }
       this.response_message = null;
       this.overlay = true;
       axios.post(this.route('payment.pay'), this.form).then(response => (this.response = response)).finally(() => this.responseFromSubmit());
@@ -364,6 +379,15 @@ export default {
     },
     getValues(){
       console.log(document.getElementById('transaction_id'));
+    },
+    selectAddress(event){
+      var address = this.shippingAddress[event.target.value];
+      this.current_address = address.full_address;
+      console.log('target value ' + event.target.value)
+      console.log('old value ' + this.form.shipping_address_id)
+      this.form.shipping_address_id = event.target.value
+      this.shipping_address_id = event.target.value
+      console.log('new value ' + this.form.shipping_address_id)
     }
   },
 }

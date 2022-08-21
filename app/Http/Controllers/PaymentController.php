@@ -28,6 +28,22 @@ class PaymentController extends Controller
 {
     public function index(Request $request)
     {
+        $user = Auth::user();
+        $addresss = Address::where('user_id',$user->id)->get();
+
+        foreach ($addresss as $address) {
+
+            $full_address = $address->fullname . " " . $address->address . "<br>" . $address->city . " " . $address->state . " " . $address->zip_code . " " . $address->country->nicename . "<br>" . $address->phone;
+
+
+
+            $shippingAddress[$address->id] = [
+                'id' => $address->id,
+                'label' => $address->fullname . ", " . $address->city . ", " . $address->state . ", " . $address->zip_code,
+                'full_address' => $full_address
+            ];
+        }
+
         if ($request->has('package_id')) {
             \Session::forget(['order_id', 'additional_request_id', 'insurance_id']);
         }
@@ -54,6 +70,7 @@ class PaymentController extends Controller
                     'hasInsurance' => \Session::has('insurance_id') ? 1 : 0,
                     'hasRequest' => \Session::has('additional_request_id') ? 1 : 0,
                     'hasPackage' => $request->has('package_id') ? 1 : 0,
+                    'shippingAddress' => $shippingAddress,
                 ]
             );
         } else {
@@ -198,9 +215,9 @@ class PaymentController extends Controller
 
         // Create the controller and get the response
         $controller = new AnetController\CreateTransactionController($transaction);
-        $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::SANDBOX);
+        // $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::SANDBOX);
         /*For Production use the below line */
-        //$response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::PRODUCTION);
+        $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::PRODUCTION);
         if ($response != null) {
             // Check to see if the API request was successfully received and acted upon
             if ($response->getMessages()->getResultCode() == "Ok") {
@@ -236,7 +253,7 @@ class PaymentController extends Controller
                     /*Dont make it live end */
 
                     $shipping = [];
-                    if($request->has('shipping_address_id')){
+                    if($request->has('shipping_address_id') && $request->get('shipping_address_id') != null){
 
                         $shippingAddress = Address::where('id', $request->shipping_address_id)->first();
 
@@ -404,7 +421,7 @@ class PaymentController extends Controller
             }
         }
         $shipping = [];
-        if($request->has('shipping_address_id')){
+        if($request->has('shipping_address_id') && $request->get('shipping_address_id') != null){
 
             $shippingAddress = Address::where('id', $request->shipping_address_id)->first();
 
