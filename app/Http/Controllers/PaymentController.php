@@ -28,6 +28,22 @@ class PaymentController extends Controller
 {
     public function index(Request $request)
     {
+        $user = Auth::user();
+        $addresss = Address::where('user_id',$user->id)->get();
+
+        foreach ($addresss as $address) {
+
+            $full_address = $address->fullname . " " . $address->address . "<br>" . $address->city . " " . $address->state . " " . $address->zip_code . " " . $address->country->nicename . "<br>" . $address->phone;
+
+
+
+            $shippingAddress[$address->id] = [
+                'id' => $address->id,
+                'label' => $address->fullname . ", " . $address->city . ", " . $address->state . ", " . $address->zip_code,
+                'full_address' => $full_address
+            ];
+        }
+
         if ($request->has('package_id')) {
             \Session::forget(['order_id', 'additional_request_id', 'insurance_id']);
         }
@@ -54,6 +70,7 @@ class PaymentController extends Controller
                     'hasInsurance' => \Session::has('insurance_id') ? 1 : 0,
                     'hasRequest' => \Session::has('additional_request_id') ? 1 : 0,
                     'hasPackage' => $request->has('package_id') ? 1 : 0,
+                    'shippingAddress' => $shippingAddress,
                 ]
             );
         } else {
@@ -165,6 +182,7 @@ class PaymentController extends Controller
         $billing = [
             'email' => $request->email ?? $user->email ?? '',
             'fullname' => $request->first_name . ' ' . $request->last_name ?? '',
+            'phone' => $request->phone_no ?? '',
             'address' => $request->address . ', ' . $request->city . ', ' . $request->zip . ', ' . $request->country ?? '',
         ];
 
@@ -197,7 +215,7 @@ class PaymentController extends Controller
 
         // Create the controller and get the response
         $controller = new AnetController\CreateTransactionController($transaction);
-        //$response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::SANDBOX);
+        // $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::SANDBOX);
         /*For Production use the below line */
         $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::PRODUCTION);
         if ($response != null) {
@@ -233,6 +251,24 @@ class PaymentController extends Controller
                     /*Dont make it live */
 
                     /*Dont make it live end */
+
+                    $shipping = [];
+                    if($request->has('shipping_address_id') && $request->get('shipping_address_id') != null){
+
+                        $shippingAddress = Address::where('id', $request->shipping_address_id)->first();
+
+                        $shipping['email'] = $user->email ?? '';
+                        $shipping['fullname'] = $shippingAddress->fullname ?? '';
+                        $shipping['phone'] = $shippingAddress->phone ?? '';
+                        $shipping['address'] = $shippingAddress->address .', '. $shippingAddress->city .', '.$shippingAddress->state .', '. $shippingAddress->country_name ?? '';
+                    }else{
+                        $shippingAddress = Address::where('user_id', $user->id)->first();
+
+                        $shipping['email'] = $user->email ?? '';
+                        $shipping['fullname'] = $shippingAddress->fullname ?? '';
+                        $shipping['phone'] = $shippingAddress->phone ?? '';
+                        $shipping['address'] = $shippingAddress->address .', '. $shippingAddress->city .', '.$shippingAddress->state .', '. $shippingAddress->country_name ?? '';
+                    }
 
                     if (\Session::has('order_id')) {
                         $id = \Session::get('order_id');
@@ -272,6 +308,23 @@ class PaymentController extends Controller
                         $package->payment_status = "Paid";
                         $package->save();
 
+                        if($package->address_book_id != null){
+
+                            $shippingAddress = Address::where('id', $package->address_book_id)->first();
+
+                            $shipping['email'] = $user->email ?? '';
+                            $shipping['fullname'] = $shippingAddress->fullname ?? '';
+                            $shipping['phone'] = $shippingAddress->phone ?? '';
+                            $shipping['address'] = $shippingAddress->address .', '. $shippingAddress->city .', '.$shippingAddress->state .', '. $shippingAddress->country_name ?? '';
+                        }else{
+                            $shippingAddress = Address::where('user_id', $user->id)->first();
+
+                            $shipping['email'] = $user->email ?? '';
+                            $shipping['fullname'] = $shippingAddress->fullname ?? '';
+                            $shipping['phone'] = $shippingAddress->phone ?? '';
+                            $shipping['address'] = $shippingAddress->address .', '. $shippingAddress->city .', '.$shippingAddress->state .', '. $shippingAddress->country_name ?? '';
+                        }
+
                         if ($request->has('coupon_code_id') && $request->has('coupon_code')) {
                             if ($request->coupon_code_id != null) {
                                 $customerCoupon = new CustomerCoupon();
@@ -283,7 +336,7 @@ class PaymentController extends Controller
                     }
 
                     \Log::info('b4 invoice');
-                    $this->buildInvoice($payment->id, $billing);
+                    $this->buildInvoice($payment->id, $billing,$shipping);
                     \Log::info('after invoice');
 
                     \Session::forget(['order_id', 'package_id', 'amount', 'additional_request_id', 'insurance_id', 'gift_card_id']);
@@ -356,6 +409,7 @@ class PaymentController extends Controller
     // PAYPAL - PAYMENT SUCCESS
     public function payPalSuccess(Request $request)
     {
+        $user = Auth::user();
         $description = json_decode($request->payment_detail, true);
         $shipping = $description['purchase_units'][0]['shipping'];
         $billing['email'] = $description['payer']['email_address'] ?? '';
@@ -366,7 +420,25 @@ class PaymentController extends Controller
                 $billing['address'] .= $address . (($key) == 'country_code' ? '' : ', ');
             }
         }
-        $user = Auth::user();
+        $shipping = [];
+        if($request->has('shipping_address_id') && $request->get('shipping_address_id') != null){
+
+            $shippingAddress = Address::where('id', $request->shipping_address_id)->first();
+
+            $shipping['email'] = $description['payer']['email_address'] ?? '';
+            $shipping['fullname'] = $shippingAddress->fullname ?? '';
+            $shipping['phone'] = $shippingAddress->phone ?? '';
+            $shipping['address'] = $shippingAddress->address .', '. $shippingAddress->city .', '.$shippingAddress->state .', '. $shippingAddress->country_name ?? '';
+        }else{
+            $shippingAddress = Address::where('user_id', $user->id)->first();
+
+            $shipping['email'] = $description['payer']['email_address'] ?? '';
+            $shipping['fullname'] = $shippingAddress->fullname ?? '';
+            $shipping['phone'] = $shippingAddress->phone ?? '';
+            $shipping['address'] = $shippingAddress->address .', '. $shippingAddress->city .', '.$shippingAddress->state .', '. $shippingAddress->country_name ?? '';
+        }
+
+
         $discount = 0.00;
         if ($request->has('discount')) {
             if ($request->discount > 0) {
@@ -432,6 +504,23 @@ class PaymentController extends Controller
             $package->payment_status = "Paid";
             $package->save();
 
+            if($package->address_book_id != null){
+
+                $shippingAddress = Address::where('id', $package->address_book_id)->first();
+
+                $shipping['email'] = $description['payer']['email_address'] ?? '';
+                $shipping['fullname'] = $shippingAddress->fullname ?? '';
+                $shipping['phone'] = $shippingAddress->phone ?? '';
+                $shipping['address'] = $shippingAddress->address .', '. $shippingAddress->city .', '.$shippingAddress->state .', '. $shippingAddress->country_name ?? '';
+            }else{
+                $shippingAddress = Address::where('user_id', $user->id)->first();
+
+                $shipping['email'] = $description['payer']['email_address'] ?? '';
+                $shipping['fullname'] = $shippingAddress->fullname ?? '';
+                $shipping['phone'] = $shippingAddress->phone ?? '';
+                $shipping['address'] = $shippingAddress->address .', '. $shippingAddress->city .', '.$shippingAddress->state .', '. $shippingAddress->country_name ?? '';
+            }
+
             if ($request->has('coupon_code_id') && $request->has('coupon_code')) {
                 if ($request->coupon_code_id != null) {
                     $customerCoupon = new CustomerCoupon();
@@ -443,7 +532,7 @@ class PaymentController extends Controller
         }
 
         \Log::info('b4 invoice');
-        $this->buildInvoice($payment->id, $billing);
+        $this->buildInvoice($payment->id, $billing,$shipping);
         \Log::info('after invoice');
 
         \Session::forget(['order_id', 'package_id', 'amount', 'additional_request_id', 'insurance_id', 'gift_card_id']);
@@ -454,12 +543,22 @@ class PaymentController extends Controller
         ]);
     }
 
-    public function buildInvoice($id, $billing = [])
+    public function buildInvoice($id, $billing = [],$shipping = [])
     {
         $payment = Payment::find($id);
         $customer = $payment->customer;
         $warehouse = Warehouse::first();
         $address = Address::where('user_id', $customer->id)->first();
+
+        if(isset($shipping) && !empty($shipping)){
+            $payment->shipping_address = json_encode($shipping);
+        }
+
+        if(isset($billing) && !empty($billing)){
+            $payment->billing_address = json_encode($billing);
+        }
+
+        $payment->save();
 
         if ($payment->package_id != null) {
             \Log::info('On Package');
@@ -766,8 +865,9 @@ class PaymentController extends Controller
 
         $payment = Payment::findOrFail($id);
         $customer = $payment->customer;
+        $billing = json_decode($payment->billing_address) ?? [];
         $warehouse = Warehouse::first();
-        $address = Address::where('user_id', $customer->id)->first();
+        $address = json_decode($payment->shipping_address) ?? Address::where('user_id', $customer->id)->first();
 
         if (isset($payment->package_id)) {
             $package = $payment->package;
@@ -797,7 +897,6 @@ class PaymentController extends Controller
             'address' => $address,
             'warehouse' => $warehouse,
             'billing' => $billing,
-            'address' => $address,
             'order' => $order,
             'additionalRequest' => $additionalRequest,
             'insuranceRequest' => $insurance,

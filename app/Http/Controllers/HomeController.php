@@ -345,7 +345,7 @@ class HomeController extends Controller
 
     public function pricing(){
 
-        $countries = Country::all(['id','nicename as name'])->toArray();
+        $countries = Country::all(['id','nicename as name','iso'])->where('iso','!=','US')->toArray();
 
         $warehouses = Warehouse::all()->toArray();
 

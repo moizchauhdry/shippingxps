@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>SHIPPING-XPS-INVOICE-0{{$payment->id}}</title>
+    <title>SHIPPING-XPS-INVOICE-{{ $payment->invoice_id }}</title>
     <style>
         table.border,
         .border th,
@@ -13,11 +13,15 @@
             border: 1px solid black;
             border-collapse: collapse;
         }
+
+        td {
+            padding: 10px
+        }
     </style>
 </head>
 
 <body>
-    <table style="width: 100%;padding-bottom: 10px">
+    <table style="width: 100%; padding-bottom: 10px">
         <tr>
             <td colspan="4" style="text-align: center;border-bottom: #f04c23 solid 4px">
                 <img style="width: auto;height:80px" src="{{ asset('public/logo.png') }}" alt="">
@@ -31,8 +35,8 @@
     <strong>Invoice ID : </strong> {{ $payment->invoice_id }}
     <table class="border" style="width: 100%">
         <tr>
-            <td colspan="2">
-                <h3>Invoiced From</h3><br>
+            <td colspan="4">
+                <h3>Invoiced From</h3>
                 <strong>ShippingXPS</strong><br>
                 {{ $package->warehouse->name ?? $order->warehouse->name ?? $warehouse->name ?? '- -' }}<br>
                 Address:
@@ -51,32 +55,28 @@
                 Phone: {{ $package->warehouse->phone ?? $order->warehouse->phone ?? $warehouse->phone ?? '- -' }}<br>
                 Email : {{ $package->warehouse->email ?? $order->warehouse->email ?? $warehouse->email ?? '- -' }}
             </td>
-
-
         </tr>
         <tr>
             <td colspan="2">
-                <h3>Invoiced To:</h3><br>
-                <strong>{{ $address->fullname ?? '- -' }}</strong><br>
-                Address:{{ $address->address ?? '- -' }}<br>
-                Phone: {{ $address->phone ?? '- -' }}<br>
-                Email: {{ $customer->email ?? '- -' }}
+                <h3>Ship To:</h3>
+                <strong>{{ $address->fullname ?? '-' }}</strong><br>
+                Address:{{ $address->address ?? '-' }}<br>
+                Phone: {{ $address->phone ?? '-' }}<br>
+                Email: {{ $address->email ?? $customer->email ?? '-' }}
+            </td>
+            <td colspan="2">
+                <h3>Bill To:</h3>
+                <strong>{{ $billing->fullname ?? '-' }}</strong><br>
+                Address:{{ $billing->address ?? '-' }}<br>
+                @if (isset($billing->phone))
+                Phone: {{ $billing->phone ?? '-' }}<br>
+                @endif
+                Email: {{ $billing->email ?? '-' }}
             </td>
         </tr>
-        @if(!empty($billing))
-        <tr>
-            <td colspan="2">
-                <h3>Billing :</h3><br>
-                <strong>{{ $billing['fullname'] ?? '- -' }}</strong><br>
-                Address:{{ $billing['address'] ?? '- -' }}<br>
-                Email :{{ $billing['email'] ?? '- -' }}<br>
-
-        </tr>
-        @endif
-
     </table>
     <br>
-    <strong>Charges</strong>
+    {{-- <strong>Charges</strong> --}}
     <table class="border" style="width: 100%">
         <tbody>
             @isset($package)
@@ -169,10 +169,9 @@
             @isset($giftCard)
             <tr>
                 <td>
-                    Charges For Gift Card with Shipping
+                    <span style="text-transform:uppercase">{{$giftCard->type}} Gift Card</span> x {{$giftCard->qty}}
                 </td>
-
-                <td style="width: 100px">$ {{ $giftCard->amount }}</td>
+                <td style="width: 100px; padding:10px;">$ {{ $giftCard->amount }}</td>
             </tr>
             @endisset
 
@@ -180,33 +179,32 @@
     </table>
     <table style="width: 100%">
         <tr>
-            <td style="text-align: right">Sub Total : </td>
-            <td style="width: 100px">${{ $payment->charged_amount + $payment->discount }}</td>
-        </tr>
-        <tr>
-            <td style="text-align: right">Discount : </td>
-            <td style="width: 100px">${{ $payment->discount }}</td>
-        </tr>
-        <tr>
-            <td style="text-align: right">Grand Total : </td>
-            <td style="width: 100px">${{ $payment->charged_amount }}</td>
+            <td></td>
+            <td style="text-align: right">
+                Sub Total : ${{ $payment->charged_amount + $payment->discount }} <br>
+                Discount : ${{ $payment->discount }} <br>
+                Grand Total : ${{ $payment->charged_amount }}
+            </td>
         </tr>
     </table>
     <br>
     <br>
 
-    <b>Payments:</b>
-    <table class="border" style="width:100%">
+    <table class="border" style="width:100%; text-align:center">
         <tr>
-            <th>Payment Method</th>
+            <th>Payment</th>
             <th>Date</th>
             <th>Status</th>
-            <th>Payment Amount</th>
+            <th>Amount</th>
         </tr>
         <tr>
-            <td>Card</td>
+            <td>
+                Transaction ID: {{$payment->transaction_id}} <br>
+                Type: {{$payment->payment_type}} <br>
+                Method: Card <br>
+            </td>
             <td>{{ date('d-m-Y',strtotime($payment->charged_at)) }}</td>
-            <td>Payment Complete</td>
+            <td>Paid</td>
             <td>$ {{ $payment->charged_amount }}</td>
         </tr>
     </table>
