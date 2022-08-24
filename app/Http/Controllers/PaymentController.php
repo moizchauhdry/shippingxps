@@ -16,6 +16,8 @@ use App\Models\Warehouse;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use PDF;
@@ -28,6 +30,16 @@ class PaymentController extends Controller
 {
     public function index(Request $request)
     {
+        if($request->has('amount') && $request->get('amount') > 0){
+            $amount = $request->amount;
+            Session::put('amount',$amount);
+        }elseif (\Session::has('amount') && \Session::get('amount') > 0){
+            $amount = \Session::get('amount');
+            Session::put('amount',$amount);
+        }else{
+            return redirect()->route('dashboard')->with('error', 'Please re-checkout to continue');
+        }
+
         $user = Auth::user();
         $addresss = Address::where('user_id',$user->id)->get();
 
@@ -50,8 +62,8 @@ class PaymentController extends Controller
         if (\Session::has('order_id')) {
             \Session::forget(['package_id', 'additional_request_id', 'insurance_id']);
         }
-        if ($request->has('package_id') || \Session::has('order_id') || \Session::has('additional_request_id') || \Session::has('insurance_id') || \Session::has('gift_card_id')) {
-            \Session::put('amount', $request->amount);
+        if ($request->has('package_id') || \Session::has('package_id') || \Session::has('order_id') || \Session::has('additional_request_id') || \Session::has('insurance_id') || \Session::has('gift_card_id')) {
+            \Session::put('amount', $amount);
             if ($request->has('status')) {
                 $status = $request->status;
             } else {
@@ -65,16 +77,16 @@ class PaymentController extends Controller
             return Inertia::render(
                 'Payment/OrderPayment',
                 [
-                    'amount' => $request->amount,
+                    'amount' => $amount,
                     'status' => $status,
                     'hasInsurance' => \Session::has('insurance_id') ? 1 : 0,
                     'hasRequest' => \Session::has('additional_request_id') ? 1 : 0,
-                    'hasPackage' => $request->has('package_id') ? 1 : 0,
+                    'hasPackage' => $request->has('package_id') || \Session::has('package_id') ? 1 : 0,
                     'shippingAddress' => $shippingAddress,
                 ]
             );
         } else {
-            return redirect()->back()->with('error', 'Something went wrong');
+            return redirect()->route('dashboard')->with('error', 'Something went wrong, Please try again');
         }
     }
 

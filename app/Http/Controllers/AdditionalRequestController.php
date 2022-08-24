@@ -86,7 +86,7 @@ class AdditionalRequestController extends Controller
             if ($request->has('approve') && $request->approve == 1) {
                 \Session::forget(['order_id', 'package_id', 'insurance_id']);
                 \Session::put('additional_request_id', $id);
-                return redirect()->route('payment.index', 'amount=' . $additionalRequest->price);
+                return redirect()->route('payment.index')->with('amount',$additionalRequest->price);
             }
 
             $validatedData = $request->validate([
