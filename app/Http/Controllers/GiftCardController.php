@@ -166,7 +166,7 @@ class GiftCardController extends Controller
                     $final_amount = $final_amount + 25;
                 }
 
-                return redirect()->route('payment.index', 'amount=' . $final_amount);
+                return redirect()->route('payment.index')->with('amount',$final_amount);
             }
 
             return redirect()->route('gift-card.index')->with('success', 'Successfully Modified');
