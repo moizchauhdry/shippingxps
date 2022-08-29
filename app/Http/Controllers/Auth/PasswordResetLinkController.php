@@ -52,9 +52,8 @@ class PasswordResetLinkController extends Controller
                 'email' => [trans($status)],
             ]);
         } catch (\Throwable $e) {
-            dd($e);
             throw ValidationException::withMessages([
-                'error' => 'Something went wrong',
+                'error' => 'The request could not be satisfied.There might be configuration error. Try again later, or contact the support',
             ]);
         }
     }
