@@ -26,7 +26,7 @@ class RegisteredUserController extends Controller
     public function create()
     {
         return Inertia::render('Auth/Register');
-    }    
+    }
 
     /**
      * Handle an incoming registration request.
@@ -38,10 +38,13 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
+
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'hear_from' => 'required|string|max:100',
         ]);
 
 
@@ -49,31 +52,27 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'type' => 'customer'
+            'hear_from' => $request->hear_from,
+            'type' => 'customer',
         ]);
 
         $admins = User::where(['type' => 'admin'])->get();
 
-        try{
-            
-        //Notify User
-        $user->notify(new UserWelcomeEmail());
-
-        //Notify Admins 
-        Notification::send($admins, new AdminUserRegistered($user));
-        }catch(\Throwable $e){}
+        try {
+            $user->notify(new UserWelcomeEmail());
+            Notification::send($admins, new AdminUserRegistered($user));
+        } catch (\Throwable $e) {
+        }
 
         event(new Registered($user));
-
         Auth::login($user);
 
         return redirect(RouteServiceProvider::HOME);
-    } 
-     public function update_experience(Request $request)
-    {  
-         
-       
-        $user= User::find($request->id);
+    }
+
+    public function update_experience(Request $request)
+    {
+        $user = User::find($request->id);
         $user->experience = $request->experience;
         $user->save();
         // return redirect('/');
