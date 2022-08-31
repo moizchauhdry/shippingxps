@@ -35,6 +35,7 @@ class Recaptcha implements Rule
             return true;
         }
 
+        dd($response);
         return false;
     }
 
