@@ -29,12 +29,18 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
+
     'mandrill' => [
         'secret' => 'Z4iK1qN7xFG7FUCTAAanqw',
     ],
+
     'authorizeAnet' => [
         'merchant_login_id' => env('MERCHANT_LOGIN_ID'),
         'merchant_transaction_key' => env('MERCHANT_TRANSACTION_KEY'),
-    ]
+    ],
+
+    'recaptcha' => [
+        'secretkey' => env('CAPTCHA_SECRET_KEY'),
+    ],
 
 ];

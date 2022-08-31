@@ -8,6 +8,7 @@ use App\Models\Billing;
 use App\Notifications\AdminUserRegistered;
 use App\Notifications\UserWelcomeEmail;
 use App\Providers\RouteServiceProvider;
+use App\Rules\Recaptcha;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -45,6 +46,7 @@ class RegisteredUserController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'hear_from' => 'required|string|max:100',
+            'captcha_token' => ['required', new Recaptcha]
         ]);
 
 

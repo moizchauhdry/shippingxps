@@ -78,17 +78,41 @@
                     email: '',
                     password: '',
                     password_confirmation: '',
-                    terms: false,
                     hear_from: '',
+                    captcha_token: "",
                 })
             }
         },
 
         methods: {
             submit() {
-                this.form.post(this.route('register'), {
-                    onFinish: () => this.form.reset('password', 'password_confirmation'),
-                })
+                // this.form.post(this.route('register'), {
+                //     onFinish: () => this.form.reset('password', 'password_confirmation'),
+                // })
+                
+                let submitForm = (token) => {
+                    this.form.captcha_token = token;
+                    this.form.post(this.route("register"), {
+                        onFinish: () => this.form.reset("password", "password_confirmation"),
+                    });
+                };
+
+                var grecaptchav3_sitekey = '6LcKxb0hAAAAALPcMiT1eLu03DnQfxaluzJhgD8F';
+           
+                grecaptcha.render(
+                    'recaptcha_container',
+                    {
+                        'sitekey': grecaptchav3_sitekey,
+                        'badge': 'inline',
+                        'size': 'invisible'
+                    }
+                );
+
+                grecaptcha
+                    .execute(grecaptchav3_sitekey, { action: "submit" })
+                    .then(function (token) {
+                        submitForm(token);
+                    });
             }
         }
     }
