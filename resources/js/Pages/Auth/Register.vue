@@ -97,19 +97,8 @@
                     });
                 };
 
-                var grecaptchav3_sitekey = '6LcKxb0hAAAAALPcMiT1eLu03DnQfxaluzJhgD8F';
-           
-                grecaptcha.render(
-                    'recaptcha_container',
-                    {
-                        'sitekey': grecaptchav3_sitekey,
-                        'badge': 'inline',
-                        'size': 'invisible'
-                    }
-                );
-
                 grecaptcha
-                    .execute(grecaptchav3_sitekey, { action: "submit" })
+                    .execute('6LcKxb0hAAAAALPcMiT1eLu03DnQfxaluzJhgD8F', { action: "submit" })
                     .then(function (token) {
                         submitForm(token);
                     });
