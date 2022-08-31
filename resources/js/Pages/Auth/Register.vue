@@ -22,6 +22,21 @@
             <breeze-input id="password_confirmation" type="password" class="mt-1 block w-full" v-model="form.password_confirmation" required autocomplete="new-password" />
         </div>
 
+        <div class="form-group col-md-12 mt-4">
+            <breeze-label for="hear_from" value="How did you hear about us?" />
+            <select class="form-control mt-1 block w-full" name="type" v-model="form.hear_from" id="type" required>
+                <option value="" selected>--Please Select--</option>
+                <option value="Google">Google</option>
+                <option value="Google">Google</option>
+                <option value="Instagram">Instagram</option>
+                <option value="Twitter">Twitter</option>
+                <option value="Youtube">Youtube</option>
+                <option value="Articles & Blogs">Articles & Blogs</option>
+                <option value="Friend Recommendation">Friend Recommendation</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+
         <div class="flex items-center justify-end mt-4">
             <inertia-link :href="route('login')" class="underline text-sm text-gray-600 hover:text-gray-900">
                 Already registered?
@@ -63,16 +78,41 @@
                     email: '',
                     password: '',
                     password_confirmation: '',
-                    terms: false,
+                    hear_from: '',
+                    captcha_token: "",
                 })
             }
         },
 
         methods: {
             submit() {
-                this.form.post(this.route('register'), {
-                    onFinish: () => this.form.reset('password', 'password_confirmation'),
-                })
+                // this.form.post(this.route('register'), {
+                //     onFinish: () => this.form.reset('password', 'password_confirmation'),
+                // })
+                
+                let submitForm = (token) => {
+                    this.form.captcha_token = token;
+                    this.form.post(this.route("register"), {
+                        onFinish: () => this.form.reset("password", "password_confirmation"),
+                    });
+                };
+
+                var grecaptchav3_sitekey = '6LcKxb0hAAAAALPcMiT1eLu03DnQfxaluzJhgD8F';
+           
+                grecaptcha.render(
+                    'recaptcha_container',
+                    {
+                        'sitekey': grecaptchav3_sitekey,
+                        'badge': 'inline',
+                        'size': 'invisible'
+                    }
+                );
+
+                grecaptcha
+                    .execute(grecaptchav3_sitekey, { action: "submit" })
+                    .then(function (token) {
+                        submitForm(token);
+                    });
             }
         }
     }
