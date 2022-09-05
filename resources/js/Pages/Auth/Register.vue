@@ -27,7 +27,6 @@
             <select class="form-control mt-1 block w-full" name="type" v-model="form.hear_from" id="type" required>
                 <option value="" selected>--Please Select--</option>
                 <option value="Google">Google</option>
-                <option value="Google">Google</option>
                 <option value="Instagram">Instagram</option>
                 <option value="Twitter">Twitter</option>
                 <option value="Youtube">Youtube</option>
