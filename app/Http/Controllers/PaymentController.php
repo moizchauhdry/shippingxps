@@ -47,6 +47,7 @@ class PaymentController extends Controller
             return redirect()->back()->with('error', 'Please add shipping address for further process.');
         }
 
+        $shippingAddress = [];
         foreach ($addresss as $address) {
             $full_address = $address->fullname . " " . $address->address . "<br>" . $address->city . " " . $address->state . " " . $address->zip_code . " " . $address->country->nicename . "<br>" . $address->phone;
             $shippingAddress[$address->id] = [
@@ -54,6 +55,10 @@ class PaymentController extends Controller
                 'label' => $address->fullname . ", " . $address->city . ", " . $address->state . ", " . $address->zip_code,
                 'full_address' => $full_address
             ];
+        }
+
+        if(count($shippingAddress) == 0){
+            return redirect()->back()->with('error', 'Cannot continue without shipping address');
         }
 
         if ($request->has('package_id')) {
@@ -82,7 +87,7 @@ class PaymentController extends Controller
                     'hasInsurance' => \Session::has('insurance_id') ? 1 : 0,
                     'hasRequest' => \Session::has('additional_request_id') ? 1 : 0,
                     'hasPackage' => $request->has('package_id') || \Session::has('package_id') ? 1 : 0,
-                    'shippingAddress' => $shippingAddress,
+                    'shippingAddress' => $shippingAddress ?? [],
                 ]
             );
         } else {

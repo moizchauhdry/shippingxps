@@ -25,9 +25,10 @@
                       <label class="btn btn-primary mt-1 mb-2 " @click="checkCouponCode">Apply Coupon</label>
                     </div>
                     <template v-if="hasPackage == 0">
-                      <breeze-label value="Shipping Address"/>
+                      <h3 v-show="form.shipping_address_id == null">Select Shipping Address to proceed</h3>
                       <select v-on:change="selectAddress($event)" name="shipping_address_id" class="form-select"  v-model="shipping_address_id" required>
-                      <template v-for="(address) in shippingAddress" :key="address.id">
+                        <option :value="null" disabled :selected="true" >Select Shipping Address</option>
+                        <template v-for="(address) in shippingAddress" :key="address.id">
                         <option  :value="address.id" >{{ address.label}}</option>
                       </template>
                     </select>
