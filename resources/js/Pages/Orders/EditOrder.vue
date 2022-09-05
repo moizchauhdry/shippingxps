@@ -1,15 +1,14 @@
 <template>
   <MainLayout>
     <div>
-
       <section>
         <div class="container">
-          <h2 class="font-semibold text-xl text-gray-800 leading-tight">Edit Orders </h2>
+          <h2 class="font-semibold text-xl text-gray-800 leading-tight mb-4">Edit Orders </h2>
           <div class="stock-subscription-form">
 
             <form @submit.prevent="submit" enctype="multipart/form-data">
               <div class="order-form">
-                <breeze-validation-errors class="mb-4" />
+                <breeze-validation-errors class="mb-4 mt-4" />
                 <flash-messages class="mb-4" />
 
                 <div class="row">
@@ -19,14 +18,14 @@
                       <breeze-label for="customer_id" value="Customer" />
                       <select name="customer_id" class="form-select" v-model="form.customer_id" disabled required>
                         <option selected>Select</option>
-                        <option v-for="customer in customers" :value="customer.id" >{{ customer.name}}</option>
+                        <option v-for="customer in customers" :value="customer.id" :key="customer.id" >{{ customer.name}}</option>
                       </select>
                     </div>
 
                     <div class="form-group">
                       <breeze-label for="status" value="Status" />
                       <select name="status" class="form-select" v-model="form.status"  required>
-                        <option v-for="status in status_list" :value="status" >{{ status}}</option>
+                        <option v-for="status in status_list" :value="status" :key="status.id">{{ status}}</option>
                       </select>
                     </div>
 
@@ -274,7 +273,6 @@
           </div><!-- subscription -->
         </div><!-- container -->
       </section>
-
     </div>
   </MainLayout>
   <ImageViewer>
@@ -287,6 +285,7 @@ import MainLayout from '@/Layouts/Main'
 import BreezeAuthenticatedLayout from '@/Layouts/Authenticated'
 import BreezeLabel from '@/Components/Label'
 import ImageViewer from '@/Components/ImageViewer'
+import BreezeValidationErrors from '@/Components/ValidationErrors'
 import $ from 'jquery'
 
 
@@ -295,6 +294,7 @@ export default {
     BreezeAuthenticatedLayout,
     MainLayout,
     BreezeLabel,
+    BreezeValidationErrors,
     ImageViewer
   },
   data() {
