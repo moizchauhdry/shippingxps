@@ -137,10 +137,9 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-
         $validated = $request->validate([
             'customer_id' => 'required',
-            'tracking_number_in' => 'required|string',
+            'tracking_number_in' => 'required|min:3|max:100|string|unique:orders,tracking_number_in',
             'warehouse_id' => 'required',
             'weight_unit' => 'required',
             'dim_unit' => 'required',
@@ -266,12 +265,10 @@ class OrderController extends Controller
             }
 
             DB::commit();
-
             event(new OrderCreatedEvent($order));
 
-            return redirect('orders')->with('success', 'Order Added!');
+            return redirect('orders')->with('success', 'The order has been added successfully.');
         } catch (\Exception $e) {
-            //            dd($e);
             DB::rollBack();
             return redirect('orders')->with('error', 'Something went wrong');
         }
@@ -362,7 +359,7 @@ class OrderController extends Controller
 
         $validated = $request->validate([
             'customer_id' => 'required',
-            'tracking_number_in' => 'required|string',
+            'tracking_number_in' => 'required|min:3|max:100|unique:orders,tracking_number_in,' . $id,
             'warehouse_id' => 'required',
             'weight_unit' => 'required',
             'dim_unit' => 'required',
@@ -385,7 +382,6 @@ class OrderController extends Controller
             $order->status = $validated['status'];
             $order->tracking_number_in = $validated['tracking_number_in'];
             $order->warehouse_id = $validated['warehouse_id'];
-            //packagen
             $order->weight_unit = $validated['weight_unit'];
             $order->dim_unit = $validated['dim_unit'];
             $order->package_weight = $validated['package_weight'];
@@ -393,22 +389,15 @@ class OrderController extends Controller
             $order->package_width = $validated['package_width'];
             $order->package_height = $validated['package_height'];
             $order->received_from = $validated['received_from'];
-
             $order->notes = $validated['notes'];
-
-
             $order->update();
 
             $items = $request->input('items');
-
             $files = $request->file();
+
             if (isset($files['images'])) {
-
-
                 foreach ($files['images'] as $key => $file) {
-
                     $image_object = $file['image'];
-
                     $file_name = time() . '_' . $image_object->getClientOriginalName();
                     $image_object->storeAs('uploads', $file_name);
 
@@ -419,8 +408,6 @@ class OrderController extends Controller
                     }
 
                     $order_image = new OrderImage();
-
-                    //$order_image->image = 'default-image.png';
                     $order_image->image = $file_name;
                     $order_image->order_id = $order->id;
                     if ($key == 0) {
@@ -434,16 +421,11 @@ class OrderController extends Controller
             }
 
             foreach ($items as $key => $item) {
-
                 $item_id = isset($item['id']) ? (int)$item['id'] : 0;
-
                 $order_item = OrderItem::find($item_id);
-                //update if existing, else creat new.
-
                 if (!is_object($order_item)) {
                     $order_item = new OrderItem();
                 }
-
                 $order_item->order_id = $order->id;
                 $order_item->name = $item['name'];
                 $order_item->description = $item['description'];
@@ -452,35 +434,11 @@ class OrderController extends Controller
                 $order_item->price_with_tax = $item['price_with_tax'];
                 $order_item->sub_total = $item['sub_total'];
                 $order_item->url = $item['url'];
-
-                /*
-                $file_name = '';
-
-                if(isset($files['items'][$key]['image'])) {
-
-                    $image_object = $files['items'][$key]['image'];
-                    $file_name = time().'_'.$image_object->getClientOriginalName();
-                    $file_path = $image_object->storeAs('uploads', $file_name);
-                    //File::move(storage_path('app/uploads/'.$file_name), public_path('../uploads/'.$file_name) );
-
-                    if($_SERVER['HTTP_HOST'] == 'localhost:8000'){
-                        File::move(storage_path('app/uploads/'.$file_name), public_path('/uploads/'.$file_name) );
-                    }else{
-                        File::move(storage_path('app/uploads/'.$file_name), public_path('../uploads/'.$file_name) );
-                    }
-                }
-
-                if(!empty($file_name)){
-                    $order_item->image = $file_name;
-                }
-                */
-
                 $order_item->save();
             }
 
             if (isset($order->package_id)) {
                 $package = Package::find($order->package_id);
-
                 if (count($package->orders) == 1) {
                     $package->weight_unit = $validated['weight_unit'];
                     $package->dim_unit = $validated['dim_unit'];
@@ -493,10 +451,9 @@ class OrderController extends Controller
             }
 
             DB::commit();
-
             event(new OrderUpdatedEvent($order));
 
-            return redirect('orders')->with('success', 'Order Updated !');
+            return redirect('orders')->with('success', 'The order has been updated successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect('orders')->with('error', $e->getMessage());

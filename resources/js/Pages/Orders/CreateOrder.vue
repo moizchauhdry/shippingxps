@@ -267,12 +267,14 @@
 import MainLayout from '@/Layouts/Main'
 import BreezeAuthenticatedLayout from '@/Layouts/Authenticated'
 import BreezeLabel from '@/Components/Label'
+import BreezeValidationErrors from '@/Components/ValidationErrors'
 
 export default {
   components: {
     BreezeAuthenticatedLayout,
     MainLayout,
-    BreezeLabel
+    BreezeLabel,
+    BreezeValidationErrors
   },
   data() {
     return {
