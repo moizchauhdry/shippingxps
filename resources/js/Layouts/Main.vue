@@ -4,9 +4,9 @@
 		style=""
 		id="header2"
 	>
-		<inertia-link :href="route('homePage')" style="padding: 5px 10px">
+		<a href="http://shippingxps.com/" style="padding: 5px 10px">
 			<img alt="Porto" width="100" height="35" src="/theme/img/logo.png" />
-		</inertia-link>
+		</a>
 		<nav
 			class="navbar navbar-expand-lg navbar-light bg-light"
 			style="display: none"
