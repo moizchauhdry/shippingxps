@@ -19,7 +19,7 @@
 					<div class="header-column">
 						<div class="header-row">
 							<div class="header-logo">
-								<a href="/">
+								<a href="http://shippingxps.com/">
 									<img
 										alt="shippingxps"
 										width="162"

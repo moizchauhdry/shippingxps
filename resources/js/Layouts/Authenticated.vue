@@ -9,7 +9,6 @@
                             <!-- Logo -->
                             <div class="flex-shrink-0 flex items-center">
                                 <inertia-link :href="route('dashboard')">
-                                   <!--  <breeze-application-logo class="block h-9 w-auto" /> -->
                                    <img alt="shippingxps" width="237" height="55" src="/theme/img/logo.png">
                                 </inertia-link>
                             </div>
