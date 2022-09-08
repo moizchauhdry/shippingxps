@@ -673,6 +673,11 @@
             </div>
           </div>
         </div>
+        <div v-show="overlay === true" class="overlay">
+          <div class="overlay__inner">
+            <div class="overlay__content"><span class="spinner"></span></div>
+          </div>
+        </div>
       </div>
 
       <!-- Modal For Delete Package -->
@@ -705,12 +710,56 @@
         </div>
       </div>
     </div>
+
+
   </MainLayout>
     <ImageViewer></ImageViewer>
 
 </template>
 
 <style scoped>
+.overlay {
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  background: rgba(0,0,0,0.5);
+  z-index:9999999999;
+}
+
+.overlay__inner {
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
+.overlay__content {
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.spinner {
+  width: 75px;
+  height: 75px;
+  display: inline-block;
+  border-width: 2px;
+  border-color: rgba(255, 255, 255, 0.05);
+  border-top-color: #fff;
+  animation: spin 1s infinite linear;
+  border-radius: 100%;
+  border-style: solid;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
 .card {
   margin-top: 25px;
 }
@@ -793,6 +842,7 @@ export default {
         package_id: this.packag.id,
       }),
       storage_fee : 0,
+      overlay: false,
     }
   },
   props: {
@@ -1101,6 +1151,7 @@ export default {
       modal.style.display = 'none';
     },
     deletePackage(){
+      this.overlay = true;
       axios.post(this.route('packages.destroy'),{id:this.packag.id})
           .then(({ data }) => {
                 if(data.status == 1){
@@ -1108,6 +1159,7 @@ export default {
                   location.href = data.url;
                 }else{
                   alert(data.message)
+                  this.overlay = false;
                   var modal = document.getElementById('deleteModal');
                   modal.style.display = 'none';
                 }
