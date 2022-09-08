@@ -35,14 +35,16 @@
     <!-- Head Libs -->
     <script src="{{ asset('theme/vendor/modernizr/modernizr.min.js') }}"></script>
 
-    {{--Real Api--}}
-    {{--<script
-        src="https://www.paypal.com/sdk/js?client-id=Ad_mOnLAjPkl17HazcpuehUPrOIEP9rsM90Ta1BRuUSdvAe14-lcWx1ZWjCcESkSrqjJ_xjnogdy4ft6&enable-funding=venmo&currency=USD"
-        data-sdk-integration-source="button-factory"></script>--}}
-    {{-- SandBox --}}
+    {{--LIVE API CREDENTIALS - au.haseeb@icloud.com --}}
     <script
-        src="https://www.paypal.com/sdk/js?client-id=AZKXMPfJscqaryDzTCEnfpzP7CUT6rXYvS6EdQiX2FkCcSodMhqjYBmgBZvJLbRLonXetJ4BQClbYsJM&enable-funding=venmo&currency=USD"
+        src="https://www.paypal.com/sdk/js?client-id=Ad_mOnLAjPkl17HazcpuehUPrOIEP9rsM90Ta1BRuUSdvAe14-lcWx1ZWjCcESkSrqjJ_xjnogdy4ft6&enable-funding=venmo&currency=USD"
         data-sdk-integration-source="button-factory"></script>
+
+    {{-- SandBox --}}
+    {{-- <script
+        src="https://www.paypal.com/sdk/js?client-id=AZKXMPfJscqaryDzTCEnfpzP7CUT6rXYvS6EdQiX2FkCcSodMhqjYBmgBZvJLbRLonXetJ4BQClbYsJM&enable-funding=venmo&currency=USD"
+        data-sdk-integration-source="button-factory"></script> --}}
+
     <!-- Styles -->
     {{-- if default path is public then remove 'public'. from below --}}
     <link rel="stylesheet" href="{{ url(mix('css/app.css')) }}">
