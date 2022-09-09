@@ -27,7 +27,8 @@ class AddColumnBillingAndShippingInPaymentsTable extends Migration
     public function down()
     {
         Schema::table('payments', function (Blueprint $table) {
-            //
+            $table->dropColumn('shipping_address');
+            $table->dropColumn('billing_address');
         });
     }
 }
