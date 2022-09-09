@@ -271,7 +271,7 @@
 										<th scope="row">00{{ ++index }}</th>
 										<td>
 											<template v-if="image.file_name.split('.').pop() == 'pdf'">
-												<i class="fa fa-file mr-1"></i>
+												<i class="fas fa-file-pdf mr-1 text-lg"></i>
 											</template>
 											<template v-else>
 												<img
@@ -469,11 +469,12 @@
 				if (typeof id !== "undefined") {
 					let r = confirm("Are you sure you want to delete this file? This action cannot be undone.");
 					if (r) {
-						axios
-							.post(this.route("gift-card.removeImage"), { id: id })
-							.then(({ data }) => {
-								this.gift_card.images.splice(index, 1);
-							});
+						this.form.post(this.route("gift-card.removeImage", { id: id }));
+						// axios
+						// 	.post(this.route("gift-card.removeImage"), { id: id })
+						// 	.then(({ data }) => {
+						// 		// this.gift_card.images.splice(index, 1);
+						// 	});
 					}
 				}
 			},

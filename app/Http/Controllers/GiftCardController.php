@@ -166,7 +166,7 @@ class GiftCardController extends Controller
                     $final_amount = $final_amount + 25;
                 }
 
-                return redirect()->route('payment.index')->with('amount',$final_amount);
+                return redirect()->route('payment.index')->with('amount', $final_amount);
             }
 
             return redirect()->route('gift-card.index')->with('success', 'Successfully Modified');
@@ -230,7 +230,7 @@ class GiftCardController extends Controller
 
     public function deleteImage(Request $request)
     {
-        $image_id = $request->input('id');
-        GiftCardFile::find($image_id)->delete();
+        GiftCardFile::find($request->id)->delete();
+        return redirect()->back();
     }
 }
