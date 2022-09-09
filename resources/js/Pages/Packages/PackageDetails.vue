@@ -7,11 +7,12 @@
         <div class="row">
           <div class="col-md-10">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight form-title">
-              Package # {{ packag.package_no }}
+              Package # {{ packag.package_no }} <a v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'" class="btn btn-outline-danger ml-2" v-show="packag.status === 'open'|| packag.status === 'filled' || packag.status === 'labeled' " v-on:click="confirmDeletion()">Delete Package</a>
             </h2>
           </div>
           <div class="col-md-2">
             <span v-bind:class="getLabelClass(packag.status)" style="color:black;padding:5px;">{{ packag.status }}</span>
+
           </div>
         </div>
         <div class="row">
@@ -672,14 +673,93 @@
             </div>
           </div>
         </div>
+        <div v-show="overlay === true" class="overlay">
+          <div class="overlay__inner">
+            <div class="overlay__content"><span class="spinner"></span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal For Delete Package -->
+      <div v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'" class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-backdrop="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">Delete Package</h5>
+              <button type="button" @click="closeDeletionModal()" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="text-center mt-2 mb-5">
+                Are You sure you want to delete this "Package # {{ packag.package_no }}"?
+                <br>
+                You can't undo this action.
+              </div>
+              <div class="alert alert-warning" role="alert">
+                <h4 class="alert-heading">Warning!</h4>
+                <p>By deleting this package it will delete all the connected orders.</p>
+
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-dark" @click="closeDeletionModal()" data-dismiss="modal">Cancel</button>
+              <button type="button" class="btn btn-danger" @click="deletePackage()">Delete Anyway</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+
+
   </MainLayout>
     <ImageViewer></ImageViewer>
 
 </template>
 
 <style scoped>
+.overlay {
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  background: rgba(0,0,0,0.5);
+  z-index:9999999999;
+}
+
+.overlay__inner {
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
+.overlay__content {
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.spinner {
+  width: 75px;
+  height: 75px;
+  display: inline-block;
+  border-width: 2px;
+  border-color: rgba(255, 255, 255, 0.05);
+  border-top-color: #fff;
+  animation: spin 1s infinite linear;
+  border-radius: 100%;
+  border-style: solid;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
 .card {
   margin-top: 25px;
 }
@@ -762,6 +842,7 @@ export default {
         package_id: this.packag.id,
       }),
       storage_fee : 0,
+      overlay: false,
     }
   },
   props: {
@@ -1058,6 +1139,32 @@ export default {
       console.log(event.target.value);
 
       this.form_consolidate.dim_unit =  event.target.value == 'kg' ? 'cm' : 'in'
+    },
+    confirmDeletion(){
+      let packageID = this.packag.id;
+      var modal = document.getElementById('deleteModal');
+      modal.classList.add('show');
+      $('#deleteModal').show();
+    },
+    closeDeletionModal(){
+      var modal = document.getElementById('deleteModal');
+      modal.style.display = 'none';
+    },
+    deletePackage(){
+      this.overlay = true;
+      axios.post(this.route('packages.destroy'),{id:this.packag.id})
+          .then(({ data }) => {
+                if(data.status == 1){
+                  alert(data.message)
+                  location.href = data.url;
+                }else{
+                  alert(data.message)
+                  this.overlay = false;
+                  var modal = document.getElementById('deleteModal');
+                  modal.style.display = 'none';
+                }
+              }
+          );
     }
     /*imgURL(url) {
       return "/public" + url;

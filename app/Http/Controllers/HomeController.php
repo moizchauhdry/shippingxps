@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ServicePage;
 use Illuminate\Http\Request;
 use \Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 use GuzzleHttp\Client;
 use Exception;
@@ -398,6 +399,26 @@ class HomeController extends Controller
 
         $service = json_decode($service);
         // dd($service);
+
+        $rules = [
+            'weight' => ['required','gt:0'],
+            'length' => ['required','gt:0'],
+            'width' => ['required','gt:0'],
+            'height' => ['required','gt:0'],
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $message = [
+
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => TRUE,
+                'service' => [],
+                'errors' => $validator->errors()->all(),
+            ]);
+        }
+
 
         $markup = SiteSetting::getByName('markup');
 
