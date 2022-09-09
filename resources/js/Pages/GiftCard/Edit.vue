@@ -270,13 +270,18 @@
 									>
 										<th scope="row">00{{ ++index }}</th>
 										<td>
-											<img
-												style="width: 100px; height: auto"
-												class="img-thumbnail"
-												:src="imgURL(image.file_name)"
-												@click="viewImage($event)"
-											/>
-											{{ image.file_name }}
+											<template v-if="image.file_name.split('.').pop() == 'pdf'">
+												<i class="fa fa-file mr-1"></i>
+											</template>
+											<template v-else>
+												<img
+													style="width: 100px; height: auto"
+													class="img-thumbnail"
+													:src="imgURL(image.file_name)"
+													@click="viewImage($event)"
+												/>
+											</template>
+											<a :href="imgURL(image.file_name)" class="m-1" download >{{ image.file_name }}</a>
 										</td>
 										<td>
 											<a :href="imgURL(image.file_name)" class="m-1" download ><i class="fa fa-download mr-1"></i>Download</a
@@ -286,7 +291,7 @@
 												href="void(0);"
 												class="m-1"
 												@click="deleteImage($event, index, image.id)"
-												><i class="fa fa-trash mr-1"></i>Delete Image</a
+												><i class="fa fa-trash mr-1"></i>Delete</a
 											>
 											</template>
 										</td>
@@ -462,7 +467,7 @@
 			deleteImage(e, index, id) {
 				e.preventDefault();
 				if (typeof id !== "undefined") {
-					let r = confirm("Are you sure you want to delete this image?");
+					let r = confirm("Are you sure you want to delete this file? This action cannot be undone.");
 					if (r) {
 						axios
 							.post(this.route("gift-card.removeImage"), { id: id })
