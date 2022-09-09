@@ -167,83 +167,94 @@
 </head>
 
 <body style="padding:0;margin:0;display:block;background:#fff;-webkit-text-size-adjust:none">
-<table border="0" cellpadding="0" cellspacing="0" width="100%">
-    <tbody>
-    <tr>
-        <td valign="top" align="left" width="100%">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tbody>
+            <tr>
+                <td valign="top" align="left" width="100%">
 
-            <table class="w320 full-width-gmail-android" bgcolor="#f9f8f8" style="border-bottom:solid 2px #f04c23;padding-bottom: 10px" cellpadding="0" cellspacing="0" border="0" width="100%">
-                <tbody>
-                <tr>
-                    <td width="100%" height="48" valign="top">
-                        <table class="full-width-gmail-android" cellspacing="0" cellpadding="0" border="0" width="100%">
-                            <tbody>
+                    <table class="w320 full-width-gmail-android" bgcolor="#f9f8f8"
+                        style="border-bottom:solid 2px #f04c23;padding-bottom: 10px" cellpadding="0" cellspacing="0"
+                        border="0" width="100%">
+                        <tbody>
                             <tr>
-                                <td class="header center" width="100%">
-                                    <a href="https://shippingxps.com/"><img style="height: 80px" src="https://shippingxps.com/theme/img/logo.png"></a>
+                                <td width="100%" height="48" valign="top">
+                                    <table class="full-width-gmail-android" cellspacing="0" cellpadding="0" border="0"
+                                        width="100%">
+                                        <tbody>
+                                            <tr>
+                                                <td class="header center" width="100%">
+                                                    <a href="https://shippingxps.com/"><img style="height: 80px"
+                                                            src="http://shippingxps.com/wp-content/uploads/2022/09/logo-1.png"></a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </td>
                             </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-            <table cellspacing="0" cellpadding="0" width="100%" bgcolor="#ffffff">
-                <tbody>
-                <tr>
-                    <td align="center">
-                        <center>
-                            @yield('content')
-                            <table class="w320" cellspacing="0" cellpadding="0" width="700">
-                                <tbody>
-                                <tr>
-                                    <td class="body-padding mobile-padding">
-                                        <table cellspacing="0" cellpadding="0" width="100%" style="padding-bottom:40px;text-align:left">
+                        </tbody>
+                    </table>
+                    <table cellspacing="0" cellpadding="0" width="100%" bgcolor="#ffffff">
+                        <tbody>
+                            <tr>
+                                <td align="center">
+                                    <center>
+                                        @yield('content')
+                                        <table class="w320" cellspacing="0" cellpadding="0" width="700">
                                             <tbody>
-                                            <tr>
-                                                {{--<td class="left" style="margin-bottom: 50px">
-                                                    <strong>Kind Regards,</strong><br>
-                                                    <strong>Carelinks Team</strong>
-                                                </td>--}}
-                                            </tr>
+                                                <tr>
+                                                    <td class="body-padding mobile-padding">
+                                                        <table cellspacing="0" cellpadding="0" width="100%"
+                                                            style="padding-bottom:40px;text-align:left">
+                                                            <tbody>
+                                                                <tr>
+                                                                    {{--<td class="left" style="margin-bottom: 50px">
+                                                                        <strong>Kind Regards,</strong><br>
+                                                                        <strong>Carelinks Team</strong>
+                                                                    </td>--}}
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </td>
+                                                </tr>
                                             </tbody>
                                         </table>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </center>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                                    </center>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
 
-            <table class="w320 full-width-gmail-android" bgcolor="#f9f8f8" style="background-color:#f04c23" cellpadding="0" cellspacing="0" border="0" width="100%">
-                <tbody>
-                <tr>
-                    <td width="100%" height="48" valign="top" align="center">
-                        <center>
-                            <table class="full-width-gmail-android" cellspacing="0" cellpadding="0" border="0" width="80%" align="center">
-                                <tbody style="margin: 0 auto">
-                                <tr>
-                                    <td colspan="3" class="header center" width="100%">
-                                        <p style="color: white;font-size:12px">©{{ Carbon\Carbon::now()->year }}  <a href="https://shippingxps.com/" style="color:#fff">shippingxps.com</a> All Rights Reserved</p>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </center>
+                    <table class="w320 full-width-gmail-android" bgcolor="#f9f8f8" style="background-color:#f04c23"
+                        cellpadding="0" cellspacing="0" border="0" width="100%">
+                        <tbody>
+                            <tr>
+                                <td width="100%" height="48" valign="top" align="center">
+                                    <center>
+                                        <table class="full-width-gmail-android" cellspacing="0" cellpadding="0"
+                                            border="0" width="80%" align="center">
+                                            <tbody style="margin: 0 auto">
+                                                <tr>
+                                                    <td colspan="3" class="header center" width="100%">
+                                                        <p style="color: white;font-size:12px">©{{
+                                                            Carbon\Carbon::now()->year }} <a
+                                                                href="https://shippingxps.com/"
+                                                                style="color:#fff">shippingxps.com</a> All Rights
+                                                            Reserved</p>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </center>
 
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
 
-        </td>
-    </tr>
-    </tbody>
-</table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </body>
 
 </html>

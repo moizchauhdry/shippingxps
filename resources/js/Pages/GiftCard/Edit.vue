@@ -278,12 +278,17 @@
 											/>
 											{{ image.file_name }}
 										</td>
-										<td v-if="$page.props.auth.user.type == 'admin'">
-											<a
+										<td>
+											<a :href="imgURL(image.file_name)" class="m-1" download ><i class="fa fa-download mr-1"></i>Download</a
+											>
+											<template v-if="$page.props.auth.user.type == 'admin'">
+												<a
 												href="void(0);"
+												class="m-1"
 												@click="deleteImage($event, index, image.id)"
 												><i class="fa fa-trash mr-1"></i>Delete Image</a
 											>
+											</template>
 										</td>
 									</tr>
 									<tr v-show="gift_card.files.length == 0">
@@ -500,7 +505,7 @@
 		},
 		created() {
 			this.calculate_amount();
-		},
+		}
 	};
 </script>
 

@@ -57,7 +57,7 @@ class PaymentController extends Controller
             ];
         }
 
-        if(count($shippingAddress) == 0){
+        if (count($shippingAddress) == 0) {
             return redirect()->back()->with('error', 'Cannot continue without shipping address');
         }
 
@@ -804,7 +804,7 @@ class PaymentController extends Controller
 
         try {
             $mpdf = new \Mpdf\Mpdf();
-            // $mpdf->SetWatermarkImage('https://shippingxps.com/theme/img/logo.png','0.2','50%');
+            // $mpdf->SetWatermarkImage('http://shippingxps.com/wp-content/uploads/2022/09/logo-1.png','0.2','50%');
             // $mpdf->showWatermarkImage = true;
             $mpdf->SetFooter('ShippingXPS|Payment Report|{PAGENO}');
             $mpdf->WriteHTML($html);
