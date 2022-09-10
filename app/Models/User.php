@@ -16,12 +16,7 @@ class User extends Authenticatable
      *
      * @var array
      */
-     protected $guarded = [];
-    // protected $fillable = [
-    //     'name',
-    //     'email',
-    //     'password',
-    // ];
+    protected $guarded = [];
 
     protected $appends = [
         'suite_no'
@@ -45,13 +40,14 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function orders(){
-        return $this->hasMany(Order::class,'customer_id');
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'customer_id');
     }
 
     public function address()
     {
-        return $this->hasMany(Address::class,'user_id');
+        return $this->hasMany(Address::class, 'user_id');
     }
 
     public function getSuiteNoAttribute()

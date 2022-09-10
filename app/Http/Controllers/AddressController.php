@@ -34,7 +34,7 @@ class AddressController extends Controller
      */
     public function create()
     {
-        $countries = Country::all(['id', 'nicename as name','iso'])->where('iso','!=','US')->toArray();
+        $countries = Country::all(['id', 'nicename as name', 'iso'])->where('iso', '!=', 'US')->toArray();
 
         return Inertia::render('Address/CreateAddress', [
             'countries' => $countries,
@@ -110,7 +110,7 @@ class AddressController extends Controller
             'is_residential' => $model->is_residential,
         ];
 
-        $countries = Country::all(['id', 'nicename as name','iso'])->where('iso','!=','US')->toArray();
+        $countries = Country::all(['id', 'nicename as name', 'iso'])->where('iso', '!=', 'US')->toArray();
 
         return Inertia::render('Address/EditAddress', [
             'address' => $address,
@@ -156,7 +156,7 @@ class AddressController extends Controller
 
         $address->update();
 
-        return redirect('addresses')->with('success', 'Address Updated!');
+        return redirect()->back()->with('success', 'Address Updated!');
     }
 
     /**

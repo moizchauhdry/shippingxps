@@ -38,8 +38,8 @@
               <td>{{ user.phone_no }}</td>
               	<td>{{ user.type  }}</td>
  					  	<td>
-					  		<inertia-link :href="route('edit-users',{ id: user.id })" class="btn btn-info">Edit</inertia-link> |
-					  		<inertia-link href="" class="btn btn-danger" @click="destroy(user.id)">Delete</inertia-link>
+					  		<inertia-link :href="route('edit-users',{ id: user.id })" class="btn btn-info">Edit</inertia-link>
+					  		<!-- <inertia-link href="" class="btn btn-danger" @click="destroy(user.id)">Delete</inertia-link> -->
 					  	</td>
 					  </tr>
 					  </tbody>

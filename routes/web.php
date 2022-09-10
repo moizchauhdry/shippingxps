@@ -76,6 +76,7 @@ Route::post('/packages/set-shipping-service', 'PackageController@setShippingServ
 
 Route::get('/packages/custom/{package_id}', 'PackageController@custom')->name('packages.custom')->middleware('auth');
 Route::get('/packages/get-pdf/{order_id}', 'PackageController@getPdf')->name('packages.pdf')->middleware('auth');
+Route::post('/packages/destroy', 'PackageController@destroy')->name('packages.destroy')->middleware('auth');
 
 Route::get('/services/create', 'ServiceController@create')->name('services.create')->middleware('auth');
 Route::post('/services', 'ServiceController@store')->name('services.store')->middleware('auth');

@@ -13,6 +13,11 @@
         </div>
 
         <div class="mt-4">
+            <breeze-label for="email" value="Phone" />
+            <breeze-input id="phone" type="text" class="mt-1 block w-full" v-model="form.phone" required autocomplete="phone" />
+        </div>
+
+        <div class="mt-4">
             <breeze-label for="password" value="Password" />
             <breeze-input id="password" type="password" class="mt-1 block w-full" v-model="form.password" required autocomplete="new-password" />
         </div>
@@ -75,6 +80,7 @@
                 form: this.$inertia.form({
                     name: '',
                     email: '',
+                    phone: '',
                     password: '',
                     password_confirmation: '',
                     hear_from: '',

@@ -38,9 +38,9 @@
                                     <i class="fas fa-external-link-alt"></i><span>Edit</span>
                                 </inertia-link>
 
-                                <inertia-link class="nav-link" :href="route('address.destroy', address.id)" method="delete">
+                                <!-- <inertia-link class="nav-link" :href="route('address.destroy', address.id)" method="delete">
                                     <i class="fas fa-external-link-alt"></i><span>Delete</span>
-                                </inertia-link>
+                                </inertia-link> -->
                             </td>
                         </tr>
                         </tbody>

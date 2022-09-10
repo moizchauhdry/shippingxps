@@ -44,6 +44,7 @@ class RegisteredUserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
+            'phone' => 'required|string|max:255|unique:users',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'hear_from' => 'required|string|max:100',
             // 'captcha_token' => ['required', new Recaptcha]
@@ -53,6 +54,7 @@ class RegisteredUserController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'phone_no' => $request->phone,
             'password' => Hash::make($request->password),
             'hear_from' => $request->hear_from,
             'type' => 'customer',
