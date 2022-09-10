@@ -145,6 +145,7 @@
                       </template>
                       <tr colspan="3">
                         <p style="color:red">Selected service cannot be changed. So make sure you choose correct service.</p>
+                        <p  style="color:red" v-show="displayNoteShipping"><b>Note:</b> Make sure your address is valid to get Shipping Service</p>
                       </tr>
                       </tbody>
                     </table>
@@ -609,6 +610,9 @@
                         </td>
                         <td v-else colspan="4">
                           <button v-if="packag.payment_status != 'Paid'" type="button"  class="btn btn-primary disabled">Checkout</button>
+                          <p ><strong>Note:</strong> For checking out the package should be consolidated if package contains
+                          more than one order. And shipping service should be also selected.</p>
+
                           <span class="badge badge-success" v-if="packag.payment_status == 'Paid'">Paid</span>
                         </td>
                       </tr>
@@ -626,7 +630,7 @@
             <div class="card">
               <div class="card-header">
                 <h3>
-                  Shipp out Package
+                  Ship out Package
                 </h3>
               </div>
               <div class="card-body">
@@ -843,6 +847,7 @@ export default {
       }),
       storage_fee : 0,
       overlay: false,
+      displayNoteShipping: true,
     }
   },
   props: {
@@ -1117,16 +1122,20 @@ export default {
             console.log(response.data.service)
             this.isLoading = false;
             if (response.data.status) {
-
               this.showEstimatedPrice = true;
-              //this.services.push(data.data.service)
               this.shipping_services[response.data.service.service_id] = response.data.service;
 
             } else {
               this.serverError = response.data.message;
             }
+            if(response.data.service.isReady !== undefined && response.data.service.isReady  === true){
+              this.displayNoteShipping = false;
+            }
           }
       );
+
+
+
     },
     getStorageFee(){
       axios.get(this.route('getStorageFee'),{
