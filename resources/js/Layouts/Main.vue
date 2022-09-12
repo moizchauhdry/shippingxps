@@ -829,18 +829,18 @@
 				});
 			},
 			toggleSideBar() {
-				var sidebar = document.querySelector(".sidebar");
-				if (window.innerWidth < 1300) {
-					if (sidebar.style.display == "block") {
-						sidebar.classList.add("d-none");
-						sidebar.style.display = "none";
-						sidebar.style.zIndex = 0;
-					} else {
-						sidebar.classList.remove("d-none");
-						sidebar.style.display = "block";
-						sidebar.style.zIndex = 1;
-					}
-				} 
+				// var sidebar = document.querySelector(".sidebar");
+				// if (window.innerWidth < 1300) {
+				// 	if (sidebar.style.display == "block") {
+				// 		sidebar.classList.add("d-none");
+				// 		sidebar.style.display = "none";
+				// 		sidebar.style.zIndex = 0;
+				// 	} else {
+				// 		sidebar.classList.remove("d-none");
+				// 		sidebar.style.display = "block";
+				// 		sidebar.style.zIndex = 1;
+				// 	}
+				// } 
 				
 				// else {
 				// 	sidebar.classList.add("d-none");
