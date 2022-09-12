@@ -804,10 +804,10 @@
 			this.initTawkTo();
 		},
 		created() {
-			window.addEventListener("resize", this.toggleSideBar);
+			// window.addEventListener("resize", this.toggleSideBar);
 		},
 		destroyed() {
-			window.removeEventListener("resize", this.toggleSideBar);
+			// window.removeEventListener("resize", this.toggleSideBar);
 		},
 		methods: {
 			initTawkTo() {
