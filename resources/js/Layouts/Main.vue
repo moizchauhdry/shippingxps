@@ -840,11 +840,13 @@
 						sidebar.style.display = "block";
 						sidebar.style.zIndex = 1;
 					}
-				} else {
-					sidebar.classList.add("d-none");
-					sidebar.style.display = "none";
-					sidebar.style.zIndex = 0;
-				}
+				} 
+				
+				// else {
+				// 	sidebar.classList.add("d-none");
+				// 	sidebar.style.display = "none";
+				// 	sidebar.style.zIndex = 0;
+				// }
 			},
 		},
 	};
