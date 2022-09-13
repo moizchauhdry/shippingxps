@@ -14,7 +14,8 @@
 
         <div class="mt-4">
             <breeze-label for="email" value="Phone" />
-            <breeze-input id="phone_no" type="text" class="mt-1 block w-full" v-model="form.phone_no" required autocomplete="phone_no" />
+            <!-- <breeze-input id="phone_no" type="text" class="mt-1 block w-full" v-model="form.phone_no" required autocomplete="phone_no" /> -->
+            <vue-tel-input v-model="form.phone_no" mode="international" class="mt-1 block w-full" required default-country="US" :valid-characters-only="true"></vue-tel-input>
         </div>
 
         <div class="mt-4">
@@ -59,6 +60,8 @@
     import BreezeInput from '@/Components/Input'
     import BreezeLabel from '@/Components/Label'
     import BreezeValidationErrors from '@/Components/ValidationErrors'
+    import { VueTelInput } from 'vue-tel-input';
+    import 'vue-tel-input/dist/vue-tel-input.css';
 
     export default {
         layout: BreezeGuestLayout,
@@ -68,6 +71,7 @@
             BreezeInput,
             BreezeLabel,
             BreezeValidationErrors,
+            VueTelInput,
         },
 
         props: {
