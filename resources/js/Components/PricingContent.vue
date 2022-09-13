@@ -1,5 +1,5 @@
 <template>
-	<div class="container-fluid mb-4 mt-6">
+	<div class="container mb-4 mt-6">
 		<div class="row">
 			<div class="col">
 				<h3
@@ -7,7 +7,7 @@
 				>
 					Via Trusted Shipping Partners
 				</h3>
-				<div class="row">
+				<div class="row col-md-8 offset-md-2">
 					<div class="col text-center">
 						<img
 							class="d-inline-block img-fluid"

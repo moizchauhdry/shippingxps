@@ -1,5 +1,4 @@
 <template>
-  <header-component></header-component>
   <div role="main" class="main">
 
     <loading v-model:active="isLoading"
@@ -10,6 +9,11 @@
 
     <section class="section top-section-padd section-with-shape-divider page-header page-header-modern page-header-lg border-0 my-0" style="background-size: cover; background-position: center;">
       <div class="container pb-5 my-3">
+        <div class="row">
+              <a href="http://shippingxps.com">
+                  <img alt="shippingxps" width="237" height="55" src="/theme/img/logo.png">
+              </a>
+        </div>
         <div class="row mb-4">
           <div class="col-md-12 align-self-center p-static order-2 text-center">
             <h1 class="font-weight-bold text-color-dark text-10">Shipping Calculator</h1>
@@ -172,7 +176,7 @@
     <!-- END SPECIAL SERVICES -->
   </div>
   <PricingContentComponent/>
-  <FooterComponent/>
+  <!-- <FooterComponent/> -->
 
 
 </template>
