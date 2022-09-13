@@ -36,6 +36,7 @@
     "vue-jquery-mask": "^2.0.0",
     "vue-loading-overlay": "^4.0.4",
     "vue-router": "^3.5.1",
+    "vue-tel-input": "^6.0.5",
     "vue2-daterange-picker": "^0.6.8",
     "vue3-date-time-picker": "^2.4.4"
   },
