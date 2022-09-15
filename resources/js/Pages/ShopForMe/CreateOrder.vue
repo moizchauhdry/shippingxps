@@ -251,10 +251,11 @@
                           </select>
                         </div>
                       </div>
-                      <div class="col-md-2" v-show="this.form_pickup.store_id !==''">
+
+                      <div class="col-md-2" v-show="false">
                         <div class="form-group">
-                          <breeze-label for="pickup_charges" value="Pickup Charges (USD)"/>
-                          <input type="text" id="pickup_charges" v-model="form_pickup.pickup_charges" readonly>
+                          <breeze-label for="store_tax" value="Store Tax %"/>
+                          <input type="text" id="store_tax" v-model="form_pickup.store_tax" readonly>
                         </div>
                       </div>
                     </div>
@@ -429,6 +430,15 @@
                                                     </div>
                                                   </div>-->
                         <!-- pickup_charges -->
+                        <!-- Store Charges -->
+                        <div class="row mb-2" v-if="form_pickup.pickup_type != 'pickup_only'">
+                          <div class="col-2 offset-md-8">
+                            <breeze-label class="float-right" for="store_charges" value="Tax"/>
+                          </div>
+                          <div class="col-1 p-0">
+                            <input v-model="form_pickup.store_charges" name="store_charges" id="store_charges" type="text" class="form-control store_charges" placeholder="Storage Charges"  readonly/>
+                          </div>
+                        </div>
                         <div class="row mb-2">
                           <div class="col-2 offset-md-8">
                             <breeze-label class="float-right" for="pickup_charges" value="Pickup Charges"/>
@@ -456,6 +466,7 @@
                             <input v-model="additional_pickup_charges" name="additional_pickup_charges" id="additional_pickup_charges" type="text" class="form-control additional_pickup_charges" placeholder="Box Price" required readonly/>
                           </div>
                         </div>
+
                         <!-- grand_total -->
                         <div class="row mb-2">
                           <div class="col-2 offset-md-8">
@@ -562,6 +573,8 @@ export default {
         store_id: '',
         site_name: '',
         store_name: '',
+        store_charges: 0,
+        store_tax: 0,
         image: '',
         shop_url: '',
         notes: '',
@@ -629,7 +642,9 @@ export default {
       let pickupCharges = this.form_pickup.pickup_charges;
       var totalpickup = 0;
         if(this.form_pickup.pickup_type != 'pickup_only'){
+          let storeCharges = sum * (this.form_pickup.store_tax/100);
           var servivceCharges = sum * 0.05;
+          this.form_pickup.store_charges = parseFloat(storeCharges).toFixed(2);;
 
           if(servivceCharges <= 5 &&  sum > 0){
             this.form_pickup.service_charges = parseFloat(5).toFixed(2);
@@ -637,7 +652,7 @@ export default {
             this.form_pickup.service_charges = parseFloat(servivceCharges).toFixed(2);
           }
           console.log('fetched...')
-          totalpickup = parseFloat(sum) + parseFloat(this.form_pickup.service_charges) + parseFloat(pickupCharges);
+          totalpickup = parseFloat(sum) + parseFloat(this.form_pickup.service_charges) + parseFloat(pickupCharges) + parseFloat(storeCharges);
         }else{
           totalpickup = parseFloat(pickupCharges);
         }
@@ -727,8 +742,8 @@ methods: {
     const params = {
       warehouse_id: this.form_pickup.warehouse_id
     };
-
-    this.$refs.price.click();
+    console.log(this.$refs);
+    this.$refs.price[0].click();
 
     axios.get("/shop-for-me/filter-stores/" + this.form_pickup.warehouse_id)
         .then(({data}) => {
@@ -737,17 +752,21 @@ methods: {
         );
   },
   wareHouseChangeOnline() {
-    this.$refs.price_online.click();
+    this.$refs.price_online[0].click();
   },
   setPickupCharges(event) {
+
     var store_id = event.target.value;
     var pickup_charges = 0;
+    var store_tax = 0;
     for (var i = 0; i < this.stores.length; i++) {
       if (this.stores[i]['id'] == store_id) {
         pickup_charges = this.stores[i]['pickup_charges'];
+        store_tax = this.stores[i]['tax'];
       }
     }
     this.form_pickup.pickup_charges = pickup_charges;
+    this.form_pickup.store_tax = store_tax;
 
     this.getPickUpGrandTotal();
   },

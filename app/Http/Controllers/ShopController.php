@@ -117,6 +117,8 @@ class ShopController extends Controller
             $order->status = 'pending';
             $order->notes = $request->notes;
             $order->discount = $request->discount;
+            $order->store_charges = $request->store_charges ?? 0.00;
+            $order->store_tax = $request->store_tax ?? 0.00;
             $order->sub_total = $request->sub_total;
             $order->grand_total = $request->grand_total;
             $order->service_charges = $request->service_charges;
@@ -268,6 +270,8 @@ class ShopController extends Controller
             'id' => $model->id,
             'warehouse_id' => $model->warehouse_id,
             'store_id' => $model->store_id,
+            'store_charges' => $model->store_charges,
+            'store_tax' => $model->store_tax,
             'site_name' => $model->site_name,
             'site_url' => $model->site_url,
             'status' => $model->status,
