@@ -79,7 +79,7 @@
 	<div class="row">
 		<div class="container-fluid">
 			<!-- SIDEBAR -->
-			<div class="sidebar">
+			<div class="sidebar" id="main_sidebar" v-if="main_sidebar == 1">
 				<div class="sidebar-menu mt-sm-5 mt-md-0">
 					<inertia-link
 						class="nav-link"
@@ -457,7 +457,7 @@
 		}
 
 		.sidebar {
-			display: none;
+			/* display: none; */
 			z-index: 1;
 		}
 	}
@@ -473,7 +473,7 @@
 		}
 
 		.sidebar {
-			display: block !important;
+			/* display: block !important; */
 			z-index: 0;
 		}
 	}
@@ -776,6 +776,7 @@
 	import BreezeNavLink from "@/Components/NavLink";
 	import FlashMessages from "@/Components/FlashMessages";
 	import BreezeResponsiveNavLink from "@/Components/ResponsiveNavLink";
+import { cornsilk } from "color-name";
 
 	export default {
 		// components: {
@@ -792,6 +793,7 @@
 		data() {
 			return {
 				usertype: this.$auth,
+				main_sidebar: 0
 			};
 		},
 		props: {
@@ -829,6 +831,14 @@
 				});
 			},
 			toggleSideBar() {
+				if (this.main_sidebar == 0) {
+					this.main_sidebar = 1;
+				} else {
+					this.main_sidebar = 0;
+				}
+				// alert('clicking ... ')
+								// var sidebar = document.querySelector("#main_sidebar");
+				// console.log(sidebar.style.display);
 				// var sidebar = document.querySelector(".sidebar");
 				// if (window.innerWidth < 1300) {
 				// 	if (sidebar.style.display == "block") {

@@ -291,6 +291,15 @@
                           <input v-model="form.sub_total" name="sub_total" id="form.subtotal" type="number" class="form-control sub_total" placeholder="T.Price" required readonly/>
                         </div>
                       </div>
+                      <!-- Store Charges -->
+                      <div class="row mb-2" v-if="form.pickup_type === 'shipping_xps_purchase'">
+                        <div class="col-2 offset-md-8">
+                          <breeze-label class="float-right" for="store_charges" value="Tax"/>
+                        </div>
+                        <div class="col-1 p-0">
+                          <input v-model="form.store_charges" name="store_charges" id="store_charges" type="text" class="form-control store_charges" placeholder="Storage Charges"  readonly/>
+                        </div>
+                      </div>
                       <!-- discount -->
                       <div class="row mb-2" v-show="form.shipping_from_shop != null && form.shipping_from_shop != 0">
                         <div class="col-1 offset-md-9">
@@ -425,6 +434,8 @@ export default {
         id: this.order.id,
         warehouse_id: this.order.warehouse_id,
         store_id: this.order.store_id,
+        store_charges: this.order.store_charges,
+        store_tax: this.order.store_tax,
         site_name: this.order.site_name,
         shop_url: this.order.site_url,
         status: this.order.status,
@@ -562,8 +573,8 @@ export default {
       const params = {
         warehouse_id: this.form.warehouse_id
       };
-
-      this.$refs.price.click();
+      console.log(this.$refs);
+      this.$refs.price[0].click();
 
       axios.get("/shop-for-me/filter-stores/" + this.form.warehouse_id)
           .then(({data}) => {
@@ -572,7 +583,8 @@ export default {
           );
     },
     wareHouseChangeOnline() {
-      this.$refs.price.click();
+      console.log(this.$refs);
+      this.$refs.price[0].click();
     },
     addTax(event) {
       var mainParent = event.target.parentNode.parentNode.parentNode;
@@ -605,6 +617,12 @@ export default {
         this.form.items.forEach(function (n) {
           sum += parseFloat(n['sub_total']);
         });
+        let storeCharges = 0;
+        this.form.store_charges = 0.00
+        if(this.form.pickup_type === 'shipping_xps_purchase'){
+          storeCharges = sum * (this.form.store_tax / 100);
+          this.form.store_charges = storeCharges;
+        }
         this.form.sub_total = parseFloat(sum).toFixed(2);
         if (e == 1 && this.form.is_service_charges != 1) {
           var serviceCharges = sum * 0.05
@@ -620,19 +638,24 @@ export default {
         this.form.shipping_charges = parseFloat(charges).toFixed(2)
         pickup_charges = this.form.form_type === 'shopping' ? 0 : pickup_charges;
         additionalCharges = this.form.form_type === 'shopping' ? 0 : additionalCharges;
-        var total = parseFloat(sum) + parseFloat(charges) + parseFloat(pickup_charges) + parseFloat(serviceCharges) + parseFloat(additionalCharges);
+        var total = parseFloat(sum) + parseFloat(charges) + parseFloat(pickup_charges) + parseFloat(serviceCharges) + parseFloat(additionalCharges) + parseFloat(storeCharges);
         this.form.grand_total = parseFloat(total).toFixed(2);
       }
     },
     setPickupCharges(event) {
       var store_id = event.target.value;
       var pickup_charges = 0;
+      var tax = 0;
       for (var i = 0; i < this.stores.length; i++) {
         if (this.stores[i]['id'] == store_id) {
           pickup_charges = this.stores[i]['pickup_charges'];
+          tax = this.stores[i]['tax'];
         }
       }
       this.form.pickup_charges = pickup_charges;
+      this.form.store_tax = tax;
+
+      this.getGrandTotal(1);
     },
     getSaleTax() {
       var sale_tax = 0;
