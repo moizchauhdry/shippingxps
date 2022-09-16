@@ -832,10 +832,10 @@ import { cornsilk } from "color-name";
 			},
 			toggleSideBar() {
 				if (window.innerWidth < 1300) {
-					if (this.main_sidebar == 0) {
-						this.main_sidebar = 1;
-					} else {
+					if (this.main_sidebar == 1) {
 						this.main_sidebar = 0;
+					} else {
+						this.main_sidebar = 1;
 					}
 				} else {
 					this.main_sidebar = 0;
