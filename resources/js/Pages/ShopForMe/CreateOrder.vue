@@ -430,15 +430,6 @@
                                                     </div>
                                                   </div>-->
                         <!-- pickup_charges -->
-                        <!-- Store Charges -->
-                        <div class="row mb-2" v-if="form_pickup.pickup_type != 'pickup_only'">
-                          <div class="col-2 offset-md-8">
-                            <breeze-label class="float-right" for="store_charges" value="Tax"/>
-                          </div>
-                          <div class="col-1 p-0">
-                            <input v-model="form_pickup.store_charges" name="store_charges" id="store_charges" type="text" class="form-control store_charges" placeholder="Storage Charges"  readonly/>
-                          </div>
-                        </div>
                         <div class="row mb-2">
                           <div class="col-2 offset-md-8">
                             <breeze-label class="float-right" for="pickup_charges" value="Pickup Charges"/>
@@ -642,9 +633,7 @@ export default {
       let pickupCharges = this.form_pickup.pickup_charges;
       var totalpickup = 0;
         if(this.form_pickup.pickup_type != 'pickup_only'){
-          let storeCharges = sum * (this.form_pickup.store_tax/100);
           var servivceCharges = sum * 0.05;
-          this.form_pickup.store_charges = parseFloat(storeCharges).toFixed(2);;
 
           if(servivceCharges <= 5 &&  sum > 0){
             this.form_pickup.service_charges = parseFloat(5).toFixed(2);
@@ -652,7 +641,7 @@ export default {
             this.form_pickup.service_charges = parseFloat(servivceCharges).toFixed(2);
           }
           console.log('fetched...')
-          totalpickup = parseFloat(sum) + parseFloat(this.form_pickup.service_charges) + parseFloat(pickupCharges) + parseFloat(storeCharges);
+          totalpickup = parseFloat(sum) + parseFloat(this.form_pickup.service_charges) + parseFloat(pickupCharges);
         }else{
           totalpickup = parseFloat(pickupCharges);
         }
@@ -812,9 +801,13 @@ methods: {
     var quantity = this.form_pickup.items[index].qty;
     var price = this.form_pickup.items[index].price;
     var sale_tax = 0;
-    for (var i = 0; i < this.warehouses.length; i++) {
-      if (this.warehouses[i]['id'] == this.form_pickup.warehouse_id) {
-        sale_tax = this.warehouses[i]['sale_tax'];
+    if(this.form_pickup.pickup_type === 'shipping_xps_purchase'){
+      sale_tax = this.form_pickup.store_tax;
+    }else{
+      for (var i = 0; i < this.warehouses.length; i++) {
+        if (this.warehouses[i]['id'] == this.form_pickup.warehouse_id) {
+          sale_tax = this.warehouses[i]['sale_tax'];
+        }
       }
     }
     var gross_total = (price * (sale_tax / 100));

@@ -291,15 +291,6 @@
                           <input v-model="form.sub_total" name="sub_total" id="form.subtotal" type="number" class="form-control sub_total" placeholder="T.Price" required readonly/>
                         </div>
                       </div>
-                      <!-- Store Charges -->
-                      <div class="row mb-2" v-if="form.pickup_type === 'shipping_xps_purchase'">
-                        <div class="col-2 offset-md-8">
-                          <breeze-label class="float-right" for="store_charges" value="Tax"/>
-                        </div>
-                        <div class="col-1 p-0">
-                          <input v-model="form.store_charges" name="store_charges" id="store_charges" type="text" class="form-control store_charges" placeholder="Storage Charges"  readonly/>
-                        </div>
-                      </div>
                       <!-- discount -->
                       <div class="row mb-2" v-show="form.shipping_from_shop != null && form.shipping_from_shop != 0">
                         <div class="col-1 offset-md-9">
@@ -593,9 +584,13 @@ export default {
       var quantity = this.form.items[index].qty;
       var price = this.form.items[index].price;
       var sale_tax = 0;
-      for (var i = 0; i < this.warehouses.length; i++) {
-        if (this.warehouses[i]['id'] == this.form.warehouse_id) {
-          sale_tax = this.warehouses[i]['sale_tax'];
+      if(this.form.pickup_type === 'shipping_xps_purchase'){
+        sale_tax = this.form.store_tax;
+      }else{
+        for (var i = 0; i < this.warehouses.length; i++) {
+          if (this.warehouses[i]['id'] == this.form.warehouse_id) {
+            sale_tax = this.warehouses[i]['sale_tax'];
+          }
         }
       }
       var gross_total = (price * (sale_tax / 100));
@@ -617,12 +612,6 @@ export default {
         this.form.items.forEach(function (n) {
           sum += parseFloat(n['sub_total']);
         });
-        let storeCharges = 0;
-        this.form.store_charges = 0.00
-        if(this.form.pickup_type === 'shipping_xps_purchase'){
-          storeCharges = sum * (this.form.store_tax / 100);
-          this.form.store_charges = storeCharges;
-        }
         this.form.sub_total = parseFloat(sum).toFixed(2);
         if (e == 1 && this.form.is_service_charges != 1) {
           var serviceCharges = sum * 0.05
@@ -638,7 +627,7 @@ export default {
         this.form.shipping_charges = parseFloat(charges).toFixed(2)
         pickup_charges = this.form.form_type === 'shopping' ? 0 : pickup_charges;
         additionalCharges = this.form.form_type === 'shopping' ? 0 : additionalCharges;
-        var total = parseFloat(sum) + parseFloat(charges) + parseFloat(pickup_charges) + parseFloat(serviceCharges) + parseFloat(additionalCharges) + parseFloat(storeCharges);
+        var total = parseFloat(sum) + parseFloat(charges) + parseFloat(pickup_charges) + parseFloat(serviceCharges) + parseFloat(additionalCharges);
         this.form.grand_total = parseFloat(total).toFixed(2);
       }
     },
