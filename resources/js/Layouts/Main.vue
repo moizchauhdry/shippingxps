@@ -793,7 +793,7 @@ import { cornsilk } from "color-name";
 		data() {
 			return {
 				usertype: this.$auth,
-				main_sidebar: 0
+				main_sidebar: 1
 			};
 		},
 		props: {
@@ -831,8 +831,12 @@ import { cornsilk } from "color-name";
 				});
 			},
 			toggleSideBar() {
-				if (this.main_sidebar == 0) {
-					this.main_sidebar = 1;
+				if (window.innerWidth < 1300) {
+					if (this.main_sidebar == 0) {
+						this.main_sidebar = 1;
+					} else {
+						this.main_sidebar = 0;
+					}
 				} else {
 					this.main_sidebar = 0;
 				}
