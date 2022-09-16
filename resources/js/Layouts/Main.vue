@@ -793,7 +793,7 @@ import { cornsilk } from "color-name";
 		data() {
 			return {
 				usertype: this.$auth,
-				main_sidebar: 1
+				main_sidebar: 0
 			};
 		},
 		props: {
@@ -804,12 +804,13 @@ import { cornsilk } from "color-name";
 
 		mounted() {
 			this.initTawkTo();
+			this.sidebar();
 		},
 		created() {
-			// window.addEventListener("resize", this.toggleSideBar);
+			// 
 		},
 		destroyed() {
-			// window.removeEventListener("resize", this.toggleSideBar);
+			// 
 		},
 		methods: {
 			initTawkTo() {
@@ -832,36 +833,20 @@ import { cornsilk } from "color-name";
 			},
 			toggleSideBar() {
 				if (window.innerWidth < 1300) {
-					if (this.main_sidebar == 1) {
-						this.main_sidebar = 0;
-					} else {
+					if (this.main_sidebar == 0) {
 						this.main_sidebar = 1;
+					} else {
+						this.main_sidebar = 0;
 					}
+				}
+			},
+			sidebar(){
+				if (window.innerWidth > 1300) {
+					this.main_sidebar = 1;
 				} else {
 					this.main_sidebar = 0;
 				}
-				// alert('clicking ... ')
-								// var sidebar = document.querySelector("#main_sidebar");
-				// console.log(sidebar.style.display);
-				// var sidebar = document.querySelector(".sidebar");
-				// if (window.innerWidth < 1300) {
-				// 	if (sidebar.style.display == "block") {
-				// 		sidebar.classList.add("d-none");
-				// 		sidebar.style.display = "none";
-				// 		sidebar.style.zIndex = 0;
-				// 	} else {
-				// 		sidebar.classList.remove("d-none");
-				// 		sidebar.style.display = "block";
-				// 		sidebar.style.zIndex = 1;
-				// 	}
-				// } 
-				
-				// else {
-				// 	sidebar.classList.add("d-none");
-				// 	sidebar.style.display = "none";
-				// 	sidebar.style.zIndex = 0;
-				// }
-			},
+			}
 		},
 	};
 </script>
