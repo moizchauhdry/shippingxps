@@ -1,3 +1,10 @@
+<style>
+  .center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
 <template>
   <div role="main" class="main">
 
@@ -9,13 +16,11 @@
 
     <section class="section top-section-padd section-with-shape-divider page-header page-header-modern page-header-lg border-0 my-0" style="background-size: cover; background-position: center;">
       <div class="container pb-5 my-3">
-        <div class="row">
-              <a href="http://shippingxps.com">
-                  <img alt="shippingxps" width="237" height="55" src="/theme/img/logo.png">
-              </a>
-        </div>
         <div class="row mb-4">
           <div class="col-md-12 align-self-center p-static order-2 text-center">
+           <a href="http://shippingxps.com">
+                <img class="center mb-4" alt="shippingxps" width="237" height="55" src="/theme/img/logo.png">
+            </a>
             <h1 class="font-weight-bold text-color-dark text-10">Shipping Calculator</h1>
             <p class="text-4 font-weight-medium mt-3 mb-0">Shop from the USA and get your packages delivered to your doorstep with ease and without worry. </p>
           </div>
@@ -42,7 +47,7 @@
                       <div class="form-group">
                         <div class="input-title text-white mb-2 text-6 font-weight-medium text-center">Where is your merchandise?</div>
                         <select required v-model="form.ship_from" class="form-select text-4" aria-label="Default select example">
-                          <option v-for="warehouse in warehouses" :value="warehouse.id">{{ warehouse.name }}</option>
+                          <option v-for="warehouse in warehouses" :value="warehouse.id" :key="warehouse.id">{{ warehouse.name }}</option>
                         </select>
                       </div>
                     </div>
@@ -51,7 +56,7 @@
                       <div class="form-group md-mrgn">
                         <div class="input-title text-white mb-2 text-6 font-weight-medium text-center">Where are you shipping to?</div>
                         <select required v-model="form.ship_to" class="form-select text-4" aria-label="Default select example">
-                          <option v-for="country in countries" :value="country.id">{{ country.name }}</option>
+                          <option v-for="country in countries" :value="country.id" :key="country.id">{{ country.name }}</option>
                         </select>
                       </div>
                     </div>
@@ -70,16 +75,10 @@
                     </div>
                   </div>
                   <div class="row">
-                    <!-- <div class="col-md-4">
-                      <div class="form-group sizes-input mt-5">
-                        <label class="text-6 text-center text-white font-weight-medium d-block" for="weight">Declared Value of Package</label>
-                        <input v-model="form.declared_value"  type="text" class="form-control text-dark text-4 mt-2" name="name" placeholder="" required="">
-                      </div>
-                    </div> -->
                     <div class="col-md-3">
                       <div class="form-group sizes-input mt-5">
                         <label class="text-6 text-center text-white font-weight-medium d-block" for="weight">Weight</label>
-                        <input v-model="form.weight" type="text" class="form-control text-dark text-4 mt-2" name="name" placeholder="" required="">
+                        <input v-model="form.weight" type="number" class="form-control text-dark text-4 mt-2" name="name" :min=1 required="">
                       </div>
                     </div>
                     <div class="col-md-3">
@@ -94,19 +93,19 @@
                     <div class="col-md-2">
                       <div class="form-group sizes-input mt-5">
                         <label class="text-6 text-center text-white font-weight-medium d-block" for="weight">Length</label>
-                        <input v-model="form.length" type="text" class="form-control text-dark text-4 mt-2" name="name" placeholder="" required="">
+                        <input v-model="form.length" type="number" class="form-control text-dark text-4 mt-2" name="name" :min=1 required="">
                       </div>
                     </div>
                     <div class="col-md-2">
                       <div class="form-group sizes-input mt-5">
                         <label class="text-6 text-center text-white font-weight-medium d-block" for="weight">Width</label>
-                        <input v-model="form.width" type="text" class="form-control text-dark text-4 mt-2" name="name" placeholder="" required="">
+                        <input v-model="form.width" type="number" class="form-control text-dark text-4 mt-2" name="name" :min=1 required="">
                       </div>
                     </div>
                     <div class="col-md-2">
                       <div class="form-group sizes-input mt-5">
                         <label class="text-6 text-center text-white font-weight-medium d-block" for="height">Height</label>
-                        <input v-model="form.height" type="text" class="form-control text-dark text-4 mt-2" name="name" placeholder="" required="">
+                        <input v-model="form.height" type="number" class="form-control text-dark text-4 mt-2" name="name" :min=1 required="">
                       </div>
                     </div>
                   </div>
