@@ -132,6 +132,11 @@
               <hr class="mb-3 mt-3">
               <div v-show="hasPackage == 1 || form.shipping_address_id != null" class="row">
                 {{ status }}
+                <div class="col-md-6 offset-md-3 text-center">
+                  <h4>OR</h4>
+                  <p>Pay by PayPal with {{ processingFeePayPal }}% processing Fee.</p>
+                  <button class="btn btn-primary w-100" v-on:click="submitPayPal()">Pay via PayPal {{ paypal_amount }}</button>
+                </div>
                 <div class="col-md-6 offset-md-3">
                   <a href="javascript:void(0)" id="paymentSuccess" @click="paymentSuccess" class="hidden">pay Success</a>
 <!--                  <a href="https://www.paypal.com/signin" class="btn btn-info w-100" target="_blank">Pay With PayPal</a>-->
@@ -240,6 +245,7 @@ export default {
       coupon_message : '',
       card_max:16,
       card_csv_max:3,
+      paypal_amount:0,
       shipping_address_id:null,
       hasPackage : this.hasPackage,
       form: this.$inertia.form({
@@ -269,15 +275,22 @@ export default {
     status:Object,
     hasPackage:Object,
     shippingAddress:Object,
+    processingFeePayPal:String,
   },
   watch: {
-
+    form:{
+      handler(val){
+        console.log(val)
+      },
+      deep:true
+    }
   },
   mounted() {
     var formdata = this.form;
     this.coupon_message = '';
     this.coupon_status = 2;
-    this.initPayPalButton(this.amount,this.route('payment.payPalSuccess'),this.form,this.axios);
+    this.getUpdatedAmount();
+    // this.initPayPalButton(this.amount,this.route('payment.payPalSuccess'),this.form,this.axios);
 
 
   },
@@ -290,6 +303,16 @@ export default {
       this.response_message = null;
       this.overlay = true;
       axios.post(this.route('payment.pay'), this.form).then(response => (this.response = response)).finally(() => this.responseFromSubmit());
+    },
+    submitPayPal(){
+      // this.form.post(this.route('payment.pay'))
+      if(this.hasPackage == 0 && this.form.shipping_address_id == null){
+        alert('Please Select Shipping Address first.')
+      }
+      this.response_message = null;
+      this.overlay = true;
+      this.form.amount = this.paypal_amount;
+      this.form.post(this.route('payment.payPalInit'));
     },
     responseFromSubmit(){
       let data = this.response.data;
@@ -318,7 +341,8 @@ export default {
         this.form.discount = info.data.discount;
         this.form.coupon_code_id = info.data.coupon_id
         let amount = this.amount * this.discount / 100;
-        this.initPayPalButton(amount,this.route('payment.payPalSuccess'),this.form,this.axios);
+        this.getUpdatedAmount();
+        // this.initPayPalButton(amount,this.route('payment.payPalSuccess'),this.form,this.axios);
 
       } else {
         console.log(info);
@@ -389,7 +413,18 @@ export default {
       this.form.shipping_address_id = event.target.value
       this.shipping_address_id = event.target.value
       console.log('new value ' + this.form.shipping_address_id)
+    },
+    getUpdatedAmount(){
+      let currentAmount =  this.form.amount;
+      let discount = this.form.discount;
+      console.dir(currentAmount,discount)
+      var totalAmount  = parseFloat(currentAmount) - parseFloat((currentAmount * (discount / 100)));
+      console.log(totalAmount);
+      var payPalAmount = parseFloat((totalAmount * (this.processingFeePayPal / 100)))+parseFloat(totalAmount);
+      console.log(payPalAmount);
+      this.paypal_amount = parseFloat(payPalAmount).toFixed(2);
     }
+
   },
 }
 </script>

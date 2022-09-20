@@ -12,6 +12,7 @@ use App\Models\InsuranceRequest;
 use App\Models\Order;
 use App\Models\Package;
 use App\Models\Payment;
+use App\Models\SiteSetting;
 use App\Models\Warehouse;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -79,6 +80,8 @@ class PaymentController extends Controller
                 \Session::put('package_id', $request->package_id);
             }
 
+            $processingFeePayPal = SiteSetting::where('name','paypal_processing_percentage')->first()->value ?? 0.00;
+
             return Inertia::render(
                 'Payment/OrderPayment',
                 [
@@ -88,6 +91,7 @@ class PaymentController extends Controller
                     'hasRequest' => \Session::has('additional_request_id') ? 1 : 0,
                     'hasPackage' => $request->has('package_id') || \Session::has('package_id') ? 1 : 0,
                     'shippingAddress' => $shippingAddress ?? [],
+                    'processingFeePayPal' => $processingFeePayPal ?? 0,
                 ]
             );
         } else {
@@ -421,6 +425,20 @@ class PaymentController extends Controller
             ]);
             // return redirect()->back()->with(['error' => ]);
         }*/
+    }
+
+    //  PayPal Payment Page
+    public function payPalInit(Request $request)
+    {
+        $data = $request->all();
+
+        return Inertia::render(
+            'Payment/PayPalPayment',
+            [
+                'dataResponse' => $data
+            ]
+        );
+
     }
 
     // PAYPAL - PAYMENT SUCCESS
