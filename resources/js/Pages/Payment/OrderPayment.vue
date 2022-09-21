@@ -135,6 +135,9 @@
                 <div class="col-md-6 offset-md-3 text-center">
                   <h4>OR</h4>
                   <p>Pay by PayPal with {{ processingFeePayPal }}% processing Fee.</p>
+                  <div class="form-group mt-2 mb-2">
+                    <input type="checkbox" id="termsPayPal" required> <label for="terms">By clicking here, I state that I have read and understood the</label> <inertia-link :href="route('page-show','terms_and_conditions')" class="link-hover-style-1 ms-1">Terms and Conditions</inertia-link>
+                  </div>
                   <button class="btn btn-primary w-100" v-on:click="submitPayPal()">Pay via PayPal {{ paypal_amount }}</button>
                 </div>
                 <div class="col-md-6 offset-md-3">
@@ -309,10 +312,15 @@ export default {
       if(this.hasPackage == 0 && this.form.shipping_address_id == null){
         alert('Please Select Shipping Address first.')
       }
-      this.response_message = null;
-      this.overlay = true;
-      this.form.amount = this.paypal_amount;
-      this.form.post(this.route('payment.payPalInit'));
+
+      if(document.getElementById('termsPayPal').checked != true){
+        alert('Please Read and Accept the terms and conditions')
+      }else{
+        this.response_message = null;
+        this.overlay = true;
+        this.form.amount = this.paypal_amount;
+        this.form.post(this.route('payment.payPalInit'));
+      }
     },
     responseFromSubmit(){
       let data = this.response.data;
