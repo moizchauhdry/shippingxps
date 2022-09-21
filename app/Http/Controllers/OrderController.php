@@ -54,13 +54,13 @@ class OrderController extends Controller
                 'shipped' => ''
             ]);
         } else {
-            $arrived = Order::select('orders.*', 'orders.warehouse_id', 'orders.customer_id', 'users.name', 'warehouses.name')->where('status', 'arrived');
+            $arrived = Order::select('orders.*','orders.status', 'orders.warehouse_id', 'orders.customer_id', 'users.name', 'warehouses.name')->where('status', 'arrived');
             $arrived = $this->searchResults($request, $arrived);
-            $labeled = Order::select('orders.*', 'orders.warehouse_id', 'orders.customer_id', 'users.name', 'warehouses.name')->where('status', 'labeled');
+            $labeled = Order::select('orders.*','orders.status', 'orders.warehouse_id', 'orders.customer_id', 'users.name', 'warehouses.name')->where('status', 'labeled');
             $labeled = $this->searchResults($request, $labeled);
-            $shipped = Order::select('orders.*', 'orders.warehouse_id', 'orders.customer_id', 'users.name', 'warehouses.name')->where('status', 'shipped');
+            $shipped = Order::select('orders.*','orders.status', 'orders.warehouse_id', 'orders.customer_id', 'users.name', 'warehouses.name')->where('status', 'shipped');
             $shipped = $this->searchResults($request, $shipped);
-            $rejected = Order::select('orders.*', 'orders.warehouse_id', 'orders.customer_id', 'users.name', 'warehouses.name')->where('status', 'rejected');
+            $rejected = Order::select('orders.*','orders.status', 'orders.warehouse_id', 'orders.customer_id', 'users.name', 'warehouses.name')->where('status', 'rejected');
             $rejected = $this->searchResults($request, $rejected);
 
             return Inertia::render('Orders/OrdersList', [

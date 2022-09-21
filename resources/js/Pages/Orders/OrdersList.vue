@@ -144,6 +144,7 @@
                   <th scope="col">Tracking #</th>
                   <th scope="col">Warehouse</th>
                   <th scope="col">Received Date</th>
+                  <th scope="col">Status</th>
                   <template v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">
                     <th scope="col"></th>
                   </template>
@@ -161,6 +162,7 @@
                   <td>{{ order.tracking_number_in }}</td>
                   <td>{{ order.warehouse.name }}</td>
                   <td>{{ order.created_at }}</td>
+                  <td><span v-bind:class="getLabelClass(order.status)">{{ order.status }}</span></td>
                   <template v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">
                     <td>
                       <inertia-link class="link-primary" :href="route('orders.show', order.id)">
@@ -187,6 +189,7 @@
                   <th scope="col">Tracking #</th>
                   <th scope="col">Warehouse</th>
                   <th scope="col">Received Date</th>
+                  <th scope="col">Status</th>
                   <template v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">
                     <th scope="col"></th>
                   </template>
@@ -204,6 +207,7 @@
                   <td>{{ labeler.tracking_number_in }}</td>
                   <td>{{ labeler.warehouse.name }}</td>
                   <td>{{ labeler.created_at }}</td>
+                  <td><span v-bind:class="getLabelClass(labeler.status)">{{ labeler.status }}</span></td>
                   <template v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">
                     <td>
                       <inertia-link class="link-primary" :href="route('orders.show', labeler.id)">
@@ -229,6 +233,7 @@
                   <th scope="col">Tracking #</th>
                   <th scope="col">Warehouse</th>
                   <th scope="col">Received Date</th>
+                  <th scope="col">Status</th>
                   <template v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">
                     <th scope="col"></th>
                   </template>
@@ -246,6 +251,7 @@
                   <td>{{ order.tracking_number_in }}</td>
                   <td>{{ order.warehouse.name }}</td>
                   <td>{{ order.created_at }}</td>
+                  <td><span v-bind:class="getLabelClass(order.status)">{{ order.status }}</span></td>
                   <template v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">
                     <td>
                       <inertia-link class="link-primary" :href="route('orders.show', order.id)">
@@ -271,6 +277,7 @@
                   <th scope="col">Tracking #</th>
                   <th scope="col">Warehouse</th>
                   <th scope="col">Received Date</th>
+                  <th scope="col">Status</th>
                   <template v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">
                     <th scope="col"></th>
                   </template>
@@ -288,6 +295,7 @@
                   <td>{{ order.tracking_number_in }}</td>
                   <td>{{ order.warehouse.name }}</td>
                   <td>{{ order.created_at }}</td>
+                  <td><span v-bind:class="getLabelClass(order.status)">{{ order.status }}</span></td>
                   <template v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">
                     <td>
                       <inertia-link class="link-primary" :href="route('orders.show', order.id)">
