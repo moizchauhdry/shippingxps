@@ -55,10 +55,22 @@
                                     aria-controls="pills-profile" 
                                     aria-selected="false">Sent ({{ packages_sent.data.length }})</button>
                                 </li>
+                              <li class="nav-item" role="presentation">
+                                <button
+                                    v-on:click="setActiveTabAB('tab4')"
+                                    :class="getTabClass('tab4')"
+                                    id="pills-profile-tab"
+                                    data-bs-toggle="pill"
+                                    data-bs-target="#pills-profile"
+                                    type="button"
+                                    role="tab"
+                                    aria-controls="pills-profile"
+                                    aria-selected="false">Delivered ({{ packages_delivered.data.length }})</button>
+                              </li>
                                 <li class="nav-item" role="presentation">
                                     <button 
-                                    v-on:click="setActiveTabAB('tab4')" 
-                                    :class="getTabClass('tab4')" 
+                                    v-on:click="setActiveTabAB('tab5')"
+                                    :class="getTabClass('tab5')"
                                     id="pills-profile-tab" 
                                     data-bs-toggle="pill" 
                                     data-bs-target="#pills-profile" 
@@ -209,7 +221,52 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <div :class="getTabPaneClass('tab4')" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab" style="background-color:white;">                                    
+                                <div :class="getTabPaneClass('tab4')" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab" style="background-color:white;">
+                                <table class="table">
+                                  <thead>
+                                  <tr>
+                                    <th scope="col">#</th>
+                                    <!-- <th scope="col">Image</th> -->
+                                    <th scope="col">Package</th>
+                                    <th scope="col"></th>
+                                  </tr>
+                                  </thead>
+                                  <tbody>
+                                  <tr v-for="pkg in packages_delivered.data" :key="pkg.id">
+                                    <td>{{ pkg.id }}</td>
+                                    <!-- <td>
+                                          <div class="text-center">
+                                              <img style="width:100px;height:auto;" class="img-thumbnail" :src="pkgImgURL(pkg)" />
+                                          </div>
+                                      </td> -->
+                                    <td>
+                                      <div class="package-no"><a :href="route('packages.show', pkg.id)">{{ pkg.package_no }}</a></div>
+                                      <p>Location: <strong>{{ pkg.warehouse.name }}</strong></p>
+                                      <p>Status: <strong>{{ pkg.status }}</strong></p>
+                                      <p>Tracking IN: <strong>N/A</strong></p>
+                                      <p>Tracking Out: <strong>{{ pkg.tracking_number_out }}</strong></p>
+                                      <p v-if="pkg.package_length > 0">Dimentions : {{ pkg.package_length }} {{ pkg.dim_unit }} x {{ pkg.package_width }} {{ pkg.dim_unit }} x {{ pkg.package_height }} {{ pkg.dim_unit }} </p>
+                                      <p>Entered :  {{ pkg.created_at }}</p>
+                                      <p>Shipped :  N/A</p>
+                                      <p>Cosolidated From:  N/A</p>
+                                    </td>
+                                    <td>
+                                      <template v-if="pkg.status == 'open'">
+                                        <a class="link-primary" :href="route('packages.custom', pkg.id)">Customs Declaration Form</a>
+                                      </template>
+                                      <template v-else>
+                                        <a class="link-primary" target="_blank" :href="route('packages.pdf', pkg.id)">Print Commercial Invoice</a>
+                                      </template>
+                                      &nbsp; | &nbsp;
+                                      <inertia-link class="link-primary" :href="route('packages.show', pkg.id)">
+                                        <span>Details</span>
+                                      </inertia-link>
+                                    </td>
+                                  </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                                <div :class="getTabPaneClass('tab5')" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab" style="background-color:white;">
                                 </div>
                             </div>
                         </div>
@@ -247,6 +304,7 @@
             packages_account:Object,
             packages_ready:Object,
             packages_sent:Object,
+            packages_delivered:Object,
         },
         data() {
             return {
@@ -261,6 +319,7 @@
                     tab2:false,
                     tab3:false,
                     tab4:false,
+                    tab5:false,
                 },
                 printable:['filled','labeled','shipped','delivered']
             }

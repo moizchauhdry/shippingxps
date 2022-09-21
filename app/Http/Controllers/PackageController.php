@@ -40,7 +40,7 @@ class PackageController extends Controller
             return $this->customer_packages();
         } else {
 
-            $query = Package::with(['warehouse', 'customer', 'orders']);
+            $query = Package::with(['warehouse', 'customer', 'orders' => function($q){ $q->where('status','!=','rejected');}]);
             $packages = $query->paginate(25);
 
             return Inertia::render('Packages/AdminPackageList', [
@@ -54,25 +54,31 @@ class PackageController extends Controller
 
         $customer_id = Auth::user()->id;
 
-        $query = Package::with(['warehouse', 'customer', 'orders']);
+        $query = Package::with(['warehouse', 'customer', 'orders' => function($q){ $q->where('status','!=','rejected');}]);
         $query->where('customer_id', '=', $customer_id);
         $query->whereIn('status', ['open', 'filled', 'consolidated']);
         $packages_account = $query->paginate(25);
 
-        $query_ready = Package::with(['warehouse', 'customer', 'orders']);
+        $query_ready = Package::with(['warehouse', 'customer', 'orders' => function($q){ $q->where('status','!=','rejected');}]);
         $query_ready->where('customer_id', '=', $customer_id);
         $query_ready->whereIn('status', ['labeled']);
         $packages_ready = $query_ready->paginate(25);
 
-        $query_sent = Package::with(['warehouse', 'customer', 'orders']);
+        $query_sent = Package::with(['warehouse', 'customer', 'orders' => function($q){ $q->where('status','!=','rejected');}]);
         $query_sent->where('customer_id', '=', $customer_id);
         $query_sent->whereIn('status', ['shipped', 'complete', 'delivered']);
         $packages_sent = $query_sent->paginate(25);
+
+        $query_delivered = Package::with(['warehouse', 'customer', 'orders' => function($q){ $q->where('status','!=','rejected');}]);
+        $query_delivered->where('customer_id', '=', $customer_id);
+        $query_delivered->whereIn('status', ['delivered']);
+        $packages_delivered = $query_delivered->paginate(25);
 
         return Inertia::render('Packages/CustomerPackageList', [
             'packages_account' => $packages_account,
             'packages_ready' => $packages_ready,
             'packages_sent' => $packages_sent,
+            'packages_delivered' => $packages_delivered,
         ]);
     }
 
@@ -85,7 +91,7 @@ class PackageController extends Controller
      */
     public function show($id)
     {
-        $packag = Package::with(['orders', 'address', 'warehouse', 'customer', 'items', 'images', 'serviceRequests'])->find($id);
+        $packag = Package::with(['orders' => function($q){ $q->where('status','!=','rejected');}, 'address', 'warehouse', 'customer', 'items', 'images', 'serviceRequests'])->find($id);
 
         $services = Service::where('status', '=', '1')->get();
         $serviceRequest = ServiceRequest::where('package_id', $packag->id)->where('service_id', 1)->first();
@@ -158,7 +164,7 @@ class PackageController extends Controller
 
         $user_id = Auth::user()->id;
 
-        $packag = Package::with(['orders', 'warehouse', 'customer', 'items'])->find($package_id);
+        $packag = Package::with(['orders' => function($q){ $q->where('status','!=','rejected');}, 'warehouse', 'customer', 'items'])->find($package_id);
 
 
         $warehouse = $packag->warehouse;
