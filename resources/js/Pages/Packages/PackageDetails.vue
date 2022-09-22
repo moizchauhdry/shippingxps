@@ -303,7 +303,8 @@
                               $ {{ service.price }}
                             </td>
                             <td style="width:110px;">
-                              <a v-if="service.title == 'Consolidation' && !hasConsolidationRequest" v-on:click="setActiveService(service)" class="link-primary"> Make Request</a>
+                              <a v-if="service.title == 'Consolidation' && !hasConsolidationRequest && packag.status != 'open'"  v-on:click="setActiveService(service)" class="link-primary"> Make Request</a>
+                              <span v-if="service.title == 'Consolidation' && !hasConsolidationRequest && packag.status == 'open'"><b>Note: Declare your customs to consolidate package</b></span>
                               <a v-else-if="service.title != 'Consolidation'" v-on:click="setActiveService(service)" class="link-primary"> Make Request</a>
                             </td>
                           </tr>
