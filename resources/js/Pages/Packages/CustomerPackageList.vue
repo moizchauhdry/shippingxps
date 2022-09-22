@@ -80,7 +80,7 @@
                                     aria-selected="false">Thrashed</button>
                                 </li>
                             </ul>
-                            <div class="tab-content" id="pills-tabContent">                                
+                            <div class="tab-content" id="pills-tabContent">
                                 <div :class="getTabPaneClass('tab1')" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab" style="background-color:white;">                                                                        
                                     <table class="table">
                                         <thead>
@@ -104,13 +104,11 @@
                                             <td>
                                                 <div class="package-no"><a :href="route('packages.show', pkg.id)">{{ pkg.package_no }}</a></div>
                                                 <p>Location: <strong>{{ pkg.warehouse.name }}</strong></p>
-                                                <p>Status: <strong>{{ pkg.status }}</strong></p>
-                                                <p>Tracking IN: <strong>N/A</strong></p>
-                                                <p>Tracking Out: <strong>{{ pkg.tracking_number_out }}</strong></p>
+                                                <p>Status: <span style="color:#fff;font-weight:600" v-bind:class="getLabelClass(pkg.status)">{{ pkg.status }}</span></p>
                                                 <p v-if="pkg.package_length > 0">Dimentions : {{ pkg.package_length }} {{ pkg.dim_unit }} x {{ pkg.package_width }} {{ pkg.dim_unit }} x {{ pkg.package_height }} {{ pkg.dim_unit }} </p>
                                                 <p>Entered :  {{ pkg.created_at }}</p>
-                                                <p>Shipped :  N/A</p>      
-                                                <p>Cosolidated From:  N/A</p>                   
+                                                <p>Shipped :  <strong>{{ pkg.status == "shipped" ? "Yes" : "No"}}</strong></p>
+<!--                                                <p>Cosolidated From:  N/A</p>                   -->
                                             </td>
                                             <td>
                                                 <inertia-link class="link-primary" :href="route('packages.show', pkg.id)">                                                    
@@ -154,13 +152,11 @@
                                             <td>
                                                 <div class="package-no"><a :href="route('packages.show', pkg.id)">{{ pkg.package_no }}</a></div>
                                                 <p>Location: <strong>{{ pkg.warehouse.name }}</strong></p>
-                                                <p>Status: <strong>{{ pkg.status }}</strong></p>
-                                                <p>Tracking IN: <strong>N/A</strong></p>
-                                                <p>Tracking Out: <strong>{{ pkg.tracking_number_out }}</strong></p>
+                                                <p>Status: <span style="color:#fff;font-weight:600" v-bind:class="getLabelClass(pkg.status)">{{ pkg.status }}</span></p>
                                                 <p v-if="pkg.package_length > 0">Dimentions : {{ pkg.package_length }} {{ pkg.dim_unit }} x {{ pkg.package_width }} {{ pkg.dim_unit }} x {{ pkg.package_height }} {{ pkg.dim_unit }} </p>
                                                 <p>Entered :  {{ pkg.created_at }}</p>
-                                                <p>Shipped :  N/A</p>      
-                                                <p>Cosolidated From:  N/A</p>                   
+                                                <p>Shipped :  <strong>{{ pkg.status == "shipped" ? "Yes" : "No"}}</strong></p>
+<!--                                                <p>Cosolidated From:  N/A</p>                   -->
                                             </td>
                                             <td>
                                                 <template v-if="pkg.status == !'open'">
@@ -197,13 +193,11 @@
                                             <td>
                                                 <div class="package-no"><a :href="route('packages.show', pkg.id)">{{ pkg.package_no }}</a></div>
                                                 <p>Location: <strong>{{ pkg.warehouse.name }}</strong></p>
-                                                <p>Status: <strong>{{ pkg.status }}</strong></p>
-                                                <p>Tracking IN: <strong>N/A</strong></p>
-                                                <p>Tracking Out: <strong>{{ pkg.tracking_number_out }}</strong></p>
+                                                <p>Status: <span style="color:#fff;font-weight:600" v-bind:class="getLabelClass(pkg.status)">{{ pkg.status }}</span></p>
                                                 <p v-if="pkg.package_length > 0">Dimentions : {{ pkg.package_length }} {{ pkg.dim_unit }} x {{ pkg.package_width }} {{ pkg.dim_unit }} x {{ pkg.package_height }} {{ pkg.dim_unit }} </p>
                                                 <p>Entered :  {{ pkg.created_at }}</p>
-                                                <p>Shipped :  N/A</p>      
-                                                <p>Cosolidated From:  N/A</p>                   
+                                                <p>Shipped :  <strong>{{ pkg.status == "shipped" ? "Yes" : "No"}}</strong></p>
+<!--                                                <p>Cosolidated From:  N/A</p>                   -->
                                             </td>
                                             <td>
                                                 <template v-if="pkg.status == 'open'">
@@ -242,13 +236,11 @@
                                     <td>
                                       <div class="package-no"><a :href="route('packages.show', pkg.id)">{{ pkg.package_no }}</a></div>
                                       <p>Location: <strong>{{ pkg.warehouse.name }}</strong></p>
-                                      <p>Status: <strong>{{ pkg.status }}</strong></p>
-                                      <p>Tracking IN: <strong>N/A</strong></p>
-                                      <p>Tracking Out: <strong>{{ pkg.tracking_number_out }}</strong></p>
+                                      <p>Status: <span style="color:#fff;font-weight:600" v-bind:class="getLabelClass(pkg.status)">{{ pkg.status }}</span></p>
                                       <p v-if="pkg.package_length > 0">Dimentions : {{ pkg.package_length }} {{ pkg.dim_unit }} x {{ pkg.package_width }} {{ pkg.dim_unit }} x {{ pkg.package_height }} {{ pkg.dim_unit }} </p>
                                       <p>Entered :  {{ pkg.created_at }}</p>
-                                      <p>Shipped :  N/A</p>
-                                      <p>Cosolidated From:  N/A</p>
+                                      <p>Shipped :  <strong>{{ pkg.status == "shipped" ? "Yes" : "No"}}</strong></p>
+<!--                                      <p>Cosolidated From:  N/A</p>-->
                                     </td>
                                     <td>
                                       <template v-if="pkg.status == 'open'">
