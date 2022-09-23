@@ -390,6 +390,28 @@
             </div><!-- subscription -->
           </div>
         </div><!-- container -->
+        <div class="container">
+          <div>
+            <div class="row">
+              <div class="form-group col-12">
+                <label for="cmessage">Add Comment</label>
+                <textarea class="form-control" v-model="commentForm.message" name="message" id="cmessage" cols="5" rows="2"></textarea>
+              </div>
+              <div class="col-12">
+                <label class="btn btn-primary float-right" @click="saveComment()">Add Comment</label>
+              </div>
+            </div>
+          </div>
+          <fieldset v-show="comments.length > 0" class="border p-4 mb-4 col-12 mt-2">
+            <legend class="w-auto">Comment(s)</legend>
+            <div v-for="comment in comments" :key="comment.id" class="card" style="margin:10px 0px;">
+              <div class="card-body" style="padding: 5px 10px">
+                {{comment.message}}
+              </div>
+              <div class="card-footer" style="padding: 5px 10px"><p class="float-right">{{comment.user.name}}</p></div>
+            </div>
+          </fieldset>
+        </div>
       </section>
 
     </div>
@@ -453,6 +475,10 @@ export default {
         receipt_url: this.order.receipt_url,
         is_service_charges: this.order.is_service_charges,
       }),
+      commentForm: this.$inertia.form({
+        message:"",
+      }),
+      comments : this.comments,
       tabs: {
         tab1: (this.order.order_type == 'shopping') ? true : false,
         tab2: (this.order.order_type == 'pickup') ? true : false
@@ -467,6 +493,7 @@ export default {
     order: Object,
     salePrice: Object,
     additional_pickup_charges:Number,
+    comments: Object
   },
   mounted() {
     this.filterStores();
@@ -658,6 +685,15 @@ export default {
     imgURL(url) {
       return "/public/uploads/" + url;
     },
+    loadComments(){
+    },
+    saveComment(){
+      if(this.commentForm.message == ''){
+        return false;
+      }
+      this.commentForm.post(this.route('shop-for-me.storeComment',this.order.id));
+      this.commentForm.reset();
+    }
   }
 }
 </script>

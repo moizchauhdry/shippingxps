@@ -9,12 +9,15 @@ use App\Events\ShoppingCreatedEvent;
 use App\Models\Coupon;
 use App\Models\CustomerCoupon;
 use App\Models\Order;
+use App\Models\OrderComment;
 use App\Models\OrderImage;
 use App\Models\OrderItem;
 use App\Models\SiteSetting;
 use App\Models\Store;
+use App\Models\User;
 use App\Models\Warehouse;
 use App\Models\Package;
+use App\Notifications\ShopForMeNotification;
 use App\Notifications\ShoppingCreated;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -317,12 +320,15 @@ class ShopController extends Controller
             return redirect()->back()->with('error', 'You Have No Longer Access to that page.');
         }
 
+        $comments = OrderComment::where('order_id', $order['id'])->with('user')->orderBy('id', 'desc')->get();
+
         return Inertia::render('ShopForMe/EditOrder', [
             'order' => $order,
             'warehouses' => $warehouses,
             'stores' => $stores,
             'salePrice' => (int)$price_with_tax - $price,
             'additional_pickup_charges' => $additional_pickup_charges,
+            'comments' => $comments
         ]);
     }
 
@@ -603,5 +609,52 @@ class ShopController extends Controller
                 'message' => 'Coupon is invalid',
             ]);
         }
+    }
+
+    public function storeComment(Request $request, $id)
+    {
+        $user = \Auth::user();
+        $shopForMe = Order::find($id);
+        $validatedData = $request->validate([
+            'message' => 'required',
+        ]);
+
+        OrderComment::create([
+            'order_id' => $id,
+            'user_id' => $user->id,
+            'message' => $validatedData['message'],
+        ]);
+
+        $url = \URL::route('shop-for-me.edit', $shopForMe->id);
+        $auser = $user->type == 'admin' ? 'Admin' : 'User';
+        $data = [
+            'url' => \URL::route('additional-request.edit', $shopForMe->id),
+            'message' => $auser . ' has commented on an shopping list. <a style="font-weight:600" href="' . $url . '">Click Here</a>',
+        ];
+        if ($user->type == 'admin') {
+            $customer = User::find($shopForMe->customer_id);
+            $customer->notify(new ShopForMeNotification($data));
+        } else {
+            $admins = User::where('type', 'admin')->get();
+            foreach ($admins as $admin) {
+                $admin->notify(new ShopForMeNotification($data));
+            }
+        }
+        $shopForMe = Order::find($id);
+
+        return $this->edit($shopForMe->id);
+    }
+
+    public function loadComments($id)
+    {
+        $comments = OrderComment::where('order_id', $id)->get();
+        return response()->json([
+            'order' => $order,
+            'warehouses' => $warehouses,
+            'stores' => $stores,
+            'salePrice' => (int)$price_with_tax - $price,
+            'additional_pickup_charges' => $additional_pickup_charges,
+            'comments' => $comments
+        ]);
     }
 }
