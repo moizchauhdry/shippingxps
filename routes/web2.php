@@ -21,6 +21,7 @@ Route::middleware('auth')->group(function () {
         Route::post('order/delete-image', [\App\Http\Controllers\OrderController::class, 'deleteImage'])->name('orders.removeImage');
         Route::delete('/{id}', [\App\Http\Controllers\ShopController::class, 'destroy'])->name('shop-for-me.delete');
         Route::any('/storeComment/{id}', [\App\Http\Controllers\ShopController::class, 'storeComment'])->name('shop-for-me.storeComment');
+        Route::any('/changeStatus', [\App\Http\Controllers\ShopController::class, 'changeStatus'])->name('shop-for-me.changeStatus');
     });
 
     /*

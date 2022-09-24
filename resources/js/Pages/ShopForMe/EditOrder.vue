@@ -362,13 +362,24 @@
                     </div>
                   </div>
                   <div class="order-button">
-                    <input v-if="order.payment_status != 'Paid' && ($page.props.auth.user.type == 'admin'  || $page.props.auth.user.type == 'manager')" type="submit" value="Update Shopping" class="btn btn-danger"/>
-                    <input v-if="order.payment_status != 'Paid'  && $page.props.auth.user.type == 'customer'" type="button"  v-on:click="updateChanges()"  value="Update Shopping" class="btn btn-danger"/>
-                    <template v-if="order.payment_status != 'Paid' && $page.props.auth.user.type == 'customer' && form.updated_by_admin == '1'">
-                      <a class="btn btn-primary ml-2" v-on:click="approveChanges()">Approve & Checkout</a>
+
+                    <template v-if="$page.props.auth.user.type == 'customer' && order.status != 'rejected'">
+                      <input v-if="order.payment_status != 'Paid'  && $page.props.auth.user.type == 'customer'" type="button"  v-on:click="updateChanges()"  value="Update Shopping" class="btn btn-danger"/>
+                      <template v-if="order.payment_status != 'Paid' && $page.props.auth.user.type == 'customer' && form.updated_by_admin == '1'">
+                        <a class="btn btn-primary ml-2" v-on:click="approveChanges()">Approve & Checkout</a>
+                      </template>
+                      <template v-if="order.payment_status != 'Paid' && $page.props.auth.user.type == 'customer' && order.changes_approved == '1'">
+                        <a class="btn btn-primary ml-2" v-on:click="approveChanges()">Approve & Checkout</a>
+                      </template>
                     </template>
-                    <template v-if="order.payment_status != 'Paid' && $page.props.auth.user.type == 'customer' && order.changes_approved == '1'">
-                      <a class="btn btn-primary ml-2" v-on:click="approveChanges()">Approve & Checkout</a>
+                    <template v-else-if="$page.props.auth.user.type == 'customer'">
+                        <p>Note: Your shopping has been rejected! Contact customer care for further information</p>
+                    </template>
+
+                    <template v-if="($page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager')">
+                      <input v-if="order.payment_status != 'Paid'" type="submit" value="Update Shopping" class="btn btn-danger"/>
+                      <a v-if="order.status != 'approved'" v-on:click="changeAdminStatus(order.id,'approved')" class="ml-2 btn btn-success">Approve</a>
+                      <a v-if="order.status != 'rejected'" v-on:click="changeAdminStatus(order.id,'rejected')" class="ml-2 btn btn-danger">Reject</a>
                     </template>
 
                     <template v-if="form.changes_approved == '1' && ($page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager')">
@@ -483,7 +494,12 @@ export default {
         tab1: (this.order.order_type == 'shopping') ? true : false,
         tab2: (this.order.order_type == 'pickup') ? true : false
       },
-      stores: []
+      stores: [],
+      order : this.order,
+      statusForm: this.$inertia.form({
+        id:null,
+        status:null,
+      }),
     };
   },
   props: {
@@ -535,6 +551,11 @@ export default {
     approveChanges() {
       this.form.changes_approved = 1;
       this.submit();
+    },
+    changeAdminStatus(id,status){
+      this.statusForm.id = id;
+      this.statusForm.status = status;
+      this.statusForm.post(this.route('shop-for-me.changeStatus'));
     },
     addItem() {
       this.form.items.push({

@@ -657,4 +657,17 @@ class ShopController extends Controller
             'comments' => $comments
         ]);
     }
+
+    public function changeStatus(Request $request)
+    {
+        $id = $request->id;
+        $status = $request->status;
+
+        $order = Order::find($id);
+        $order->status = $status;
+        $order->save();
+
+        return $this->edit($id);
+    }
 }
+
