@@ -184,7 +184,7 @@
                           <div class="col-md-2">
                             <div class="form-group">
                               <breeze-label for="package_weight" value="Package Weight"/>
-                              <input v-model="form_consolidate.package_weight" min="1" name="package_weight" id="package_weight" type="number" class="form-control" placeholder="Package Weight" required/>
+                              <input v-model="form_consolidate.package_weight" min="1" name="package_weight" id="package_weight" type="number" class="form-control" placeholder="Package Weight" :step="0.01" required/>
                             </div>
                           </div>
 
@@ -211,7 +211,7 @@
                           </div>
                           <div class="col-md-2">
                             <div class="form-group">
-                              <breeze-label for="package_weight" value="Package Width"/>
+                              <breeze-label for="package_width" value="Package Width"/>
                               <input v-model="form_consolidate.package_width" min="1" name="package_width" id="package_width" type="number" class="form-control" placeholder="Package Width" required/>
                             </div>
                           </div>

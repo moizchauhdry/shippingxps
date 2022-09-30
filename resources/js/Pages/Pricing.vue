@@ -78,7 +78,7 @@
                     <div class="col-md-3">
                       <div class="form-group sizes-input mt-5">
                         <label class="text-6 text-center text-white font-weight-medium d-block" for="weight">Weight</label>
-                        <input v-model="form.weight" type="number" class="form-control text-dark text-4 mt-2" name="name" :min=1 required="">
+                        <input v-model="form.weight" type="number" class="form-control text-dark text-4 mt-2" name="name" :step="0.01" :min=1 required="">
                       </div>
                     </div>
                     <div class="col-md-3">
@@ -93,19 +93,19 @@
                     <div class="col-md-2">
                       <div class="form-group sizes-input mt-5">
                         <label class="text-6 text-center text-white font-weight-medium d-block" for="weight">Length</label>
-                        <input v-model="form.length" type="number" class="form-control text-dark text-4 mt-2" name="name" :min=1 required="">
+                        <input v-model="form.length" type="number" class="form-control text-dark text-4 mt-2" name="name" :step="0.01" :min=1 required="">
                       </div>
                     </div>
                     <div class="col-md-2">
                       <div class="form-group sizes-input mt-5">
                         <label class="text-6 text-center text-white font-weight-medium d-block" for="weight">Width</label>
-                        <input v-model="form.width" type="number" class="form-control text-dark text-4 mt-2" name="name" :min=1 required="">
+                        <input v-model="form.width" type="number" class="form-control text-dark text-4 mt-2" name="name" :step="0.01" :min=1 required="">
                       </div>
                     </div>
                     <div class="col-md-2">
                       <div class="form-group sizes-input mt-5">
                         <label class="text-6 text-center text-white font-weight-medium d-block" for="height">Height</label>
-                        <input v-model="form.height" type="number" class="form-control text-dark text-4 mt-2" name="name" :min=1 required="">
+                        <input v-model="form.height" type="number" class="form-control text-dark text-4 mt-2" name="name" :step="0.01" :min=1 required="">
                       </div>
                     </div>
                   </div>
