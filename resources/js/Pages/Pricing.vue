@@ -4,6 +4,15 @@
   margin-left: auto;
   margin-right: auto;
 }
+.bg-grey-soft {
+  background:#fff8ee
+}
+.bg-yellow {
+  background:#f1b523
+}
+section.section {
+    background: #ffff;
+}
 </style>
 <template>
   <div role="main" class="main">
@@ -37,7 +46,7 @@
       <div class="container">
         <div class="row mx-3 mx-xl-0">
           <div class="col-md-12 px-0">
-            <div class="bg-dark h-100">
+            <div class="bg-grey-soft h-100">
               <div class="text-center text-md-start p-5 h-100">
                 <form @submit.prevent="submit" class="contact-form form-style-4 form-placeholders-light form-errors-light mb-5 mb-lg-0">
 
@@ -45,7 +54,7 @@
 
                     <div class="col-md-5">
                       <div class="form-group">
-                        <div class="input-title text-white mb-2 text-6 font-weight-medium text-center">Where is your merchandise?</div>
+                        <div class="input-title text-dark mb-2 text-6 font-weight-medium text-center">Where is your merchandise?</div>
                         <select required v-model="form.ship_from" class="form-select text-4" aria-label="Default select example">
                           <option v-for="warehouse in warehouses" :value="warehouse.id" :key="warehouse.id">{{ warehouse.name }}</option>
                         </select>
@@ -54,7 +63,7 @@
 
                     <div class="col-md-5">
                       <div class="form-group md-mrgn">
-                        <div class="input-title text-white mb-2 text-6 font-weight-medium text-center">Where are you shipping to?</div>
+                        <div class="input-title text-dark mb-2 text-6 font-weight-medium text-center">Where are you shipping to?</div>
                         <select required v-model="form.ship_to" class="form-select text-4" aria-label="Default select example">
                           <option v-for="country in countries" :value="country.id" :key="country.id">{{ country.name }}</option>
                         </select>
@@ -63,27 +72,27 @@
 
                     <div class="col-md-2">
                       <div class="form-group sizes-input mt-5" style="margin-top:0px !important;">
-                        <label class="text-6 text-center text-white font-weight-medium d-block" for="weight">Zip</label>
+                        <label class="text-6 text-center text-dark font-weight-medium d-block" for="weight">Zip</label>
                         <input v-model="form.zipcode" type="text" class="form-control text-dark text-4 mt-2" name="zip" placeholder="">
                       </div>
                     </div>
                     <div class="form-heading text-center mt-5">
-                      <span class="text-6 text-light font-weight-bold"> <input type="checkbox" name="is_residential" @change="is_residential($event)" style="line-height: 1;vertical-align: unset;">&nbsp;&nbsp;Residential</span>
+                      <span class="text-6 text-dark font-weight-bold"> <input type="checkbox" name="is_residential" @change="is_residential($event)" style="line-height: 1;vertical-align: unset;">&nbsp;&nbsp;Residential</span>
                     </div>
                     <div class="form-heading text-center mt-5">
-                      <h6 class="text-6 text-primary font-weight-bold">Tell us about the package size and weight...</h6>
+                      <h6 class="text-6 text-warning font-weight-bold">Tell us about the package size and weight.</h6>
                     </div>
                   </div>
                   <div class="row">
                     <div class="col-md-3">
                       <div class="form-group sizes-input mt-5">
-                        <label class="text-6 text-center text-white font-weight-medium d-block" for="weight">Weight</label>
+                        <label class="text-6 text-center text-dark font-weight-medium d-block" for="weight">Weight</label>
                         <input v-model="form.weight" type="number" class="form-control text-dark text-4 mt-2" name="name" :step="0.01" :min=1 required="">
                       </div>
                     </div>
                     <div class="col-md-3">
                       <div class="form-group sizes-input mt-5">
-                        <label class="text-6 text-center text-white font-weight-medium d-block" for="weight">Unit</label>
+                        <label class="text-6 text-center text-dark font-weight-medium d-block" for="weight">Unit</label>
                         <select v-model="form.weight_unit" class="form-select text-4 mt-2" aria-label="Default select example">
                           <option value="lb_in" selected>Lb / Inch</option>
                           <option value="kg_cm">Kg / Cm</option>
@@ -92,19 +101,19 @@
                     </div>
                     <div class="col-md-2">
                       <div class="form-group sizes-input mt-5">
-                        <label class="text-6 text-center text-white font-weight-medium d-block" for="weight">Length</label>
+                        <label class="text-6 text-center text-dark font-weight-medium d-block" for="weight">Length</label>
                         <input v-model="form.length" type="number" class="form-control text-dark text-4 mt-2" name="name" :step="0.01" :min=1 required="">
                       </div>
                     </div>
                     <div class="col-md-2">
                       <div class="form-group sizes-input mt-5">
-                        <label class="text-6 text-center text-white font-weight-medium d-block" for="weight">Width</label>
+                        <label class="text-6 text-center text-dark font-weight-medium d-block" for="weight">Width</label>
                         <input v-model="form.width" type="number" class="form-control text-dark text-4 mt-2" name="name" :step="0.01" :min=1 required="">
                       </div>
                     </div>
                     <div class="col-md-2">
                       <div class="form-group sizes-input mt-5">
-                        <label class="text-6 text-center text-white font-weight-medium d-block" for="height">Height</label>
+                        <label class="text-6 text-center text-dark font-weight-medium d-block" for="height">Height</label>
                         <input v-model="form.height" type="number" class="form-control text-dark text-4 mt-2" name="name" :step="0.01" :min=1 required="">
                       </div>
                     </div>
