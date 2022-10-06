@@ -158,7 +158,7 @@
 
         <template v-if="this.hasConsolidationRequest">
           <template v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">
-            <template v-if="packag.status == 'open' || ( packag.status == 'filled' && packag.orders.length > 1) || packag.status != 'consolidated'">
+            <template v-if="(packag.status == 'open' || ( packag.status == 'filled' && packag.orders.length > 1) || packag.status != 'consolidated') && packag.status != 'labeled' && packag.status != 'shipped'">
               <div class="row" style="margin-top:20px;">
                 <div class="col-md-12">
 
@@ -536,9 +536,9 @@
                         <td>Tracking Number Out</td>
                         <td>
                           <template v-if="packag.tracking_number_out">
-                            {{ packag.tracking_number_out }}
+                            {{ packag.tracking_number_out }} <a href="javascript:void(0)" class="badge badge-primaray" v-show="packag.payment_status == 'Paid' && !tracking_edit" @click="tracking_edit = !tracking_edit">Edit</a>
                           </template>
-                          <template v-else>Not Set</template>
+                          <template v-else>Not Set <a href="javascript:void(0)" class="badge badge-primaray" v-show="packag.payment_status == 'Paid' && !tracking_edit" @click="tracking_edit = !tracking_edit">Edit</a></template>
                         </td>
                       </tr>
 
@@ -626,7 +626,7 @@
           </div>
         </div>
 
-        <div class="row" v-if="packag.status =='labeled' && ($page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager')">
+        <div class="row" v-show="tracking_edit" v-if="(packag.payment_status == 'Paid') && ($page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager')">
           <div class="col-md-12">
             <div class="card">
               <div class="card-header">
@@ -849,6 +849,7 @@ export default {
       storage_fee : 0,
       overlay: false,
       displayNoteShipping: true,
+      tracking_edit: false,
     }
   },
   props: {
