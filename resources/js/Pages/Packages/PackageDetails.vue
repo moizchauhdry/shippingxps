@@ -536,9 +536,9 @@
                         <td>Tracking Number Out</td>
                         <td>
                           <template v-if="packag.tracking_number_out">
-                            {{ packag.tracking_number_out }} <a href="javascript:void(0)" class="badge badge-primaray" v-show="packag.payment_status == 'Paid' && !tracking_edit" @click="tracking_edit = !tracking_edit">Edit</a>
+                            {{ packag.tracking_number_out }} <a href="javascript:void(0)" class="badge badge-dark " v-show="packag.payment_status == 'Paid' && !tracking_edit" @click="tracking_edit = !tracking_edit">Edit</a>
                           </template>
-                          <template v-else>Not Set <a href="javascript:void(0)" class="badge badge-primaray" v-show="packag.payment_status == 'Paid' && !tracking_edit" @click="tracking_edit = !tracking_edit">Edit</a></template>
+                          <template v-else>Not Set <a href="javascript:void(0)" class="badge badge-dark " v-show="packag.payment_status == 'Paid' && !tracking_edit" @click="tracking_edit = !tracking_edit">Edit</a></template>
                         </td>
                       </tr>
 
@@ -909,6 +909,7 @@ export default {
     },
     submitShipOutForm() {
       this.form_ship.post(this.route('packages.ship-package'));
+      this.tracking_edit = false;
     },
     setShippingService(service) {
       var result = window.confirm('After Confirming the shippment method you wont be able to change. Are you sure to confirm ?')
