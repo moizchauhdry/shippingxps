@@ -45,6 +45,8 @@ Route::get('/pricing', 'HomeController@pricingTable')->name('pricing');
 Route::get('/getListings', 'HomeController@getListings')->name('getListings');
 Route::get('/getQuotes', 'HomeController@getQuotes')->name('getQuotes');
 Route::get('/getQuote', 'HomeController@getQuote')->name('getQuote');
+Route::get('/getQuoteByOrders', 'HomeController@getQuoteByOrders')->name('getQuoteByOrders');
+Route::get('/test-order-xps', 'HomeController@putTestOrder')->name('putTestOrder');
 
 Route::get('/shopping', 'HomeController@shopping')->name('shopping')->middleware('auth');
 

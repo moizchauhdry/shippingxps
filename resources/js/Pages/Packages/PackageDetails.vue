@@ -113,11 +113,14 @@
                       </template>
                       </tbody>
                     </table>
-                    <template v-if="((packag.status == 'filled' && packag.orders.length == 1) || packag.status == 'consolidated')&&((packag.package_length !=='' && packag.package_length !== 0) && (packag.package_width !=='' && packag.package_width !== 0) && (packag.package_height !=='' && packag.package_height !== 0)) ">
+                    <template v-if="((packag.status == 'filled' && packag.orders.length == 1) || (packag.status == 'consolidated' && hasConsolidationServed && !hasMultiPieceServed))&&((packag.package_length !=='' && packag.package_length !== 0) && (packag.package_width !=='' && packag.package_width !== 0) && (packag.package_height !=='' && packag.package_height !== 0)) ">
                       <a class="btn btn-success" v-on:click="getShippingRates()">Get Shipping Rates</a>
                     </template>
+                    <template v-else-if="((packag.status == 'filled' && packag.orders.length == 1) || (hasMultiPieceServed && !hasConsolidationServed ) && (packag.status != 'labeled' && packag.status != 'shipped')) ">
+                      <a class="btn btn-success" v-on:click="getShippingRatesByOrders()">Get Shipping Rates</a>
+                    </template>
                     <template v-else-if="packag.orders.length > 1 && packag.status == 'filled'" >
-                      <strong>Please get your package consolidated before getting shipping rates</strong>
+                      <strong>Please get your package consolidated/Multi piece sets before getting shipping rates</strong>
                     </template>
                     <template v-else-if="packag.orders.length == 1 && packag.status == 'filled'">
                         <strong>Your package needs an update before getting shipping rates</strong>
@@ -303,9 +306,11 @@
                               $ {{ service.price }}
                             </td>
                             <td style="width:110px;">
-                              <a v-if="service.title == 'Consolidation' && !hasConsolidationRequest && packag.status != 'open'"  v-on:click="setActiveService(service)" class="link-primary"> Make Request</a>
+                              <a v-if="service.title == 'Consolidation' && !hasConsolidationRequest && !hasMultiPieceServed && packag.status != 'open'"  v-on:click="setActiveService(service)" class="link-primary"> Make Request</a>
+                              <a v-if="service.title == 'Multi Piece' && !hasConsolidationRequest && !hasMultiPieceServed && packag.status != 'open'"  v-on:click="setActiveService(service)" class="link-primary"> Make Request</a>
                               <span v-if="service.title == 'Consolidation' && !hasConsolidationRequest && packag.status == 'open'"><b>Note: Declare your customs to consolidate package</b></span>
-                              <a v-else-if="service.title != 'Consolidation'" v-on:click="setActiveService(service)" class="link-primary"> Make Request</a>
+                              <span v-if="service.title == 'Multi Piece' && !hasConsolidationServed && !hasMultiPieceServed && packag.status == 'open'"><b>Note: Declare your customs to use this service</b></span>
+                              <a v-else-if="service.title != 'Consolidation' && service.title != 'Multi Piece'" v-on:click="setActiveService(service)" class="link-primary"> Make Request</a>
                             </td>
                           </tr>
                           </tbody>
@@ -536,9 +541,9 @@
                         <td>Tracking Number Out</td>
                         <td>
                           <template v-if="packag.tracking_number_out">
-                            {{ packag.tracking_number_out }} <a href="javascript:void(0)" class="badge badge-dark " v-show="packag.payment_status == 'Paid' && !tracking_edit" @click="tracking_edit = !tracking_edit">Edit</a>
+                            {{ packag.tracking_number_out }} <a href="javascript:void(0)" class="badge badge-dark " v-show="packag.payment_status == 'Paid' && !tracking_edit && ($page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager')" @click="tracking_edit = !tracking_edit">Edit</a>
                           </template>
-                          <template v-else>Not Set <a href="javascript:void(0)" class="badge badge-dark " v-show="packag.payment_status == 'Paid' && !tracking_edit" @click="tracking_edit = !tracking_edit">Edit</a></template>
+                          <template v-else>Not Set <a href="javascript:void(0)" class="badge badge-dark " v-show="packag.payment_status == 'Paid' && !tracking_edit && ($page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager')" @click="tracking_edit = !tracking_edit">Edit</a></template>
                         </td>
                       </tr>
 
@@ -863,6 +868,7 @@ export default {
     shipping_services: Object,
     hasConsolidationRequest: Object,
     hasConsolidationServed: Object,
+    hasMultiPieceServed: Object,
   },
   computed: {
     siuteNum() {
@@ -1019,6 +1025,53 @@ export default {
               }
           );*/
     },
+    getShippingRatesByOrders() {
+      //this.$refs.buttonRates.innerText = "Loading ..."
+
+      console.log('here');
+
+      this.showEstimatedPrice = false;
+      this.isLoading = true;
+      let pieces = [];
+
+      console.log(this.packag.orders.length);
+      this.packag.orders.forEach(function (value,index) {
+        let piece = {
+          "weight": value.package_weight.toString(),
+          "length": value.package_length.toString(),
+          "width": value.package_width.toString(),
+          "height": value.package_height.toString(),
+          "insuranceAmount": "0",
+          "declaredValue": value.declared_value.toString()
+        };
+
+        pieces.push(piece)
+      })
+
+
+      let quote_params = {
+        ship_from: this.packag.warehouse_id,
+        ship_to: this.packag.address.country_id,
+        weight: this.packag.package_weight,
+        unit: this.packag.weight_unit,
+        weight_unit: this.packag.weight_unit +"_"+ this.packag.dim_unit,
+        pieces:pieces,
+        zipcode: this.packag.address.zip_code,
+        city : this.packag.address.city,
+        is_residential : this.packag.address.is_residential,
+      };
+      axios.get(this.route('getServicesList')).then(response => {
+        console.log(response.data.services)
+        response.data.services.forEach((ele, index) => {
+          console.log(ele);
+          quote_params.service = ele;
+          this.getRatesByOrders(quote_params);
+        })
+      }).catch(error => {
+        console.log(error)
+      })
+
+    },
     getServiceSubTotal() {
       let request_total = this.service_requests.reduce((acc, item) => {
             return acc + (parseInt(item.price));
@@ -1136,9 +1189,25 @@ export default {
             }
           }
       );
+    },
+    getRatesByOrders(quote_params) {
+      axios.get("/getQuoteByOrders", {
+        params: quote_params,
+      }).then((response) => {
+            console.log(response.data.service)
+            this.isLoading = false;
+            if (response.data.status) {
+              this.showEstimatedPrice = true;
+              this.shipping_services[response.data.service.service_id] = response.data.service;
 
-
-
+            } else {
+              this.serverError = response.data.message;
+            }
+            if(response.data.service.isReady !== undefined && response.data.service.isReady  === true){
+              this.displayNoteShipping = false;
+            }
+          }
+      );
     },
     getStorageFee(){
       axios.get(this.route('getStorageFee'),{

@@ -695,6 +695,283 @@ class HomeController extends Controller
     }
 
 
+    public function getQuoteByOrders(Request $request){
+        $service = $request->get('service');
+
+        $service = json_decode($service);
+
+
+        $piecesStrings = $request->pieces;
+        $pieces = [];
+        foreach ($piecesStrings as $strValue){
+            $pieces[] = json_decode($strValue,true);
+        }
+
+
+
+        $markup = SiteSetting::getByName('markup');
+
+        $ship_from= $request->input('ship_from');
+        $ship_to = $request->input('ship_to');
+        $units = $request->input('weight_unit');
+        $length = $request->input('length');
+        $zipcode = $request->input('zipcode');
+        $cityName = $request->has('city')? $request->city : null;
+        $is_residential = $request->input('is_residential') == 1 ? true : false;
+
+
+        //$declared_value = $request->input('declared_value');
+
+        $declared_value = '10.0';
+
+        $warehouse = Warehouse::where('id',$ship_from)->first();
+
+        $country = Country::where('id',$ship_to)->first();
+
+        $units = explode('_',$units);
+
+        $weight_unit = isset($units[0]) ? $units[0] : 'lb';
+        $dimention_unit = isset($units[1]) ? $units[1] : 'in';
+
+        $headers = [
+            'cache-control' => 'no-cache',
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer ' . $this->token
+        ];
+
+        $errors = [];
+
+        $sender = [
+            "country" =>  'US',
+            "zip" => '92804',
+        ];
+
+        $receiver = [
+            "country" => $country->iso,
+            "zip" => empty($zipcode) ? '40050': $zipcode,
+        ];
+
+        if($cityName != null){
+            $receiver['city'] = $cityName;
+        }elseif ($country->iso == 'PK'){
+            $receiver['city'] = "Lahore";
+        }
+
+
+        $post_params = [
+            "carrierCode" => $service->carrierCode,
+            "serviceCode" =>  $service->serviceCode,
+            "packageTypeCode" => $service->packageTypeCode,
+            "sender" => $sender,
+            "receiver" => $receiver,
+            "residential" => $is_residential,
+            "signatureOptionCode" => null,
+            "contentDescription" => "stuff and things",
+            "weightUnit" => $weight_unit,
+            "dimUnit" => $dimention_unit,
+            "currency"=> "USD",
+            "customsCurrency"=> "USD",
+            "pieces"  => $pieces,
+            "billing" => [
+                "party" => "sender"
+            ]
+        ];
+        $service_rate = [];
+        try {
+
+            $client = new Client();
+
+            $request = $client->post('https://xpsshipper.com/restapi/v1/customers/'.$this->customer_id.'/quote', [
+                'headers' => $headers,
+                'body' => json_encode($post_params),
+                'http_errors' => true,
+            ]);
+
+            $response = $request ? $request->getBody()->getContents() : null;
+            \Log::info($post_params);
+            \Log::info($response);
+            $response = json_decode($response);
+
+            $markup_amount = $response->totalAmount*((int)$markup/100);
+
+            $total = $response->totalAmount+ $markup_amount;
+
+            $total = number_format($total,2);
+
+            $service_rate = [
+                "service_id" => $service->service_id,
+                "carrierCode" => $service->carrierCode,
+                'serviceLabel' => $service->serviceLabel,
+                'serviceCode' => $service->serviceCode,
+                "packageTypeCode" => $service->packageTypeCode,
+                'currency' => $response->currency,
+                'totalAmount' => $total,
+                'baseAmount' => $response->baseAmount,
+                'isReady' => true,
+                'logo'=> $service->logo,
+                'markup_fee' => $markup_amount,
+            ];
+
+        }catch(\Exception $ex){
+
+            $ex_message = $ex->getMessage();
+
+            $pos = strpos($ex_message,'{"error":"');
+
+            $pos1 = strpos($ex_message,'"errorCategory"');
+            $length = $pos1-($pos+12);
+
+            $message = substr($ex_message,$pos+10,$length);
+
+            $errors[] = [
+                'label' => $service->serviceLabel,
+                'serviceCode' => $service->serviceCode,
+                'message' => $message,
+                'details' => $ex_message,
+            ];
+
+        }
+
+        return response()->json([
+            'status' => TRUE,
+            'service' => $service_rate,
+            'errors' => $errors,
+        ]);
+
+    }
+
+    public function putTestOrder()
+    {
+        $headers = [
+            'cache-control' => 'no-cache',
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer ' . $this->token
+        ];
+
+        $post_params = array (
+            'orderId' => 'OrderTest005',
+            'orderDate' => '2022-10-14',
+            'orderNumber' => 'Test Order 005',
+            'fulfillmentStatus' => 'pending',
+            'shippingService' => 'fedex custom package',
+            'shippingTotal' => '8.24',
+            'weightUnit' => 'lb',
+            'dimUnit' => 'in',
+            'dueByDate' => '2022-10-26',
+            'orderGroup' => 'Workstation 1',
+            'contentDescription' => 'Stuff and things',
+            'sender' =>
+                array (
+                    'name' => 'Habibur Haseeb',
+                    'company' => 'Aman & Baida Enterprise',
+                    'address1' => '3578 West Savanna St',
+                    'address2' => '',
+                    'city' => 'Anaheim',
+                    'state' => 'CA',
+                    'zip' => '92804',
+                    'country' => 'US',
+                    'phone' => '2097517988',
+                    'email' => 'habib362@gmail.com',
+                ),
+            'receiver' =>
+                array (
+                    'name' => 'Samia Khan',
+                    'company' => '',
+                    'address1' => 'Multan Road',
+                    'address2' => 'Dummy House',
+                    'city' => 'Lahore',
+                    'state' => '',
+                    'zip' => '84115',
+                    'country' => 'PK',
+                    'phone' => '+923004556435',
+                    'email' => 'samia@yopmail.coom',
+                ),
+            'items' =>
+                array (
+                    0 =>
+                        array (
+                            'productId' => '856673',
+                            'sku' => 'ade3-fe21-bb9a',
+                            'title' => 'Socks',
+                            'price' => '3.99',
+                            'quantity' => 2,
+                            'weight' => '0.5',
+                            'imgUrl' => 'http://sockstore.egg/img/856673',
+                            'htsNumber' => '555555',
+                            'countryOfOrigin' => 'US',
+                            'lineId' => '1',
+                        ),
+                    1 =>
+                        array (
+                            'productId' => '856673s',
+                            'sku' => 'ade3-fe21-bb9aa',
+                            'title' => 'Socsks',
+                            'price' => '3.99',
+                            'quantity' => 2,
+                            'weight' => '1.0',
+                            'imgUrl' => 'http://sockstore.egg/img/856673',
+                            'htsNumber' => '555555',
+                            'countryOfOrigin' => 'US',
+                            'lineId' => '1',
+                        ),
+                ),
+            'packages' =>
+                array (
+                    0 =>
+                        array (
+                            'weight' => '0.5',
+                            'length' => '6',
+                            'width' => '5',
+                            'height' => '2.5',
+                            'insuranceAmount' => NULL,
+                            'declaredValue' => NULL,
+                        ),
+                    1 =>
+                        array (
+                            'weight' => '1.0',
+                            'length' => '8',
+                            'width' => '6',
+                            'height' => '4',
+                            'insuranceAmount' => NULL,
+                            'declaredValue' => NULL,
+                        ),
+                    2 =>
+                        array (
+                            'weight' => '3.5',
+                            'length' => '10',
+                            'width' => '20',
+                            'height' => '15',
+                            'insuranceAmount' => NULL,
+                            'declaredValue' => NULL,
+                        ),
+                ),
+        );
+
+
+        try {
+
+            $client = new Client();
+
+            $request = $client->put('https://xpsshipper.com/restapi/v1/customers/'.$this->customer_id.'/integrations/'.$this->integration_id.'/orders/'.$post_params['orderId'], [
+                'headers' => $headers,
+                'body' => json_encode($post_params),
+                'http_errors' => true,
+            ]);
+
+            $response = $request ? $request->getBody()->getContents() : null;
+
+            \Log::info($response);
+
+            return $response;
+
+        }catch(\Exception $ex){
+
+            $ex_message = $ex->getMessage();
+
+            return $ex_message;
+
+        }
+    }
 
 
     private function getPackageTypeCode($service){

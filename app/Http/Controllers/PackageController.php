@@ -96,6 +96,7 @@ class PackageController extends Controller
         $services = Service::where('status', '=', '1')->get();
         $serviceRequest = ServiceRequest::where('package_id', $packag->id)->where('service_id', 1)->first();
         $servedConsolidation = ServiceRequest::where('package_id', $packag->id)->where('status', 'served')->where('service_id', 1)->first();
+        $multiPieceRequestStatus = ServiceRequest::where('package_id', $packag->id)->where('status', 'served')->where('service_id', 5)->first();
         $service_requests = [];
         foreach ($packag->serviceRequests as $req) {
             $service_requests[] = [
@@ -151,6 +152,7 @@ class PackageController extends Controller
             'shipping_services' => Shipping::getShippingServices(),
             'hasConsolidationRequest' => (bool)$serviceRequest,
             'hasConsolidationServed' => (bool)$servedConsolidation,
+            'hasMultiPieceServed' => (bool)$multiPieceRequestStatus,
         ]);
     }
 
