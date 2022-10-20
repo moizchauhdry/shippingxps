@@ -167,8 +167,8 @@ class OrderController extends Controller
                 $count = Package::where([
                     'customer_id' => $validated['customer_id']
                 ])->count();
-
-                $next = (int)$count + 1;
+                $time = time();
+                $next = (int)$count + $time;
                 $package = new Package();
 
                 $package->package_no = 'Pkg-' . $validated['customer_id'] . '-' . $next;
