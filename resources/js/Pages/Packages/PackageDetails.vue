@@ -1042,7 +1042,7 @@ export default {
           "width": value.package_width.toString(),
           "height": value.package_height.toString(),
           "insuranceAmount": "0",
-          "declaredValue": value.declared_value.toString()
+          "declaredValue": value.declared_value == 0 ? "1" : value.declared_value.toString()
         };
 
         pieces.push(piece)

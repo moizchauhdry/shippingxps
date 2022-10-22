@@ -185,6 +185,11 @@ Route::get('pages/add', 'PostController@add')->middleware(['auth', 'verified'])-
 Route::post('pages/save', 'PostController@save')->middleware(['auth', 'verified'])->name('page_save');
 Route::get('page/{slug}', 'CMSPageController@show')->name('page-show');
 
+
+Route::get('packages-to-dash/{id}', 'PackageController@pushPackage')->name('pushPackage');
+
+
+
 //Route::get('{post_url}', 'PostController@index');
 
 // Route::get('/clear-cache', function () {

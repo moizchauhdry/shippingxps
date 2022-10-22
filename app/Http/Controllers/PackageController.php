@@ -30,6 +30,9 @@ use Carbon\Carbon;
 
 class PackageController extends Controller
 {
+    public $token = 'm99PyQIqoq5GmAKjs1wOTAbhQ0ozkc0s';
+    public $customer_id = '12339140';
+    public $integration_id = '59690';
     public $status_list = ['arrived', 'labeled', 'shipped', 'delivered', 'rejected'];
 
     public function index()
@@ -675,5 +678,189 @@ class PackageController extends Controller
         }
 
 
+    }
+
+    public function pushPackage($packageID)
+    {
+        $response = [];
+        $package = Package::with(['warehouse','orders','address'])->find($packageID);
+        $multiPieceRequestStatus = ServiceRequest::where('package_id', $package->id)->where('status', 'served')->where('service_id', 5)->first();
+        $warehouse = $package->warehouse;
+        $sender = [
+            'name' => $warehouse->contact_person,
+            'company' => $warehouse->name,
+            'address1' => $warehouse->address,
+            'address2' => ' ',
+            'city' => $warehouse->city,
+            'state' => $warehouse->state,
+            'zip' => $warehouse->zip,
+            'country' => $warehouse->country->iso,
+            'phone' => $warehouse->phone,
+            'email' => $warehouse->email,
+        ];
+
+        $address = $package->address;
+        $reciever = [
+            'name' => $address->fullname,
+            'company' => '',
+            'address1' => $address->address,
+            'address2' => ' ',
+            'city' => $address->city,
+            'state' => $address->state,
+            'zip' => $address->zip_code ?? ' ',
+            'country' => $address->country->iso,
+            'phone' => $address->phone,
+            'email' => null,
+        ];
+
+        if($multiPieceRequestStatus != null){
+            $orders =  $package->orders;
+            foreach($orders as $order){
+                $orderItems = $order->items;
+                $items = [];
+                foreach ($orderItems as $item){
+                    $items[] = [
+                        'productId' => (string)$item->id,
+                        'sku' => null,
+                        'title' => $item->name,
+                        'price' => (string)$item->unit_price ?? null,
+                        'quantity' => $item->quantity,
+                        'countryOfOrigin' => Country::find($item->origin_country)->iso ?? null,
+                        'weight' => null,
+                        'imgUrl' => null,
+                        'htsNumber' => null,
+                        'lineId' => null,
+                    ];
+
+                }
+                $packageInfo = [
+                    [
+                        'weight' => (string)$order->package_weight,
+                        'length' => (string)$order->package_length,
+                        'width' => (string)$order->package_width,
+                        'height' => (string)$order->package_height,
+                        'insuranceAmount' => NULL,
+                        'declaredValue' => $order->declared_value == 0 ? NULL : $order->declared_value,
+                    ]
+                ];
+                $post_params = array (
+                    'orderId' => $package->package_no.'-'.sprintf("%05d", $order->id),
+                    'orderDate' => date('Y-m-d', strtotime($package->created_at)),
+                    'orderNumber' => $package->package_no,
+                    'fulfillmentStatus' => 'pending',
+                    'shippingService' => $package->package_type_code.' '.$package->service_label,
+                    'shippingTotal' => (string)$package->shipping_charges,
+                    'weightUnit' => $order->weight_unit,
+                    'dimUnit' => $order->dim_unit,
+                    'dueByDate' => Carbon::now()->addDays(10)->format('Y-m-d'),
+                    'orderGroup' => $package->package_no,
+                    'contentDescription' => null,
+                    'sender' => $sender,
+                    'receiver' => $reciever,
+                    'items' => $items,
+                    'packages' => $packageInfo
+                );
+
+                $response[] = json_decode($this->hitApi($post_params),true);
+            }
+
+        }
+        else{
+            $orders =  $package->orders;
+            $ordersIDs = $package->orders()->pluck('id')->toArray();
+            $orderItems = OrderItem::whereIn('order_id',$ordersIDs)->get();
+            $items = [];
+            foreach ($orderItems as $item){
+                $items[] = [
+                    'productId' => (string)$item->id,
+                    'sku' => null,
+                    'title' => $item->name,
+                    'price' => (string)$item->unit_price ?? null,
+                    'quantity' => $item->quantity,
+                    'countryOfOrigin' => Country::find($item->origin_country)->iso ?? null,
+                    'weight' => null,
+                    'imgUrl' => null,
+                    'htsNumber' => null,
+                    'lineId' => null,
+                ];
+            }
+
+            $packageInfo = [
+                [
+                    'weight' => (string)$package->package_weight,
+                    'length' => (string)$package->package_length,
+                    'width' => (string)$package->package_width,
+                    'height' => (string)$package->package_height,
+                    'insuranceAmount' => NULL,
+                    'declaredValue' => $package->declared_value == 0 ? NULL : $package->declared_value,
+                ]
+            ];
+
+            $post_params = array (
+                'orderId' => $package->package_no,
+                'orderDate' => date('Y-m-d', strtotime($package->created_at)),
+                'orderNumber' => $package->package_no,
+                'fulfillmentStatus' => 'pending',
+                'shippingService' => $package->package_type_code.' '.$package->service_label,
+                'shippingTotal' => (string)$package->shipping_charges,
+                'weightUnit' => $package->weight_unit,
+                'dimUnit' => $package->dim_unit,
+                'dueByDate' => Carbon::now()->addDays(10)->format('Y-m-d'),
+                'orderGroup' => null,
+                'contentDescription' => null,
+                'sender' => $sender,
+                'receiver' => $reciever,
+                'items' => $items,
+                'packages' => $packageInfo
+            );
+
+            $response[] =  json_decode($this->hitApi($post_params),true);
+        }
+
+        $count = 0;
+
+        foreach($response as $res){
+            if(isset($res['ok']) && $res['ok'] == true){
+                $count++;
+            }
+        }
+
+        return response()->json([
+            'okCount' => $count,
+            'total' => count($response),
+        ]);
+    }
+
+    public function hitApi($postParameters)
+    {
+        try {
+
+            $headers = [
+                'cache-control' => 'no-cache',
+                'Content-Type' => 'application/json',
+                'Authorization' => 'Bearer ' . $this->token
+            ];
+
+            $client = new Client();
+
+            $request = $client->put('https://xpsshipper.com/restapi/v1/customers/'.$this->customer_id.'/integrations/'.$this->integration_id.'/orders/'.$postParameters['orderId'], [
+                'headers' => $headers,
+                'body' => json_encode($postParameters),
+                'http_errors' => true,
+            ]);
+
+            $response = $request ? $request->getBody()->getContents() : null;
+
+            \Log::info($response);
+
+            return $response;
+
+        }catch(\Exception $ex){
+
+            $ex_message = $ex->getMessage();
+
+            return $ex_message;
+
+        }
     }
 }

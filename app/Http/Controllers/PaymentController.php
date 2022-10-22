@@ -598,6 +598,13 @@ class PaymentController extends Controller
         if ($payment->package_id != null) {
             \Log::info('On Package');
             $package = $payment->package;
+
+            try {
+                $pushOrderService = new PackageController();
+                $pushOrderService->pushPackage($package->id);
+            }catch (\Throwable $exception){
+                \Log::info($exception);
+            }
             // return view('pdfs.payment-invoice',compact('payment','package','customer'));
             $html = view('pdfs.invoice-payment', [
                 'payment' => $payment,
