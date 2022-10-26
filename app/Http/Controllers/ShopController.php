@@ -239,6 +239,11 @@ class ShopController extends Controller
     {
 
         $model = order::find($id);
+
+        if($model == null){
+            return back()->with('error','No Record Found');
+        }
+
         $additional_pickup_charges = SiteSetting::where('name', 'additional_pickup_charges')->first()->value;
 
         $items = [];

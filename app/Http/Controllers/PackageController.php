@@ -26,6 +26,7 @@ use App\Models\Shipping;
 use Illuminate\Support\Facades\Auth;
 use File;
 use Carbon\Carbon;
+use function Couchbase\basicDecoderV1;
 
 
 class PackageController extends Controller
@@ -95,6 +96,10 @@ class PackageController extends Controller
     public function show($id)
     {
         $packag = Package::with(['orders' => function($q){ $q->where('status','!=','rejected');}, 'address', 'warehouse', 'customer', 'items', 'images', 'serviceRequests'])->find($id);
+
+        if($packag == null){
+            return back()->with('error','No Package Found');
+        }
 
         $services = Service::where('status', '=', '1')->get();
         $serviceRequest = ServiceRequest::where('package_id', $packag->id)->where('service_id', 1)->first();
