@@ -65,12 +65,15 @@
           <div class="col-md-12">
             <div class="card">
               <div class="card-header">
-                <h3>Consolidated Package</h3>
+                <h3 v-if="hasConsolidationServed">Consolidated Package</h3>
+                <h3 v-else-if="hasMultiPieceServed">Multipiece Package</h3>
+                <h3 v-else-if="packag.orders.length > 1">Info !</h3>
+                <h3 v-else >Single Order Package</h3>
               </div>
               <div class="card-body">
                 <div class="row">
                   <div class="col-md-5">
-                    <table class="table">
+                    <table v-if="hasConsolidationServed" class="table">
                       <thead>
                       <tr>
                         <th colspan="2">Consolidated Package Details</th>
@@ -567,7 +570,7 @@
                                                                       </tr>
                                                                   </template>-->
                       <template v-for="service in service_requests " :key="service.id">
-                        <tr>
+                        <tr v-if="service.status == 'served'">
                           <td>{{ service.service_title }}</td>
                           <td v-if="service.service_title == 'Consolidation'">{{ '$1.5 X ' + packag.orders.length + ' + $' + service.price + ' = ' }}</td>
                           <td v-if="service.service_title != 'Consolidation'">${{ service.price }} =</td>
@@ -616,7 +619,7 @@
                         </td>
                         <td v-else colspan="4">
                           <button v-if="packag.payment_status != 'Paid'" type="button"  class="btn btn-primary disabled">Checkout</button>
-                          <p ><strong>Note:</strong> For checking out the package should be consolidated if package contains
+                          <p ><strong>Note:</strong> For checking out the package should be consolidated/multi piece if package contains
                           more than one order. And shipping service should be also selected.</p>
 
                           <span class="badge badge-success" v-if="packag.payment_status == 'Paid'">Paid</span>
@@ -869,6 +872,7 @@ export default {
     hasConsolidationRequest: Object,
     hasConsolidationServed: Object,
     hasMultiPieceServed: Object,
+    hasMultiPieceStatus: Object,
   },
   computed: {
     siuteNum() {
@@ -1073,14 +1077,16 @@ export default {
 
     },
     getServiceSubTotal() {
-      let request_total = this.service_requests.reduce((acc, item) => {
-            return acc + (parseInt(item.price));
-          },
-          0);
+      let request_total = 0
+      this.service_requests.forEach(function (item) {
+        if(item.status == 'served'){
+          request_total += item.price;
+        }
+      })
 
       var consolidation_total = 0;
       console.log(this.hasConsolidationServed);
-      if (this.hasConsolidationServed || this.hasConsolidationRequest) {
+      if (this.hasConsolidationServed) {
         consolidation_total = this.packag.orders.length * 1.5;
       } else {
         consolidation_total = 0;

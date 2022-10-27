@@ -150,6 +150,19 @@ class HomeController extends Controller
             ],
             [
                 "service_id" => 9,
+                "carrierCode" => "fedex",
+                "carrierLabel" => null,
+                "serviceLabel" => "FedEx International Priority Connect Plus",
+                "serviceCode" => "fedex_international_connect_plus",
+                'packageTypeCode' => 'fedex_custom_package',
+                "currency" => "USD",
+                "totalAmount" => 0,
+                "baseAmount" => 0,
+                "isReady" => false,
+                "logo" => "/partner-imgs/fedex-logo.png"
+            ],
+            [
+                "service_id" => 10,
                 "carrierCode" => "ups",
                 "carrierLabel" => "ups",
                 "serviceLabel" => "UPS® Standard",
@@ -162,7 +175,7 @@ class HomeController extends Controller
                 "logo" => "/partner-imgs/ups-logo.png"
             ],
             [
-                "service_id" => 10,
+                "service_id" => 11,
                 "carrierCode" => "ups",
                 "carrierLabel" => "ups",
                 "serviceLabel" => "UPS Worldwide Express®",
@@ -175,7 +188,7 @@ class HomeController extends Controller
                 "logo" => "/partner-imgs/ups-logo.png"
             ],
             [
-                "service_id" => 11,
+                "service_id" => 12,
                 "carrierCode" => "ups",
                 "carrierLabel" => "ups",
                 "serviceLabel" => "UPS Worldwide Express Plus®",
@@ -188,7 +201,7 @@ class HomeController extends Controller
                 "logo" => "/partner-imgs/ups-logo.png"
             ],
             [
-                "service_id" => 12,
+                "service_id" => 13,
                 "carrierCode" => "ups",
                 "carrierLabel" => "ups",
                 "serviceLabel" => "UPS Worldwide Saver®",
@@ -201,7 +214,7 @@ class HomeController extends Controller
                 "logo" => "/partner-imgs/ups-logo.png"
             ],
             [
-                "service_id" => 13,
+                "service_id" => 14,
                 "carrierCode" => "ups",
                 "carrierLabel" => "ups",
                 "serviceLabel" => "UPS Next Day Air®",
@@ -214,7 +227,7 @@ class HomeController extends Controller
                 "logo" => "/partner-imgs/ups-logo.png"
             ],
             [
-                "service_id" => 14,
+                "service_id" => 15,
                 "carrierCode" => "ups",
                 "carrierLabel" => "ups",
                 "serviceLabel" => "UPS 2nd Day Air®",
@@ -227,7 +240,7 @@ class HomeController extends Controller
                 "logo" => "/partner-imgs/ups-logo.png"
             ],
             [
-                "service_id" => 15,
+                "service_id" => 16,
                 "carrierCode" => "ups",
                 "carrierLabel" => "ups",
                 "serviceLabel" => "UPS® Ground",
@@ -240,7 +253,7 @@ class HomeController extends Controller
                 "logo" => "/partner-imgs/ups-logo.png"
             ],
             [
-                "service_id" => 16,
+                "service_id" => 17,
                 "carrierCode" => "ups",
                 "carrierLabel" => "ups",
                 "serviceLabel" => "UPS Next Day Air Saver®",
@@ -253,7 +266,7 @@ class HomeController extends Controller
                 "logo" => "/partner-imgs/ups-logo.png"
             ],
             [
-                "service_id" => 17,
+                "service_id" => 18,
                 "carrierCode" => "ups",
                 "carrierLabel" => "ups",
                 "serviceLabel" => "UPS 2nd Day Air A.M.®",
@@ -266,7 +279,7 @@ class HomeController extends Controller
                 "logo" => "/partner-imgs/ups-logo.png"
             ],
             [
-                "service_id" => 18,
+                "service_id" => 19,
                 "carrierCode" => "ups",
                 "carrierLabel" => "ups",
                 "serviceLabel" => "UPS 3 Day Select®",
@@ -279,7 +292,7 @@ class HomeController extends Controller
                 "logo" => "/partner-imgs/ups-logo.png"
             ],
             [
-                "service_id" => 19,
+                "service_id" => 20,
                 "carrierCode" => "ups",
                 "carrierLabel" => "ups",
                 "serviceLabel" => "UPS Worldwide Expedited®",
@@ -565,7 +578,7 @@ class HomeController extends Controller
     }
 
     /**
-     * Not used now, using getQuote for single service at atime. 
+     * Not used now, using getQuote for single service at atime.
      */
 
     public function getQuotes(Request $request){

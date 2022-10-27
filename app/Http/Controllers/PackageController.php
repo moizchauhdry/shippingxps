@@ -45,7 +45,7 @@ class PackageController extends Controller
         } else {
 
             $query = Package::with(['warehouse', 'customer', 'orders' => function($q){ $q->where('status','!=','rejected');}]);
-            $packages = $query->paginate(25);
+            $packages = $query->orderByDesc('id')->paginate(25);
 
             return Inertia::render('Packages/AdminPackageList', [
                 'packages' => $packages
@@ -60,22 +60,22 @@ class PackageController extends Controller
 
         $query = Package::with(['warehouse', 'customer', 'orders' => function($q){ $q->where('status','!=','rejected');}]);
         $query->where('customer_id', '=', $customer_id);
-        $query->whereIn('status', ['open', 'filled', 'consolidated']);
+        $query->whereIn('status', ['open', 'filled', 'consolidated'])->orderBy('id','desc');
         $packages_account = $query->paginate(25);
 
         $query_ready = Package::with(['warehouse', 'customer', 'orders' => function($q){ $q->where('status','!=','rejected');}]);
         $query_ready->where('customer_id', '=', $customer_id);
-        $query_ready->whereIn('status', ['labeled']);
+        $query_ready->whereIn('status', ['labeled'])->orderBy('id','desc');
         $packages_ready = $query_ready->paginate(25);
 
         $query_sent = Package::with(['warehouse', 'customer', 'orders' => function($q){ $q->where('status','!=','rejected');}]);
         $query_sent->where('customer_id', '=', $customer_id);
-        $query_sent->whereIn('status', ['shipped', 'complete', 'delivered']);
+        $query_sent->whereIn('status', ['shipped', 'complete', 'delivered'])->orderBy('id','desc');
         $packages_sent = $query_sent->paginate(25);
 
         $query_delivered = Package::with(['warehouse', 'customer', 'orders' => function($q){ $q->where('status','!=','rejected');}]);
         $query_delivered->where('customer_id', '=', $customer_id);
-        $query_delivered->whereIn('status', ['delivered']);
+        $query_delivered->whereIn('status', ['delivered'])->orderBy('id','desc');
         $packages_delivered = $query_delivered->paginate(25);
 
         return Inertia::render('Packages/CustomerPackageList', [
@@ -102,9 +102,10 @@ class PackageController extends Controller
         }
 
         $services = Service::where('status', '=', '1')->get();
-        $serviceRequest = ServiceRequest::where('package_id', $packag->id)->where('service_id', 1)->first();
+        $serviceRequest = ServiceRequest::where('package_id', $packag->id)->where('service_id', 1)->where('status','pending')->first();
         $servedConsolidation = ServiceRequest::where('package_id', $packag->id)->where('status', 'served')->where('service_id', 1)->first();
-        $multiPieceRequestStatus = ServiceRequest::where('package_id', $packag->id)->where('status', 'served')->where('service_id', 5)->first();
+        $multiPieceRequestStatus = ServiceRequest::where('package_id', $packag->id)->where('status', 'pending')->where('service_id', 5)->first();
+        $multiPieceRequestServed = ServiceRequest::where('package_id', $packag->id)->where('status', 'served')->where('service_id', 5)->first();
         $service_requests = [];
         foreach ($packag->serviceRequests as $req) {
             $service_requests[] = [
@@ -160,7 +161,8 @@ class PackageController extends Controller
             'shipping_services' => Shipping::getShippingServices(),
             'hasConsolidationRequest' => (bool)$serviceRequest,
             'hasConsolidationServed' => (bool)$servedConsolidation,
-            'hasMultiPieceServed' => (bool)$multiPieceRequestStatus,
+            'hasMultiPieceServed' => (bool)$multiPieceRequestServed,
+            'hasMultiPieceStatus' => (bool)$multiPieceRequestStatus,
         ]);
     }
 
