@@ -50,7 +50,7 @@ section.section {
               <div class="text-center text-md-start p-5 h-100">
                 <form @submit.prevent="submit" class="contact-form form-style-4 form-placeholders-light form-errors-light mb-5 mb-lg-0">
 
-                  <div class="row">
+                  <div class="row" >
 
                     <div class="col-md-5">
                       <div class="form-group">
@@ -78,20 +78,15 @@ section.section {
                     </div>
                     <div class="form-heading text-center mt-5">
                       <span class="text-6 text-dark font-weight-bold"> <input type="checkbox" name="is_residential" @change="is_residential($event)" style="line-height: 1;vertical-align: unset;">&nbsp;&nbsp;Residential</span>
+                      <span class="text-6 text-dark font-weight-bold ms-5"> <input type="checkbox" name="multiweight" :checked="multipiece" v-on:click="changeMultipiece()" style="line-height: 1;vertical-align: unset;">&nbsp;&nbsp;Multipiece</span>
                     </div>
                     <div class="form-heading text-center mt-5">
                       <h6 class="text-6 text-warning font-weight-bold">Tell us about the package size and weight.</h6>
                     </div>
                   </div>
-                  <div class="row">
-                    <div class="col-md-3">
-                      <div class="form-group sizes-input mt-5">
-                        <label class="text-6 text-center text-dark font-weight-medium d-block" for="weight">Weight</label>
-                        <input v-model="form.weight" type="number" class="form-control text-dark text-4 mt-2" name="name" :step="0.01" :min=1 required="">
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group sizes-input mt-5">
+                  <div class="row" v-for="(item,index) in form.dimensions" :key="item.id">
+                    <div class="col-md-3" v-show="index == 0">
+                      <div class="form-group sizes-input mt-3" v-if="index == 0">
                         <label class="text-6 text-center text-dark font-weight-medium d-block" for="weight">Unit</label>
                         <select v-model="form.weight_unit" class="form-select text-4 mt-2" aria-label="Default select example">
                           <option value="lb_in" selected>Lb / Inch</option>
@@ -99,24 +94,34 @@ section.section {
                         </select>
                       </div>
                     </div>
+                    <div class="col-md-3" :class="index != 0 ? 'offset-md-3' : ''">
+                      <div class="form-group sizes-input mt-3">
+                        <label class="text-6 text-center text-dark font-weight-medium d-block" for="weight">Weight</label>
+                        <input v-model="item.weight" type="number" class="form-control text-dark text-4 mt-2" name="name" :step="0.01" :min=1 required="">
+                      </div>
+                    </div>
+
                     <div class="col-md-2">
-                      <div class="form-group sizes-input mt-5">
+                      <div class="form-group sizes-input mt-3">
                         <label class="text-6 text-center text-dark font-weight-medium d-block" for="weight">Length</label>
-                        <input v-model="form.length" type="number" class="form-control text-dark text-4 mt-2" name="name" :step="0.01" :min=1 required="">
+                        <input v-model="item.length" type="number" class="form-control text-dark text-4 mt-2" name="name" :step="0.01" :min=1 required="">
                       </div>
                     </div>
                     <div class="col-md-2">
-                      <div class="form-group sizes-input mt-5">
+                      <div class="form-group sizes-input mt-3">
                         <label class="text-6 text-center text-dark font-weight-medium d-block" for="weight">Width</label>
-                        <input v-model="form.width" type="number" class="form-control text-dark text-4 mt-2" name="name" :step="0.01" :min=1 required="">
+                        <input v-model="item.width" type="number" class="form-control text-dark text-4 mt-2" name="name" :step="0.01" :min=1 required="">
                       </div>
                     </div>
                     <div class="col-md-2">
-                      <div class="form-group sizes-input mt-5">
+                      <div class="form-group sizes-input mt-3">
                         <label class="text-6 text-center text-dark font-weight-medium d-block" for="height">Height</label>
-                        <input v-model="form.height" type="number" class="form-control text-dark text-4 mt-2" name="name" :step="0.01" :min=1 required="">
+                        <input v-model="item.height" type="number" class="form-control text-dark text-4 mt-2" name="name" :step="0.01" :min=1 required="">
                       </div>
                     </div>
+                  </div>
+                  <div class="container text-center">
+                      <span class="btn btn-primary mt-2 mb-2" v-show="multipiece" v-on:click="addDimensions()">+ Add</span>
                   </div>
                   <div class="dim-warning col text-center">
                     <a class="" href="#"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
@@ -217,16 +222,21 @@ export default {
       fullPage: true,
       serverError: '',
       services: {},
+      multipiece:false,
       form: this.$inertia.form({
         ship_from: '',
         ship_to: '',
         zipcode: '',
-        weight: '',
         unit: 'lb_',
         weight_unit: 'lb_in',
-        length: '',
-        width: '',
-        height: '',
+        dimensions: [
+          {
+            weight: '',
+            length: '',
+            width: '',
+            height: '',
+          }
+        ],
         is_residential:'0'
       })
     };
@@ -255,105 +265,115 @@ export default {
       //this.$refs.buttonRates.innerText = "Loading ..."
       this.showEstimatedPrice = false;
       this.isLoading = true;
-      let quote_params = {
-        ship_from: this.form.ship_from,
-        ship_to: this.form.ship_to,
-        weight: this.form.weight,
-        weight_unit: this.form.weight_unit,
-        unit: this.form.unit,
-        length: this.form.length,
-        //declared_value: this.form.declared_value,
-        width: this.form.width,
-        height: this.form.height,
-        zipcode: this.form.zipcode,
-        is_residential: this.form.is_residential,
-      };
-      axios.get(this.route('getServicesList')).then(response => {
-        console.log(response.data.services)
-        this.services = response.data.services;
-        response.data.services.forEach((ele, index) => {
-          console.log(ele);
-          quote_params.service = ele;
-          this.getRates(quote_params);
+      if (this.multipiece) {
+        console.log('here');
+        let pieces = [];
+        let totalWeight = 0
+        this.form.dimensions.forEach(function (value,index) {
+          let piece = {
+            "weight": value.weight.toString(),
+            "length": value.length.toString(),
+            "width": value.width.toString(),
+            "height": value.height.toString(),
+            "insuranceAmount": "0",
+            "declaredValue": "1"
+          };
+
+          totalWeight += value.weight;
+
+          pieces.push(piece)
         })
-      }).catch(error => {
-        console.log(error)
+
+        let quote_params = {
+          ship_from: this.form.ship_from,
+          ship_to: this.form.ship_to,
+          weight: totalWeight.toString(),
+          weight_unit: this.form.weight_unit,
+          unit: this.form.unit,
+          pieces:pieces,
+          zipcode: this.form.zipcode,
+          is_residential: this.form.is_residential,
+        };
+
+        axios.get(this.route('getServicesList')).then(response => {
+          console.log(response.data.services)
+          this.services = response.data.services;
+          response.data.services.forEach((ele, index) => {
+            console.log(ele);
+            quote_params.service = ele;
+            this.getRatesByOrders(quote_params);
+          })
+        }).catch(error => {
+          console.log(error)
+        })
+      } else {
+        this.showEstimatedPrice = false;
+        this.isLoading = true;
+        let quote_params = {
+          ship_from: this.form.ship_from,
+          ship_to: this.form.ship_to,
+          weight: this.form.dimensions[0].weight,
+          weight_unit: this.form.weight_unit,
+          unit: this.form.unit,
+          length: this.form.dimensions[0].length,
+          //declared_value: this.form.declared_value,
+          width: this.form.dimensions[0].width,
+          height: this.form.dimensions[0].height,
+          zipcode: this.form.zipcode,
+          is_residential: this.form.is_residential,
+        };
+        axios.get(this.route('getServicesList')).then(response => {
+          console.log(response.data.services)
+          this.services = response.data.services;
+          response.data.services.forEach((ele, index) => {
+            console.log(ele);
+            quote_params.service = ele;
+            this.getRates(quote_params);
+          })
+        }).catch(error => {
+          console.log(error)
+        })
+      }
+
+    },
+    changeMultipiece(){
+      this.multipiece = !this.multipiece;
+      if(!this.multipiece && this.form.dimensions.length > 1){
+        for (let i = 1;i < this.form.dimensions.length;i++){
+          this.form.dimensions.splice(i, 1);
+        }
+      }
+    },
+    addDimensions() {
+      this.form.dimensions.push({
+        weight: '',
+        unit: 'lb_',
+        weight_unit: 'lb_in',
+        length: '',
+        width: '',
+        height: '',
       })
-
-
-      /*quote_params.service = this.services.fedex_international_economy;
-          axios.get("/getQuote",{
-        params : quote_params,
-      })
-          .then(({ data }) => {
-          this.isLoading = false;
-          if(data.status){
-            this.showEstimatedPrice=true;
-            //this.services.push(data.service)
-            this.services[data.service.serviceCode] = data.service;
-
-          }else{
-            this.serverError = data.message;
-          }
-              }
-          );
-
-      //get first service rate.
-      quote_params.service = this.services.usps_international_first_class;
-          axios.get("/getQuote",{
-        params : quote_params,
-      })
-          .then(({ data }) => {
-          this.isLoading = false;
-          if(data.status){
-            this.showEstimatedPrice=true;
-            //this.services.push(data.service)
-            this.services[data.service.serviceCode] = data.service;
-
-          }else{
-            this.serverError = data.message;
-          }
-              }
-          );
-
-      //get first service rate.
-      quote_params.service = this.services.usps_international_priority;
-          axios.get("/getQuote",{
-        params : quote_params,
-      })
-          .then(({ data }) => {
-          this.isLoading = false;
-          if(data.status){
-            this.showEstimatedPrice=true;
-            //this.services.push(data.service)
-            this.services[data.service.serviceCode] = data.service;
-          }else{
-            this.serverError = data.message;
-          }
-              }
-          );
-
-      //get first service rate.
-      quote_params.service = this.services.usps_international_express;
-          axios.get("/getQuote",{
-        params : quote_params,
-      })
-          .then(({ data }) => {
-          this.isLoading = false;
-          if(data.status){
-            this.showEstimatedPrice=true;
-            //this.services.push(data.service)
-            this.services[data.service.serviceCode] = data.service;
-          }else{
-            this.serverError = data.message;
-          }
-              }
-          );*/
-
-
     },
     getRates(quote_params) {
       axios.get("/getQuote", {
+        params: quote_params,
+      }).then((response) => {
+            console.log(response.data.service)
+            this.isLoading = false;
+            if (response.data.status) {
+
+              this.showEstimatedPrice = true;
+              //this.services.push(data.data.service)
+              this.services[response.data.service.service_id] = response.data.service;
+
+            } else {
+              this.serverError = response.data.message;
+            }
+          }
+      );
+    },
+    getRatesByOrders(quote_params) {
+      axios.get("/getQuoteByOrders", {
         params: quote_params,
       }).then((response) => {
             console.log(response.data.service)
