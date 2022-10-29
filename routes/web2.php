@@ -27,7 +27,7 @@ Route::middleware('auth')->group(function () {
     /*
      * Notification Routes
      */
-    Route::get('notifications', [\App\Http\Controllers\HomeController::class, 'notifications'])->name('notifications');
+    Route::any('notifications', [\App\Http\Controllers\HomeController::class, 'notifications'])->name('notifications');
     Route::get('mark-all-read', [\App\Http\Controllers\HomeController::class, 'markAllRead'])->name('notifications.mark-all-read');
     Route::post('mark-read', [\App\Http\Controllers\HomeController::class, 'markRead'])->name('notifications.mark-read');
 

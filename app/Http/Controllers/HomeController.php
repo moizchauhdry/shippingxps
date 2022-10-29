@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\ServicePage;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use \Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 use GuzzleHttp\Client;
@@ -1006,12 +1008,55 @@ class HomeController extends Controller
         return $type;
     }
 
-    public function notifications() {
+    public function notifications(Request $request) {
 
-        $notifications = \auth()->user()->notifications()->orderBy('created_at', 'DESC')->get();
+        $currentPage = $request->current_page ?? 1;
+        $take = 50 * $currentPage;
+
+        $user = \auth()->user();
+        $notifications = \auth()->user()->notifications()->select(DB::raw('DATE(created_at) as date'));
+        $totalPage = ceil($notifications->count() / 50);
+
+
+        $notifications = $notifications->take($take)->pluck('date')->toArray();
+
+
+        $notifications = array_unique($notifications);
+
+        foreach ($notifications as $date)
+        {
+            $notifies = $user->notifications()->whereDate('created_at',$date)->orderby('created_at','desc')->get();
+            $notifications = [];
+
+            foreach ($notifies as $notification){
+                $notifications[] = [
+                    'id' => $notification->id,
+                    'created_at' => date('h:m a',strtotime($notification->created_at)),
+                    'read_at' => $notification->read_at != NULL ? date('d-m-Y h:m a',strtotime($notification->read_at)) : NULL,
+                    'content' => $notification->data['message'] ?? null
+                ];
+            }
+
+            $data[] = [
+                'date' => ($date == Carbon::now()->format('Y-m-d')) ? "Today" : date('d-m-Y', strtotime($date)),
+                'notifications' => $notifications
+            ];
+        }
+
+        $notificationData = collect($data);
+
+        if($request->has('current_page')){
+            return response()->json([
+                'notifications' => $notificationData,
+                'totalPage' => $totalPage ?? 1,
+                'currentPage' => $currentPage ?? 1
+            ]);
+        }
 
         return Inertia::render('Notifications',[
-            'notifications' => $notifications
+            'notifications' => $notificationData,
+            'totalPage' => $totalPage ?? 1,
+            'currentPage' => $currentPage ?? 1
         ]);
     }
 
@@ -1031,7 +1076,10 @@ class HomeController extends Controller
             $notification->markAsRead();
         }
 
-        return redirect('notifications');
+        return response()->json([
+            'status' => 1,
+            'message' => "Read successfully",
+        ]);
 
     }
 
