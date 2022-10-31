@@ -56,9 +56,12 @@ class NotifyOrderChangesAcceptedByCustomerToAdmin extends Notification
     public function toArray($notifiable)
     {
         $url = route("shop-for-me.edit", ["id" => $this->order->id]);
+        $customer = $this->order->customer;
+        $customerDetailURL = '<a href="'.route('detail-customer',$customer->id).'">'.$customer->name_with_suite_no.'</a>' ?? '';
+
         return [
             'order_id' => $this->order->id,
-            'message' => 'Customer has '.(($this->order->changes_approved == 1)? "Accepted" : "re modified" ).' your changes. <a href="'. $url .'" style="color:#1b4eff">See Details</a>',
+            'message' => 'Customer <strong>'.$customerDetailURL.'</strong> has '.(($this->order->changes_approved == 1)? "Accepted" : "re modified" ).' your changes. <a href="'. $url .'" style="color:#1b4eff">See Details</a>',
             'url' => $url
         ];
     }

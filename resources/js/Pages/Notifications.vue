@@ -12,9 +12,8 @@
                 <div class="card-body">
                   <h5 class="title" v-html="notification.content"></h5>
                   <div class="float-end d-inline-flex mt-3">
-                      <div v-on:click="markAsRead($event,notification)" v-if="notification.read_at == null" class="mark-as-read">Mark As Read</div>
-                      <div class="ms-3 date-section"><strong>Created At :</strong> {{ notification.created_at }}</div>
-                      <div v-if="notification.read_at != null" class="ms-3 date-section"><strong>Read At :</strong> {{ notification.read_at }}</div>
+                      <div v-on:click="markAsRead($event,notification)" v-if="notification.read_at == null" class="mark-as-read">Mark as read</div>
+                      <div class="ms-3 date-section">{{ notification.created_at }}</div>
                   </div>
                 </div>
               </div>
@@ -36,8 +35,8 @@
   color: orangered;
 }
 
-.card-notification:hover{
-  background: #0a0a0a;
+.card-notification{
+  border-radius: 7px !important;
 }
 
 .notification-date{
@@ -47,23 +46,23 @@
 }
 
 .card-notification-success {
-  border-left:solid 5px #004e00;
+  border-left:solid 5px #282828;
 }
 
 .card-notification-unread {
-  border-left:solid 5px #77001f;
+  border-left:solid 5px #282828;
 }
 
-.card-notification-success:hover {
-  background: rgba(0, 78, 0, 0.15);
+.card-notification-success{
+  background: #fff;
 }
 
-.card-notification-unread:hover {
-  background: rgba(119, 0, 31, 0.15);
+.card-notification-unread{
+  background: rgba(40, 40, 40, 0.2);
 }
 
 .card-notification .card-body{
-  padding: 15px;
+  padding: 10px 15px;
 }
 
 .card-notification .title{
@@ -71,12 +70,12 @@
 }
 
 .mark-as-read{
-  color: #e33c00;
-  font-width: 600;
+  color: #000000;
+  font-weight: 600;
 }
 
 .mark-as-read:hover{
-  color: #7c1600;
+  text-decoration: underline;
   cursor: pointer;
 }
 
@@ -94,7 +93,7 @@ export default {
     auth: Object,
     notifications:Object,
     totalPage:Object,
-    currentPage:Object,
+    currentPageProp:Object,
   },
     data() {
       return {
@@ -102,7 +101,7 @@ export default {
               notification_id: '',
           }),
           totalPage:this.totalPage,
-          currentPage:this.currentPage,
+          currentPage:this.currentPageProp,
           notifications:this.notifications,
       }
   },

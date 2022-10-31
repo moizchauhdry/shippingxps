@@ -63,7 +63,7 @@ class ServiceRequestUpdatedNotification extends Notification
         return [
             'service_request_id' => $this->service_request->id,
             'service_id' => $this->service_request->service_id,
-            'message' => 'Adin has responded to your serivce request <strong>'.$service->title.'</strong>  for <a class="link-primary" href="'.$url.'" >Package # '.$package->package_no.'</a>',
+            'message' => 'Admin has responded to your serivce request <strong>'.$service->title.'</strong>  for <a class="link-primary" href="'.$url.'" >Package # '.$package->package_no.'</a>',
             'url'=>$url
         ];
     }

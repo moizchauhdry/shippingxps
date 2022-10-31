@@ -19,7 +19,8 @@ class User extends Authenticatable
     protected $guarded = [];
 
     protected $appends = [
-        'suite_no'
+        'suite_no',
+        'name_with_suite_no'
     ];
     /**
      * The attributes that should be hidden for arrays.
@@ -53,5 +54,10 @@ class User extends Authenticatable
     public function getSuiteNoAttribute()
     {
         return $this->id + 4000;
+    }
+
+    public function getNameWithSuiteNoAttribute()
+    {
+        return $this->name.' '.$this->suite_no;
     }
 }

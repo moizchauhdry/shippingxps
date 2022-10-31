@@ -48,9 +48,12 @@ class AdditionalRequestController extends Controller
                 'serial_no' => $validatedData['serial_no'],
             ]);
             $url = \URL::route('additional-request.edit', $additionalRequest->id);
+            $customer = $additionalRequest->customer;
+            $customerDetailURL = 'Customer <strong><a href="'.route('detail-customer',$customer->id).'">'.$customer->name_with_suite_no.'</strong></a>';
+
             $data = [
                 'url' => \URL::route('additional-request.edit', $additionalRequest->id),
-                'message' => 'Customer has created an additional request. <a href="' . $url . '">Click Here</a>',
+                'message' => $customerDetailURL . ' has created an additional request. <a href="' . $url . '">Click Here</a>',
             ];
             $admins = User::where('type', 'admin')->get();
             foreach ($admins as $admin) {
@@ -107,7 +110,10 @@ class AdditionalRequestController extends Controller
             ]);
 
             $url = \URL::route('additional-request.edit', $additionalRequest->id);
-            $auser = $user->type == 'admin' ? 'Admin' : 'User';
+            $customer = $additionalRequest->customer;
+            $customerDetailURL = 'Customer <strong><a href="'.route('detail-customer',$customer->id).'">'.$customer->name_with_suite_no.'</strong></a>';
+
+            $auser = $user->type == 'admin' ? 'Admin' : $customerDetailURL;
             $data = [
                 'url' => \URL::route('additional-request.edit', $additionalRequest->id),
                 'message' => $auser . ' has modified an additional request. <a href="' . $url . '">Click Here</a>',
@@ -171,7 +177,10 @@ class AdditionalRequestController extends Controller
         ]);
 
         $url = \URL::route('additional-request.edit', $additionalRequest->id);
-        $auser = $user->type == 'admin' ? 'Admin' : 'User';
+        $customer = $additionalRequest->customer;
+        $customerDetailURL = 'Customer <strong><a href="'.route('detail-customer',$customer->id).'">'.$customer->name_with_suite_no.'</strong></a>';
+
+        $auser = $user->type == 'admin' ? 'Admin' : $customerDetailURL;
         $data = [
             'url' => \URL::route('additional-request.edit', $additionalRequest->id),
             'message' => $auser . ' has commented on an additional request. <a href="' . $url . '">Click Here</a>',

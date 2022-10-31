@@ -58,9 +58,12 @@ class GiftCardController extends Controller
             ]);
 
             $url = \URL::route('gift-card.edit', $gift_card->id);
+            $customer = $gift_card->user;
+            $customerDetailURL = '<a href="'.route('detail-customer',$customer->id).'">'.$customer->name_with_suite_no.'</a>';
+
             $data = [
                 'url' => \URL::route('gift-card.edit', $gift_card->id),
-                'message' => 'Customer has created an gift card request. <a href="' . $url . '">Click Here</a>',
+                'message' => 'Customer <strong>'.$customerDetailURL.'</strong> has created an gift card request. <a href="' . $url . '">Click Here</a>',
             ];
             $admins = User::where('type', 'admin')->get();
             foreach ($admins as $admin) {
@@ -125,7 +128,10 @@ class GiftCardController extends Controller
             }
 
             $url = \URL::route('gift-card.edit', $gift_card->id);
-            $auser = $user->type == 'admin' ? 'Admin' : 'User';
+            $customer = $gift_card->user;
+            $customerDetailURL = 'Customer <strong><a href="'.route('detail-customer',$customer->id).'">'.$customer->name_with_suite_no.'</strong></a>';
+
+            $auser = $user->type == 'admin' ? 'Admin' : $customerDetailURL;
             $data = [
                 'url' => \URL::route('gift-card.edit', $gift_card->id),
                 'message' => $auser . ' has modified an gift card request. <a href="' . $url . '">Click Here</a>',
@@ -205,7 +211,10 @@ class GiftCardController extends Controller
         ]);
 
         $url = \URL::route('gift-card.edit', $gift_card->id);
-        $auser = $user->type == 'admin' ? 'Admin' : 'User';
+        $customer = $gift_card->user;
+        $customerDetailURL = 'Customer <strong><a href="'.route('detail-customer',$customer->id).'">'.$customer->name_with_suite_no.'</strong></a>';
+
+        $auser = $user->type == 'admin' ? 'Admin' : $customerDetailURL;
         $data = [
             'url' => \URL::route('gift-card.edit', $gift_card->id),
             'message' => $auser . ' has commented on an gift card request. <a href="' . $url . '">Click Here</a>',

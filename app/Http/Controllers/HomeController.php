@@ -1031,7 +1031,7 @@ class HomeController extends Controller
             foreach ($notifies as $notification){
                 $notifications[] = [
                     'id' => $notification->id,
-                    'created_at' => date('h:m a',strtotime($notification->created_at)),
+                    'created_at' => Carbon::createFromFormat('Y-m-d H:i:s',date('Y-m-d H:i:s',strtotime($notification->created_at)))->diffForHumans(),
                     'read_at' => $notification->read_at != NULL ? date('d-m-Y h:m a',strtotime($notification->read_at)) : NULL,
                     'content' => $notification->data['message'] ?? null
                 ];
@@ -1056,7 +1056,7 @@ class HomeController extends Controller
         return Inertia::render('Notifications',[
             'notifications' => $notificationData,
             'totalPage' => $totalPage ?? 1,
-            'currentPage' => $currentPage ?? 1
+            'currentPageProp' => $currentPage ?? 1
         ]);
     }
 

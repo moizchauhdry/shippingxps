@@ -1097,7 +1097,7 @@ export default {
           },
       0);*/
       // return request_total+pickup_total;
-      return request_total + consolidation_total;
+      return parseFloat(request_total) + +parseFloat(consolidation_total);
 
     },
     getGrandTotal() {

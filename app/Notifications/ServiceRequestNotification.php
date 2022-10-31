@@ -59,11 +59,13 @@ class ServiceRequestNotification extends Notification
     {
         $service = $this->service_request->service;
         $package = $this->service_request->package;
+        $customer = $package->customer;
+        $customerDetailURL = '<a href="'.route('detail-customer',$customer->id).'">'.$customer->name_with_suite_no.'</a>';
         $url = route("packages.show", ["id" => $package->id]);
         return [
             'service_request_id' => $this->service_request->id,
             'service_id' => $this->service_request->service_id,
-            'message' => 'User has requested <strong>'.$service->title.'</strong>  for <a class="link-primary" href="'.$url.'" >Package # '.$package->package_no.'</a>',
+            'message' => 'Customer <strong>'.$customerDetailURL.'</strong> has requested <strong>'.$service->title.'</strong>  for <a class="link-primary" href="'.$url.'" >Package # '.$package->package_no.'</a>',
             'url' => $url,
         ];
     }
