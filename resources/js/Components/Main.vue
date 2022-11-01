@@ -2,7 +2,7 @@
 <header class="navbar navbar-light sticky-top bg-dark flex-md-nowrap p-0 shadow bg-light" style="" id="header2">
   	<inertia-link :href="route('dashboard')" style="padding: 5px 10px;">
       <img alt="Porto" width="100" height="35" src="/theme/img/logo.png">
-    </inertia-link>    
+    </inertia-link>
     <nav class="navbar navbar-expand-lg navbar-light bg-light" style="display:none;">
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
@@ -50,7 +50,7 @@
               <inertia-link class="nav-link" :href="route('dashboard')" :class="{active: route().current('dashboard')}" :active="route().current('dashboard')">
                 <i class="fas fa-home"></i><span>DASHBOARD</span>
               </inertia-link>
-              
+
               <inertia-link  v-if="$page.props.auth.user.type != 'customer'" class="nav-link" :href="route('customers')" :class="{active: route().current('customers')}" :active="route().current('customers')">
                 <i class="fas fa-external-link-alt"></i><span>Customers</span>
               </inertia-link>
@@ -91,11 +91,11 @@
 
 
           </div>
-      </div> 
+      </div>
     <!-- SIDEBAR -->
-   
+
     <div role="main" style="margin-top:25px; margin-left:240px;">
-      <div class="col-md-12">    	
+      <div class="col-md-12">
         <slot />
       </div>
     </div>
@@ -118,8 +118,8 @@
 	transform: translate(-50%, -50%);
 }
 .navbar-brand {
-  padding-top: 0; 
-  font-size: initial; 
+  padding-top: 0;
+  font-size: initial;
 }
 
 .navbar-nav .nav-link span {
@@ -177,7 +177,7 @@
   overflow: overlay;
 }
 .sidebar .sidebar-menu a {
-  color: var(--text); 
+  color: var(--text);
   display: block;
   width: 100%;
   line-height: 32px;
