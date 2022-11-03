@@ -162,7 +162,7 @@
           </div>
         </div>
 
-        <template v-if="this.hasConsolidationRequest">
+        <template v-if="this.hasConsolidationRequest || this.hasConsolidationServed">
           <template v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">
             <template v-if="(packag.status == 'open' || ( packag.status == 'filled' && packag.orders.length > 1) || packag.status != 'consolidated') && packag.status != 'labeled' && packag.status != 'shipped'">
               <div class="row" style="margin-top:20px;">
