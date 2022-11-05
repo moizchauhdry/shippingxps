@@ -6,46 +6,51 @@
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
           Manage Users
         </h2>
-            <div class="col-md-4" style="float: right;margin-bottom: 30px ">
-            <form action="/users" method="get">
-              <input type="text" name="search"  class="form-control" placeholder="Search By Suite #">
-            </form>
-          </div>
-            <div class="col-md-6" >
-                <h2 class="font-semibold text-xl text-gray-800 leading-tight">               
-                    <inertia-link :href="route('create-users')" 
-                        v-if="$page.props.auth.user.type == 'admin'"
-                        class="btn btn-success float-right">Add New User</inertia-link>
+            <div class="row">
+              <div class="col-md-4" style="float: right;margin-bottom: 30px ">
+                <form action="/users" method="get">
+                  <input type="text" name="search"  class="form-control" placeholder="Search By Suite #">
+                </form>
+              </div>
+              <div class="col-md-6" >
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                  <inertia-link :href="route('create-users')"
+                                v-if="$page.props.auth.user.type == 'admin'"
+                                class="btn btn-success float-right">Add New User</inertia-link>
                 </h2>
+              </div>
             </div>
 
           <flash-messages ></flash-messages>
+        <div class="table-responsive mt-3">
           <table class="table">
 
-					  <thead>
-					    <tr>
-					      <th scope="col">#</th>
-					      <th scope="col">Name</th>
-                    <th scope="col">Phone No</th>
-                    <th>Role</th>
-    					      <th scope="col">Actions</th>
-					    </tr>
-					  </thead>
-					  <tbody>
-					  <tr v-for="user in users.data" :key="user.id">
-					  	<td>{{ user.id }}</td>
-					  	<td>{{ user.name  }}</td>
+            <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Name</th>
+              <th scope="col">Phone No</th>
+              <th>Role</th>
+              <th scope="col">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="user in users.data" :key="user.id">
+              <td>{{ user.id }}</td>
+              <td>{{ user.name  }}</td>
               <td>{{ user.phone_no }}</td>
-              	<td>{{ user.type  }}</td>
- 					  	<td>
-					  		<inertia-link :href="route('edit-users',{ id: user.id })" class="btn btn-info">Edit</inertia-link>
-					  		<!-- <inertia-link href="" class="btn btn-danger" @click="destroy(user.id)">Delete</inertia-link> -->
-					  	</td>
-					  </tr>
-					  </tbody>
-					</table>
+              <td>{{ user.type  }}</td>
+              <td>
+                <inertia-link :href="route('edit-users',{ id: user.id })" class="btn btn-info">Edit</inertia-link>
+                <!-- <inertia-link href="" class="btn btn-danger" @click="destroy(user.id)">Delete</inertia-link> -->
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
         <pagination class="mt-6" :links="users.links" />
         </div>
+
         </div>
     </MainLayout>
 </template>

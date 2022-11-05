@@ -101,7 +101,8 @@
                       </ul>
                       <div class="tab-content" id="pills-tabContent">
                         <div :class="getTabPaneClass('tab1')" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-                          <table class="table table-striped">
+                          <div class="table-responsive">
+                            <table class="table table-striped">
                             <thead>
                             <tr>
                               <th scope="col">Order Id</th>
@@ -138,9 +139,11 @@
 
                             </tbody>
                           </table>
+                          </div>
                         </div>
                         <div :class="getTabPaneClass('tab2')" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-                          <table class="table table-striped">
+                          <div class="table-responsive">
+                            <table class="table table-striped">
                             <thead>
                             <tr>
                               <th scope="col">Order Id</th>
@@ -176,9 +179,11 @@
                             </tr>
                             </tbody>
                           </table>
+                          </div>
                         </div>
                         <div :class="getTabPaneClass('tab3')" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
-                          <table class="table table-striped">
+                          <div class="table-responsive">
+                            <table class="table table-striped">
                             <thead>
                             <tr>
                               <th scope="col">Order Id</th>
@@ -214,6 +219,7 @@
                             </tr>
                             </tbody>
                           </table>
+                          </div>
                         </div>
                       </div>
                     </div>

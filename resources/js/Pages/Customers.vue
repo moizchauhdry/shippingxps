@@ -6,18 +6,21 @@
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
           Manage Customers
         </h2>
-          <div class="col-md-4" style="float: right;margin-bottom: 30px ">
-            <form action="/customers" method="get">
-              <input type="text" name="search" :value="form.search"  class="form-control" placeholder="Search By Suite #">
-            </form>
+          <div class="row">
+            <div class="col-md-4" style="float: right;margin-bottom: 30px ">
+              <form action="/customers" method="get">
+                <input type="text" name="search" :value="form.search"  class="form-control" placeholder="Search By Suite #">
+              </form>
+            </div>
           </div>
           <flash-messages ></flash-messages>
-          <table class="table">
+          <div class="table-responsive mt-3">
+            <table class="table table-striped">
 
-					  <thead>
-					    <tr>
-					      <th scope="col">#</th>
-					      <th scope="col">Name</th>
+              <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
                 <th scope="col">Email</th>
                 <th scope="col">City</th>
                 <!-- <th scope="col">State</th> -->
@@ -27,33 +30,34 @@
                 <th scope="col">Phone No</th>
                 <th></th>
                 <th scope="col">Actions</th>
-					    </tr>
-					  </thead>
-					  <tbody>
-					  <tr v-for="customer in customers.data" :key="customer.id">
-					  	<td>{{ customer.id }}</td>
-					  	<td>{{ customer.first_name }}</td>
-              <td>{{ customer.email }}</td>
-              <td>{{ customer.city }}</td>
-              <!-- <td>{{ customer.state }}</td> -->
-              <td>{{ customer.country }}</td>
-              <!-- <td>{{ customer.postal_code }}</td> -->
-              <td>{{ siuteNum(customer.id) }}</td>
-              <td>{{ customer.phone_no }}</td>
-               <td>
+              </tr>
+              </thead>
+              <tbody>
+              <tr v-for="customer in customers.data" :key="customer.id">
+                <td>{{ customer.id }}</td>
+                <td>{{ customer.first_name }}</td>
+                <td>{{ customer.email }}</td>
+                <td>{{ customer.city }}</td>
+                <!-- <td>{{ customer.state }}</td> -->
+                <td>{{ customer.country }}</td>
+                <!-- <td>{{ customer.postal_code }}</td> -->
+                <td>{{ siuteNum(customer.id) }}</td>
+                <td>{{ customer.phone_no }}</td>
+                <td>
                   <inertia-link class="link-primary" :href="createOrderLink(customer.id)">
-                      <span>Create Order </span>
+                    <span>Create Order </span>
                   </inertia-link>
-              </td>
-					  	<td>
-					  		<inertia-link  v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'" :href="route('edit-customer',{ id: customer.id })" class="btn btn-info">Edit</inertia-link> |
-					  		<inertia-link  v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'" href="" class="btn btn-danger" @click="destroy(customer.id)">Delete</inertia-link>|
-					  		<inertia-link  v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'" :href="route('detail-customer',{ id: customer.id })" class="btn btn-info" >Detail</inertia-link>
-					  	</td>
-					  </tr>
-					  </tbody>
-					</table>
-        <pagination class="mt-6" :links="customers.links" />
+                </td>
+                <td>
+                  <inertia-link  v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'" :href="route('edit-customer',{ id: customer.id })" class="btn btn-info">Edit</inertia-link> |
+                  <inertia-link  v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'" href="" class="btn btn-danger" @click="destroy(customer.id)">Delete</inertia-link>|
+                  <inertia-link  v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'" :href="route('detail-customer',{ id: customer.id })" class="btn btn-info" >Detail</inertia-link>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+            <pagination class="mt-6" :links="customers.links" />
+          </div>
         </div>
         </div>
     </MainLayout>

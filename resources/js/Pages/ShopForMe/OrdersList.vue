@@ -23,8 +23,9 @@
           </div>
         </div>
 
-        <table class="table table-striped">
-          <thead class="text-center">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead class="text-center">
             <tr>
               <th scope="col">#</th>
               <th scope="col">Warehouse Name</th>
@@ -36,30 +37,30 @@
               <!-- <th scope="col">Shipping From Shop</th> -->
               <th scope="col"></th>
             </tr>
-          </thead>
-          <tbody class="text-center">
+            </thead>
+            <tbody class="text-center">
             <tr v-for="order in orders.data" :key="order.id">
               <td>{{ order.id }}</td>
               <td>{{ order.warehouse.name }}</td>
               <td v-if="order.customer">
-                  <inertia-link :href="route('detail-customer', order.customer.id)" class="btn btn-link">
-                  # {{ siuteNum(order.customer.id) }} - {{ order.customer.name }} 
-                  </inertia-link>
+                <inertia-link :href="route('detail-customer', order.customer.id)" class="btn btn-link">
+                  # {{ siuteNum(order.customer.id) }} - {{ order.customer.name }}
+                </inertia-link>
               </td>
               <td class="capitalize">{{ order.order_origin }}</td>
               <td class="capitalize"> <span v-bind:class="getLabelClass(order.status)" >{{ order.status }}</span></td>
               <td>
-                  <template v-if="order.site_name !== null">
-                    <span v-if="order.site_name.length <30 ">{{ order.site_name }}</span>
-                    <span v-else>Welcome, {{ order.site_name.substring(0,30)+ "..." }}</span>
-                  </template>
+                <template v-if="order.site_name !== null">
+                  <span v-if="order.site_name.length <30 ">{{ order.site_name }}</span>
+                  <span v-else>Welcome, {{ order.site_name.substring(0,30)+ "..." }}</span>
+                </template>
               </td>
               <td>
                 <template v-if="order.site_url !== null">
-                <a target="_blank" class="link-primary" :href="'//' + order.site_url" >
-                  <span v-if="order.site_url.length<30">{{ order.site_url != null ? order.site_url : '- -' }}</span>
-                  <span v-else>Welcome, {{ order.site_url.substring(0,30)+ "..." }}</span>
-                </a>  
+                  <a target="_blank" class="link-primary" :href="'//' + order.site_url" >
+                    <span v-if="order.site_url.length<30">{{ order.site_url != null ? order.site_url : '- -' }}</span>
+                    <span v-else>Welcome, {{ order.site_url.substring(0,30)+ "..." }}</span>
+                  </a>
                 </template>
               </td>
               <!-- <td>{{ order.shipping_from_shop }}</td> -->
@@ -68,7 +69,7 @@
                   <span><i class="fa fa-eye"></i></span>
                 </inertia-link>
                 <template v-if="order.status == 'pending' || $page.props.auth.user.type =='admin'">
-                &nbsp;|&nbsp;
+                  &nbsp;|&nbsp;
                   <inertia-link class="link-primary" :href="route('shop-for-me.edit', order.id)">
                     <span><i class="fa fa-pencil-alt"></i></span>
                   </inertia-link>
@@ -81,8 +82,9 @@
                 </template>
               </td>
             </tr>
-          </tbody>
-        </table>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </MainLayout>

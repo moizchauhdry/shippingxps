@@ -10,37 +10,39 @@
         </div>
       </div>
       <div class="card-body">
-        <table class="table table-responsive">
-          <thead>
-          <tr>
-            <th>ID</th>
-            <th>Package ID</th>
-            <th>Customer</th>
-            <th>Tracking No.</th>
-            <th>Serial No</th>
-            <th>Request Message</th>
-            <th>Action</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr v-for="request in additionalRequests" :key="request.id">
-            <td>{{ request.id }}</td>
-            <td>{{ request.package.package_no }}</td>
-            <td>
-                  <inertia-link :href="route('detail-customer', request.customer.id)" class="btn btn-link">
-                  # {{ siuteNum(request.customer.id) }} - {{ request.customer.name }} 
-                  </inertia-link>
-            </td>
-            <td>{{ request.tracking_no }}</td>
-            <td>{{ request.serial_no }}</td>
-            <td>{{ request.message }}</td>
-            <td>
-              <inertia-link :href="route('additional-request.edit',request.id)"
-                            class="btn btn-primary float-right">Edit</inertia-link>
-            </td>
-          </tr>
-          </tbody>
-        </table>
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+            <tr>
+              <th>ID</th>
+              <th>Package ID</th>
+              <th>Customer</th>
+              <th>Tracking No.</th>
+              <th>Serial No</th>
+              <th>Request Message</th>
+              <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="request in additionalRequests" :key="request.id">
+              <td>{{ request.id }}</td>
+              <td>{{ request.package.package_no }}</td>
+              <td>
+                <inertia-link :href="route('detail-customer', request.customer.id)" class="btn btn-link">
+                  # {{ siuteNum(request.customer.id) }} - {{ request.customer.name }}
+                </inertia-link>
+              </td>
+              <td>{{ request.tracking_no }}</td>
+              <td>{{ request.serial_no }}</td>
+              <td>{{ request.message }}</td>
+              <td>
+                <inertia-link :href="route('additional-request.edit',request.id)"
+                              class="btn btn-primary float-right">Edit</inertia-link>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
       <div class="card-footer">
 

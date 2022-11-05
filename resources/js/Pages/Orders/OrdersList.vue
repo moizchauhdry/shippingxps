@@ -31,7 +31,8 @@
         </div>
 
         <template v-if="$page.props.auth.user.type == 'customer'">
-          <table class="table table-striped">
+          <div class="table-responsive">
+            <table class="table table-striped">
             <thead>
             <tr>
               <th scope="col">#</th>
@@ -79,6 +80,7 @@
             </tr>
             </tbody>
           </table>
+          </div>
         </template>
 
         <template v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">
@@ -134,7 +136,8 @@
           </ul>
           <div class="tab-content" id="pills-tabContent">
             <div :class="getTabPaneClass('tab1')" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-              <table class="table table-striped">
+              <div class="table-responsive">
+                <table class="table table-striped">
                 <thead>
                 <tr>
                   <th scope="col">Order Id</th>
@@ -155,7 +158,7 @@
                   <td>{{ order.id }}</td>
                   <td v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">
                     <inertia-link :href="route('detail-customer', order.customer.id)" class="btn btn-link">
-                    # {{ siuteNum(order.customer.id) }} - {{ order.customer.name }} 
+                    # {{ siuteNum(order.customer.id) }} - {{ order.customer.name }}
                     </inertia-link>
                   </td>
                   <td>{{ order.received_from }}</td>
@@ -178,9 +181,11 @@
 
                 </tbody>
               </table>
+              </div>
             </div>
             <div :class="getTabPaneClass('tab2')" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-              <table class="table table-striped">
+              <div class="table-responsive">
+                <table class="table table-striped">
                 <thead>
                 <tr>
                   <th scope="col">Order Id</th>
@@ -200,7 +205,7 @@
                   <td>{{ labeler.id }}</td>
                   <td v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">
                       <inertia-link :href="route('detail-customer', labeler.customer.id)" class="btn btn-link">
-                      # {{ siuteNum(labeler.customer.id) }} - {{ labeler.customer.name }} 
+                      # {{ siuteNum(labeler.customer.id) }} - {{ labeler.customer.name }}
                       </inertia-link>
                   </td>
                   <td>{{ labeler.received_from }}</td>
@@ -222,9 +227,11 @@
                 </tr>
                 </tbody>
               </table>
+              </div>
             </div>
             <div :class="getTabPaneClass('tab3')" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
-              <table class="table table-striped">
+              <div class="table-responsive">
+                <table class="table table-striped">
                 <thead>
                 <tr>
                   <th scope="col">Order Id</th>
@@ -244,7 +251,7 @@
                   <td>{{ order.id }}</td>
                   <td v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">
                     <inertia-link :href="route('detail-customer', order.customer.id)" class="btn btn-link">
-                      # {{ siuteNum(order.customer.id) }} - {{ order.customer.name }} 
+                      # {{ siuteNum(order.customer.id) }} - {{ order.customer.name }}
                       </inertia-link>
                   </td>
                   <td>{{ order.received_from }}</td>
@@ -266,9 +273,11 @@
                 </tr>
                 </tbody>
               </table>
+              </div>
             </div>
             <div :class="getTabPaneClass('tab4')" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-              <table class="table table-striped">
+              <div class="table-responsive">
+                <table class="table table-striped">
                 <thead>
                 <tr>
                   <th scope="col">Order Id</th>
@@ -288,7 +297,7 @@
                   <td>{{ order.id }}</td>
                   <td v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">
                       <inertia-link :href="route('detail-customer', order.customer.id)" class="btn btn-link">
-                      # {{ siuteNum(order.customer.id) }} - {{ order.customer.name }} 
+                      # {{ siuteNum(order.customer.id) }} - {{ order.customer.name }}
                       </inertia-link>
                   </td>
                   <td>{{ order.received_from }}</td>
@@ -311,6 +320,7 @@
 
                 </tbody>
               </table>
+              </div>
             </div>
           </div>
         </template>

@@ -27,17 +27,18 @@
 				</ul>
 			</div>
 		</nav>
-		<ul class="navbar-nav px-3">
-			<breeze-dropdown align="right" width="48">
+		<ul class="flex-md-row inline-flex navbar-nav px-3">
+      <inertia-link :href="route('notifications')"
+                    class="mb-2 me-2 inline-flex i+tems-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+        Notifications <span class="badge badge-danger ml-1.5" v-if="notification_count > 0" >{{ notification_count }}</span>
+      </inertia-link>
+			<breeze-dropdown align="right">
 				<template #trigger>
 					<span class="inline-flex rounded-md">
-            <inertia-link :href="route('notifications')" as="button"
-                class="me-2 inline-flex i+tems-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-              Notifications <span class="badge badge-danger ml-1.5" v-if="notification_count > 0" >{{ notification_count }}</span>
-            </inertia-link>
+
 						<button
 							type="button"
-							class="inline-flex i+tems-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
+							class="mb-2 inline-flex i+tems-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
 						>
 							{{ $page.props.auth.user.name }}
 <!--							<span
@@ -522,6 +523,12 @@
 			z-index: 0;
 		}
 	}
+
+  @media (max-width: 768px){
+    .sidebar-menu{
+      margin-top: 20px !important;
+    }
+  }
 
 	.badge-danger {
 		border-radius: 50px !important;

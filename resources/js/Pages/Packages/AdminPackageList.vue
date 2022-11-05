@@ -16,45 +16,47 @@
                     </div>
                 </div>
 
-                <table class="table table-striped">
+                <div class="table-responsive">
+                  <table class="table table-striped">
                     <thead class="text-center">
-                        <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Package</th>
-                        <th scope="col">Warehouse</th>                                                     
-                        <th scope="col">Customer</th>                                                     
-                        <th scope="col">Status</th>
-                        <th scope="col"></th>
-                        </tr>
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">Package</th>
+                      <th scope="col">Warehouse</th>
+                      <th scope="col">Customer</th>
+                      <th scope="col">Status</th>
+                      <th scope="col"></th>
+                    </tr>
                     </thead>
                     <tbody class="text-center">
                     <tr v-for="pkg in packages.data" :key="pkg.id">
-                        <td>{{ pkg.id }}</td>
-                        <td>{{ pkg.package_no }}</td>
-                        <td>{{ pkg.warehouse.name }}</td>
-                        <td>
-                            <inertia-link :href="route('detail-customer', pkg.customer.id)" class="btn btn-link">
-                            # {{ siuteNum(pkg.customer.id) }} - {{ pkg.customer.name }} 
-                            </inertia-link>
-                        </td>
-                        <td>
-                            <span v-bind:class="getLabelClass(pkg.status)">{{ pkg.status }}</span>
-                        </td>
-                        <td>
-                            <inertia-link class="link-primary" :href="route('packages.show', pkg.id)">
-                                <span>View</span>
-                            </inertia-link>
+                      <td>{{ pkg.id }}</td>
+                      <td>{{ pkg.package_no }}</td>
+                      <td>{{ pkg.warehouse.name }}</td>
+                      <td>
+                        <inertia-link :href="route('detail-customer', pkg.customer.id)" class="btn btn-link">
+                          # {{ siuteNum(pkg.customer.id) }} - {{ pkg.customer.name }}
+                        </inertia-link>
+                      </td>
+                      <td>
+                        <span v-bind:class="getLabelClass(pkg.status)">{{ pkg.status }}</span>
+                      </td>
+                      <td>
+                        <inertia-link class="link-primary" :href="route('packages.show', pkg.id)">
+                          <span>View</span>
+                        </inertia-link>
 
-                            <template  v-if="$page.props.auth.user.type == 'admin' && pkg.status!='open'">
-                                &nbsp;|&nbsp;
-                                <a target= '_blank' class="link-success" :href="route('packages.pdf', pkg.id)">
-                                    <span>Print Declaration Form</span>
-                                </a>
-                            </template>
-                        </td>
+                        <template  v-if="$page.props.auth.user.type == 'admin' && pkg.status!='open'">
+                          &nbsp;|&nbsp;
+                          <a target= '_blank' class="link-success" :href="route('packages.pdf', pkg.id)">
+                            <span>Print Declaration Form</span>
+                          </a>
+                        </template>
+                      </td>
                     </tr>
                     </tbody>
-                </table>
+                  </table>
+                </div>
                 <pagination class="mt-6" :links="packages.links" />
             </div>
         </div>

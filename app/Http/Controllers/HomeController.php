@@ -1038,7 +1038,7 @@ class HomeController extends Controller
             }
 
             $data[] = [
-                'date' => ($date == Carbon::now()->format('Y-m-d')) ? "Today" : date('d-m-Y', strtotime($date)),
+                'date' => ($date == Carbon::now()->format('Y-m-d')) ? "Today" : date('F  j, Y', strtotime($date)),
                 'notifications' => $notifications
             ];
         }

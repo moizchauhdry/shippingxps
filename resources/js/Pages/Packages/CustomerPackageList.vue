@@ -82,7 +82,8 @@
                             </ul>
                             <div class="tab-content" id="pills-tabContent">
                                 <div :class="getTabPaneClass('tab1')" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab" style="background-color:white;">                                                                        
-                                    <table class="table">
+                                    <div class="table-responsive">
+                                      <table class="table">
                                         <thead>
                                             <tr>
                                             <th scope="col">#</th>
@@ -111,7 +112,7 @@
 <!--                                                <p>Cosolidated From:  N/A</p>                   -->
                                             </td>
                                             <td>
-                                                <inertia-link class="link-primary" :href="route('packages.show', pkg.id)">                                                    
+                                                <inertia-link class="link-primary" :href="route('packages.show', pkg.id)">
                                                     <span>Details</span>
                                                 </inertia-link>
                                                 <template v-if="pkg.status == 'consolidated'">
@@ -121,7 +122,7 @@
                                                 <template v-if="printable.includes(pkg.status)">
                                                     &nbsp; | &nbsp;
                                                     <a class="link-primary" target="_blank" :href="route('packages.pdf', pkg.id)">Print Commercial Invoice</a>
-                                                </template>                                                
+                                                </template>
                                                 <template v-if="pkg.status == 'labeled'">
                                                     &nbsp; | &nbsp;
                                                     <p style="color:green;">Package has been labeled, You can select shipping service and continue.</p>
@@ -130,9 +131,11 @@
                                         </tr>
                                         </tbody>
                                     </table>
+                                    </div>
                                 </div>
                                 <div :class="getTabPaneClass('tab2')" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab" style="background-color:white;">
-                                    <table class="table">
+                                    <div class="table-responsive">
+                                      <table class="table">
                                         <thead>
                                             <tr>
                                             <th scope="col">#</th>
@@ -164,16 +167,18 @@
                                                 </template>
                                                 <a class="link-primary" target="_blank" :href="route('packages.pdf', pkg.id)">Print Commercial Invoice</a>
                                                 &nbsp; | &nbsp;
-                                                <inertia-link class="link-primary" :href="route('packages.show', pkg.id)">                                                    
+                                                <inertia-link class="link-primary" :href="route('packages.show', pkg.id)">
                                                     <span>Details</span>
                                                 </inertia-link>
                                             </td>
                                         </tr>
                                         </tbody>
                                     </table>
+                                    </div>
                                 </div>
                                 <div :class="getTabPaneClass('tab3')" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab" style="background-color:white;">
-                                    <table class="table">
+                                    <div class="table-responsive">
+                                      <table class="table">
                                         <thead>
                                             <tr>
                                             <th scope="col">#</th>
@@ -207,16 +212,18 @@
                                                     <a class="link-primary" target="_blank" :href="route('packages.pdf', pkg.id)">Print Commercial Invoice</a>
                                                 </template>
                                                 &nbsp; | &nbsp;
-                                                <inertia-link class="link-primary" :href="route('packages.show', pkg.id)">                                                    
+                                                <inertia-link class="link-primary" :href="route('packages.show', pkg.id)">
                                                     <span>Details</span>
                                                 </inertia-link>
                                             </td>
                                         </tr>
                                         </tbody>
                                     </table>
+                                    </div>
                                 </div>
                                 <div :class="getTabPaneClass('tab4')" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab" style="background-color:white;">
-                                <table class="table">
+                                <div class="table-responsive">
+                                  <table class="table">
                                   <thead>
                                   <tr>
                                     <th scope="col">#</th>
@@ -257,6 +264,7 @@
                                   </tr>
                                   </tbody>
                                 </table>
+                                </div>
                               </div>
                                 <div :class="getTabPaneClass('tab5')" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab" style="background-color:white;">
                                 </div>
