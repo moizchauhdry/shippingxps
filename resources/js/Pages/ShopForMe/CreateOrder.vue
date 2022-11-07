@@ -99,63 +99,70 @@
 
                         <div class="row">
                           <div class="col-md-2">
-                            <breeze-label for="name" value="Name"/>
+                            <breeze-label class="d-none d-md-flex" for="name" value="Name"/>
                           </div>
                           <div class="col-md-2  ">
-                            <breeze-label for="option" value="Description"/>
+                            <breeze-label class="d-none d-md-flex" for="option" value="Description"/>
                           </div>
                           <div class="col-md-2">
-                            <breeze-label for="url" value="URL"/>
+                            <breeze-label class="d-none d-md-flex" for="url" value="URL"/>
                           </div>
                           <div class="col-md-1 p-0">
-                            <breeze-label for="price" value="Price(USD)"/>
+                            <breeze-label class="d-none d-md-flex" for="price" value="Price(USD)"/>
                           </div>
                           <div class="col-md-2">
-                            <breeze-label for="price_with_tax" value="Price with Tax (USD)"/>
+                            <breeze-label class="d-none d-md-flex" for="price_with_tax" value="Price with Tax (USD)"/>
                           </div>
                           <div class="col-md-1">
-                            <breeze-label for="qty" value="Qty"/>
+                            <breeze-label class="d-none d-md-flex" for="qty" value="Qty"/>
                           </div>
                           <div class="col-md-1">
-                            <breeze-label for="total" value="Total"/>
+                            <breeze-label class="d-none d-md-flex" for="total" value="Total"/>
                           </div>
                         </div>
 
                         <div v-for="(item,index) in form_online.items" :key="item.id" class="row" :id="'order-'+index" :data-id="index">
 
-                          <div class="col-md-2">
+                          <div class="col-12 col-md-2">
                             <div class="form-group">
+                              <breeze-label class="d-sm-block d-md-none" for="name" value="Name"/>
                               <input v-model="item.name" name="name" id="name" type="text" class="form-control" placeholder="Name" required/>
                             </div>
                           </div>
-                          <div class="col-md-2">
+                          <div class="col-12 col-md-2">
                             <div class="form-group">
+                              <breeze-label class="d-sm-block d-md-none" for="option" value="Description"/>
                               <input v-model="item.option" name="option" id="option" type="text" class="form-control" placeholder="Description"/>
                             </div>
                           </div>
 
-                          <div class="col-md-2">
+                          <div class="col-12 col-md-2">
                             <div class="form-group">
+                              <breeze-label class="d-sm-block d-md-none" for="url" value="URL"/>
                               <input v-model="item.url" name="url" id="url" type="url" class="form-control" placeholder="URL" required/>
                             </div>
                           </div>
-                          <div class="col-md-1 p-0">
+                          <div class="col-12 col-md-1 p-md-0">
                             <div class="form-group">
+                              <breeze-label class="d-sm-block d-md-none" for="price" value="Price(USD)"/>
                               <input v-model="item.price" v-on:keyup="addShopTax($event)" @click="addShopTax($event)" ref="price_online" name="price" type="number" class="form-control" placeholder="Price" min="0" step="0.01" required/>
                             </div>
                           </div>
-                          <div class="col-md-2">
+                          <div class="col-12 col-md-2">
                             <div class="form-group">
+                              <breeze-label class="d-sm-block d-md-none" for="price_with_tax" value="Price with Tax (USD)"/>
                               <input v-model="item.price_with_tax" name="price_with_tax" id="price_with_tax" type="number" class="form-control" placeholder="Price With Tax ($)" required readonly/>
                             </div>
                           </div>
-                          <div class="col-md-1">
+                          <div class="col-12 col-md-1">
                             <div class="form-group">
+                              <breeze-label class="d-sm-block d-md-none" for="qty" value="Qty"/>
                               <input v-model="item.qty" v-on:keyup="addShopTax($event)" v-on:change="addShopTax($event)" name="qty" id="qty" type="number" class="form-control" placeholder="Qty" min="1" required/>
                             </div>
                           </div>
-                          <div class="col-md-1 p-0">
+                          <div class="col-12 col-md-1 p-md-0">
                             <div class="form-group">
+                              <breeze-label class="d-sm-block d-md-none" for="total" value="Total"/>
                               <input v-model="item.sub_total" name="sub_total" id="sub_total" type="number" class="form-control sub_total" placeholder="T.Price" required readonly/>
                             </div>
                           </div>
@@ -170,10 +177,10 @@
                         </div>
                         <!-- Sub Total -->
                         <div class="row mb-2">
-                          <div class="col-2 offset-md-8">
+                          <div class="col-6 col-md-2 offset-md-8">
                             <breeze-label class="float-right" for="form_pickup.subtotal" value="Sub Total"/>
                           </div>
-                          <div class="col-1 p-0">
+                          <div class="col-6 col-md-1 p-0">
                             <input v-model="form_online.sub_total" name="sub_total" id="form_online.subtotal" type="number" class="form-control sub_total" placeholder="T.Price" required readonly/>
                           </div>
                         </div>
@@ -203,21 +210,21 @@
                         </div> -->
                         <!-- Service Charges -->
                         <div class="row mb-2">
-                          <div class="col-2 offset-md-8">
+                          <div class="col-6 col-md-2 offset-md-8">
                             <breeze-label class="float-right" for="form_pickup.subtotal" value="Service Charges"/>
                             <br><small class="float-right">Minimum USD 5 Or 5% of Subtotal</small>
                           </div>
-                          <div class="col-1 p-0">
+                          <div class="col-6 col-md-1 p-0">
                             <input v-model="form_online.service_charges" name="service_charges" id="form_online-service_charges" type="number" class="form-control service_charges" placeholder="T.Price" required readonly/>
                           </div>
                         </div>
                         <!-- Grand Total -->
                         <div class="row">
-                          <div class="col-1 offset-md-9">
+                          <div class="col-6 col-md-1 offset-md-9">
                             <breeze-label for="grand_total" value="Grand Total"/>
                           </div>
 
-                          <div class="col-1 p-0">
+                          <div class="col-6 col-md-1 p-0">
                             <input v-model="shopGrandTotal"   name="grand_total" id="grand_total" type="number" class="form-control grand_total" placeholder="T.Price" required readonly/>
                           </div>
                         </div>
@@ -323,25 +330,25 @@
 
                         <div class="row">
                           <div class="col">
-                            <breeze-label for="name" value="Name"/>
+                            <breeze-label class="d-none d-md-flex" for="name" value="Name"/>
                           </div>
                           <div class="col  ">
-                            <breeze-label for="option" value="Description"/>
+                            <breeze-label class="d-none d-md-flex" for="option" value="Description"/>
                           </div>
                           <!-- <div class="col-md-2">
                             <breeze-label for="url" value="Url" />
                           </div> -->
                           <div class="col-md-2" style="display: none" v-show="form_pickup.pickup_type != 'pickup_only'">
-                            <breeze-label for="price" value="Price(USD)"/>
+                            <breeze-label class="d-none d-md-flex" for="price" value="Price(USD)"/>
                           </div>
                           <div class="col-md-2" style="display: none" v-show="form_pickup.pickup_type != 'pickup_only'">
-                            <breeze-label for="price_with_tax" value="Price with Tax (USD)"/>
+                            <breeze-label class="d-none d-md-flex" for="price_with_tax" value="Price with Tax (USD)"/>
                           </div>
                           <div class="col">
-                            <breeze-label for="qty" value="Qty"/>
+                            <breeze-label class="d-none d-md-flex" for="qty" value="Qty"/>
                           </div>
                           <div class="col-md-1" style="display: none" v-show="form_pickup.pickup_type != 'pickup_only'">
-                            <breeze-label for="total" value="Total"/>
+                            <breeze-label class="d-none d-md-flex" for="total" value="Total"/>
                           </div>
                           <div class="col-md-1">
 
@@ -350,13 +357,15 @@
 
                         <div v-for="(item,index) in form_pickup.items" :key="item.id" class="row" :id="'order-'+index" :data-id="index">
 
-                          <div class="col">
+                          <div class="col-12 col-md">
                             <div class="form-group">
+                              <breeze-label class="d-sm-block d-md-none" for="name" value="Name"/>
                               <input v-model="item.name" name="name" id="name" type="text" class="form-control" placeholder="Name" required/>
                             </div>
                           </div>
-                          <div class="col">
+                          <div class="col-12 col-md">
                             <div class="form-group">
+                              <breeze-label class="d-sm-block d-md-none" for="option" value="Description"/>
                               <input v-model="item.option" name="option" id="option" type="text" class="form-control" placeholder="Option"/>
                             </div>
                           </div>
@@ -367,27 +376,31 @@
                             </div>
                           </div> -->
 
-                          <div class="col-md-2" style="display: none" v-show="form_pickup.pickup_type != 'pickup_only'">
+                          <div class="col-12 col-md-2" style="display: none" v-show="form_pickup.pickup_type != 'pickup_only'">
                             <div class="form-group">
+                              <breeze-label class="d-sm-block d-md-none" for="price" value="Price(USD)"/>
                               <input v-model="item.price" v-on:keyup="addPickUpTax($event)" v-on:click="addPickUpTax($event)" name="price" ref="price" type="number" min="0" step="0.01" class="form-control price" placeholder="Price" :required="form_pickup.pickup_type == 'pickup_only'"/>
                             </div>
                           </div>
-                          <div class="col-md-2" style="display: none" v-show="form_pickup.pickup_type != 'pickup_only'">
+                          <div class="col-12 col-md-2" style="display: none" v-show="form_pickup.pickup_type != 'pickup_only'">
                             <div class="form-group">
+                              <breeze-label class="d-sm-block d-md-none" for="price_with_tax" value="Price with Tax (USD)"/>
                               <input v-model="item.price_with_tax" name="price_with_tax" id="price_with_tax" type="text" class="form-control" placeholder="Price After Tax ($)" :required="form_pickup.pickup_type == 'pickup_only'" readonly/>
                             </div>
                           </div>
-                          <div class="col">
+                          <div class="col-12 col-md">
                             <div class="form-group">
+                              <breeze-label class="d-sm-block d-md-none" for="qty" value="Qty"/>
                               <input v-model="item.qty" v-on:keyup="addPickUpTax($event)" v-on:change="addPickUpTax($event)" name="qty" id="qty" type="number"  class="form-control" placeholder="Qty" min="1" required/>
                             </div>
                           </div>
-                          <div class="col-md-1 p-0" style="display: none" v-show="form_pickup.pickup_type != 'pickup_only'">
+                          <div class="col-12 col-md-1 p-md-0" style="display: none" v-show="form_pickup.pickup_type != 'pickup_only'">
                             <div class="form-group">
+                              <breeze-label class="d-sm-block d-md-none" for="total" value="Total"/>
                               <input v-model="item.sub_total" name="sub_total" id="sub_total" type="number"  class="form-control sub_total" placeholder="T.Price" :required="form_pickup.pickup_type == 'pickup_only'" readonly/>
                             </div>
                           </div>
-                          <div class="col-md-1">
+                          <div class="col-12 col-md-1">
                             <div class="form-group" v-show="index!=0">
                               <a v-on:click="removeItemPickup(index)" class="btn btn-primary">
                                 <span>Remove</span>
@@ -399,10 +412,10 @@
 
                         <!--                           sub_total-->
                         <div class="row mb-2" style="display: none" v-show="form_pickup.pickup_type != 'pickup_only'">
-                          <div class="col-2 offset-md-8">
+                          <div class="col-6 col-md-2  offset-md-8">
                             <breeze-label class="float-right" for="form_pickup.subtotal" value="Sub Total"/>
                           </div>
-                          <div class="col-1 p-0">
+                          <div class="col-6 col-md-1 p-md-0">
                             <input v-model="form_pickup.sub_total" name="sub_total" id="form_pickup.subtotal" type="number" class="form-control sub_total" placeholder="T.Price" :required="form_pickup.pickup_type != 'pickup_only'" readonly/>
                           </div>
                         </div>
@@ -431,39 +444,39 @@
                                                   </div>-->
                         <!-- pickup_charges -->
                         <div class="row mb-2">
-                          <div class="col-2 offset-md-8">
+                          <div class="col-6 col-md-2 offset-md-8">
                             <breeze-label class="float-right" for="pickup_charges" value="Pickup Charges"/>
                           </div>
-                          <div class="col-1 p-0">
+                          <div class="col-6 col-md-1 p-0">
                             <input v-model="form_pickup.pickup_charges" name="pickup_charges" id="pickup_charges" type="number" class="form-control pickup_charges" placeholder="pickup charges" required readonly/>
                           </div>
                         </div>
                         <!-- service_charges -->
                         <div class="row mb-2" style="display: none" v-show="form_pickup.pickup_type != 'pickup_only'">
-                          <div class="col-2 offset-md-8">
+                          <div class="col-6 col-md-2 offset-md-8">
                             <breeze-label class="float-right" for="service_charges" value="Services Charges"/>
                             <br><small class="float-right">5% of Subtotal</small>
                           </div>
-                          <div class="col-1 p-0">
+                          <div class="col-6 col-md-1 p-0">
                             <input v-model="form_pickup.service_charges" name="service_charges" id="service_charges" type="number" class="form-control service_charges" placeholder="T.Price" required readonly/>
                           </div>
                         </div>
                         <!-- Box Price -->
                         <div class="row mb-2">
-                          <div class="col-2 offset-md-8">
+                          <div class="col-6 col-md-2 offset-md-8">
                             <breeze-label class="float-right" for="additional_pickup_charges" value="Box Price"/>
                           </div>
-                          <div class="col-1 p-0">
+                          <div class="col-6 col-md-1 p-0">
                             <input v-model="additional_pickup_charges" name="additional_pickup_charges" id="additional_pickup_charges" type="text" class="form-control additional_pickup_charges" placeholder="Box Price" required readonly/>
                           </div>
                         </div>
 
                         <!-- grand_total -->
                         <div class="row mb-2">
-                          <div class="col-2 offset-md-8">
+                          <div class="col-6 col-md-2 offset-md-8">
                             <breeze-label class="float-right" for="grand_total" value="Grand Total"/>
                           </div>
-                          <div class="col-1 p-0">
+                          <div class="col-6 col-md-1 p-0">
                             <input v-model="pickupGrandTotal" name="grand_total" id="grand_total" type="text" class="form-control grand_total" placeholder="G.Price" required readonly/>
                           </div>
                         </div>

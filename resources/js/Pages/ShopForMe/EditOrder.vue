@@ -210,25 +210,25 @@
 
                       <div class="row mt-3">
                         <div class="col">
-                          <breeze-label for="name" value="Name"/>
+                          <breeze-label class="d-none d-md-flex" for="name" value="Name"/>
                         </div>
                         <div class="col">
-                          <breeze-label for="description" value="Description"/>
+                          <breeze-label class="d-none d-md-flex" for="description" value="Description"/>
                         </div>
                         <div class="col" v-show="form.form_type == 'shopping'">
-                          <breeze-label for="url" value="Url"/>
+                          <breeze-label class="d-none d-md-flex" for="url" value="Url"/>
                         </div>
                         <div class="col-md-1" v-show="form.pickup_type != 'pickup_only'">
-                          <breeze-label for="price" value="Price"/>
+                          <breeze-label class="d-none d-md-flex" for="price" value="Price"/>
                         </div>
                         <div class="col-md-2" v-show="form.pickup_type != 'pickup_only'">
-                          <breeze-label for="price_with_tax" value="Price after Tax"/>
+                          <breeze-label class="d-none d-md-flex" for="price_with_tax" value="Price after Tax"/>
                         </div>
                         <div class="col">
-                          <breeze-label for="qty" value="Qty"/>
+                          <breeze-label class="d-none d-md-flex" for="qty" value="Qty"/>
                         </div>
                         <div class="col-md-2" v-show="form.pickup_type != 'pickup_only'">
-                          <breeze-label for="total" value="Total"/>
+                          <breeze-label class="d-none d-md-flex" for="total" value="Total"/>
                         </div>
                         <div class="col-md-1">
                         </div>
@@ -236,39 +236,46 @@
 
                       <div v-for="(item,index) in form.items" :key="item.id" class="row" :id="'order-'+index" :data-id="index">
 
-                        <div class="col">
+                        <div class="col-12 col-md">
                           <div class="form-group">
+                            <breeze-label class="d-sm-block d-md-none" for="name" value="Name"/>
                             <input v-model="item.name" name="name" id="name" type="text" class="form-control name" placeholder="Name" required/>
                           </div>
                         </div>
-                        <div class="col">
+                        <div class="col-12 col-md">
                           <div class="form-group">
+                            <breeze-label class="d-sm-block d-md-none" for="description" value="Description"/>
                             <input v-model="item.description" name="description" id="description" type="text" class="form-control option" placeholder="Option"/>
                           </div>
                         </div>
 
-                        <div class="col" v-show="form.form_type == 'shopping'">
+                        <div class="col-12 col-md" v-show="form.form_type == 'shopping'">
                           <div class="form-group">
+                            <breeze-label class="d-sm-block d-md-none" for="url" value="Url"/>
                             <input v-model="item.url" name="url" id="url" type="url" class="form-control url" placeholder="URL" :required="form.form_type === 'shopping'"/>
                           </div>
                         </div>
-                        <div class="col-md-1 p-0" v-show="form.pickup_type!='pickup_only'">
+                        <div class="col-12 col-md-1 p-md-0" v-show="form.pickup_type!='pickup_only'">
                           <div class="form-group">
+                            <breeze-label class="d-sm-block d-md-none" for="price" value="Price"/>
                             <input v-model="item.price" v-on:change="addTax($event)" v-on:keyup="addTax($event)" v-on:click="addTax($event)" :min="0" ref="price" name="price" step="0.01" type="number" class="form-control price" placeholder="Price" required/>
                           </div>
                         </div>
-                        <div class="col-md-2" v-show="form.pickup_type!='pickup_only'">
+                        <div class="col-12 col-md-2" v-show="form.pickup_type!='pickup_only'">
                           <div class="form-group">
+                            <breeze-label class="d-sm-block d-md-none" for="price_with_tax" value="Price after Tax"/>
                             <input v-model="item.price_with_tax" name="price_with_tax" id="price_with_tax" type="number" class="form-control price_with_tax" placeholder="Price After Tax" required readonly/>
                           </div>
                         </div>
-                        <div class="col">
+                        <div class="col-12 col-md">
                           <div class="form-group">
+                            <breeze-label class="d-sm-block d-md-none" for="qty" value="Qty"/>
                             <input v-model="item.qty" name="qty" v-on:change="addTax($event)" id="qty" type="number" class="form-control qty" placeholder="Qty" :min="1" required/>
                           </div>
                         </div>
-                        <div class="col-md-2 p-0" v-show="form.pickup_type!='pickup_only'">
+                        <div class="col-12 col-md-2 p-md-0" v-show="form.pickup_type!='pickup_only'">
                           <div class="form-group">
+                            <breeze-label class="d-sm-block d-md-none" for="total" value="Total"/>
                             <input v-model="item.sub_total" name="sub_total" id="sub_total" type="number" class="form-control sub_total" placeholder="T.Price" required readonly/>
                           </div>
                         </div>
@@ -279,63 +286,64 @@
                             </a>
                           </div>
                         </div>
+                        <div class="col-12 border-top mb-2 border-primary"></div>
 
                       </div>
 
                       <!-- sub_total -->
                       <div class="row mb-2" v-show="form.pickup_type != 'pickup_only'">
-                        <div class="col-2 offset-md-8">
-                          <breeze-label class="float-right" for="form.subtotal" value="Sub Total"/>
+                        <div class="col-6 col-md-2 offset-md-8">
+                          <breeze-label class="float-md-end" for="form.subtotal" value="Sub Total"/>
                         </div>
-                        <div class="col-1 p-0">
+                        <div class="col-6 col-md-1 p-0">
                           <input v-model="form.sub_total" name="sub_total" id="form.subtotal" type="number" class="form-control sub_total" placeholder="T.Price" required readonly/>
                         </div>
                       </div>
                       <!-- discount -->
                       <div class="row mb-2" v-show="form.shipping_from_shop != null && form.shipping_from_shop != 0">
-                        <div class="col-1 offset-md-9">
-                          <breeze-label class="float-right" for="shipping_from_shop" value="Shipping From Shop"/>
+                        <div class="col-6 col-md-1 offset-md-9">
+                          <breeze-label class="float-md-end" for="shipping_from_shop" value="Shipping From Shop"/>
                         </div>
-                        <div class="col-1 p-0">
+                        <div class="col-6 col-md-1 p-0">
                           <input v-model="form.shipping_from_shop" name="shipping_from_shop" type="number" class="form-control discount" placeholder="shipping charges" readonly/>
                         </div>
                       </div>
                       <!-- pickup_charges -->
                       <div class="row mb-2" v-show="form.form_type != 'shopping'">
-                        <div class="col-2 offset-md-8">
-                          <breeze-label class="float-right" for="pickup_charges" value="Pickup Charges"/>
+                        <div class="col-6 col-md-2 offset-md-8">
+                          <breeze-label class="float-md-end" for="pickup_charges" value="Pickup Charges"/>
                         </div>
-                        <div class="col-1 p-0">
+                        <div class="col-6 col-md-1 p-0">
                           <input v-model="form.pickup_charges" name="pickup_charges" id="pickup_charges" type="number" class="form-control pickup_charges" placeholder="pickup charges" required readonly/>
                         </div>
                       </div>
                       <!-- service_charges -->
                       <div class="row mb-2" v-show="form.pickup_type != 'pickup_only'">
-                        <div class="col-2 offset-md-8">
-                          <breeze-label class="float-right" for="service_charges" value="Services Charges"/>
+                        <div class="col-6 col-md-2 offset-md-8">
+                          <breeze-label class="float-md-end" for="service_charges" value="Services Charges"/>
                           <br><small class="float-right">Minimum USD 5 Or 5% of Subtotal</small>
                         </div>
-                        <div class="col-1 p-0">
+                        <div class="col-6 col-md-1 p-0">
                           <input v-model="form.service_charges" name="service_charges" id="service_charges" step="0.01" type="number" class="form-control service_charges" @keyup="adminServicesCharges()" placeholder="charges" :min="0" required :readonly="$page.props.auth.user.type == 'customer'"/>
 
                         </div>
                       </div>
                       <!-- Box Price -->
                       <div class="row mb-2" v-show="this.form.form_type !== 'shopping'">
-                        <div class="col-2 offset-md-8">
-                          <breeze-label class="float-right" for="additional_pickup_charges" value="Box Price"/>
+                        <div class="col-6 col-md-2 offset-md-8">
+                          <breeze-label class="float-md-end" for="additional_pickup_charges" value="Box Price"/>
                         </div>
-                        <div class="col-1 p-0">
+                        <div class="col-6 col-md-1 p-0">
                           <input v-model="additional_pickup_charges" name="additional_pickup_charges" id="additional_pickup_charges" type="text" class="form-control additional_pickup_charges" placeholder="T.Price" required readonly/>
                         </div>
                       </div>
 
                       <!-- grand_total -->
                       <div class="row mb-2">
-                        <div class="col-2 offset-md-8">
-                          <breeze-label class="float-right" for="grand_total" value="Grand Total"/>
+                        <div class="col-6 col-md-2 offset-md-8">
+                          <breeze-label class="float-md-end" for="grand_total" value="Grand Total"/>
                         </div>
-                        <div class="col-1 p-0">
+                        <div class="col-6 col-md-1 p-0">
                           <input v-model="form.grand_total" name="grand_total" id="grand_total" type="text" class="form-control grand_total" placeholder="T.Price" required readonly/>
                         </div>
                       </div>
@@ -366,10 +374,10 @@
                     <template v-if="$page.props.auth.user.type == 'customer' && order.status != 'rejected'">
                       <input v-if="order.payment_status != 'Paid'  && $page.props.auth.user.type == 'customer'" type="button"  v-on:click="updateChanges()"  value="Update Shopping" class="btn btn-danger"/>
                       <template v-if="order.payment_status != 'Paid' && $page.props.auth.user.type == 'customer' && form.updated_by_admin == '1'">
-                        <a class="btn btn-primary ml-2" v-on:click="approveChanges()">Approve & Checkout</a>
+                        <a class="btn mt-2 btn-primary ml-2" v-on:click="approveChanges()">Approve & Checkout</a>
                       </template>
                       <template v-if="order.payment_status != 'Paid' && $page.props.auth.user.type == 'customer' && order.changes_approved == '1'">
-                        <a class="btn btn-primary ml-2" v-on:click="approveChanges()">Approve & Checkout</a>
+                        <a class="btn mt-2 btn-primary ml-2" v-on:click="approveChanges()">Approve & Checkout</a>
                       </template>
                     </template>
                     <template v-else-if="$page.props.auth.user.type == 'customer'">
@@ -377,20 +385,20 @@
                     </template>
 
                     <template v-if="($page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager')">
-                      <input v-if="order.payment_status != 'Paid'" type="submit" value="Update Shopping" class="btn btn-danger"/>
-                      <a v-if="order.status != 'approved'" v-on:click="changeAdminStatus(order.id,'approved')" class="ml-2 btn btn-success">Approve</a>
-                      <a v-if="order.status != 'rejected'" v-on:click="changeAdminStatus(order.id,'rejected')" class="ml-2 btn btn-danger">Reject</a>
+                      <input v-if="order.payment_status != 'Paid'" type="submit" value="Update Shopping" class="btn mt-2 btn-danger"/>
+                      <a v-if="order.status != 'approved'" v-on:click="changeAdminStatus(order.id,'approved')" class="ml-2 me-2 btn mt-2 btn-success">Approve</a>
+                      <a v-if="order.status != 'rejected'" v-on:click="changeAdminStatus(order.id,'rejected')" class="ml-2 me-2 btn mt-2 btn-danger">Reject</a>
                     </template>
 
                     <template v-if="form.changes_approved == '1' && ($page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager')">
                       <template v-if="($page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager') && form.status == 'pending'">
-                        <a v-on:click="changeToCompleteShopping()" class="btn btn-primary float-right">
+                        <a v-on:click="changeToCompleteShopping()" class="btn mt-2 btn-primary float-md-end">
                           <span>Complete Shopping</span>
                         </a>
                       </template>
                     </template>
                     <template v-else-if="($page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager')">
-                      <a class="btn btn-primary float-right disabled" style="cursor: not-allowed">
+                      <a class="btn mt-2 btn-primary float-md-end disabled" style="cursor: not-allowed">
                         <span>Complete Shopping</span>
                       </a>
                     </template>

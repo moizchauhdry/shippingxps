@@ -133,10 +133,10 @@
                     </div>
                     <div class="row mt-3">
                       <div class="col-md-4">
-                        <breeze-label for="name" value="Name" />
+                        <breeze-label for="name" class="d-none d-md-flex" value="Name" />
                       </div>
                       <div class="col-md-5">
-                        <breeze-label for="description" value="Description" />
+                        <breeze-label for="description" class="d-none d-md-flex" value="Description" />
                       </div>
                       <!-- <div class="col-md-2">
                         <breeze-label for="url" value="Url" />
@@ -148,7 +148,7 @@
                         <breeze-label for="price_with_tax" value="Price after Tax" />
                       </div>-->
                       <div class="col-md-2">
-                        <breeze-label for="qty" value="Qty" />
+                        <breeze-label for="qty" class="d-none d-md-flex" value="Qty" />
                       </div>
 <!--                      <div class="col-md-2">
                         <breeze-label for="total" value="Total" />
@@ -157,11 +157,13 @@
                     <div v-for="(item,index) in form.items" :key="item.id" class="row">
                       <div class="col-md-4">
                         <div class="form-group">
+                          <breeze-label for="name" value="Name" class="d-sm-block d-md-none" />
                           <input v-model="item.name" name="name" id="name" type="text" class="form-control name" placeholder="Name" required/>
                         </div>
                       </div>
                       <div class="col-md-5">
                         <div class="form-group">
+                          <breeze-label for="description" value="Description" class="d-sm-block d-md-none" />
                           <input v-model="item.description" name="description" id="description" type="text" class="form-control option" placeholder="Option"/>
                         </div>
                       </div>
@@ -177,6 +179,7 @@
                       </div>-->
                       <div class="col-md-2">
                         <div class="form-group">
+                          <breeze-label for="qty" value="Qty" class="d-sm-block d-md-none" />
                           <input v-model="item.quantity" name="quantity" v-on:change="addTax($event)" id="qty" type="number" class="form-control qty" placeholder="Qty" :min="1" required/>
                         </div>
                       </div>
@@ -192,6 +195,7 @@
                           </a>
                         </div>
                       </div>
+                      <div class="col-12 border-top mb-2 border-primary"></div>
                     </div>
 
                   </div>
