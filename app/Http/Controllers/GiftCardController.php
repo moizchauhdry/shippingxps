@@ -59,11 +59,11 @@ class GiftCardController extends Controller
 
             $url = \URL::route('gift-card.edit', $gift_card->id);
             $customer = $gift_card->user;
-            $customerDetailURL = '<a href="'.route('detail-customer',$customer->id).'">'.$customer->name_with_suite_no.'</a>';
+            $customerDetailURL = '<a href="' . route('detail-customer', $customer->id) . '">' . $customer->name_with_suite_no . '</a>';
 
             $data = [
                 'url' => \URL::route('gift-card.edit', $gift_card->id),
-                'message' => 'Customer <strong>'.$customerDetailURL.'</strong> has created an gift card request. <a href="' . $url . '">Click Here</a>',
+                'message' => 'Customer <strong>' . $customerDetailURL . '</strong> has created an gift card request. <a href="' . $url . '">Click Here</a>',
             ];
             $admins = User::where('type', 'admin')->get();
             foreach ($admins as $admin) {
@@ -129,7 +129,7 @@ class GiftCardController extends Controller
 
             $url = \URL::route('gift-card.edit', $gift_card->id);
             $customer = $gift_card->user;
-            $customerDetailURL = 'Customer <strong><a href="'.route('detail-customer',$customer->id).'">'.$customer->name_with_suite_no.'</strong></a>';
+            $customerDetailURL = 'Customer <strong><a href="' . route('detail-customer', $customer->id) . '">' . $customer->name_with_suite_no . '</strong></a>';
 
             $auser = $user->type == 'admin' ? 'Admin' : $customerDetailURL;
             $data = [
@@ -178,7 +178,6 @@ class GiftCardController extends Controller
             return redirect()->route('gift-card.index')->with('success', 'Successfully Modified');
         }
 
-        $gift_card = GiftCard::find($id);
         $comments = GiftCardComment::where('gift_card_id', $gift_card->id)->with('user')->orderBy('id', 'desc')->get();
 
         $images = [];
@@ -212,7 +211,7 @@ class GiftCardController extends Controller
 
         $url = \URL::route('gift-card.edit', $gift_card->id);
         $customer = $gift_card->user;
-        $customerDetailURL = 'Customer <strong><a href="'.route('detail-customer',$customer->id).'">'.$customer->name_with_suite_no.'</strong></a>';
+        $customerDetailURL = 'Customer <strong><a href="' . route('detail-customer', $customer->id) . '">' . $customer->name_with_suite_no . '</strong></a>';
 
         $auser = $user->type == 'admin' ? 'Admin' : $customerDetailURL;
         $data = [

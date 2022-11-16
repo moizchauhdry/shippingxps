@@ -263,11 +263,7 @@
 									</tr>
 								</thead>
 								<tbody>
-									<tr
-										v-for="(image, index) in gift_card.files"
-										:key="image.id"
-										v-show="gift_card.files.length > 0"
-									>
+									<tr v-for="(image, index) in gift_card.files" :key="image.id" v-show="gift_card.files">
 										<th scope="row">00{{ ++index }}</th>
 										<td>
 											<template v-if="image.file_name.split('.').pop() == 'pdf'">
@@ -296,9 +292,9 @@
 											</template>
 										</td>
 									</tr>
-									<tr v-show="gift_card.files.length == 0">
+									<!-- <tr>
 										<td colspan="3" class="text-center">NO FILES ATTACHED</td>
-									</tr>
+									</tr> -->
 								</tbody>
 							</table>
 						</div>
