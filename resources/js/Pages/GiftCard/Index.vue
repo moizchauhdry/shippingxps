@@ -14,50 +14,47 @@
 			</div>
 			<div class="card-body">
 				<div class="table-responsive">
-          <table class="table table-responsive">
-            <thead class="text-center">
-            <tr>
-              <th>ID</th>
-              <th>Customer</th>
-              <th>Title</th>
-              <th>Type</th>
-              <th>Amount ($)</th>
-              <th>Quantity</th>
-              <th>Payment Status</th>
-              <th>Notes</th>
-              <th>Action</th>
-            </tr>
-            </thead>
-            <tbody class="text-center">
-            <tr v-for="card in gift_cards" :key="card.id">
-              <td>{{ card.id }}</td>
-              <td>
-                <inertia-link :href="route('detail-customer', card.user.id)" class="btn btn-link">
-                  # {{ siuteNum(card.user.id) }} - {{ card.user.name }}
-                </inertia-link>
-              </td>
-              <td>{{ card.title }}</td>
-              <td>{{ card.type }}</td>
-              <td>{{ card.amount }}</td>
-              <td>{{ card.qty }}</td>
-              <td>
-								<span class="badge badge-secondary">
-									{{ card.payment_status }}
-								</span>
-              </td>
-              <td>{{ card.notes }}</td>
-              <td>
-                <inertia-link
-                    :href="route('gift-card.edit', card.id)"
-                    class="btn btn-primary float-right"
-                >Edit</inertia-link
-                >
-              </td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-
+					<table class="table table-responsive table-striped table-bordered">
+						<thead class="text-center">
+							<tr>
+								<th>ID</th>
+								<th>Customer</th>
+								<th>Gift Card</th>
+								<th>Audit</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody class="">
+							<tr v-for="card in gift_cards" :key="card.id">
+								<td>{{ card.id }}</td>
+								<td class="text-center">
+									<inertia-link :href="route('detail-customer', card.user.id)" class="btn btn-link">
+									# {{ siuteNum(card.user.id) }} - {{ card.user.name }}
+									</inertia-link>
+								</td>
+								<td>
+									<b>Title:</b> {{ card.title }} <br>
+									<b>Type:</b> {{ card.title }} <br>
+									<b>Amount:</b> ${{ card.amount }} <br>
+									<b>Quantity:</b> {{ card.qty }} <br>
+									<b>Notes:</b> {{ card.notes }} <br>
+								</td> 
+								<td>
+									<span v-if="card.payment_status"><b>Payment:</b> {{ card.payment_status }}<br></span>
+									<b>Admin Status: </b>
+										<span v-if="card.status">{{ card.status }}</span> 
+										<span v-else>Pending</span> <br>
+									<span v-if="card.admin_approved_at"><b>Admin Approved At:</b> {{ card.admin_approved_at }}<br></span> 
+									<span v-if="card.admin_updated_at"><b>Admin Updated At:</b> {{ card.admin_updated_at }}<br></span> 
+								</td>
+								<td class="text-center">
+									<inertia-link :href="route('gift-card.edit', card.id)" class="btn btn-success btn-xs float-right">
+										<span><i class="fa fa-pencil-alt mr-1"></i></span>Edit & Continue</inertia-link>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>				
 				<div class="col-md-12 text-center" v-if="gift_cards.length == 0">
 					<span>There are no gift card requests</span>
 				</div>
@@ -110,4 +107,8 @@
 	};
 </script>
 
-<style scoped></style>
+<style scoped>
+.table td, .table th , .table tr {
+    border-color: rgb(183, 183, 183);
+}
+</style>
