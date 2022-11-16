@@ -34,7 +34,7 @@
 								</td>
 								<td>
 									<b>Title:</b> {{ card.title }} <br>
-									<b>Type:</b> {{ card.title }} <br>
+									<b>Type:</b> {{ card.type }} <br>
 									<b>Amount:</b> ${{ card.amount }} <br>
 									<b>Quantity:</b> {{ card.qty }} <br>
 									<b>Notes:</b> {{ card.notes }} <br>
