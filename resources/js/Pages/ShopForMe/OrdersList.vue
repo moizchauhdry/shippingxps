@@ -17,7 +17,8 @@
           <div class="col-md-6" >
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
               <template v-if="$page.props.auth.user.type == 'customer'">
-                <inertia-link :href="route('shop-for-me.create')" class="btn btn-success float-right">Add New Shopping</inertia-link>
+                <inertia-link :href="route('shop-for-me.create')" class="btn btn-success float-right">
+                  <i class="fa fa-plus mr-1"></i>Add New Order</inertia-link>
               </template>
             </h2>
           </div>
@@ -65,19 +66,19 @@
               </td>
               <!-- <td>{{ order.shipping_from_shop }}</td> -->
               <td style="min-width:70px;">
-                <inertia-link class="link-primary" :href="route('shop-for-me.show', order.id)">
-                  <span><i class="fa fa-eye"></i></span>
+                <inertia-link class="btn btn-primary btn-xs mr-1 mb-1" :href="route('shop-for-me.show', order.id)">
+                  <span><i class="fa fa-eye"></i></span> View Detail
                 </inertia-link>
-                <template v-if="order.status == 'pending' || $page.props.auth.user.type =='admin'">
-                  &nbsp;|&nbsp;
-                  <inertia-link class="link-primary" :href="route('shop-for-me.edit', order.id)">
-                    <span><i class="fa fa-pencil-alt"></i></span>
+                
+                <template v-if="order.status == 'pending' || order.payment_status == 'Pending' || $page.props.auth.user.type =='admin'">
+                  <inertia-link class="btn btn-success btn-xs mr-1 mb-1" :href="route('shop-for-me.edit', order.id)">
+                    <span><i class="fa fa-pencil-alt"></i></span> Edit & Continue
                   </inertia-link>
                 </template>
+
                 <template v-if="order.status == 'labeled' && order.order_type=='package'">
-                  &nbsp;|&nbsp;
-                  <a target= '_blank' class="link-success" :href="route('packages.pdf', order.id)" title="Invoice">
-                    <i class="fa fa-file"></i>
+                  <a target= '_blank' class="btn btn-info btn-xs mr-1 mb-1" :href="route('packages.pdf', order.id)" title="Invoice">
+                    <i class="fa fa-file"></i> Print Invoice
                   </a>
                 </template>
               </td>
