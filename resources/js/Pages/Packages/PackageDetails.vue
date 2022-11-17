@@ -164,7 +164,7 @@
 
         <template v-if="this.hasConsolidationRequest || this.hasConsolidationServed">
           <template v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">
-            <template v-if="(packag.status == 'open' || ( packag.status == 'filled' && packag.orders.length > 1) || packag.status != 'consolidated') && packag.status != 'labeled' && packag.status != 'shipped'">
+            <template v-if="(packag.status == 'open' || ( packag.status == 'filled' && packag.orders.length > 1) || (this.hasConsolidationRequest && !this.hasConsolidationServed)) && packag.status != 'labeled' && packag.status != 'shipped'">
               <div class="row" style="margin-top:20px;">
                 <div class="col-md-12">
 
@@ -286,7 +286,9 @@
                 </div>
                 <div class="card-body">
                   <div class="row">
-                    <template v-if="$page.props.auth.user.type == 'customer' && packag.status != 'consolidated'">
+                    <!--<template v-if="$page.props.auth.user.type == 'customer' && packag.status != 'consolidated'">-->
+                    <template v-if="$page.props.auth.user.type == 'customer'">
+
                       <div class="col-md-7">
                         <table class="table table-striped">
                           <thead>
@@ -309,8 +311,8 @@
                               $ {{ service.price }}
                             </td>
                             <td style="width:110px;">
-                              <a v-if="service.title == 'Consolidation' && !hasConsolidationRequest && !hasMultiPieceServed && packag.status != 'open'"  v-on:click="setActiveService(service)" class="link-primary"> Make Request</a>
-                              <a v-if="service.title == 'Multi Piece' && !hasConsolidationRequest && !hasMultiPieceServed && packag.status != 'open'"  v-on:click="setActiveService(service)" class="link-primary"> Make Request</a>
+                              <a v-if="service.title == 'Consolidation' && !hasConsolidationRequest && !hasConsolidationServed && !hasMultiPieceServed && packag.status != 'open'"  v-on:click="setActiveService(service)" class="link-primary"> Make Request</a>
+                              <a v-if="service.title == 'Multi Piece' && !hasConsolidationRequest && !hasConsolidationServed && !hasMultiPieceServed && packag.status != 'open'"  v-on:click="setActiveService(service)" class="link-primary"> Make Request</a>
                               <span v-if="service.title == 'Consolidation' && !hasConsolidationRequest && packag.status == 'open'"><b>Note: Declare your customs to consolidate package</b></span>
                               <span v-if="service.title == 'Multi Piece' && !hasConsolidationServed && !hasMultiPieceServed && packag.status == 'open'"><b>Note: Declare your customs to use this service</b></span>
                               <a v-else-if="service.title != 'Consolidation' && service.title != 'Multi Piece'" v-on:click="setActiveService(service)" class="link-primary"> Make Request</a>
