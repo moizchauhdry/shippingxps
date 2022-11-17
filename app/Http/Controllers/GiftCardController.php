@@ -180,18 +180,9 @@ class GiftCardController extends Controller
 
         $comments = GiftCardComment::where('gift_card_id', $gift_card->id)->with('user')->orderBy('id', 'desc')->get();
 
-        $images = [];
-        foreach ($gift_card->files as $image) {
-            $images[] = [
-                'id' => $image->id,
-                'image' => $image->image,
-            ];
-        }
-
         return Inertia::render('GiftCard/Edit', [
             'gift_card' => $gift_card,
             'comments' => $comments,
-            'images' => $images,
         ]);
     }
 
@@ -227,13 +218,8 @@ class GiftCardController extends Controller
                 $admin->notify(new GiftCardNotification($data));
             }
         }
-        $gift_card = GiftCard::find($id);
-        $comments = GiftCardComment::where('gift_card_id', $gift_card->id)->with('user')->orderBy('id', 'desc')->get();
 
-        return Inertia::render('GiftCard/Edit', [
-            'gift_card' => $gift_card,
-            'comments' => $comments,
-        ]);
+        return redirect()->back();
     }
 
     public function deleteImage(Request $request)

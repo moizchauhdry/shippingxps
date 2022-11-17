@@ -213,35 +213,6 @@
 										</div>
 									</div>
 								</div>
-
-								<!-- <div class="row">
-									<div class="col-md-12" v-show="gift_card.files.length > 0">
-										<h2
-											class="font-semibold text-xl text-gray-800 leading-tight form-title"
-										>
-											Images
-										</h2>
-									</div>
-									<div
-										v-for="(image, index) in gift_card.files"
-										:key="image.id"
-										class="col-md-3"
-									>
-										<div>
-											<img
-												style="width: 100px; height: auto"
-												class="img-thumbnail"
-												:src="imgURL(image.file_name)"
-												@click="viewImage($event)"
-											/>
-											<a
-												href="void(0);"
-												@click="deleteImage($event, index, image.id)"
-												><i class="fa fa-trash mr-1"></i>Delete Image</a
-											>
-										</div>
-									</div>
-								</div> -->
 							</section>
 						</section>
 
