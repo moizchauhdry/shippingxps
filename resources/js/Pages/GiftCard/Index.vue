@@ -8,7 +8,7 @@
 						:href="route('gift-card.create')"
 						v-if="$page.props.auth.user.type == 'customer'"
 						class="btn btn-primary float-right"
-						>Add Request</inertia-link
+						><i class="fa fa-plus mr-1"></i>Add Request</inertia-link
 					>
 				</div>
 			</div>
@@ -40,7 +40,11 @@
 									<b>Notes:</b> {{ card.notes }} <br>
 								</td> 
 								<td>
-									<span v-if="card.payment_status"><b>Payment:</b> {{ card.payment_status }}<br></span>
+									<span v-if="card.payment_status">
+										<b>Payment:</b> 
+										<span class="badge m-1" :class="card.payment_status == 'Paid' ? 'badge-success' : 'badge-primary'">
+											{{ card.payment_status }}</span> <br>
+									</span>
 									<b>Admin Status: </b>
 										<span v-if="card.status">{{ card.status }}</span> 
 										<span v-else>Pending</span> <br>
@@ -48,7 +52,7 @@
 									<span v-if="card.admin_updated_at"><b>Admin Updated At:</b> {{ card.admin_updated_at }}<br></span> 
 								</td>
 								<td class="text-center">
-									<inertia-link :href="route('gift-card.edit', card.id)" class="btn btn-success btn-xs float-right">
+									<inertia-link :href="route('gift-card.edit', card.id)" class="btn btn-info btn-xs float-right">
 										<span><i class="fa fa-pencil-alt mr-1"></i></span>Edit & Continue</inertia-link>
 								</td>
 							</tr>
