@@ -140,21 +140,33 @@ class CustomerController extends Controller
      */
     public function index(Request $request)
     {
+        $page = $request->has('page') ? $request->page : 10;
+        $query = User::where('type', 'customer');
 
-
-        $search = '';
-        $customers = User::where('type', '!=', 'admin');
-        if (isset($_GET['search']) && !empty($_GET['search'])) {
-            $search = $_GET['search'];
-            $search_id = intval($search) - 4000;
-            $customers = $customers->where('id', $search_id);
+        if (!empty($request->suite_no)) {
+            $suite_no = intval($request->suite_no) - 4000;
+            $query->where('id', 'LIKE', "%{$suite_no}%");
         }
 
-        $customers = $customers->paginate(25);
+        $customers = $query->orderBy('id', 'desc')->paginate(100)
+            ->through(fn ($customer) => [
+                'id' => $customer->id,
+                'suite_no' => $customer->id,
+                'name' => $customer->name ?? '-',
+                'email' => $customer->email ?? '-',
+                'city' => $customer->city ?? '-',
+                'country' => $customer->country ?? '-',
+                'phone' => $customer->phone_no ?? '-',
+                'created_at' => isset($customer->created_at) ? $customer->created_at->format('F d, Y') : NULL,
+                'updated_at' => isset($customer->created_at) ? $customer->updated_at->format('F d, Y') : NULL,
+            ]);
 
         return Inertia::render('Customers', [
             'customers' => $customers,
-            'search' => $search
+            'filter' => [
+                'page' => $page,
+                'suite_no' => $request->suite_no,
+            ]
         ]);
     }
 

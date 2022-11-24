@@ -156,7 +156,7 @@ Route::delete('/delete-users/{id}', [CustomerController::class, 'deleteUser'])
     ->name('delete-users');
 
 
-Route::get('/customers', [CustomerController::class, 'index'])
+Route::any('/customers', [CustomerController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('customers');
 Route::get('/create-customer', [CustomerController::class, 'create'])

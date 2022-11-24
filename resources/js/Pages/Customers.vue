@@ -2,58 +2,56 @@
     <MainLayout>
       <div class="card mt-4">
       <div class="card-body stock-subscription-form">
-
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-          Manage Customers
-        </h2>
-          <div class="row">
-            <div class="col-md-4" style="float: right;margin-bottom: 30px ">
-              <form action="/customers" method="get">
-                <input type="text" name="search" :value="form.search"  class="form-control" placeholder="Search By Suite #">
-              </form>
-            </div>
-          </div>
-          <flash-messages ></flash-messages>
+          <h2 class="font-semibold text-xl text-gray-800 leading-tight mb-4">Manage Customers</h2>
+          <form @submit.prevent="submit">          
+              <div class="row">
+                  <div class="form-group col-md-4">
+                    <input type="number" name="search" v-model="form.suite_no"  class="form-control" placeholder="Search By Suite #" >
+                  </div>
+                  <div class="form-group col-md-4">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                  </div>
+                </div>
+            </form>
+          <flash-messages></flash-messages>
           <div class="table-responsive mt-3">
-            <table class="table table-striped">
-
+            <table class="table table-striped table-sm text-sm text-center table-bordered">
               <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Name</th>
-                <th scope="col">Email</th>
-                <th scope="col">City</th>
-                <!-- <th scope="col">State</th> -->
-                <th scope="col">Country</th>
-                <!-- <th scope="col">Postal Code</th> -->
-                <th scope="col">Suite #</th>
-                <th scope="col">Phone No</th>
-                <th></th>
-                <th scope="col">Actions</th>
-              </tr>
+                <tr>
+                  <th class="px-3 py-2">SR #</th>
+                  <th class="px-3 py-2">Suite #</th>
+                  <th class="px-3 py-2">Name</th>
+                  <th class="px-3 py-2">Email</th>
+                  <th class="px-3 py-2">Phone</th>
+                  <th class="px-3 py-2">Country</th>
+                  <th class="px-3 py-2">Register Date</th>
+                  <th class="px-3 py-2" colspan="2"></th>
+                </tr>
               </thead>
               <tbody>
-              <tr v-for="customer in customers.data" :key="customer.id">
-                <td>{{ customer.id }}</td>
-                <td>{{ customer.first_name }}</td>
-                <td>{{ customer.email }}</td>
-                <td>{{ customer.city }}</td>
-                <!-- <td>{{ customer.state }}</td> -->
-                <td>{{ customer.country }}</td>
-                <!-- <td>{{ customer.postal_code }}</td> -->
-                <td>{{ siuteNum(customer.id) }}</td>
-                <td>{{ customer.phone_no }}</td>
-                <td>
-                  <inertia-link class="link-primary" :href="createOrderLink(customer.id)">
-                    <span>Create Order </span>
-                  </inertia-link>
-                </td>
-                <td>
-                  <inertia-link  v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'" :href="route('edit-customer',{ id: customer.id })" class="btn btn-info">Edit</inertia-link> |
-                  <inertia-link  v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'" href="" class="btn btn-danger" @click="destroy(customer.id)">Delete</inertia-link>|
-                  <inertia-link  v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'" :href="route('detail-customer',{ id: customer.id })" class="btn btn-info" >Detail</inertia-link>
-                </td>
-              </tr>
+                <tr v-for="(customer,index) in customers.data" :key="customer.id">
+                  <td>{{ ++index }}</td>
+                  <td>{{ siuteNum(customer.id) }}</td>
+                  <td>{{ customer.name }}</td>
+                  <td>{{ customer.email }}</td>
+                  <td>{{ customer.phone }}</td>
+                  <td>{{ customer.country }}</td>
+                  <td>{{ customer.created_at }}</td>
+                  <td>
+                    <inertia-link class="btn btn-primary btn-xs m-1" :href="createOrderLink(customer.id)">
+                      <i class="fa fa-plus mr-1"></i>Create Order
+                    </inertia-link>
+                    <inertia-link  v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'" :href="route('edit-customer',{ id: customer.id })" class="btn btn-info btn-xs m-1">
+                      <i class="fa fa-pencil-alt mr-1"></i>Edit</inertia-link>
+                    <inertia-link  v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'" :href="route('detail-customer',{ id: customer.id })" class="btn btn-info btn-xs m-1" >
+                      <i class="fa fa-list mr-1"></i>Detail</inertia-link>
+                     <inertia-link  v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'" href="" class="btn btn-danger btn-xs m-1" @click="destroy(customer.id)">
+                      <i class="fa fa-trash mr-1"></i>Delete</inertia-link>
+                  </td>
+                </tr>
+                <tr v-if="customers.data.length == 0">
+                  <td class="text-center text-primary" colspan="9">There are no customers added yet.</td>
+                </tr>
               </tbody>
             </table>
             <pagination class="mt-6" :links="customers.links" />
@@ -67,38 +65,32 @@
     import MainLayout from '@/Layouts/Main'
     import BreezeAuthenticatedLayout from '@/Layouts/Authenticated'
     import Pagination from '@/Components/Pagination'
+    import {useForm, Head} from "@inertiajs/inertia-vue3";
 
     export default {
         data() {
         return {
-            units: {},
-            term: '',
-            form: this.$inertia.form({
-                    search: this.search
+            form: useForm({
+              suite_no: "",
             }),
-            params:{
-              search:null,
-            },
         }
     },
   components: {
             BreezeAuthenticatedLayout,
             MainLayout,
             Pagination,
-
         },
     props: {
          customers: Object,
-         search: String,
     },
         
-    watch:{
-      params:{
-        handler(){
-          this.$inertia.get(this.route('customers'),this.params,{replace:true,preserveState:true});
-        }
-      }
-    },
+    // watch:{
+    //   params:{
+    //     handler(){
+    //       this.$inertia.get(this.route('customers'),this.params,{replace:true,preserveState:true});
+    //     }
+    //   }
+    // },
     methods:{
       siuteNum(user_id){
                 return 4000 + user_id;
@@ -110,7 +102,10 @@
         },
         createOrderLink(id){
             return this.route('orders.create')+'?customer_id='+id;
-        }
+        },
+         submit() {
+                this.form.post(route("customers"));
+            },
       }
     }
 </script>
