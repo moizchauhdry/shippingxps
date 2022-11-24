@@ -80,7 +80,7 @@ class ShopController extends Controller
     {
         $additional_pickup_charges = SiteSetting::where('name', 'additional_pickup_charges')->first()->value;
         $warehouses = Warehouse::all();
-        $stores = Store::all();
+        $stores = Store::where('status', 1)->get();
         return Inertia::render('ShopForMe/CreateOrder', [
             'warehouses' => $warehouses,
             'stores' => $stores,
@@ -240,8 +240,8 @@ class ShopController extends Controller
 
         $model = order::find($id);
 
-        if($model == null){
-            return back()->with('error','No Record Found');
+        if ($model == null) {
+            return back()->with('error', 'No Record Found');
         }
 
         $additional_pickup_charges = SiteSetting::where('name', 'additional_pickup_charges')->first()->value;
@@ -546,7 +546,7 @@ class ShopController extends Controller
             DB::commit();
             if (!$isAdmin && $request->has('changes_approved') && $request->get('changes_approved') == 1) {
                 \Session::put('order_id', $order->id);
-                return redirect()->route('payment.index')->with('amount',$order->grand_total);
+                return redirect()->route('payment.index')->with('amount', $order->grand_total);
             } else {
                 return redirect('shop-for-me')->with('success', 'Order Updated !');
             }
@@ -559,7 +559,7 @@ class ShopController extends Controller
 
     public function filterStores($id)
     {
-        $stores = Store::where('warehouse_id', $id)->get();
+        $stores = Store::where('warehouse_id', $id)->where('status', 1)->get();
         return response()->json([
             'status' => 200,
             'stores' => $stores
@@ -675,4 +675,3 @@ class ShopController extends Controller
         return $this->edit($id);
     }
 }
-

@@ -33,339 +33,340 @@ class HomeController extends Controller
 
         //use only fedex and dhl.
         //use logo as well.
-            [
-                "service_id" => 0,
-                "carrierCode" => "dhl",
-                "carrierLabel" => "dhl",
-                "serviceLabel" => "DHL Intl Express",
-                "serviceCode" => "dhl_express_worldwide",
-                'packageTypeCode' => 'dhl_custom_package',
-                "currency" => "USD",
-                "totalAmount" => 0,
-                "baseAmount" => 0,
-                "isReady" => false,
-                "logo" => "/partner-imgs/dhl-logo.png"
-            ],
-            [
-                "service_id" => 1,
-                "carrierCode" => "fedex",
-                "carrierLabel" => "fedex",
-                "serviceLabel" => "FedEx International Economy®",
-                "serviceCode" => "fedex_international_economy",
-                'packageTypeCode' => 'fedex_custom_package',
-                "currency" => "USD",
-                "totalAmount" => 0,
-                "baseAmount" => 0,
-                "isReady" => false,
-                "logo" => "/partner-imgs/fedex-logo.png"
-            ],
-            [
-                "service_id" => 2,
-                "carrierCode" => "fedex",
-                "carrierLabel" => "fedex",
-                "serviceLabel" => "FedEx International Ground®",
-                "serviceCode" => "fedex_ground_canada",
-                'packageTypeCode' => 'fedex_custom_package',
-                "currency" => "USD",
-                "totalAmount" => 0,
-                "baseAmount" => 0,
-                "isReady" => false,
-                "logo" => "/partner-imgs/fedex-logo.png"
-            ],
-            [
-                "service_id" => 3,
-                "carrierCode" => "fedex",
-                "carrierLabel" => "fedex",
-                "serviceLabel" => "FedEx Standard Overnight®",
-                "serviceCode" => "fedex_standard_overnight",
-                'packageTypeCode' => 'fedex_custom_package',
-                "currency" => "USD",
-                "totalAmount" => 0,
-                "baseAmount" => 0,
-                "isReady" => false,
-                "logo" => "/partner-imgs/fedex-logo.png"
-            ],
-            [
-                "service_id" => 4,
-                "carrierCode" => "fedex",
-                "carrierLabel" => "fedex",
-                "serviceLabel" => "FedEx 2Day®",
-                "serviceCode" => "fedex_two_day",
-                'packageTypeCode' => 'fedex_custom_package',
-                "currency" => "USD",
-                "totalAmount" => 0,
-                "baseAmount" => 0,
-                "isReady" => false,
-                "logo" => "/partner-imgs/fedex-logo.png"
-            ],
-            [
-                "service_id" => 5,
-                "carrierCode" => "fedex",
-                "carrierLabel" => "fedex",
-                "serviceLabel" => "FedEx Express Saver®",
-                "serviceCode" => "fedex_express_saver",
-                'packageTypeCode' => 'fedex_custom_package',
-                "currency" => "USD",
-                "totalAmount" => 0,
-                "baseAmount" => 0,
-                "isReady" => false,
-                "logo" => "/partner-imgs/fedex-logo.png"
-            ],
-            [
-                "service_id" => 6,
-                "carrierCode" => "fedex",
-                "carrierLabel" => "fedex",
-                "serviceLabel" => "FedEx Ground®",
-                "serviceCode" => "fedex_ground",
-                'packageTypeCode' => 'fedex_custom_package',
-                "currency" => "USD",
-                "totalAmount" => 0,
-                "baseAmount" => 0,
-                "isReady" => false,
-                "logo" => "/partner-imgs/fedex-logo.png"
-            ],
-            [
-                "service_id" => 7,
-                "carrierCode" => "fedex",
-                "carrierLabel" => "fedex",
-                "serviceLabel" => "FedEx Home Delivery®",
-                "serviceCode" => "fedex_ground_home_delivery",
-                'packageTypeCode' => 'fedex_custom_package',
-                "currency" => "USD",
-                "totalAmount" => 0,
-                "baseAmount" => 0,
-                "isReady" => false,
-                "logo" => "/partner-imgs/fedex-logo.png"
-            ],
-            [
-                "service_id" => 8,
-                "carrierCode" => "fedex",
-                "carrierLabel" => null,
-                "serviceLabel" => "FedEx International Priority®",
-                "serviceCode" => "fedex_international_priority",
-                'packageTypeCode' => 'fedex_custom_package',
-                "currency" => "USD",
-                "totalAmount" => 0,
-                "baseAmount" => 0,
-                "isReady" => false,
-                "logo" => "/partner-imgs/fedex-logo.png"
-            ],
-            [
-                "service_id" => 9,
-                "carrierCode" => "fedex",
-                "carrierLabel" => null,
-                "serviceLabel" => "FedEx International Priority Connect Plus",
-                "serviceCode" => "fedex_international_connect_plus",
-                'packageTypeCode' => 'fedex_custom_package',
-                "currency" => "USD",
-                "totalAmount" => 0,
-                "baseAmount" => 0,
-                "isReady" => false,
-                "logo" => "/partner-imgs/fedex-logo.png"
-            ],
-            [
-                "service_id" => 10,
-                "carrierCode" => "ups",
-                "carrierLabel" => "ups",
-                "serviceLabel" => "UPS® Standard",
-                "serviceCode" => "ups_standard",
-                'packageTypeCode' => 'ups_custom_package',
-                "currency" => "USD",
-                "totalAmount" => 0,
-                "baseAmount" => 0,
-                "isReady" => false,
-                "logo" => "/partner-imgs/ups-logo.png"
-            ],
-            [
-                "service_id" => 11,
-                "carrierCode" => "ups",
-                "carrierLabel" => "ups",
-                "serviceLabel" => "UPS Worldwide Express®",
-                "serviceCode" => "ups_worldwide_express",
-                'packageTypeCode' => 'ups_custom_package',
-                "currency" => "USD",
-                "totalAmount" => 0,
-                "baseAmount" => 0,
-                "isReady" => false,
-                "logo" => "/partner-imgs/ups-logo.png"
-            ],
-            [
-                "service_id" => 12,
-                "carrierCode" => "ups",
-                "carrierLabel" => "ups",
-                "serviceLabel" => "UPS Worldwide Express Plus®",
-                "serviceCode" => "ups_express_plus",
-                'packageTypeCode' => 'ups_custom_package',
-                "currency" => "USD",
-                "totalAmount" => 0,
-                "baseAmount" => 0,
-                "isReady" => false,
-                "logo" => "/partner-imgs/ups-logo.png"
-            ],
-            [
-                "service_id" => 13,
-                "carrierCode" => "ups",
-                "carrierLabel" => "ups",
-                "serviceLabel" => "UPS Worldwide Saver®",
-                "serviceCode" => "ups_worldwide_saver",
-                'packageTypeCode' => 'ups_custom_package',
-                "currency" => "USD",
-                "totalAmount" => 0,
-                "baseAmount" => 0,
-                "isReady" => false,
-                "logo" => "/partner-imgs/ups-logo.png"
-            ],
-            [
-                "service_id" => 14,
-                "carrierCode" => "ups",
-                "carrierLabel" => "ups",
-                "serviceLabel" => "UPS Next Day Air®",
-                "serviceCode" => "ups_next_day_air",
-                'packageTypeCode' => 'ups_custom_package',
-                "currency" => "USD",
-                "totalAmount" => 0,
-                "baseAmount" => 0,
-                "isReady" => false,
-                "logo" => "/partner-imgs/ups-logo.png"
-            ],
-            [
-                "service_id" => 15,
-                "carrierCode" => "ups",
-                "carrierLabel" => "ups",
-                "serviceLabel" => "UPS 2nd Day Air®",
-                "serviceCode" => "ups_second_day_air",
-                'packageTypeCode' => 'ups_custom_package',
-                "currency" => "USD",
-                "totalAmount" => 0,
-                "baseAmount" => 0,
-                "isReady" => false,
-                "logo" => "/partner-imgs/ups-logo.png"
-            ],
-            [
-                "service_id" => 16,
-                "carrierCode" => "ups",
-                "carrierLabel" => "ups",
-                "serviceLabel" => "UPS® Ground",
-                "serviceCode" => "ups_ground",
-                'packageTypeCode' => 'ups_custom_package',
-                "currency" => "USD",
-                "totalAmount" => 0,
-                "baseAmount" => 0,
-                "isReady" => false,
-                "logo" => "/partner-imgs/ups-logo.png"
-            ],
-            [
-                "service_id" => 17,
-                "carrierCode" => "ups",
-                "carrierLabel" => "ups",
-                "serviceLabel" => "UPS Next Day Air Saver®",
-                "serviceCode" => "ups_next_day_air_saver",
-                'packageTypeCode' => 'ups_custom_package',
-                "currency" => "USD",
-                "totalAmount" => 0,
-                "baseAmount" => 0,
-                "isReady" => false,
-                "logo" => "/partner-imgs/ups-logo.png"
-            ],
-            [
-                "service_id" => 18,
-                "carrierCode" => "ups",
-                "carrierLabel" => "ups",
-                "serviceLabel" => "UPS 2nd Day Air A.M.®",
-                "serviceCode" => "ups_second_day_air_am",
-                'packageTypeCode' => 'ups_custom_package',
-                "currency" => "USD",
-                "totalAmount" => 0,
-                "baseAmount" => 0,
-                "isReady" => false,
-                "logo" => "/partner-imgs/ups-logo.png"
-            ],
-            [
-                "service_id" => 19,
-                "carrierCode" => "ups",
-                "carrierLabel" => "ups",
-                "serviceLabel" => "UPS 3 Day Select®",
-                "serviceCode" => "ups_three_day_select",
-                'packageTypeCode' => 'ups_custom_package',
-                "currency" => "USD",
-                "totalAmount" => 0,
-                "baseAmount" => 0,
-                "isReady" => false,
-                "logo" => "/partner-imgs/ups-logo.png"
-            ],
-            [
-                "service_id" => 20,
-                "carrierCode" => "ups",
-                "carrierLabel" => "ups",
-                "serviceLabel" => "UPS Worldwide Expedited®",
-                "serviceCode" => "ups_worldwide_expedited",
-                'packageTypeCode' => 'ups_custom_package',
-                "currency" => "USD",
-                "totalAmount" => 0,
-                "baseAmount" => 0,
-                "isReady" => false,
-                "logo" => "/partner-imgs/ups-logo.png"
-            ]
+        [
+            "service_id" => 0,
+            "carrierCode" => "dhl",
+            "carrierLabel" => "dhl",
+            "serviceLabel" => "DHL Intl Express",
+            "serviceCode" => "dhl_express_worldwide",
+            'packageTypeCode' => 'dhl_custom_package',
+            "currency" => "USD",
+            "totalAmount" => 0,
+            "baseAmount" => 0,
+            "isReady" => false,
+            "logo" => "/partner-imgs/dhl-logo.png"
+        ],
+        [
+            "service_id" => 1,
+            "carrierCode" => "fedex",
+            "carrierLabel" => "fedex",
+            "serviceLabel" => "FedEx International Economy®",
+            "serviceCode" => "fedex_international_economy",
+            'packageTypeCode' => 'fedex_custom_package',
+            "currency" => "USD",
+            "totalAmount" => 0,
+            "baseAmount" => 0,
+            "isReady" => false,
+            "logo" => "/partner-imgs/fedex-logo.png"
+        ],
+        [
+            "service_id" => 2,
+            "carrierCode" => "fedex",
+            "carrierLabel" => "fedex",
+            "serviceLabel" => "FedEx International Ground®",
+            "serviceCode" => "fedex_ground_canada",
+            'packageTypeCode' => 'fedex_custom_package',
+            "currency" => "USD",
+            "totalAmount" => 0,
+            "baseAmount" => 0,
+            "isReady" => false,
+            "logo" => "/partner-imgs/fedex-logo.png"
+        ],
+        [
+            "service_id" => 3,
+            "carrierCode" => "fedex",
+            "carrierLabel" => "fedex",
+            "serviceLabel" => "FedEx Standard Overnight®",
+            "serviceCode" => "fedex_standard_overnight",
+            'packageTypeCode' => 'fedex_custom_package',
+            "currency" => "USD",
+            "totalAmount" => 0,
+            "baseAmount" => 0,
+            "isReady" => false,
+            "logo" => "/partner-imgs/fedex-logo.png"
+        ],
+        [
+            "service_id" => 4,
+            "carrierCode" => "fedex",
+            "carrierLabel" => "fedex",
+            "serviceLabel" => "FedEx 2Day®",
+            "serviceCode" => "fedex_two_day",
+            'packageTypeCode' => 'fedex_custom_package',
+            "currency" => "USD",
+            "totalAmount" => 0,
+            "baseAmount" => 0,
+            "isReady" => false,
+            "logo" => "/partner-imgs/fedex-logo.png"
+        ],
+        [
+            "service_id" => 5,
+            "carrierCode" => "fedex",
+            "carrierLabel" => "fedex",
+            "serviceLabel" => "FedEx Express Saver®",
+            "serviceCode" => "fedex_express_saver",
+            'packageTypeCode' => 'fedex_custom_package',
+            "currency" => "USD",
+            "totalAmount" => 0,
+            "baseAmount" => 0,
+            "isReady" => false,
+            "logo" => "/partner-imgs/fedex-logo.png"
+        ],
+        [
+            "service_id" => 6,
+            "carrierCode" => "fedex",
+            "carrierLabel" => "fedex",
+            "serviceLabel" => "FedEx Ground®",
+            "serviceCode" => "fedex_ground",
+            'packageTypeCode' => 'fedex_custom_package',
+            "currency" => "USD",
+            "totalAmount" => 0,
+            "baseAmount" => 0,
+            "isReady" => false,
+            "logo" => "/partner-imgs/fedex-logo.png"
+        ],
+        [
+            "service_id" => 7,
+            "carrierCode" => "fedex",
+            "carrierLabel" => "fedex",
+            "serviceLabel" => "FedEx Home Delivery®",
+            "serviceCode" => "fedex_ground_home_delivery",
+            'packageTypeCode' => 'fedex_custom_package',
+            "currency" => "USD",
+            "totalAmount" => 0,
+            "baseAmount" => 0,
+            "isReady" => false,
+            "logo" => "/partner-imgs/fedex-logo.png"
+        ],
+        [
+            "service_id" => 8,
+            "carrierCode" => "fedex",
+            "carrierLabel" => null,
+            "serviceLabel" => "FedEx International Priority®",
+            "serviceCode" => "fedex_international_priority",
+            'packageTypeCode' => 'fedex_custom_package',
+            "currency" => "USD",
+            "totalAmount" => 0,
+            "baseAmount" => 0,
+            "isReady" => false,
+            "logo" => "/partner-imgs/fedex-logo.png"
+        ],
+        [
+            "service_id" => 9,
+            "carrierCode" => "fedex",
+            "carrierLabel" => null,
+            "serviceLabel" => "FedEx International Priority Connect Plus",
+            "serviceCode" => "fedex_international_connect_plus",
+            'packageTypeCode' => 'fedex_custom_package',
+            "currency" => "USD",
+            "totalAmount" => 0,
+            "baseAmount" => 0,
+            "isReady" => false,
+            "logo" => "/partner-imgs/fedex-logo.png"
+        ],
+        [
+            "service_id" => 10,
+            "carrierCode" => "ups",
+            "carrierLabel" => "ups",
+            "serviceLabel" => "UPS® Standard",
+            "serviceCode" => "ups_standard",
+            'packageTypeCode' => 'ups_custom_package',
+            "currency" => "USD",
+            "totalAmount" => 0,
+            "baseAmount" => 0,
+            "isReady" => false,
+            "logo" => "/partner-imgs/ups-logo.png"
+        ],
+        [
+            "service_id" => 11,
+            "carrierCode" => "ups",
+            "carrierLabel" => "ups",
+            "serviceLabel" => "UPS Worldwide Express®",
+            "serviceCode" => "ups_worldwide_express",
+            'packageTypeCode' => 'ups_custom_package',
+            "currency" => "USD",
+            "totalAmount" => 0,
+            "baseAmount" => 0,
+            "isReady" => false,
+            "logo" => "/partner-imgs/ups-logo.png"
+        ],
+        [
+            "service_id" => 12,
+            "carrierCode" => "ups",
+            "carrierLabel" => "ups",
+            "serviceLabel" => "UPS Worldwide Express Plus®",
+            "serviceCode" => "ups_express_plus",
+            'packageTypeCode' => 'ups_custom_package',
+            "currency" => "USD",
+            "totalAmount" => 0,
+            "baseAmount" => 0,
+            "isReady" => false,
+            "logo" => "/partner-imgs/ups-logo.png"
+        ],
+        [
+            "service_id" => 13,
+            "carrierCode" => "ups",
+            "carrierLabel" => "ups",
+            "serviceLabel" => "UPS Worldwide Saver®",
+            "serviceCode" => "ups_worldwide_saver",
+            'packageTypeCode' => 'ups_custom_package',
+            "currency" => "USD",
+            "totalAmount" => 0,
+            "baseAmount" => 0,
+            "isReady" => false,
+            "logo" => "/partner-imgs/ups-logo.png"
+        ],
+        [
+            "service_id" => 14,
+            "carrierCode" => "ups",
+            "carrierLabel" => "ups",
+            "serviceLabel" => "UPS Next Day Air®",
+            "serviceCode" => "ups_next_day_air",
+            'packageTypeCode' => 'ups_custom_package',
+            "currency" => "USD",
+            "totalAmount" => 0,
+            "baseAmount" => 0,
+            "isReady" => false,
+            "logo" => "/partner-imgs/ups-logo.png"
+        ],
+        [
+            "service_id" => 15,
+            "carrierCode" => "ups",
+            "carrierLabel" => "ups",
+            "serviceLabel" => "UPS 2nd Day Air®",
+            "serviceCode" => "ups_second_day_air",
+            'packageTypeCode' => 'ups_custom_package',
+            "currency" => "USD",
+            "totalAmount" => 0,
+            "baseAmount" => 0,
+            "isReady" => false,
+            "logo" => "/partner-imgs/ups-logo.png"
+        ],
+        [
+            "service_id" => 16,
+            "carrierCode" => "ups",
+            "carrierLabel" => "ups",
+            "serviceLabel" => "UPS® Ground",
+            "serviceCode" => "ups_ground",
+            'packageTypeCode' => 'ups_custom_package',
+            "currency" => "USD",
+            "totalAmount" => 0,
+            "baseAmount" => 0,
+            "isReady" => false,
+            "logo" => "/partner-imgs/ups-logo.png"
+        ],
+        [
+            "service_id" => 17,
+            "carrierCode" => "ups",
+            "carrierLabel" => "ups",
+            "serviceLabel" => "UPS Next Day Air Saver®",
+            "serviceCode" => "ups_next_day_air_saver",
+            'packageTypeCode' => 'ups_custom_package',
+            "currency" => "USD",
+            "totalAmount" => 0,
+            "baseAmount" => 0,
+            "isReady" => false,
+            "logo" => "/partner-imgs/ups-logo.png"
+        ],
+        [
+            "service_id" => 18,
+            "carrierCode" => "ups",
+            "carrierLabel" => "ups",
+            "serviceLabel" => "UPS 2nd Day Air A.M.®",
+            "serviceCode" => "ups_second_day_air_am",
+            'packageTypeCode' => 'ups_custom_package',
+            "currency" => "USD",
+            "totalAmount" => 0,
+            "baseAmount" => 0,
+            "isReady" => false,
+            "logo" => "/partner-imgs/ups-logo.png"
+        ],
+        [
+            "service_id" => 19,
+            "carrierCode" => "ups",
+            "carrierLabel" => "ups",
+            "serviceLabel" => "UPS 3 Day Select®",
+            "serviceCode" => "ups_three_day_select",
+            'packageTypeCode' => 'ups_custom_package',
+            "currency" => "USD",
+            "totalAmount" => 0,
+            "baseAmount" => 0,
+            "isReady" => false,
+            "logo" => "/partner-imgs/ups-logo.png"
+        ],
+        [
+            "service_id" => 20,
+            "carrierCode" => "ups",
+            "carrierLabel" => "ups",
+            "serviceLabel" => "UPS Worldwide Expedited®",
+            "serviceCode" => "ups_worldwide_expedited",
+            'packageTypeCode' => 'ups_custom_package',
+            "currency" => "USD",
+            "totalAmount" => 0,
+            "baseAmount" => 0,
+            "isReady" => false,
+            "logo" => "/partner-imgs/ups-logo.png"
+        ]
     ];
 
     public function checkAuth()
     {
-        if(Auth::check()){
-            if(Auth::user()->type != 'admin'){
+        if (Auth::check()) {
+            if (Auth::user()->type != 'admin') {
                 return response()->json([
                     'init' => true,
                 ]);
-            }else{
+            } else {
                 return response()->json([
                     'init' => false,
                 ]);
             }
-        }else{
+        } else {
             return response()->json([
                 'init' => true,
             ]);
         }
-
     }
 
-    public function dashboard() {
+    public function dashboard()
+    {
 
-        $customer_id =Auth::user()->id;
+        $customer_id = Auth::user()->id;
         $user_type = Auth::user()->type;
 
 
-        if($user_type == 'admin'){
-            $arrived = Order::where('status','arrived')->with(['customer','warehouse'])->get();
-            $labeled = Order::where('status','labeled')->with(['customer','warehouse'])->get();
-            $shipped = Order::where('status','shipped')->with(['customer','warehouse'])->get();
-        }else{
-            $arrived = Order::where('customer_id', $customer_id)->where('status','arrived')->with(['customer','warehouse'])->get();
-            $labeled = Order::where('customer_id', $customer_id)->where('status','labeled')->with(['customer','warehouse'])->get();
-            $shipped = Order::where('customer_id', $customer_id)->where('status','shipped')->with(['customer','warehouse'])->get();
+        if ($user_type == 'admin') {
+            $arrived = Order::where('status', 'arrived')->with(['customer', 'warehouse'])->get();
+            $labeled = Order::where('status', 'labeled')->with(['customer', 'warehouse'])->get();
+            $shipped = Order::where('status', 'shipped')->with(['customer', 'warehouse'])->get();
+        } else {
+            $arrived = Order::where('customer_id', $customer_id)->where('status', 'arrived')->with(['customer', 'warehouse'])->get();
+            $labeled = Order::where('customer_id', $customer_id)->where('status', 'labeled')->with(['customer', 'warehouse'])->get();
+            $shipped = Order::where('customer_id', $customer_id)->where('status', 'shipped')->with(['customer', 'warehouse'])->get();
         }
 
 
-        return Inertia::render('Dashboard',[
+        return Inertia::render('Dashboard', [
             'arrived' => $arrived,
             'labeled' => $labeled,
             'shipped' => $shipped
         ]);
     }
 
-    public function pricingTable(){
+    public function pricingTable()
+    {
         $services = ServicePage::all();
 
-        return Inertia::render('PricingTable',['services' => $services]);
-
+        return Inertia::render('PricingTable', ['services' => $services]);
     }
 
-    public function pricing(){
+    public function pricing()
+    {
 
-        $countries = Country::all(['id','nicename as name','iso'])->where('iso','!=','US')->toArray();
+        $countries = Country::all(['id', 'nicename as name', 'iso'])->toArray();
 
         $warehouses = Warehouse::all()->toArray();
 
-        return Inertia::render('Pricing',[
+        return Inertia::render('Pricing', [
             'countries' => $countries,
             'warehouses' => $warehouses,
             'services' => $this->service_list
@@ -374,18 +375,20 @@ class HomeController extends Controller
 
     public function getServicesList()
     {
-        return response()->json(['services'=> $this->service_list]);
+        return response()->json(['services' => $this->service_list]);
     }
 
 
-    public function shopping(){
+    public function shopping()
+    {
 
 
         $user = Auth::user();
 
         $profile_complete = TRUE;
         //check if profile is complete
-        if(empty($user->first_name) ||
+        if (
+            empty($user->first_name) ||
             empty($user->last_name) ||
             empty($user->address1) ||
             empty($user->country) ||
@@ -394,37 +397,36 @@ class HomeController extends Controller
             empty($user->postal_code) ||
             empty($user->phone_no) ||
             empty($user->email)
-        ){
+        ) {
             $profile_complete = FALSE;
         }
 
-        $cities_from = City::where('country_code_2','US')->get()->toArray();
-        $cities_to = City::where('country_code_2','!=','US')->get()->toArray();
+        $cities_from = City::where('country_code_2', 'US')->get()->toArray();
+        $cities_to = City::where('country_code_2', '!=', 'US')->get()->toArray();
 
 
-        return Inertia::render('Shopping',[
+        return Inertia::render('Shopping', [
             'cities_from' => $cities_from,
             'cities_to' => $cities_to,
             'profile_complete' => $profile_complete
         ]);
     }
 
-    public function getQuote(Request $request){
+    public function getQuote(Request $request)
+    {
         $service = $request->get('service');
 
         $service = json_decode($service);
         // dd($service);
 
         $rules = [
-            'weight' => ['required','gt:0'],
-            'length' => ['required','gt:0'],
-            'width' => ['required','gt:0'],
-            'height' => ['required','gt:0'],
+            'weight' => ['required', 'gt:0'],
+            'length' => ['required', 'gt:0'],
+            'width' => ['required', 'gt:0'],
+            'height' => ['required', 'gt:0'],
         ];
 
-        $validator = Validator::make($request->all(), $rules, $message = [
-
-        ]);
+        $validator = Validator::make($request->all(), $rules, $message = []);
 
         if ($validator->fails()) {
             return response()->json([
@@ -437,7 +439,7 @@ class HomeController extends Controller
 
         $markup = SiteSetting::getByName('markup');
 
-        $ship_from= $request->input('ship_from');
+        $ship_from = $request->input('ship_from');
         $ship_to = $request->input('ship_to');
         $weight = $request->input('weight');
         $units = $request->input('weight_unit');
@@ -445,7 +447,7 @@ class HomeController extends Controller
         $width = $request->input('width');
         $height = $request->input('height');
         $zipcode = $request->input('zipcode');
-        $cityName = $request->has('city')? $request->city : null;
+        $cityName = $request->has('city') ? $request->city : null;
         $is_residential = $request->input('is_residential') == 1 ? true : false;
 
 
@@ -453,11 +455,11 @@ class HomeController extends Controller
 
         $declared_value = '10.0';
 
-        $warehouse = Warehouse::where('id',$ship_from)->first();
+        $warehouse = Warehouse::where('id', $ship_from)->first();
 
-        $country = Country::where('id',$ship_to)->first();
+        $country = Country::where('id', $ship_to)->first();
 
-        $units = explode('_',$units);
+        $units = explode('_', $units);
 
         $weight_unit = isset($units[0]) ? $units[0] : 'lb';
         $dimention_unit = isset($units[1]) ? $units[1] : 'in';
@@ -477,23 +479,23 @@ class HomeController extends Controller
 
         $receiver = [
             "country" => $country->iso,
-            "zip" => empty($zipcode) ? '40050': $zipcode,
+            "zip" => empty($zipcode) ? '40050' : $zipcode,
         ];
 
-        if($cityName != null){
+        if ($cityName != null) {
             $receiver['city'] = $cityName;
-        }elseif ($country->iso == 'PK'){
+        } elseif ($country->iso == 'PK') {
             $receiver['city'] = "Lahore";
         }
 
         $pieces = [
             0 => [
-                "weight"=> $weight,
-                "length"=> $length,
-                "width"=> $width,
-                "height"=> $height,
-                "insuranceAmount"=> null,
-                "declaredValue"=> $declared_value
+                "weight" => $weight,
+                "length" => $length,
+                "width" => $width,
+                "height" => $height,
+                "insuranceAmount" => null,
+                "declaredValue" => $declared_value
             ]
         ];
 
@@ -508,8 +510,8 @@ class HomeController extends Controller
             "contentDescription" => "stuff and things",
             "weightUnit" => $weight_unit,
             "dimUnit" => $dimention_unit,
-            "currency"=> "USD",
-            "customsCurrency"=> "USD",
+            "currency" => "USD",
+            "customsCurrency" => "USD",
             "pieces"  => $pieces,
             "billing" => [
                 "party" => "sender"
@@ -520,7 +522,7 @@ class HomeController extends Controller
 
             $client = new Client();
 
-            $request = $client->post('https://xpsshipper.com/restapi/v1/customers/'.$this->customer_id.'/quote', [
+            $request = $client->post('https://xpsshipper.com/restapi/v1/customers/' . $this->customer_id . '/quote', [
                 'headers' => $headers,
                 'body' => json_encode($post_params),
                 'http_errors' => true,
@@ -531,11 +533,11 @@ class HomeController extends Controller
             \Log::info($response);
             $response = json_decode($response);
 
-            $markup_amount = $response->totalAmount*((int)$markup/100);
+            $markup_amount = $response->totalAmount * ((int)$markup / 100);
 
-            $total = $response->totalAmount+ $markup_amount;
+            $total = $response->totalAmount + $markup_amount;
 
-            $total = number_format($total,2);
+            $total = number_format($total, 2);
 
             $service_rate = [
                 "service_id" => $service->service_id,
@@ -547,20 +549,19 @@ class HomeController extends Controller
                 'totalAmount' => $total,
                 'baseAmount' => $response->baseAmount,
                 'isReady' => true,
-                'logo'=> $service->logo,
+                'logo' => $service->logo,
                 'markup_fee' => $markup_amount,
             ];
-
-        }catch(\Exception $ex){
+        } catch (\Exception $ex) {
 
             $ex_message = $ex->getMessage();
 
-            $pos = strpos($ex_message,'{"error":"');
+            $pos = strpos($ex_message, '{"error":"');
 
-            $pos1 = strpos($ex_message,'"errorCategory"');
-            $length = $pos1-($pos+12);
+            $pos1 = strpos($ex_message, '"errorCategory"');
+            $length = $pos1 - ($pos + 12);
 
-            $message = substr($ex_message,$pos+10,$length);
+            $message = substr($ex_message, $pos + 10, $length);
 
             $errors[] = [
                 'label' => $service->serviceLabel,
@@ -568,7 +569,6 @@ class HomeController extends Controller
                 'message' => $message,
                 'details' => $ex_message,
             ];
-
         }
 
         return response()->json([
@@ -576,141 +576,141 @@ class HomeController extends Controller
             'service' => $service_rate,
             'errors' => $errors,
         ]);
-
     }
 
     /**
      * Not used now, using getQuote for single service at atime.
      */
 
-    public function getQuotes(Request $request){
+    public function getQuotes(Request $request)
+    {
 
-      $markup = SiteSetting::getByName('markup');
-      $ship_from= $request->input('ship_from');
-      $ship_to = $request->input('ship_to');
-      $weight = $request->input('weight');
-      $units = $request->input('weight_unit','lb_in');
-      $length = $request->input('length');
-      $width = $request->input('width');
-      $height = $request->input('height');
-      $zipcode = $request->input('zipcode');
-      //$declared_value = $request->input('declared_value');
-      $declared_value = '1.0';
-      $warehouse = Warehouse::where('id',$ship_from)->first();
-      $country = Country::where('id',$ship_to)->first();
-      $units = explode('_',$units);
-      $weight_unit = isset($units[0]) ? $units[0] : 'lb';
-      $dimention_unit = isset($units[1]) ? $units[1] : 'in';
-      $headers = [
-          'cache-control' => 'no-cache',
-          'Content-Type' => 'application/json',
-          'Authorization' => 'Bearer ' . $this->token
-      ];
-      $client = new Client();
+        $markup = SiteSetting::getByName('markup');
+        $ship_from = $request->input('ship_from');
+        $ship_to = $request->input('ship_to');
+        $weight = $request->input('weight');
+        $units = $request->input('weight_unit', 'lb_in');
+        $length = $request->input('length');
+        $width = $request->input('width');
+        $height = $request->input('height');
+        $zipcode = $request->input('zipcode');
+        //$declared_value = $request->input('declared_value');
+        $declared_value = '1.0';
+        $warehouse = Warehouse::where('id', $ship_from)->first();
+        $country = Country::where('id', $ship_to)->first();
+        $units = explode('_', $units);
+        $weight_unit = isset($units[0]) ? $units[0] : 'lb';
+        $dimention_unit = isset($units[1]) ? $units[1] : 'in';
+        $headers = [
+            'cache-control' => 'no-cache',
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer ' . $this->token
+        ];
+        $client = new Client();
 
-      $request = $client->get('https://xpsshipper.com/restapi/v1/customers/'.$this->customer_id.'/services', [
-          'headers' => $headers,
-          'http_errors' => true,
-      ]);
+        $request = $client->get('https://xpsshipper.com/restapi/v1/customers/' . $this->customer_id . '/services', [
+            'headers' => $headers,
+            'http_errors' => true,
+        ]);
 
-      $response = $request ? $request->getBody()->getContents() : null;
-      $response = json_decode($response);
+        $response = $request ? $request->getBody()->getContents() : null;
+        $response = json_decode($response);
 
-      echo '<pre>';
-      print_r($response->services);
-      exit;
+        echo '<pre>';
+        print_r($response->services);
+        exit;
 
-      $service_rates = [];
-      $errors = [];
-      $sender = [
-        "country" =>  'US',
-        "zip" =>  $warehouse->zip
-      ];
-      $receiver = [
-          "country" => $country->iso,
-          "zip" => $zipcode,
-      ];
-      $pieces = [
-        0 => [
-          "weight"=> $weight,
-          "length"=> $length,
-          "width"=> $width,
-          "height"=> $height,
-          "insuranceAmount"=> null,
-          "declaredValue"=> $declared_value
-        ]
-      ];
-      foreach($response->services as $service){
-          if (!empty($service->carrierCode) && strpos($service->serviceCode, 'international') !== false) {
+        $service_rates = [];
+        $errors = [];
+        $sender = [
+            "country" =>  'US',
+            "zip" =>  $warehouse->zip
+        ];
+        $receiver = [
+            "country" => $country->iso,
+            "zip" => $zipcode,
+        ];
+        $pieces = [
+            0 => [
+                "weight" => $weight,
+                "length" => $length,
+                "width" => $width,
+                "height" => $height,
+                "insuranceAmount" => null,
+                "declaredValue" => $declared_value
+            ]
+        ];
+        foreach ($response->services as $service) {
+            if (!empty($service->carrierCode) && strpos($service->serviceCode, 'international') !== false) {
 
-            $post_params = [
-                "carrierCode" => $service->carrierCode,
-                "serviceCode" =>  $service->serviceCode,
-                "packageTypeCode" => $this->getPackageTypeCode($service),
-                "sender" => $sender,
-                "receiver" => $receiver,
-                "residential" => true,
-                "signatureOptionCode" => "DIRECT",
-                "contentDescription" => "stuff and things",
-                "weightUnit" => $weight_unit,
-                "dimUnit" => $dimention_unit,
-                "currency"=> "USD",
-                "customsCurrency"=> "USD",
-                "pieces"  => $pieces,
-                "billing" => [
-                  "party" => "receiver"
-                ]
-            ];
-            try {
-              $request = $client->post('https://xpsshipper.com/restapi/v1/customers/'.$this->customer_id.'/quote', [
-                  'headers' => $headers,
-                  'body' => json_encode($post_params),
-                  'http_errors' => true,
-              ]);
+                $post_params = [
+                    "carrierCode" => $service->carrierCode,
+                    "serviceCode" =>  $service->serviceCode,
+                    "packageTypeCode" => $this->getPackageTypeCode($service),
+                    "sender" => $sender,
+                    "receiver" => $receiver,
+                    "residential" => true,
+                    "signatureOptionCode" => "DIRECT",
+                    "contentDescription" => "stuff and things",
+                    "weightUnit" => $weight_unit,
+                    "dimUnit" => $dimention_unit,
+                    "currency" => "USD",
+                    "customsCurrency" => "USD",
+                    "pieces"  => $pieces,
+                    "billing" => [
+                        "party" => "receiver"
+                    ]
+                ];
+                try {
+                    $request = $client->post('https://xpsshipper.com/restapi/v1/customers/' . $this->customer_id . '/quote', [
+                        'headers' => $headers,
+                        'body' => json_encode($post_params),
+                        'http_errors' => true,
+                    ]);
 
-              $response = $request ? $request->getBody()->getContents() : null;
-              $response = json_decode($response);
-              $markup_amount = $response->totalAmount*((int)$markup/100);
-              $total = $response->totalAmount+$markup_amount;
-              $total = number_format($total,2);
-              $service_rates[] = [
-                'service_id' => $service->service_id,
-                'label' => $service->serviceLabel,
-                'serviceCode' => $service->serviceCode,
-                'currency' => $response->currency,
-                //'totalAmount' => $response->totalAmount,
-                'totalAmount' => $total,
-                'baseAmount' => $response->baseAmount,
-              ];
-            }catch(\Exception $ex){
+                    $response = $request ? $request->getBody()->getContents() : null;
+                    $response = json_decode($response);
+                    $markup_amount = $response->totalAmount * ((int)$markup / 100);
+                    $total = $response->totalAmount + $markup_amount;
+                    $total = number_format($total, 2);
+                    $service_rates[] = [
+                        'service_id' => $service->service_id,
+                        'label' => $service->serviceLabel,
+                        'serviceCode' => $service->serviceCode,
+                        'currency' => $response->currency,
+                        //'totalAmount' => $response->totalAmount,
+                        'totalAmount' => $total,
+                        'baseAmount' => $response->baseAmount,
+                    ];
+                } catch (\Exception $ex) {
 
-              $ex_message = $ex->getMessage();
-              $pos = strpos($ex_message,'{"error":"');
+                    $ex_message = $ex->getMessage();
+                    $pos = strpos($ex_message, '{"error":"');
 
-              $pos1 = strpos($ex_message,'"errorCategory"');
-              $length = $pos1-($pos+12);
+                    $pos1 = strpos($ex_message, '"errorCategory"');
+                    $length = $pos1 - ($pos + 12);
 
-              $message = substr($ex_message,$pos+10,$length);
+                    $message = substr($ex_message, $pos + 10, $length);
 
-              $errors[] = [
-                'label' => $service->serviceLabel,
-                'serviceCode' => $service->serviceCode,
-                'message' => $message,
-              ];
-
+                    $errors[] = [
+                        'label' => $service->serviceLabel,
+                        'serviceCode' => $service->serviceCode,
+                        'message' => $message,
+                    ];
+                }
             }
-          }
         }
 
         return response()->json([
-        'status' => TRUE,
-        'services' => $service_rates,
-        'errors' => $errors,
-      ]);
+            'status' => TRUE,
+            'services' => $service_rates,
+            'errors' => $errors,
+        ]);
     }
 
 
-    public function getQuoteByOrders(Request $request){
+    public function getQuoteByOrders(Request $request)
+    {
         $service = $request->get('service');
 
         $service = json_decode($service);
@@ -718,20 +718,20 @@ class HomeController extends Controller
 
         $piecesStrings = $request->pieces;
         $pieces = [];
-        foreach ($piecesStrings as $strValue){
-            $pieces[] = json_decode($strValue,true);
+        foreach ($piecesStrings as $strValue) {
+            $pieces[] = json_decode($strValue, true);
         }
 
 
 
         $markup = SiteSetting::getByName('markup');
 
-        $ship_from= $request->input('ship_from');
+        $ship_from = $request->input('ship_from');
         $ship_to = $request->input('ship_to');
         $units = $request->input('weight_unit');
         $length = $request->input('length');
         $zipcode = $request->input('zipcode');
-        $cityName = $request->has('city')? $request->city : null;
+        $cityName = $request->has('city') ? $request->city : null;
         $is_residential = $request->input('is_residential') == 1 ? true : false;
 
 
@@ -739,11 +739,11 @@ class HomeController extends Controller
 
         $declared_value = '10.0';
 
-        $warehouse = Warehouse::where('id',$ship_from)->first();
+        $warehouse = Warehouse::where('id', $ship_from)->first();
 
-        $country = Country::where('id',$ship_to)->first();
+        $country = Country::where('id', $ship_to)->first();
 
-        $units = explode('_',$units);
+        $units = explode('_', $units);
 
         $weight_unit = isset($units[0]) ? $units[0] : 'lb';
         $dimention_unit = isset($units[1]) ? $units[1] : 'in';
@@ -763,12 +763,12 @@ class HomeController extends Controller
 
         $receiver = [
             "country" => $country->iso,
-            "zip" => empty($zipcode) ? '40050': $zipcode,
+            "zip" => empty($zipcode) ? '40050' : $zipcode,
         ];
 
-        if($cityName != null){
+        if ($cityName != null) {
             $receiver['city'] = $cityName;
-        }elseif ($country->iso == 'PK'){
+        } elseif ($country->iso == 'PK') {
             $receiver['city'] = "Lahore";
         }
 
@@ -784,8 +784,8 @@ class HomeController extends Controller
             "contentDescription" => "stuff and things",
             "weightUnit" => $weight_unit,
             "dimUnit" => $dimention_unit,
-            "currency"=> "USD",
-            "customsCurrency"=> "USD",
+            "currency" => "USD",
+            "customsCurrency" => "USD",
             "pieces"  => $pieces,
             "billing" => [
                 "party" => "sender"
@@ -796,7 +796,7 @@ class HomeController extends Controller
 
             $client = new Client();
 
-            $request = $client->post('https://xpsshipper.com/restapi/v1/customers/'.$this->customer_id.'/quote', [
+            $request = $client->post('https://xpsshipper.com/restapi/v1/customers/' . $this->customer_id . '/quote', [
                 'headers' => $headers,
                 'body' => json_encode($post_params),
                 'http_errors' => true,
@@ -807,11 +807,11 @@ class HomeController extends Controller
             \Log::info($response);
             $response = json_decode($response);
 
-            $markup_amount = $response->totalAmount*((int)$markup/100);
+            $markup_amount = $response->totalAmount * ((int)$markup / 100);
 
-            $total = $response->totalAmount+ $markup_amount;
+            $total = $response->totalAmount + $markup_amount;
 
-            $total = number_format($total,2);
+            $total = number_format($total, 2);
 
             $service_rate = [
                 "service_id" => $service->service_id,
@@ -823,20 +823,19 @@ class HomeController extends Controller
                 'totalAmount' => $total,
                 'baseAmount' => $response->baseAmount,
                 'isReady' => true,
-                'logo'=> $service->logo,
+                'logo' => $service->logo,
                 'markup_fee' => $markup_amount,
             ];
-
-        }catch(\Exception $ex){
+        } catch (\Exception $ex) {
 
             $ex_message = $ex->getMessage();
 
-            $pos = strpos($ex_message,'{"error":"');
+            $pos = strpos($ex_message, '{"error":"');
 
-            $pos1 = strpos($ex_message,'"errorCategory"');
-            $length = $pos1-($pos+12);
+            $pos1 = strpos($ex_message, '"errorCategory"');
+            $length = $pos1 - ($pos + 12);
 
-            $message = substr($ex_message,$pos+10,$length);
+            $message = substr($ex_message, $pos + 10, $length);
 
             $errors[] = [
                 'label' => $service->serviceLabel,
@@ -844,7 +843,6 @@ class HomeController extends Controller
                 'message' => $message,
                 'details' => $ex_message,
             ];
-
         }
 
         return response()->json([
@@ -852,7 +850,6 @@ class HomeController extends Controller
             'service' => $service_rate,
             'errors' => $errors,
         ]);
-
     }
 
     public function putTestOrder()
@@ -863,7 +860,7 @@ class HomeController extends Controller
             'Authorization' => 'Bearer ' . $this->token
         ];
 
-        $post_params = array (
+        $post_params = array(
             'orderId' => 'OrderTest005',
             'orderDate' => '2022-10-14',
             'orderNumber' => 'Test Order 005',
@@ -876,90 +873,90 @@ class HomeController extends Controller
             'orderGroup' => 'Workstation 1',
             'contentDescription' => 'Stuff and things',
             'sender' =>
-                array (
-                    'name' => 'Habibur Haseeb',
-                    'company' => 'Aman & Baida Enterprise',
-                    'address1' => '3578 West Savanna St',
-                    'address2' => '',
-                    'city' => 'Anaheim',
-                    'state' => 'CA',
-                    'zip' => '92804',
-                    'country' => 'US',
-                    'phone' => '2097517988',
-                    'email' => 'habib362@gmail.com',
-                ),
+            array(
+                'name' => 'Habibur Haseeb',
+                'company' => 'Aman & Baida Enterprise',
+                'address1' => '3578 West Savanna St',
+                'address2' => '',
+                'city' => 'Anaheim',
+                'state' => 'CA',
+                'zip' => '92804',
+                'country' => 'US',
+                'phone' => '2097517988',
+                'email' => 'habib362@gmail.com',
+            ),
             'receiver' =>
-                array (
-                    'name' => 'Samia Khan',
-                    'company' => '',
-                    'address1' => 'Multan Road',
-                    'address2' => 'Dummy House',
-                    'city' => 'Lahore',
-                    'state' => '',
-                    'zip' => '84115',
-                    'country' => 'PK',
-                    'phone' => '+923004556435',
-                    'email' => 'samia@yopmail.coom',
-                ),
+            array(
+                'name' => 'Samia Khan',
+                'company' => '',
+                'address1' => 'Multan Road',
+                'address2' => 'Dummy House',
+                'city' => 'Lahore',
+                'state' => '',
+                'zip' => '84115',
+                'country' => 'PK',
+                'phone' => '+923004556435',
+                'email' => 'samia@yopmail.coom',
+            ),
             'items' =>
-                array (
-                    0 =>
-                        array (
-                            'productId' => '856673',
-                            'sku' => 'ade3-fe21-bb9a',
-                            'title' => 'Socks',
-                            'price' => '3.99',
-                            'quantity' => 2,
-                            'weight' => '0.5',
-                            'imgUrl' => 'http://sockstore.egg/img/856673',
-                            'htsNumber' => '555555',
-                            'countryOfOrigin' => 'US',
-                            'lineId' => '1',
-                        ),
-                    1 =>
-                        array (
-                            'productId' => '856673s',
-                            'sku' => 'ade3-fe21-bb9aa',
-                            'title' => 'Socsks',
-                            'price' => '3.99',
-                            'quantity' => 2,
-                            'weight' => '1.0',
-                            'imgUrl' => 'http://sockstore.egg/img/856673',
-                            'htsNumber' => '555555',
-                            'countryOfOrigin' => 'US',
-                            'lineId' => '1',
-                        ),
+            array(
+                0 =>
+                array(
+                    'productId' => '856673',
+                    'sku' => 'ade3-fe21-bb9a',
+                    'title' => 'Socks',
+                    'price' => '3.99',
+                    'quantity' => 2,
+                    'weight' => '0.5',
+                    'imgUrl' => 'http://sockstore.egg/img/856673',
+                    'htsNumber' => '555555',
+                    'countryOfOrigin' => 'US',
+                    'lineId' => '1',
                 ),
+                1 =>
+                array(
+                    'productId' => '856673s',
+                    'sku' => 'ade3-fe21-bb9aa',
+                    'title' => 'Socsks',
+                    'price' => '3.99',
+                    'quantity' => 2,
+                    'weight' => '1.0',
+                    'imgUrl' => 'http://sockstore.egg/img/856673',
+                    'htsNumber' => '555555',
+                    'countryOfOrigin' => 'US',
+                    'lineId' => '1',
+                ),
+            ),
             'packages' =>
-                array (
-                    0 =>
-                        array (
-                            'weight' => '0.5',
-                            'length' => '6',
-                            'width' => '5',
-                            'height' => '2.5',
-                            'insuranceAmount' => NULL,
-                            'declaredValue' => NULL,
-                        ),
-                    1 =>
-                        array (
-                            'weight' => '1.0',
-                            'length' => '8',
-                            'width' => '6',
-                            'height' => '4',
-                            'insuranceAmount' => NULL,
-                            'declaredValue' => NULL,
-                        ),
-                    2 =>
-                        array (
-                            'weight' => '3.5',
-                            'length' => '10',
-                            'width' => '20',
-                            'height' => '15',
-                            'insuranceAmount' => NULL,
-                            'declaredValue' => NULL,
-                        ),
+            array(
+                0 =>
+                array(
+                    'weight' => '0.5',
+                    'length' => '6',
+                    'width' => '5',
+                    'height' => '2.5',
+                    'insuranceAmount' => NULL,
+                    'declaredValue' => NULL,
                 ),
+                1 =>
+                array(
+                    'weight' => '1.0',
+                    'length' => '8',
+                    'width' => '6',
+                    'height' => '4',
+                    'insuranceAmount' => NULL,
+                    'declaredValue' => NULL,
+                ),
+                2 =>
+                array(
+                    'weight' => '3.5',
+                    'length' => '10',
+                    'width' => '20',
+                    'height' => '15',
+                    'insuranceAmount' => NULL,
+                    'declaredValue' => NULL,
+                ),
+            ),
         );
 
 
@@ -967,7 +964,7 @@ class HomeController extends Controller
 
             $client = new Client();
 
-            $request = $client->put('https://xpsshipper.com/restapi/v1/customers/'.$this->customer_id.'/integrations/'.$this->integration_id.'/orders/'.$post_params['orderId'], [
+            $request = $client->put('https://xpsshipper.com/restapi/v1/customers/' . $this->customer_id . '/integrations/' . $this->integration_id . '/orders/' . $post_params['orderId'], [
                 'headers' => $headers,
                 'body' => json_encode($post_params),
                 'http_errors' => true,
@@ -978,23 +975,22 @@ class HomeController extends Controller
             \Log::info($response);
 
             return $response;
-
-        }catch(\Exception $ex){
+        } catch (\Exception $ex) {
 
             $ex_message = $ex->getMessage();
 
             return $ex_message;
-
         }
     }
 
 
-    private function getPackageTypeCode($service){
+    private function getPackageTypeCode($service)
+    {
 
         $type = "";
 
-        switch($service->carrierCode){
-            case "dhl" :
+        switch ($service->carrierCode) {
+            case "dhl":
                 $type =  "dhl_custom_package";
                 break;
             case "fedex":
@@ -1008,7 +1004,8 @@ class HomeController extends Controller
         return $type;
     }
 
-    public function notifications(Request $request) {
+    public function notifications(Request $request)
+    {
 
         $currentPage = $request->current_page ?? 1;
         $take = 50 * $currentPage;
@@ -1023,16 +1020,15 @@ class HomeController extends Controller
 
         $notifications = array_unique($notifications);
 
-        foreach ($notifications as $date)
-        {
-            $notifies = $user->notifications()->whereDate('created_at',$date)->orderby('created_at','desc')->get();
+        foreach ($notifications as $date) {
+            $notifies = $user->notifications()->whereDate('created_at', $date)->orderby('created_at', 'desc')->get();
             $notifications = [];
 
-            foreach ($notifies as $notification){
+            foreach ($notifies as $notification) {
                 $notifications[] = [
                     'id' => $notification->id,
-                    'created_at' => Carbon::createFromFormat('Y-m-d H:i:s',date('Y-m-d H:i:s',strtotime($notification->created_at)))->diffForHumans(),
-                    'read_at' => $notification->read_at != NULL ? date('d-m-Y h:m a',strtotime($notification->read_at)) : NULL,
+                    'created_at' => Carbon::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s', strtotime($notification->created_at)))->diffForHumans(),
+                    'read_at' => $notification->read_at != NULL ? date('d-m-Y h:m a', strtotime($notification->read_at)) : NULL,
                     'content' => $notification->data['message'] ?? null
                 ];
             }
@@ -1045,7 +1041,7 @@ class HomeController extends Controller
 
         $notificationData = collect($data);
 
-        if($request->has('current_page')){
+        if ($request->has('current_page')) {
             return response()->json([
                 'notifications' => $notificationData,
                 'totalPage' => $totalPage ?? 1,
@@ -1053,26 +1049,28 @@ class HomeController extends Controller
             ]);
         }
 
-        return Inertia::render('Notifications',[
+        return Inertia::render('Notifications', [
             'notifications' => $notificationData,
             'totalPage' => $totalPage ?? 1,
             'currentPageProp' => $currentPage ?? 1
         ]);
     }
 
-    public function markAllRead() {
+    public function markAllRead()
+    {
         \auth()->user()->unreadNotifications->markAsRead();
         return redirect('notifications');
     }
 
 
-    public function markRead(Request $request){
+    public function markRead(Request $request)
+    {
 
         $id = $request->input('notification_id');
 
         $notification = auth()->user()->notifications()->where('id', $id)->first();
 
-        if($notification){
+        if ($notification) {
             $notification->markAsRead();
         }
 
@@ -1080,7 +1078,6 @@ class HomeController extends Controller
             'status' => 1,
             'message' => "Read successfully",
         ]);
-
     }
 
     public function getMailingAddress()

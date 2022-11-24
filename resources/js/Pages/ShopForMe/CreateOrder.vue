@@ -253,7 +253,7 @@
                         <div class="form-group">
                           <breeze-label for="store_id" value="Shopping Mall"/>
                           <select name="store_id" class="form-select" v-model="form_pickup.store_id" :required="setRequired('tab2')" v-on:change="setPickupCharges($event)">
-                            <option selected disabled>Select</option>
+                            <option selected disabled>Select Store</option>
                             <option v-for="store in stores" :value="store.id" :key="store.id">{{ store.name }}</option>
                           </select>
                         </div>

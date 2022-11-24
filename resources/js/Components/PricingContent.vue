@@ -38,14 +38,14 @@
 							UPS International
 						</p>
 					</div>
-					<div class="col text-center">
+					<!-- <div class="col text-center">
 						<img
 							class="d-inline-block img-fluid"
 							src="/theme/img/demos/business-consulting-3/partner-05.png"
 							alt=""
 						/>
 						<p class="text-0 font-weight-medium text-center mt-2">Aramex</p>
-					</div>
+					</div> -->
 				</div>
 				<p class="font-weight-medium text-center mt-3">
 					* Service offerings may change depending on the destination country.
