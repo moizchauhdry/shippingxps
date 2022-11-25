@@ -28,52 +28,29 @@ class OrderController extends Controller
 
     public function index(Request $request)
     {
+        $order_status = $request->has('order_status') ? $request->order_status : 'arrived';
 
-        $search = '';
-        $customer_id = '';
+        $query = Order::with('customer', 'warehouse')->where('status', $order_status);
 
-        $customers = User::where('type', '=', 'customer')->select(['id', 'name'])->get()->toArray();
-
-        if (Auth::check()) {
-            $user = Auth::user();
-        } else {
-            redirect()->back()->with('errors', 'Login to continue');
+        if (Auth::user()->type == 'customer') {
+            $query->where('customer_id', Auth::user()->id);
         }
 
-        if ($user->type == 'customer') {
-            $orders = Order::where('customer_id', $user->id);
-            $orders = $this->searchResults($request, $orders);
-
-            return Inertia::render('Orders/OrdersList', [
-                'search' => $search,
-                'orders' => $orders->get(),
-                'customers' => $customers,
-                'customer_id' => $customer_id,
-                'arrived' => '',
-                'labeled' => '',
-                'shipped' => ''
-            ]);
-        } else {
-            $arrived = Order::select('orders.*','orders.status', 'orders.warehouse_id', 'orders.customer_id', 'users.name', 'warehouses.name')->where('status', 'arrived');
-            $arrived = $this->searchResults($request, $arrived);
-            $labeled = Order::select('orders.*','orders.status', 'orders.warehouse_id', 'orders.customer_id', 'users.name', 'warehouses.name')->where('status', 'labeled');
-            $labeled = $this->searchResults($request, $labeled);
-            $shipped = Order::select('orders.*','orders.status', 'orders.warehouse_id', 'orders.customer_id', 'users.name', 'warehouses.name')->where('status', 'shipped');
-            $shipped = $this->searchResults($request, $shipped);
-            $rejected = Order::select('orders.*','orders.status', 'orders.warehouse_id', 'orders.customer_id', 'users.name', 'warehouses.name')->where('status', 'rejected');
-            $rejected = $this->searchResults($request, $rejected);
-
-            return Inertia::render('Orders/OrdersList', [
-                'search' => $search,
-                'orders' => '',
-                'customers' => $customers,
-                'customer_id' => $customer_id,
-                'arrived' => $arrived->where('status', 'arrived')->orderBy('orders.id', 'desc')->get(),
-                'labeled' => $labeled->where('status', 'labeled')->orderBy('orders.id', 'desc')->get(),
-                'shipped' => $shipped->where('status', 'shipped')->orderBy('orders.id', 'desc')->get(),
-                'rejected' => $rejected->where('status', 'rejected')->orderBy('orders.id', 'desc')->get()
-            ]);
+        if (!empty($request->suite_no)) {
+            $suite_no = intval($request->suite_no) - 4000;
+            $query->whereHas('customer', function ($query) use ($suite_no) {
+                $query->where('id', $suite_no);
+            });
         }
+
+        $orders = $query->orderBy('id', 'desc')->get();
+
+        return Inertia::render('Orders/OrdersList', [
+            'orders' => $orders,
+            'filter' => [
+                'order_status' => $order_status
+            ]
+        ]);
     }
 
     public function searchResults(Request $request, $orders)

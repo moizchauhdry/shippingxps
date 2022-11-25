@@ -35,7 +35,7 @@ Route::get('/checkAuth-user', [\App\Http\Controllers\HomeController::class, 'che
 
 Route::get('/test-email', 'EmailController@index')->name('test-email');
 
-Route::get('/dashboard', 'HomeController@dashboard')->name('dashboard')->middleware(['auth', 'verified']);
+Route::any('/dashboard', 'HomeController@dashboard')->name('dashboard')->middleware(['auth', 'verified']);
 
 Route::get('/shipping-calculator', 'HomeController@pricing')->name('shipping-calculator');
 Route::get('/getServicesList', 'HomeController@getServicesList')->name('getServicesList');
@@ -50,16 +50,15 @@ Route::get('/test-order-xps', 'HomeController@putTestOrder')->name('putTestOrder
 
 Route::get('/shopping', 'HomeController@shopping')->name('shopping')->middleware('auth');
 
-Route::get('/orders/quote', 'OrderController@quote')->name('orders.quote')->middleware('auth');
-
-Route::get('/orders/create', 'OrderController@create')->name('orders.create')->middleware('auth');
-Route::post('/orders', 'OrderController@store')->name('order.store')->middleware('auth');
-Route::get('/orders', 'OrderController@index')->name('orders')->middleware('auth');
-Route::get('/orders/{id}/edit', 'OrderController@edit')->name('order.edit')->middleware('auth');
-Route::post('/orders/update', 'OrderController@update')->name('orders.update')->middleware('auth');
-Route::get('/orders/{id}', 'OrderController@show')->name('orders.show')->middleware('auth');
-Route::delete('/orders{id}', 'OrderController@destroy')->name('orders.destroy')->middleware('auth');
-Route::post('/orders/removeItem', 'OrderController@removeItem')->name('orders.removeItem')->middleware('auth');
+// Route::get('/orders/quote', 'OrderController@quote')->name('orders.quote')->middleware('auth');
+// Route::any('/orders/index', 'OrderController@index')->name('orders')->middleware('auth');
+// Route::get('/orders/create', 'OrderController@create')->name('orders.create')->middleware('auth');
+// Route::post('/orders/store', 'OrderController@store')->name('order.store')->middleware('auth');
+// Route::get('/orders/{id}/edit', 'OrderController@edit')->name('order.edit')->middleware('auth');
+// Route::post('/orders/update', 'OrderController@update')->name('orders.update')->middleware('auth');
+// Route::get('/orders/{id}', 'OrderController@show')->name('orders.show')->middleware('auth');
+// Route::delete('/orders{id}', 'OrderController@destroy')->name('orders.destroy')->middleware('auth');
+// Route::post('/orders/removeItem', 'OrderController@removeItem')->name('orders.removeItem')->middleware('auth');
 
 Route::get('/packages', 'PackageController@index')->name('packages')->middleware('auth');
 Route::get('/packages/{id}', 'PackageController@show')->name('packages.show')->middleware('auth');
@@ -90,9 +89,10 @@ Route::delete('/services{id}', 'ServiceController@destroy')->name('services.dest
 
 Route::get('/profile', 'AccountsContoller@profile')->name('profile')->middleware('auth');
 Route::post('/update-profile', 'AccountsContoller@updateProfile')->name('update-profile')->middleware('auth');
+
+Route::any('/orders/index', 'OrderController@index')->name('orders')->middleware('auth');
 Route::get('/orders/create', 'OrderController@create')->name('orders.create')->middleware('auth');
 Route::post('/orders', 'OrderController@store')->name('order.store')->middleware('auth');
-Route::get('/orders', 'OrderController@index')->name('orders')->middleware('auth');
 Route::get('/orders/{id}/edit', 'OrderController@edit')->name('order.edit')->middleware('auth');
 Route::post('/orders/update', 'OrderController@update')->name('orders.update')->middleware('auth');
 Route::get('/orders/{id}', 'OrderController@show')->name('orders.show')->middleware('auth');

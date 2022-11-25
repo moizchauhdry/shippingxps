@@ -1,15 +1,7 @@
 <template>
     <MainLayout>
-<!--      <div class="row" v-if="$page.props.notifications.length">-->
-<!--        <div class="col">-->
-<!--          <span class="alert alert-success d-block" v-for="notification in $page.props.notifications" :key="notification.id">-->
-<!--            <strong v-if="notification.read_at == null"> {{ notification.data.message }}</strong>-->
-<!--          </span>-->
-<!--          <inertia-link :href="route('notifications')" class="float-right">View All Notifications</inertia-link>-->
-<!--        </div>-->
-<!--      </div>-->
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-12">
             <div class="row">
               <div class="col-md-6" v-for="(address,index) in addresses" v-bind:key="address.id">
                 <div class="card">
@@ -26,9 +18,8 @@
                       <p><strong>Zip code:</strong><span class="copy-item" :id="'copy-item-'+count" v-on:click="copyContent($event)">{{ address.zip }} </span><span v-if="copied_id=='copy-item-'+count++" style="color:green">Copied!</span></p>
                       <p><strong>Phone Number:</strong><span class="copy-item" :id="'copy-item-'+count" v-on:click="copyContent($event)">{{ address.phone }}</span><span v-if="copied_id=='copy-item-'+count++" style="color:green">Copied!</span></p>
                     </div>
-                    <br/><br/>
                     <a href="javascript:void(0)" class="btn btn-primary" @click="copyToClipBoard(address,index)">
-                      <span v-if="!address.clicked">Click Here To Copy</span>
+                      <span v-if="!address.clicked"><i class="fa fa-copy mr-1"></i>Click Here To Copy</span>
                       <span v-if="address.clicked">Copied</span>
                     </a>
                   </div>
@@ -36,7 +27,7 @@
               </div>
             </div>
         </div>
-        <div class="col-md-6" v-show="false">
+        <div class="col-md-12" v-show="false">
             <div class="card">
                 <div class="card-header">
                     <h5>Accounts Balance</h5>
@@ -49,7 +40,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -60,173 +50,26 @@
                     <h5>Orders History</h5>
                 </div>
                 <div class="card-body">
-                    <div class="col-md-12">
-                      <ul class="nav nav-pills nav-justified mb-3 mt-3" id="pills-tab " role="tablist">
-                        <li class="nav-item" role="presentation">
-                          <button
-                              v-on:click="setActiveTabAB('tab1')"
-                              :class="getTabClass('tab1')"
-                              id="pills-home-tab"
-                              data-bs-toggle="pill"
-                              data-bs-target="#pills-home"
-                              type="button"
-                              role="tab"
-                              aria-controls="pills-home"
-                              aria-selected="true">Arrived</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                          <button
-                              v-on:click="setActiveTabAB('tab2')"
-                              :class="getTabClass('tab2')"
-                              id="pills-profile-tab"
-                              data-bs-toggle="pill"
-                              data-bs-target="#pills-profile"
-                              type="button"
-                              role="tab"
-                              aria-controls="pills-profile"
-                              aria-selected="false">Labeled</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                          <button
-                              v-on:click="setActiveTabAB('tab3')"
-                              :class="getTabClass('tab3')"
-                              id="pills-contact-tab"
-                              data-bs-toggle="pill"
-                              data-bs-target="#pills-contact"
-                              type="button"
-                              role="tab"
-                              aria-controls="pills-contact"
-                              aria-selected="false">Shipped</button>
-                        </li>
-                      </ul>
-                      <div class="tab-content" id="pills-tabContent">
-                        <div :class="getTabPaneClass('tab1')" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-                          <div class="table-responsive">
-                            <table class="table table-striped">
-                            <thead>
-                            <tr>
-                              <th scope="col">Order Id</th>
-                              <th v-if="$page.props.auth.user.type == 'admin'" scope="col">Customer Name</th>
-                              <th scope="col">Tracking #</th>
-                              <th scope="col">Warehouse</th>
-                              <th scope="col">Received Date</th>
-                              <th scope="col">Status</th>
-                              <template v-if="$page.props.auth.user.type == 'admin'">
-                                <th scope="col"></th>
-                              </template>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr v-for="order in arrived" :key="order.id">
-                              <td>{{ order.id }}</td>
-                              <td v-if="$page.props.auth.user.type == 'admin'">{{ order.customer.name }}</td>
-                              <td>{{ order.tracking_number_in }}</td>
-                              <td>{{ order.warehouse.name }}</td>
-                              <td>{{ order.created_at }}</td>
-                              <td><span v-bind:class="getLabelClass(order.status)">{{ order.status }}</span></td>
-                              <template v-if="$page.props.auth.user.type == 'admin'">
-                                <td>
-                                  <inertia-link class="link-primary" :href="route('orders.show', order.id)">
-                                    <span>View</span>
-                                  </inertia-link>
-                                  &nbsp;|&nbsp;
-                                  <inertia-link class="link-primary" :href="route('order.edit', order.id)">
-                                    <span>Edit</span>
-                                  </inertia-link>
-                                </td>
-                              </template>
-                            </tr>
-
-                            </tbody>
-                          </table>
-                          </div>
+                    <div class="row my-4">
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-light w-100"  v-on:click="searchOrder('arrived')">Arrived</button>
                         </div>
-                        <div :class="getTabPaneClass('tab2')" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-                          <div class="table-responsive">
-                            <table class="table table-striped">
-                            <thead>
-                            <tr>
-                              <th scope="col">Order Id</th>
-                              <th v-if="$page.props.auth.user.type == 'admin'" scope="col">Customer Name</th>
-                              <th scope="col">Tracking #</th>
-                              <th scope="col">Warehouse</th>
-                              <th scope="col">Received Date</th>
-                              <th scope="col">Status</th>
-                              <template v-if="$page.props.auth.user.type == 'admin'">
-                                <th scope="col"></th>
-                              </template>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr v-for="labeler in labeled" :key="labeler.id">
-                              <td>{{ labeler.id }}</td>
-                              <td v-if="$page.props.auth.user.type == 'admin'">{{ labeler.customer.name }}</td>
-                              <td>{{ labeler.tracking_number_in }}</td>
-                              <td>{{ labeler.warehouse.name }}</td>
-                              <td>{{ labeler.created_at }}</td>
-                              <td><span v-bind:class="getLabelClass(labeler.status)">{{ labeler.status }}</span></td>
-                              <template v-if="$page.props.auth.user.type == 'admin'">
-                                <td>
-                                  <inertia-link class="link-primary" :href="route('orders.show', labeler.id)">
-                                    <span>View</span>
-                                  </inertia-link>
-                                  &nbsp;|&nbsp;
-                                  <inertia-link class="link-primary" :href="route('order.edit', labeler.id)">
-                                    <span>Edit</span>
-                                  </inertia-link>
-                                </td>
-                              </template>
-                            </tr>
-                            </tbody>
-                          </table>
-                          </div>
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-light w-100"  v-on:click="searchOrder('labeled')">Labeled</button>
                         </div>
-                        <div :class="getTabPaneClass('tab3')" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
-                          <div class="table-responsive">
-                            <table class="table table-striped">
-                            <thead>
-                            <tr>
-                              <th scope="col">Order Id</th>
-                              <th v-if="$page.props.auth.user.type == 'admin'" scope="col">Customer Name</th>
-                              <th scope="col">Tracking #</th>
-                              <th scope="col">Warehouse</th>
-                              <th scope="col">Received Date</th>
-                              <th scope="col">Status</th>
-                              <template v-if="$page.props.auth.user.type == 'admin'">
-                                <th scope="col"></th>
-                              </template>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr v-for="order in shipped" :key="order.id">
-                              <td>{{ order.id }}</td>
-                              <td v-if="$page.props.auth.user.type == 'admin'">{{ order.customer.name }}</td>
-                              <td>{{ order.tracking_number_in }}</td>
-                              <td>{{ order.warehouse.name }}</td>
-                              <td>{{ order.created_at }}</td>
-                              <td><span v-bind:class="getLabelClass(order.status)">{{ order.status }}</span></td>
-                              <template v-if="$page.props.auth.user.type == 'admin'">
-                                <td>
-                                  <inertia-link class="link-primary" :href="route('orders.show', order.id)">
-                                    <span>View</span>
-                                  </inertia-link>
-                                  &nbsp;|&nbsp;
-                                  <!--                      <inertia-link class="link-primary" :href="route('order.edit', order.id)">
-                                                          <span>Edit</span>
-                                                        </inertia-link>-->
-                                </td>
-                              </template>
-                            </tr>
-                            </tbody>
-                          </table>
-                          </div>
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-light w-100"  v-on:click="searchOrder('shipped')">Shipped</button>
                         </div>
-                      </div>
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-light w-100"  v-on:click="searchOrder('rejected')">Rejected</button>
+                        </div>
                     </div>
+                    <order-list v-bind="$props"></order-list>
                 </div>
             </div>
         </div>
     </div>
+
     </MainLayout>
 </template>
 <style scoped>
@@ -251,35 +94,35 @@
 <script>
     import MainLayout from '@/Layouts/Main'
     import BreezeAuthenticatedLayout from '@/Layouts/Authenticated'
+    import OrderList from './Orders/Partials/OrderList.vue'
+    import { Inertia } from "@inertiajs/inertia";
 
     export default {
         components: {
             BreezeAuthenticatedLayout,
-            MainLayout
+            MainLayout,
+            OrderList
         },
         data(){
             return{
                 count:0,
                 addresses:{},
+                copied_id: '',
                 address1 : '3578 w savanna st Suite #:AD - 400'+ this.$page.props.auth.user.id + ',Anaheim CA ,92804',
                 address2 : '1217 old cooch bridge rd Suite #:AD - 400'+ this.$page.props.auth.user.id +' ,Newark, Delaware ',
                 copied1:false,
                 copied2:false,
-                tabs : {
-                    tab1:true,
-                    tab2:false,
-                    tab3:false
+                order_form: {
+                    order_status: this.filter.order_status,
+                    processing: false,
                 },
-                copied_id: '',
             }            
         },
         props: {
             auth: Object,
             errors: Object,
-            arrived:Object,
-            labeled:Object,
-            shipped:Object,
-            rejected:Object
+            orders: Object,
+            filter: Object,
         },
         computed:{
             siuteNum(){
@@ -287,27 +130,6 @@
             },
         },
         methods:{
-          getLabelClass(status){
-            switch(status) {
-              case 'arrived':
-                return 'label bg-success';
-                break;
-              case 'labeled':
-                return 'label bg-info';
-                break;
-              case 'shipped':
-                return 'label bg-warning';
-                break;
-              case 'delivered':
-                return 'label bg-success';
-                break
-              case 'rejected':
-                return 'label bg-danger';
-                break;
-              default:
-                return 'label bg-primary';
-            }
-          },
             copyToClipBoard(address){
               var text = address.address +', '+ address.city +', ' + address.state +', ' + address.zip;
                 navigator.clipboard.writeText(text).then(function() {
@@ -323,39 +145,25 @@
                     console.error('Async: Could not copy text: ', err);
                 });
             },
-            setActiveTabAB(tab){
-                
-                for (var key in this.tabs) {
-                    if(key === tab){
-                        this.tabs[key] = true;
-                    }else{
-                        this.tabs[key] = false;
-                    }
-                }
-            },
-            getTabClass(tab){
-
-                if(this.tabs[tab] === true){
-                      return 'nav-link active';
-                }else{
-                    return 'nav-link';
-                }
-                
-            },
-            getTabPaneClass(tab){
-
-                if(this.tabs[tab] === true){
-                     return 'tab-pane show active';
-                }else{
-                    return 'tab-pane fade';
-                }
-            },
             getMailingAddress(){
               axios.get(this.route('getMailingAddress')).then((response) => {
                 this.addresses = response.data.data;
                 console.log(this.addresses);
               })
-            }
+            },
+            searchOrder(status){
+                this.order_form.order_status = status;
+                this.order_form.processing = true;
+                Inertia.post(route("dashboard"),this.order_form, {
+                    preserveScroll: true,
+                    onStart: () => {
+                        this.order_form.processing = true;
+                    },
+                    onFinish: () => {
+                        this.order_form.processing = false;
+                    },
+                });
+            },
         },
         created(){
           this.getMailingAddress()

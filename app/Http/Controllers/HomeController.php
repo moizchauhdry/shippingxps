@@ -327,28 +327,24 @@ class HomeController extends Controller
         }
     }
 
-    public function dashboard()
+    public function dashboard(Request $request)
     {
+        $order_status = $request->has('order_status') ? $request->order_status : 'arrived';
 
-        $customer_id = Auth::user()->id;
-        $user_type = Auth::user()->type;
+        $query = Order::with(['customer', 'warehouse'])->orderBy('id', 'desc');
+        $query->where('status', $order_status);
 
-
-        if ($user_type == 'admin') {
-            $arrived = Order::where('status', 'arrived')->with(['customer', 'warehouse'])->get();
-            $labeled = Order::where('status', 'labeled')->with(['customer', 'warehouse'])->get();
-            $shipped = Order::where('status', 'shipped')->with(['customer', 'warehouse'])->get();
-        } else {
-            $arrived = Order::where('customer_id', $customer_id)->where('status', 'arrived')->with(['customer', 'warehouse'])->get();
-            $labeled = Order::where('customer_id', $customer_id)->where('status', 'labeled')->with(['customer', 'warehouse'])->get();
-            $shipped = Order::where('customer_id', $customer_id)->where('status', 'shipped')->with(['customer', 'warehouse'])->get();
+        if (Auth::user()->type == 'customer') {
+            $query->where('customer_id', Auth::user()->id);
         }
 
+        $orders = $query->get();
 
         return Inertia::render('Dashboard', [
-            'arrived' => $arrived,
-            'labeled' => $labeled,
-            'shipped' => $shipped
+            'orders' => $orders,
+            'filter' => [
+                'order_status' => $order_status
+            ]
         ]);
     }
 
