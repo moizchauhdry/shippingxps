@@ -4,7 +4,7 @@
       <section>
         <div class="container">
           <div class="stock-subscription-form mb-4 border p-4">
-            <h2 class="font-bold text-xl text-gray-800 leading-tight form-title text-center">
+            <h2 class="font-bold text-xl text-gray-800 leading-tight form-title text-center mb-4">
                 Customs Declaration Form 
             </h2>
                 <template v-if="printable.includes(packag.status)">
