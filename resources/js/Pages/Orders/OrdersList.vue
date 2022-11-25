@@ -27,7 +27,7 @@
 
         <div class="row my-4">
             <div class="col-md-3">
-                <button type="button" class="btn btn-light w-100"  @click="searchOrder('arrived')">Arrived</button>
+                <button type="button" class="btn btn-primary w-100"  @click="searchOrder('arrived')">Arrived</button>
             </div>
             <div class="col-md-3">
                 <button type="button" class="btn btn-light w-100"  @click="searchOrder('labeled')">Labeled</button>

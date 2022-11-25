@@ -52,16 +52,16 @@
                 <div class="card-body">
                     <div class="row my-4">
                         <div class="col-md-3">
-                            <button type="button" class="btn btn-light w-100"  v-on:click="searchOrder('arrived')">Arrived</button>
+                            <button type="button" class="btn btn-primary w-100"  @click="searchOrder('arrived')">Arrived</button>
                         </div>
                         <div class="col-md-3">
-                            <button type="button" class="btn btn-light w-100"  v-on:click="searchOrder('labeled')">Labeled</button>
+                            <button type="button" class="btn btn-light w-100"  @click="searchOrder('labeled')">Labeled</button>
                         </div>
                         <div class="col-md-3">
-                            <button type="button" class="btn btn-light w-100"  v-on:click="searchOrder('shipped')">Shipped</button>
+                            <button type="button" class="btn btn-light w-100"  @click="searchOrder('shipped')">Shipped</button>
                         </div>
                         <div class="col-md-3">
-                            <button type="button" class="btn btn-light w-100"  v-on:click="searchOrder('rejected')">Rejected</button>
+                            <button type="button" class="btn btn-light w-100"  @click="searchOrder('rejected')">Rejected</button>
                         </div>
                     </div>
                     <order-list v-bind="$props"></order-list>

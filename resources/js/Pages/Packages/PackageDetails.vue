@@ -48,13 +48,13 @@
                   </tbody>
                 </table>
                 <template v-if="($page.props.auth.user.type == 'customer')">
-                  <a class="link-primary" :href="route('packages.custom', packag.id)">
-                    <span>Customs Declaration Form </span>
-                  </a>&nbsp;&nbsp;
+                  <inertia-link class="btn btn-primary btn-sm m-1" :href="route('packages.custom', packag.id)">
+                    <i class="fa fa-copy mr-1"></i>Customs Declaration Form
+                  </inertia-link>
                 </template>
                 <template v-if="(packag.status !='open')">
-                  <a target="_blank" class="link-success" :href="route('packages.pdf', packag.id)">
-                    <span>Print Commercial Invoice Form </span>
+                  <a target="_blank" class="btn btn-info btn-sm m-1" :href="route('packages.pdf', packag.id)">
+                    <i class="fa fa-print mr-1"></i>Print Commercial Invoice
                   </a>
                 </template>
               </div>
