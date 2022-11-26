@@ -2,70 +2,46 @@
   <MainLayout>
     <div class="container">
       <div class="card mt-0">
-        <div class="card-header">Customer Detail</div>
+        <div class="card-header">
+          <h1 class="text-center font-bold text-lg">Customer Account  #{{suiteNumber(customer.id)}}</h1>
+        </div>
         <div class="card-body">
-          <table class="table table-responsive table-bordered">
+          <table class="table table-responsive table-bordered table-striped">
             <thead>
             <tr>
-              <th colspan="2" class="text-center">Customer Detail</th>
+              <th colspan="4" class="bg-primary text-white text-center">Personal Information</th>
             </tr>
             </thead>
             <tbody>
             <tr>
               <th>Suite #</th>
               <td>{{ suiteNumber(customer.id) }}</td>
-            </tr>
-            <tr>
+
               <th>Name</th>
               <td>{{ customer.name }}</td>
             </tr>
             <tr>
               <th>Email</th>
               <td>{{ customer.email }}</td>
-            </tr>
-            <tr>
+
               <th>Phone</th>
               <td>{{ customer.phone_no }}</td>
-            </tr>
-            <tr>
-              <th>Country</th>
-              <td>{{ customer.country }}</td>
-            </tr>
-            <tr>
-              <th>State</th>
-              <td>{{ customer.state }}</td>
-            </tr>
-            <tr>
-              <th>City</th>
-              <td>{{ customer.city }}</td>
-            </tr>
-            <tr>
-              <th>Address 1</th>
-              <td>{{ customer.address1 }}</td>
-            </tr>
-            <tr>
-              <th>Address 2</th>
-              <td>{{ customer.address2 }}</td>
-            </tr>
-            <tr>
-              <th>Zip Code</th>
-              <td>{{ customer.postal_code }}</td>
             </tr>
             </tbody>
           </table>
 
-          <!-- <table class="table table-responsive table-bordered table-hover">
+          <table class="table table-responsive table-bordered table-hover text-capitalize text-center">
             <thead>
             <tr>
-              <th colspan="7" class="bg-dark text-white">Orders</th>
+              <th colspan="7" class="bg-primary text-white text-center">Order Information</th>
             </tr>
             <tr>
-              <th scope="col">ID</th>
-              <th scope="col">Warehouse Name</th>
+              <th scope="col">Order ID</th>
+              <th scope="col">Order From</th>
+              <th scope="col">Warehouse</th>
               <th scope="col">Order Type</th>
-              <th scope="col">Status</th>
-              <th scope="col">Site Name</th>
-              <th scope="col">Site URL</th>
+              <th scope="col">Order Status</th>
+              <th scope="col">Order Date</th>
               <th scope="col"></th>
             </tr>
             </thead>
@@ -73,14 +49,14 @@
               <tbody>
               <tr v-for="order in customer.orders" :key="order.id">
                 <td>{{ order.id }}</td>
-                <td>{{ order.warehouse_id }}</td>
+                <td>{{ order.received_from }}</td>
+                <td>{{ order?.warehouse?.name }}</td>
                 <td>{{ order.order_type }}</td>
                 <td>{{ order.status }}</td>
-                <td>{{ order.site_name }}</td>
-                <td>{{ order.site_url }}</td>
+                <td>{{ order.created_at }}</td>
                 <td>
-                  <inertia-link class="link-primary" :href="route('shop-for-me.show', order.id)">
-                    <span><i class="fa fa-eye"></i></span>
+                  <inertia-link class="btn btn-info btn-sm" :href="route('orders.show', order.id)">
+                    <i class="fa fa-list mr-1"></i>Detail
                   </inertia-link>
                 </td>
               </tr>
@@ -90,11 +66,11 @@
             <template v-else>
               <tbody>
               <tr>
-                <th>Customer Haven't Order Anything</th>
+                <td class="text-primary text-center" colspan="7">There are no orders added yet.</td>
               </tr>
               </tbody>
             </template>
-          </table> -->
+          </table>
 
         </div>
         <div class="card-footer">

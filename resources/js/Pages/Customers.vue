@@ -23,7 +23,6 @@
                   <th class="px-3 py-2">Name</th>
                   <th class="px-3 py-2">Email</th>
                   <th class="px-3 py-2">Phone</th>
-                  <th class="px-3 py-2">Country</th>
                   <th class="px-3 py-2">Register Date</th>
                   <th class="px-3 py-2" colspan="2"></th>
                 </tr>
@@ -35,18 +34,17 @@
                   <td>{{ customer.name }}</td>
                   <td>{{ customer.email }}</td>
                   <td>{{ customer.phone }}</td>
-                  <td>{{ customer.country }}</td>
                   <td>{{ customer.created_at }}</td>
                   <td>
-                    <inertia-link class="btn btn-primary btn-xs m-1" :href="createOrderLink(customer.id)">
+                    <inertia-link class="btn btn-success btn-xs m-1" :href="createOrderLink(customer.id)">
                       <i class="fa fa-plus mr-1"></i>Create Order
                     </inertia-link>
-                    <inertia-link  v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'" :href="route('edit-customer',{ id: customer.id })" class="btn btn-info btn-xs m-1">
+                    <inertia-link  v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'" :href="route('edit-customer',{ id: customer.id })" class="btn btn-primary btn-xs m-1">
                       <i class="fa fa-pencil-alt mr-1"></i>Edit</inertia-link>
                     <inertia-link  v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'" :href="route('detail-customer',{ id: customer.id })" class="btn btn-info btn-xs m-1" >
                       <i class="fa fa-list mr-1"></i>Detail</inertia-link>
-                     <inertia-link  v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'" href="" class="btn btn-danger btn-xs m-1" @click="destroy(customer.id)">
-                      <i class="fa fa-trash mr-1"></i>Delete</inertia-link>
+                     <!-- <inertia-link  v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'" href="" class="btn btn-danger btn-xs m-1" @click="destroy(customer.id)">
+                      <i class="fa fa-trash mr-1"></i>Delete</inertia-link> -->
                   </td>
                 </tr>
                 <tr v-if="customers.data.length == 0">

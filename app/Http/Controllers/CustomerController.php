@@ -145,7 +145,7 @@ class CustomerController extends Controller
 
         if (!empty($request->suite_no)) {
             $suite_no = intval($request->suite_no) - 4000;
-            $query->where('id', 'LIKE', "%{$suite_no}%");
+            $query->where('id', $suite_no);
         }
 
         $customers = $query->orderBy('id', 'desc')->paginate(100)
@@ -206,7 +206,9 @@ class CustomerController extends Controller
      */
     public function show($id)
     {
-        $customer = User::with('orders')->find($id);
+        $customer = User::with(['orders' => function ($q) {
+            $q->orderBy('id', 'desc');
+        }, 'orders.warehouse'])->find($id);
         return Inertia::render('CustomerDetail', ['customer' => $customer]);
     }
 
@@ -232,11 +234,9 @@ class CustomerController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // dd($request->all());
-        if ($request->has('id')) {
-            User::find($request->input('id'))->update($request->all());
-            return redirect('customers')->with('success', 'Customer Updated Successfully.');
-        }
+        $user = User::findOrFail($id);
+        $user->update($request->all());
+        return redirect('customers')->with('success', 'The customer data have been updated successfully.');
     }
 
     /**

@@ -191,7 +191,7 @@
 						}"
                 :active="route().current('orders')"
             >
-              <i class="fas fa-external-link-alt"></i><span>Orders</span>
+              <i class="fas fa-external-link-alt"></i><span>Manage Orders</span>
             </inertia-link>
 
             <inertia-link
@@ -207,7 +207,7 @@
 						}"
                 :active="route().current('shop-for-me.index')"
             >
-              <i class="fas fa-external-link-alt"></i><span>Shopping List</span>
+              <i class="fas fa-external-link-alt"></i><span>Manage Shopping</span>
             </inertia-link>
 
             <inertia-link
