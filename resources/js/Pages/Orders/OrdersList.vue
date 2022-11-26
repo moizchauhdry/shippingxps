@@ -27,16 +27,16 @@
 
         <div class="row my-4">
             <div class="col-md-3">
-                <button type="button" class="btn btn-primary w-100"  @click="searchOrder('arrived')">Arrived</button>
+                <button type="button"  :class="{'active':active === 'arrived'}"  class="btn btn-light w-100"  @click="searchOrder('arrived')">Arrived</button>
             </div>
             <div class="col-md-3">
-                <button type="button" class="btn btn-light w-100"  @click="searchOrder('labeled')">Labeled</button>
+                <button type="button"  :class="{'active':active === 'labeled'}"  class="btn btn-light w-100"  @click="searchOrder('labeled')">Labeled</button>
             </div>
             <div class="col-md-3">
-                <button type="button" class="btn btn-light w-100"  @click="searchOrder('shipped')">Shipped</button>
+                <button type="button"  :class="{'active':active === 'shipped'}"  class="btn btn-light w-100"  @click="searchOrder('shipped')">Shipped</button>
             </div>
             <div class="col-md-3">
-                <button type="button" class="btn btn-light w-100"  @click="searchOrder('rejected')">Rejected</button>
+                <button type="button"  :class="{'active':active === 'rejected'}"  class="btn btn-light w-100"  @click="searchOrder('rejected')">Rejected</button>
             </div>
         </div>
         <order-list v-bind="$props"></order-list>
@@ -70,6 +70,7 @@ export default {
   },
   data() {
     return {
+      active : 'arrived',
       form: useForm({
         suite_no: "",
       }),
@@ -82,6 +83,7 @@ export default {
   },
   methods:{
       searchOrder(status){
+          this.active = status;
           this.order_form.order_status = status;
           this.order_form.suite_no = this.form.suite_no;
           Inertia.post(route("orders"),this.order_form);
@@ -102,3 +104,10 @@ export default {
   }
 }
 </script>
+
+<style>
+    button.active.btn.btn-light.w-100 {
+        background-color: red !important;
+        color: white;
+    }
+</style>
