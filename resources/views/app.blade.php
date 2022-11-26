@@ -54,6 +54,18 @@
             -webkit-appearance: none;
             margin: 0;
         }
+
+        .border {
+            border: 1px solid #000000 !important;
+        }
+
+        a:hover {
+            text-decoration: none !important;
+        }
+
+        a {
+            text-decoration: none !important;
+        }
     </style>
     <!-- Scripts -->
 

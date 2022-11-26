@@ -285,9 +285,3 @@
         }
     }
 </script>
-
-<style>
-.border {
-    border: 1px solid #000000!important;
-}
-</style>

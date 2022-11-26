@@ -138,7 +138,7 @@
 						}"
                 :active="route().current('customers')"
             >
-              <i class="fas fa-external-link-alt"></i><span>Customers</span>
+              <i class="fas fa-external-link-alt"></i><span>Manage Customers</span>
             </inertia-link>
           </div>
 
