@@ -50,15 +50,14 @@ Route::get('/test-order-xps', 'HomeController@putTestOrder')->name('putTestOrder
 
 Route::get('/shopping', 'HomeController@shopping')->name('shopping')->middleware('auth');
 
+Route::any('/orders/index', 'OrderController@index')->name('orders')->middleware('auth');
+Route::get('/orders/create', 'OrderController@create')->name('orders.create')->middleware('auth');
+Route::post('/orders/store', 'OrderController@store')->name('order.store')->middleware('auth');
+Route::get('/orders/edit/{id}', 'OrderController@edit')->name('order.edit')->middleware('auth');
+Route::post('/orders/update', 'OrderController@update')->name('orders.update')->middleware('auth');
+Route::get('/orders/show/{id}', 'OrderController@show')->name('orders.show')->middleware('auth');
+Route::post('/orders/removeItem', 'OrderController@removeItem')->name('orders.removeItem')->middleware('auth');
 // Route::get('/orders/quote', 'OrderController@quote')->name('orders.quote')->middleware('auth');
-// Route::any('/orders/index', 'OrderController@index')->name('orders')->middleware('auth');
-// Route::get('/orders/create', 'OrderController@create')->name('orders.create')->middleware('auth');
-// Route::post('/orders/store', 'OrderController@store')->name('order.store')->middleware('auth');
-// Route::get('/orders/{id}/edit', 'OrderController@edit')->name('order.edit')->middleware('auth');
-// Route::post('/orders/update', 'OrderController@update')->name('orders.update')->middleware('auth');
-// Route::get('/orders/{id}', 'OrderController@show')->name('orders.show')->middleware('auth');
-// Route::delete('/orders{id}', 'OrderController@destroy')->name('orders.destroy')->middleware('auth');
-// Route::post('/orders/removeItem', 'OrderController@removeItem')->name('orders.removeItem')->middleware('auth');
 
 Route::get('/packages', 'PackageController@index')->name('packages')->middleware('auth');
 Route::get('/packages/{id}', 'PackageController@show')->name('packages.show')->middleware('auth');
@@ -89,17 +88,6 @@ Route::delete('/services{id}', 'ServiceController@destroy')->name('services.dest
 
 Route::get('/profile', 'AccountsContoller@profile')->name('profile')->middleware('auth');
 Route::post('/update-profile', 'AccountsContoller@updateProfile')->name('update-profile')->middleware('auth');
-
-Route::any('/orders/index', 'OrderController@index')->name('orders')->middleware('auth');
-Route::get('/orders/create', 'OrderController@create')->name('orders.create')->middleware('auth');
-Route::post('/orders', 'OrderController@store')->name('order.store')->middleware('auth');
-Route::get('/orders/{id}/edit', 'OrderController@edit')->name('order.edit')->middleware('auth');
-Route::post('/orders/update', 'OrderController@update')->name('orders.update')->middleware('auth');
-Route::get('/orders/{id}', 'OrderController@show')->name('orders.show')->middleware('auth');
-Route::post('/orders', 'OrderController@store')->name('orders.store')->middleware('auth');
-Route::post('/orders/removeItem', 'OrderController@removeItem')->name('orders.removeItem')->middleware('auth');
-
-//Route::resource('address', AddressController::class)->middleware('auth');
 
 Route::get('/addresses', 'AddressController@index')->name('addresses')->middleware('auth');
 Route::get('/address/create', 'AddressController@create')->name('address.create')->middleware('auth');

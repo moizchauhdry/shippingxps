@@ -320,7 +320,7 @@ export default {
   },
   methods: {
     submit() {
-      this.form.post(this.route('orders.store'))
+      this.form.post(this.route('order.store'))
     },
     addItem() {
       this.form.items.push(

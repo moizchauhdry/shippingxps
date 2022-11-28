@@ -114,6 +114,7 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         $validated = $request->validate([
             'customer_id' => 'required',
             'tracking_number_in' => 'required|min:3|max:100|string|unique:orders,tracking_number_in',
@@ -244,7 +245,7 @@ class OrderController extends Controller
             DB::commit();
             event(new OrderCreatedEvent($order));
 
-            return redirect('orders')->with('success', 'The order has been added successfully.');
+            return redirect()->route('orders')->with('success', 'The order has been added successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect('orders')->with('error', 'Something went wrong');
