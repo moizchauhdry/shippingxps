@@ -563,21 +563,13 @@
                       </tr>
                       </thead>
                       <tbody>
-                      <!--                                            <template  v-for="order in order_charges" :key="order.id">
-                                                                      <tr>
-                                                                          <td>Order Pickup charges </td>
-                                                                          <td>${{ order.service_charges }}</td>
-                                                                          <td></td>
-                                                                          <td></td>
-                                                                      </tr>
-                                                                  </template>-->
                       <template v-for="service in service_requests " :key="service.id">
                         <tr v-if="service.status == 'served'">
                           <td>{{ service.service_title }}</td>
-                          <td v-if="service.service_title == 'Consolidation'">{{ '$1.5 X ' + packag.orders.length + ' + $' + service.price + ' = ' }}</td>
-                          <td v-if="service.service_title != 'Consolidation'">${{ service.price }} =</td>
+                          <td v-if="service.service_title == 'Consolidation'">{{ '$1.5 x ' + packag.orders.length + ' + $' + service.price}}</td>
                           <td v-if="service.service_title != 'Consolidation'">${{ service.price }}</td>
-                          <td v-if="service.service_title == 'Consolidation'">${{ parseFloat(service.price) + (1.5 * packag.orders.length) }}</td>
+                          <td v-if="service.service_title != 'Consolidation'">${{ service.price }}</td>
+                          <td v-if="service.service_title == 'Consolidation'">${{ formatNumber(service.price + 1.5 * packag.orders.length) }}</td>
                           <td></td>
                         </tr>
                       </template>
@@ -612,7 +604,7 @@
                         <td colspan="2" style="text-align:center;">
                           <strong>Total</strong>
                         </td>
-                        <td>${{ getGrandTotal() }}</td>
+                        <td class="bg-dark text-white">${{ getGrandTotal() }}</td>
                         <td></td>
                       </tr>
                       <tr v-if="$page.props.auth.user.type == 'customer'">
@@ -886,6 +878,9 @@ export default {
     this.getStorageFee()
   },
   methods: {
+    formatNumber (num) {
+      return parseFloat(num).toFixed(2)
+    },
     submit() {
       this.form.post(this.route('packages.service-request'));
       this.form.reset();
@@ -961,86 +956,13 @@ export default {
       }).catch(error => {
         console.log(error)
       })
-      /*//get first service rate.
-      quote_params.service = this.shipping_services.fedex_international_economy;
-      axios.get("/getQuote", {
-        params: quote_params,
-      })
-          .then(({data}) => {
-                this.isLoading = false;
-                if (data.status) {
-                  this.showEstimatedPrice = true;
-                  //this.services.push(data.service)
-                  this.shipping_services[data.service.serviceCode] = data.service;
-
-                } else {
-                  this.serverError = data.message;
-                }
-              }
-          );
-
-      //get first service rate.
-      quote_params.service = this.shipping_services.usps_international_first_class;
-      axios.get("/getQuote", {
-        params: quote_params,
-      })
-          .then(({data}) => {
-                this.isLoading = false;
-                if (data.status) {
-                  this.showEstimatedPrice = true;
-                  //this.services.push(data.service)
-                  this.shipping_services[data.service.serviceCode] = data.service;
-
-                } else {
-                  this.serverError = data.message;
-                }
-              }
-          );
-
-      //get first service rate.
-      quote_params.service = this.shipping_services.usps_international_priority;
-      axios.get("/getQuote", {
-        params: quote_params,
-      })
-          .then(({data}) => {
-                this.isLoading = false;
-                if (data.status) {
-                  this.showEstimatedPrice = true;
-                  //this.services.push(data.service)
-                  this.shipping_services[data.service.serviceCode] = data.service;
-                } else {
-                  this.serverError = data.message;
-                }
-              }
-          );
-
-      //get first service rate.
-      quote_params.service = this.shipping_services.usps_international_express;
-      axios.get("/getQuote", {
-        params: quote_params,
-      })
-          .then(({data}) => {
-                this.isLoading = false;
-                if (data.status) {
-                  this.showEstimatedPrice = true;
-                  //this.services.push(data.service)
-                  this.shipping_services[data.service.serviceCode] = data.service;
-                } else {
-                  this.serverError = data.message;
-                }
-              }
-          );*/
     },
     getShippingRatesByOrders() {
-      //this.$refs.buttonRates.innerText = "Loading ..."
-
-      console.log('here');
 
       this.showEstimatedPrice = false;
       this.isLoading = true;
       let pieces = [];
 
-      console.log(this.packag.orders.length);
       this.packag.orders.forEach(function (value,index) {
         let piece = {
           "weight": value.package_weight.toString(),
@@ -1093,18 +1015,15 @@ export default {
       } else {
         consolidation_total = 0;
       }
-
-      /*let pickup_total =  this.order_charges.reduce((acc, item) => {
-          return acc + (parseInt(item.service_charges));
-          },
-      0);*/
-      // return request_total+pickup_total;
-      return parseFloat(request_total) + +parseFloat(consolidation_total);
+      
+      return this.formatNumber(request_total + consolidation_total);
 
     },
     getGrandTotal() {
-      var grandTotal = this.getServiceSubTotal() + parseFloat(this.packag.shipping_total) + parseFloat(this.mailout_fee) + parseFloat(this.storage_fee);
-      return parseFloat(grandTotal).toFixed(2);
+      var r1 = this.formatNumber(this.packag.shipping_total + this.mailout_fee + this.storage_fee);
+      var r2 = this.getServiceSubTotal();
+
+      return this.formatNumber(parseFloat(r1) + parseFloat(r2));
     },
     setActiveTabAB(tab) {
 
