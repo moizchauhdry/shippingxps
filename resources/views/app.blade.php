@@ -69,14 +69,14 @@
     </style>
     <!-- Scripts -->
 
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0DMYW4Q2M5"></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-240686142-1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
 
-        gtag('config', 'G-0DMYW4Q2M5');
+        gtag('config', 'UA-240686142-1');
     </script>
 
     @routes
