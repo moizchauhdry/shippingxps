@@ -36,6 +36,30 @@ class PackageController extends Controller
     public $integration_id = '59690';
     public $status_list = ['arrived', 'labeled', 'shipped', 'delivered', 'rejected'];
 
+    private function calculate_storage_fee($id)
+    {
+        $package = Package::find($id);
+        $orders = $package->orders;
+
+        $fee = SiteSetting::where('name', 'storage_fee')->first()->value;
+
+        $storageFee = 0;
+        foreach ($orders as $item) {
+            if ($item->arrived_at != null) {
+                $lastDate = Carbon::make($item->arrived_at)->addDays(75);
+                $currentDate = Carbon::now();
+                if (strtotime($currentDate) > strtotime($lastDate)) {
+                    $daysDifference = $currentDate->diffInDays($lastDate);
+                    $storageFee += $daysDifference * $fee;
+                }
+            }
+        }
+
+        $package->storage_fee = $storageFee;
+        $package->save();
+        return $storageFee;
+    }
+
     public function index()
     {
         $user_type = Auth::user()->type;
@@ -44,7 +68,9 @@ class PackageController extends Controller
             return $this->customer_packages();
         } else {
 
-            $query = Package::with(['warehouse', 'customer', 'orders' => function($q){ $q->where('status','!=','rejected');}]);
+            $query = Package::with(['warehouse', 'customer', 'orders' => function ($q) {
+                $q->where('status', '!=', 'rejected');
+            }]);
             $packages = $query->orderByDesc('id')->paginate(25);
 
             return Inertia::render('Packages/AdminPackageList', [
@@ -58,24 +84,32 @@ class PackageController extends Controller
 
         $customer_id = Auth::user()->id;
 
-        $query = Package::with(['warehouse', 'customer', 'orders' => function($q){ $q->where('status','!=','rejected');}]);
+        $query = Package::with(['warehouse', 'customer', 'orders' => function ($q) {
+            $q->where('status', '!=', 'rejected');
+        }]);
         $query->where('customer_id', '=', $customer_id);
-        $query->whereIn('status', ['open', 'filled', 'consolidated'])->orderBy('id','desc');
+        $query->whereIn('status', ['open', 'filled', 'consolidated'])->orderBy('id', 'desc');
         $packages_account = $query->paginate(25);
 
-        $query_ready = Package::with(['warehouse', 'customer', 'orders' => function($q){ $q->where('status','!=','rejected');}]);
+        $query_ready = Package::with(['warehouse', 'customer', 'orders' => function ($q) {
+            $q->where('status', '!=', 'rejected');
+        }]);
         $query_ready->where('customer_id', '=', $customer_id);
-        $query_ready->whereIn('status', ['labeled'])->orderBy('id','desc');
+        $query_ready->whereIn('status', ['labeled'])->orderBy('id', 'desc');
         $packages_ready = $query_ready->paginate(25);
 
-        $query_sent = Package::with(['warehouse', 'customer', 'orders' => function($q){ $q->where('status','!=','rejected');}]);
+        $query_sent = Package::with(['warehouse', 'customer', 'orders' => function ($q) {
+            $q->where('status', '!=', 'rejected');
+        }]);
         $query_sent->where('customer_id', '=', $customer_id);
-        $query_sent->whereIn('status', ['shipped', 'complete', 'delivered'])->orderBy('id','desc');
+        $query_sent->whereIn('status', ['shipped', 'complete', 'delivered'])->orderBy('id', 'desc');
         $packages_sent = $query_sent->paginate(25);
 
-        $query_delivered = Package::with(['warehouse', 'customer', 'orders' => function($q){ $q->where('status','!=','rejected');}]);
+        $query_delivered = Package::with(['warehouse', 'customer', 'orders' => function ($q) {
+            $q->where('status', '!=', 'rejected');
+        }]);
         $query_delivered->where('customer_id', '=', $customer_id);
-        $query_delivered->whereIn('status', ['delivered'])->orderBy('id','desc');
+        $query_delivered->whereIn('status', ['delivered'])->orderBy('id', 'desc');
         $packages_delivered = $query_delivered->paginate(25);
 
         return Inertia::render('Packages/CustomerPackageList', [
@@ -95,14 +129,16 @@ class PackageController extends Controller
      */
     public function show($id)
     {
-        $packag = Package::with(['orders' => function($q){ $q->where('status','!=','rejected');}, 'address', 'warehouse', 'customer', 'items', 'images', 'serviceRequests'])->find($id);
+        $packag = Package::with(['orders' => function ($q) {
+            $q->where('status', '!=', 'rejected');
+        }, 'address', 'warehouse', 'customer', 'items', 'images', 'serviceRequests'])->find($id);
 
-        if($packag == null){
-            return back()->with('error','No Package Found');
+        if ($packag == null) {
+            return back()->with('error', 'No Package Found');
         }
 
         $services = Service::where('status', '=', '1')->get();
-        $serviceRequest = ServiceRequest::where('package_id', $packag->id)->where('service_id', 1)->where('status','pending')->first();
+        $serviceRequest = ServiceRequest::where('package_id', $packag->id)->where('service_id', 1)->where('status', 'pending')->first();
         $servedConsolidation = ServiceRequest::where('package_id', $packag->id)->where('status', 'served')->where('service_id', 1)->first();
         $multiPieceRequestStatus = ServiceRequest::where('package_id', $packag->id)->where('status', 'pending')->where('service_id', 5)->first();
         $multiPieceRequestServed = ServiceRequest::where('package_id', $packag->id)->where('status', 'served')->where('service_id', 5)->first();
@@ -119,6 +155,8 @@ class PackageController extends Controller
                 'date' => $req->created_at,
             ];
         }
+
+        // dd($service_requests);
 
         $images = [];
         foreach ($packag->images as $image) {
@@ -151,6 +189,24 @@ class PackageController extends Controller
             }
         }
 
+        $subtotal = 0;
+        $package_service_requests = [];
+        foreach ($packag->serviceRequests as $key => $service_request) {
+            if ($service_request->status == 'served') {
+                if ($service_request->service->title == 'Consolidation') {
+                    $subtotal = 1.5 * $packag->orders->count();
+                }
+                $package_service_requests[] = [
+                    'name' => $service_request->service->title,
+                    'price' => $service_request->price,
+                    'amount' => $service_request->service->title == 'Consolidation' ? $service_request->price + 1.5 * $packag->orders->count() : $service_request->price,
+                ];
+                $subtotal = $subtotal + $service_request->price;
+            }
+        }
+
+        $total = $subtotal + $packag->shipping_total + (float) SiteSetting::getByName('mailout_fee') + $this->calculate_storage_fee($packag->id);
+
         return Inertia::render('Packages/PackageDetails', [
             'packag' => $packag,
             'services' => $services,
@@ -163,6 +219,9 @@ class PackageController extends Controller
             'hasConsolidationServed' => (bool)$servedConsolidation,
             'hasMultiPieceServed' => (bool)$multiPieceRequestServed,
             'hasMultiPieceStatus' => (bool)$multiPieceRequestStatus,
+            'package_service_requests' => $package_service_requests,
+            'subtotal' => $subtotal,
+            'total' => $total,
         ]);
     }
 
@@ -176,7 +235,9 @@ class PackageController extends Controller
 
         $user_id = Auth::user()->id;
 
-        $packag = Package::with(['orders' => function($q){ $q->where('status','!=','rejected');}, 'warehouse', 'customer', 'items'])->find($package_id);
+        $packag = Package::with(['orders' => function ($q) {
+            $q->where('status', '!=', 'rejected');
+        }, 'warehouse', 'customer', 'items'])->find($package_id);
 
 
         $warehouse = $packag->warehouse;
@@ -652,12 +713,12 @@ class PackageController extends Controller
 
         $orderIDS = $package->orders()->pluck('id')->toArray();
 
-        $packagePaymentsCheck = Payment::where('package_id',$package->id)->whereNotNull('charged_at')->get();
-        $ordersPaymentsCheck = Payment::whereIn('order_id',$orderIDS)->whereNotNull('charged_at')->get();
+        $packagePaymentsCheck = Payment::where('package_id', $package->id)->whereNotNull('charged_at')->get();
+        $ordersPaymentsCheck = Payment::whereIn('order_id', $orderIDS)->whereNotNull('charged_at')->get();
 
 
 
-        if(count($packagePaymentsCheck) > 0 || count($ordersPaymentsCheck) > 0){
+        if (count($packagePaymentsCheck) > 0 || count($ordersPaymentsCheck) > 0) {
             return response()->json([
                 'status' => 0,
                 'message' => 'Cannot Delete This package due to One of your Order or this package has been paid by the customer',
@@ -675,7 +736,7 @@ class PackageController extends Controller
                 'message' => 'Package Deleted Successfully',
                 'url' => route('packages')
             ]);
-        }catch(\Throwable $e){
+        } catch (\Throwable $e) {
             \Log::error($e);
             return response()->json([
                 'status' => 0,
@@ -683,14 +744,12 @@ class PackageController extends Controller
                 'url' => route('packages')
             ]);
         }
-
-
     }
 
     public function pushPackage($packageID)
     {
         $response = [];
-        $package = Package::with(['warehouse','orders','address'])->find($packageID);
+        $package = Package::with(['warehouse', 'orders', 'address'])->find($packageID);
         $multiPieceRequestStatus = ServiceRequest::where('package_id', $package->id)->where('status', 'served')->where('service_id', 5)->first();
         $warehouse = $package->warehouse;
         $sender = [
@@ -720,12 +779,12 @@ class PackageController extends Controller
             'email' => null,
         ];
 
-        if($multiPieceRequestStatus != null){
+        if ($multiPieceRequestStatus != null) {
             $orders =  $package->orders;
-            foreach($orders as $order){
+            foreach ($orders as $order) {
                 $orderItems = $order->items;
                 $items = [];
-                foreach ($orderItems as $item){
+                foreach ($orderItems as $item) {
                     $items[] = [
                         'productId' => (string)$item->id,
                         'sku' => null,
@@ -738,7 +797,6 @@ class PackageController extends Controller
                         'htsNumber' => null,
                         'lineId' => null,
                     ];
-
                 }
                 $packageInfo = [
                     [
@@ -750,12 +808,12 @@ class PackageController extends Controller
                         'declaredValue' => $order->declared_value == 0 ? NULL : $order->declared_value,
                     ]
                 ];
-                $post_params = array (
-                    'orderId' => $package->package_no.'-'.sprintf("%05d", $order->id),
+                $post_params = array(
+                    'orderId' => $package->package_no . '-' . sprintf("%05d", $order->id),
                     'orderDate' => date('Y-m-d', strtotime($package->created_at)),
                     'orderNumber' => $package->package_no,
                     'fulfillmentStatus' => 'pending',
-                    'shippingService' => $package->package_type_code.' '.$package->service_label,
+                    'shippingService' => $package->package_type_code . ' ' . $package->service_label,
                     'shippingTotal' => (string)$package->shipping_charges,
                     'weightUnit' => $order->weight_unit,
                     'dimUnit' => $order->dim_unit,
@@ -768,16 +826,14 @@ class PackageController extends Controller
                     'packages' => $packageInfo
                 );
 
-                $response[] = json_decode($this->hitApi($post_params),true);
+                $response[] = json_decode($this->hitApi($post_params), true);
             }
-
-        }
-        else{
+        } else {
             $orders =  $package->orders;
             $ordersIDs = $package->orders()->pluck('id')->toArray();
-            $orderItems = OrderItem::whereIn('order_id',$ordersIDs)->get();
+            $orderItems = OrderItem::whereIn('order_id', $ordersIDs)->get();
             $items = [];
-            foreach ($orderItems as $item){
+            foreach ($orderItems as $item) {
                 $items[] = [
                     'productId' => (string)$item->id,
                     'sku' => null,
@@ -803,12 +859,12 @@ class PackageController extends Controller
                 ]
             ];
 
-            $post_params = array (
+            $post_params = array(
                 'orderId' => $package->package_no,
                 'orderDate' => date('Y-m-d', strtotime($package->created_at)),
                 'orderNumber' => $package->package_no,
                 'fulfillmentStatus' => 'pending',
-                'shippingService' => $package->package_type_code.' '.$package->service_label,
+                'shippingService' => $package->package_type_code . ' ' . $package->service_label,
                 'shippingTotal' => (string)$package->shipping_charges,
                 'weightUnit' => $package->weight_unit,
                 'dimUnit' => $package->dim_unit,
@@ -821,13 +877,13 @@ class PackageController extends Controller
                 'packages' => $packageInfo
             );
 
-            $response[] =  json_decode($this->hitApi($post_params),true);
+            $response[] =  json_decode($this->hitApi($post_params), true);
         }
 
         $count = 0;
 
-        foreach($response as $res){
-            if(isset($res['ok']) && $res['ok'] == true){
+        foreach ($response as $res) {
+            if (isset($res['ok']) && $res['ok'] == true) {
                 $count++;
             }
         }
@@ -850,7 +906,7 @@ class PackageController extends Controller
 
             $client = new Client();
 
-            $request = $client->put('https://xpsshipper.com/restapi/v1/customers/'.$this->customer_id.'/integrations/'.$this->integration_id.'/orders/'.$postParameters['orderId'], [
+            $request = $client->put('https://xpsshipper.com/restapi/v1/customers/' . $this->customer_id . '/integrations/' . $this->integration_id . '/orders/' . $postParameters['orderId'], [
                 'headers' => $headers,
                 'body' => json_encode($postParameters),
                 'http_errors' => true,
@@ -861,13 +917,11 @@ class PackageController extends Controller
             \Log::info($response);
 
             return $response;
-
-        }catch(\Exception $ex){
+        } catch (\Exception $ex) {
 
             $ex_message = $ex->getMessage();
 
             return $ex_message;
-
         }
     }
 }

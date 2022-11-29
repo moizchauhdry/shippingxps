@@ -563,7 +563,7 @@
                       </tr>
                       </thead>
                       <tbody>
-                      <template v-for="service in service_requests " :key="service.id">
+                      <!-- <template v-for="service in service_requests " :key="service.id">
                         <tr v-if="service.status == 'served'">
                           <td>{{ service.service_title }}</td>
                           <td v-if="service.service_title == 'Consolidation'">{{ '$1.5 x ' + packag.orders.length + ' + $' + service.price}}</td>
@@ -572,13 +572,23 @@
                           <td v-if="service.service_title == 'Consolidation'">${{ formatNumber(service.price + 1.5 * packag.orders.length) }}</td>
                           <td></td>
                         </tr>
+                      </template> -->
+                      <template v-for="package_service_request in package_service_requests " :key="package_service_request.id">
+                        <tr>
+                          <td colspan="2">
+                            <span>{{ package_service_request.name }}</span>
+                            <span v-if="package_service_request.name == 'Consolidation'" class="pl-3">
+                              {{ '$1.5 x ' + packag.orders.length + ' + $' + package_service_request.price}}</span>
+                          </td>
+                          <td>${{ package_service_request.amount }}</td>
+                        </tr>
                       </template>
                       <template v-if="service_requests.length > 0">
                         <tr>
                           <td colspan="2" style="text-align:center;">
                             <strong>Sub Total</strong>
                           </td>
-                          <td>${{ getServiceSubTotal() }}</td>
+                          <td>${{ this.subtotal }}</td>
                           <td></td>
                         </tr>
                       </template>
@@ -604,7 +614,7 @@
                         <td colspan="2" style="text-align:center;">
                           <strong>Total</strong>
                         </td>
-                        <td class="bg-dark text-white">${{ getGrandTotal() }}</td>
+                        <td class="bg-dark text-white">${{ this.total }}</td>
                         <td></td>
                       </tr>
                       <tr v-if="$page.props.auth.user.type == 'customer'">
@@ -867,6 +877,9 @@ export default {
     hasConsolidationServed: Object,
     hasMultiPieceServed: Object,
     hasMultiPieceStatus: Object,
+    package_service_requests: Object,
+    subtotal: Object,
+    total: Object,
   },
   computed: {
     siuteNum() {
