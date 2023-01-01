@@ -212,14 +212,14 @@
 
             <inertia-link
                 class="nav-link"
-                :href="route('packages')"
+                :href="route('packages.index')"
                 :class="{
 							active:
-								route().current('packages') ||
+								route().current('packages.index') ||
 								route().current('packages.show') ||
 								route().current('packages.custom'),
 						}"
-                :active="route().current('packages')"
+                :active="route().current('packages.index')"
             >
               <i class="fas fa-external-link-alt"></i><span>Packages</span>
             </inertia-link>

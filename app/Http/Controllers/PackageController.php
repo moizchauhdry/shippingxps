@@ -60,24 +60,51 @@ class PackageController extends Controller
         return $storageFee;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $user_type = Auth::user()->type;
+        $status = $request->has('status') ? $request->status : 'open';
 
-        if ($user_type == 'customer') {
-            return $this->customer_packages();
-        } else {
+        $query = Package::with('customer', 'warehouse')->where('status', $status);
 
-            $query = Package::with(['warehouse', 'customer', 'orders' => function ($q) {
-                $q->where('status', '!=', 'rejected');
-            }]);
-            $packages = $query->orderByDesc('id')->paginate(25);
-
-            return Inertia::render('Packages/AdminPackageList', [
-                'packages' => $packages
-            ]);
+        if (Auth::user()->type == 'customer') {
+            $query->where('customer_id', Auth::user()->id);
         }
+
+        if (!empty($request->suite_no)) {
+            $suite_no = intval($request->suite_no) - 4000;
+            $query->whereHas('customer', function ($query) use ($suite_no) {
+                $query->where('id', $suite_no);
+            });
+        }
+
+        $packages = $query->orderBy('id', 'desc')->get();
+
+        return Inertia::render('Packages/Index', [
+            'pkgs' => $packages,
+            'filter' => [
+                'status' => $status
+            ]
+        ]);
     }
+
+    // public function index()
+    // {
+    //     $user_type = Auth::user()->type;
+
+    //     if ($user_type == 'customer') {
+    //         return $this->customer_packages();
+    //     } else {
+
+    //         $query = Package::with(['warehouse', 'customer', 'orders' => function ($q) {
+    //             $q->where('status', '!=', 'rejected');
+    //         }]);
+    //         $packages = $query->orderByDesc('id')->paginate(25);
+
+    //         return Inertia::render('Packages/AdminPackageList', [
+    //             'packages' => $packages
+    //         ]);
+    //     }
+    // }
 
     public function customer_packages()
     {

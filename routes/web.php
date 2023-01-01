@@ -59,21 +59,19 @@ Route::get('/orders/show/{id}', 'OrderController@show')->name('orders.show')->mi
 Route::post('/orders/removeItem', 'OrderController@removeItem')->name('orders.removeItem')->middleware('auth');
 // Route::get('/orders/quote', 'OrderController@quote')->name('orders.quote')->middleware('auth');
 
-Route::get('/packages', 'PackageController@index')->name('packages')->middleware('auth');
+// Route::get('/packages', 'PackageController@index')->name('packages')->middleware('auth');
+Route::any('/packages-index', 'PackageController@index')->name('packages.index')->middleware('auth');
 Route::get('/packages/{id}', 'PackageController@show')->name('packages.show')->middleware('auth');
 Route::get('/packages/create/{order_id}', 'PackageController@create')->name('package.create')->middleware('auth');
 Route::post('/packages', 'PackageController@store')->name('package.store')->middleware('auth');
 Route::get('/packages/{id}/edit', 'PackageController@edit')->name('package.edit')->middleware('auth');
 Route::post('/packages/update', 'PackageController@update')->name('package.update')->middleware('auth');
 Route::get('/getStorageFee', 'PackageController@getStorageFee')->name('getStorageFee')->middleware('auth');
-
 Route::post('/packages/service-request', 'PackageController@serviceRequest')->name('packages.service-request')->middleware('auth');
 Route::post('/packages/service-handle', 'PackageController@serviceHandle')->name('packages.service-handle')->middleware('auth');
-
 Route::post('/packages/ship-package', 'PackageController@shipPackage')->name('packages.ship-package')->middleware('auth');
 Route::post('/packages/consolidate-package', 'PackageController@consolidatePackage')->name('packages.consolidate')->middleware('auth');
 Route::post('/packages/set-shipping-service', 'PackageController@setShippingService')->name('packages.set-shipping-service')->middleware('auth');
-
 Route::get('/packages/custom/{package_id}', 'PackageController@custom')->name('packages.custom')->middleware('auth');
 Route::get('/packages/get-pdf/{order_id}', 'PackageController@getPdf')->name('packages.pdf')->middleware('auth');
 Route::post('/packages/destroy', 'PackageController@destroy')->name('packages.destroy')->middleware('auth');
