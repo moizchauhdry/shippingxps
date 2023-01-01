@@ -6,12 +6,12 @@
         </div>
         <div class="row">
           <div class="col-md-10">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight form-title">
-              Package # {{ packag.package_no }} <a v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'" class="btn btn-outline-danger ml-2" v-show="packag.status === 'open'|| packag.status === 'filled' || packag.status === 'labeled' " v-on:click="confirmDeletion()">Delete Package</a>
-            </h2>
+            <h1 class="font-semibold text-xl text-gray-800 leading-tight form-title">
+              Package #{{ packag.id }} <a v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'" class="btn btn-outline-danger ml-2" v-show="packag.status === 'open'|| packag.status === 'filled' || packag.status === 'labeled' " v-on:click="confirmDeletion()">Delete Package</a>
+            </h1>
           </div>
           <div class="col-md-2">
-            <span v-bind:class="getLabelClass(packag.status)" style="color:black;padding:5px;">{{ packag.status }}</span>
+            <span v-bind:class="getLabelClass(packag.status)" class="text-sm">{{ packag.status }}</span>
 
           </div>
         </div>
@@ -1082,29 +1082,37 @@ export default {
     getLabelClass(status) {
       switch (status) {
         case 'pending':
-          return 'label bg-warning';
-          break;
-        case 'served':
-          return 'label bg-success';
-          break;
-        case 'filled':
-          return 'label bg-info';
-          break;
-        case 'rejected':
-          return 'label bg-danger';
-          break;
-        case 'consolidated':
-          return 'label bg-success';
-          break;
-        case 'labeled':
-          return 'label bg-success';
-          break;
+        return 'text-uppercase badge badge-warning p-2 text-white';
+        break;
         case 'open':
-          return 'label bg-info';
-          break;
+        return 'text-uppercase badge badge-info p-2 text-white';
+        break;
+        case 'filled':
+        return 'text-uppercase badge badge-info p-2 text-white';
+        break;
+        case 'open':
+        return 'text-uppercase badge badge-success p-2 text-white';
+        break;
+        case 'labeled':
+        return 'text-uppercase badge badge-success p-2 text-white';
+        break;
         case 'shipped':
-          return 'label bg-primary';
-          break;
+        return 'text-uppercase badge badge-primary p-2';
+        break;
+        case 'delivered':
+        return 'text-uppercase badge badge-success p-2 text-white';
+        break
+        case 'consolidation':
+        return 'text-uppercase badge badge-danger p-2 text-white';
+        break;
+        case 'served':
+        return 'label bg-success';
+        break;
+        case 'rejected':
+        return 'label bg-danger';
+        break;
+        default:
+        return 'text-uppercase badge badge-primary p-2 text-white';
       }
     },
     checkout() {
