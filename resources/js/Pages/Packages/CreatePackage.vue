@@ -177,8 +177,8 @@
                     </div> 
 
                     <div class="form-group">
-                       <template v-if="packag.status=='consolidated' || packag.orders.length >= 1">
-                          <button type="submit" class="btn btn-success float-right">Save & Update</button>
+                       <template v-if="packag.status=='open'">
+                          <button type="submit" class="btn btn-success float-right">Save & Submit</button>
                       </template>
                     </div>
                    

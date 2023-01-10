@@ -23,6 +23,7 @@ use App\Models\ServiceRequest;
 use App\Models\User;
 use App\Models\SiteSetting;
 use App\Models\Shipping;
+use App\Models\Warehouse;
 use Illuminate\Support\Facades\Auth;
 use File;
 use Carbon\Carbon;
@@ -64,7 +65,7 @@ class PackageController extends Controller
     {
         $status = $request->has('status') ? $request->status : 'open';
 
-        $query = Package::with('customer', 'warehouse')->where('status', $status);
+        $query = Package::with('customer', 'warehouse', 'child_packages')->where('status', $status);
 
         if (Auth::user()->type == 'customer') {
             $query->where('customer_id', Auth::user()->id);
@@ -156,13 +157,23 @@ class PackageController extends Controller
      */
     public function show($id)
     {
+        // dd('package-detail');
         $packag = Package::with(['orders' => function ($q) {
             $q->where('status', '!=', 'rejected');
-        }, 'address', 'warehouse', 'customer', 'items', 'images', 'serviceRequests'])->find($id);
+        }, 'address', 'warehouse', 'customer', 'items', 'images', 'serviceRequests', 'child_packages', 'order'])->find($id);
 
         if ($packag == null) {
             return back()->with('error', 'No Package Found');
         }
+
+        $child_package_orders = [];
+        foreach ($packag->child_packages as $key => $child_package) {
+            $child_package_orders[] = $child_package->order;
+        }
+
+        // dd($child_package_orders);
+        // dd($packag->order);
+
 
         $services = Service::where('status', '=', '1')->get();
         $serviceRequest = ServiceRequest::where('package_id', $packag->id)->where('service_id', 1)->where('status', 'pending')->first();
@@ -950,5 +961,47 @@ class PackageController extends Controller
 
             return $ex_message;
         }
+    }
+
+    public function consolidation(Request $request)
+    {
+        $query = Package::with('customer', 'warehouse')
+            ->where('warehouse_id', $request->warehouse_id)
+            ->where('status', 'open')
+            ->where('pkg_type', 'single');
+
+        if (Auth::user()->type == 'customer') {
+            $query->where('customer_id', Auth::user()->id);
+        }
+
+        $packages = $query->orderBy('id', 'desc')->get();
+
+        $warehouses = Warehouse::get();
+
+        return Inertia::render('Packages/Consolidation', [
+            'pkgs' => $packages,
+            'warehouses' => $warehouses,
+        ]);
+    }
+
+    public function storeConsolidation(Request $request)
+    {
+        $user = Auth::user();
+
+        $package = Package::create([
+            'customer_id' => $user->id,
+            'warehouse_id' => $request->warehouse_id,
+            'pkg_type' => 'consolidation',
+        ]);
+
+        foreach ($request->package_consolidation as $key => $pkg) {
+            $pkg = Package::find($pkg);
+            $pkg->update([
+                'package_handler_id' => $package->id,
+                'pkg_type' => 'assigned',
+            ]);
+        }
+
+        return redirect()->route('packages.show', $package->id)->with('success', 'The Package have consolidated successfully.');
     }
 }

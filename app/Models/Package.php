@@ -8,34 +8,47 @@ use Illuminate\Database\Eloquent\Model;
 class Package extends Model
 {
     use HasFactory;
+    protected $guarded = [];
 
     protected $appends = ['service_charges'];
 
-    public function customer(){
+    public function customer()
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function packageHandler(){
-        return $this->belongsTo(User::class,'package_handler_id');
+    public function packageHandler()
+    {
+        return $this->belongsTo(User::class, 'package_handler_id');
     }
 
-    public function warehouse(){
+    public function warehouse()
+    {
         return $this->belongsTo(Warehouse::class);
     }
 
-    public function address(){
-        return $this->belongsTo(Address::class,'address_book_id');
+    public function address()
+    {
+        return $this->belongsTo(Address::class, 'address_book_id');
     }
 
-    public function orders(){
+    public function orders()
+    {
         return $this->hasMany(Order::class);
     }
 
-    public function serviceRequests(){
+    public function order()
+    {
+        return $this->hasOne(Order::class);
+    }
+
+    public function serviceRequests()
+    {
         return $this->hasMany(ServiceRequest::class);
     }
 
-    public function items(){
+    public function items()
+    {
         return $this->hasManyThrough('App\Models\OrderItem', 'App\Models\Order');
     }
 
@@ -43,19 +56,20 @@ class Package extends Model
     //     return $this->hasManyThrough('App\Models\OrderItem', 'App\Models\Order');
     // }
 
-    public function images(){
+    public function images()
+    {
         return $this->hasManyThrough('App\Models\OrderImage', 'App\Models\Order');
     }
-    
+
     public function getCreatedAtAttribute($value)
     {
-        return date('Y-m-d h:i:s',strtotime($value));
+        return date('Y-m-d h:i:s', strtotime($value));
     }
 
     public function setShippingAddressAttribute()
     {
         $address = $this->address;
-        if($address == NULL){
+        if ($address == NULL) {
             return '- -';
         }
         return $address->address;
@@ -64,10 +78,10 @@ class Package extends Model
     public function getShippingAddressAttribute()
     {
         $address = $this->address;
-        if($address == NULL){
+        if ($address == NULL) {
             return '- -';
         }
-        return $address->address.', '.$address->city.', '.ucfirst(strtolower($address->country->name));
+        return $address->address . ', ' . $address->city . ', ' . ucfirst(strtolower($address->country->name));
     }
 
     public function getServiceChargesAttribute()
@@ -75,11 +89,16 @@ class Package extends Model
         $serviceCharges = $this->serviceRequests;
         \Log::info($serviceCharges);
         $sum = 0;
-        foreach($serviceCharges as $service){
+        foreach ($serviceCharges as $service) {
             $sum += $service->price;
         }
-        $mailOutFee = SiteSetting::where('name','mailout_fee')->orderBy('id','desc')->first()->value;
+        $mailOutFee = SiteSetting::where('name', 'mailout_fee')->orderBy('id', 'desc')->first()->value;
         $sum += $mailOutFee;
         return $sum;
+    }
+
+    public function child_packages()
+    {
+        return $this->hasMany(Package::class, 'package_handler_id', 'id');
     }
 }

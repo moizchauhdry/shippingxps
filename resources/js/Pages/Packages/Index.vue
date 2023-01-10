@@ -18,11 +18,14 @@
                   </div>
               </form>
             </div>
-          <!-- <div class="col-md-3" v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'" >
+          <div class="col-md-3">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-              <inertia-link :href="route('package.create')" class="btn btn-success float-right"><i class="fa fa-plus-alt mr-1"></i>Add Order</inertia-link>
+              <inertia-link :href="route('packages.consolidation')" class="btn btn-success float-right m-1">
+                <i class="fa fa-plus mr-1"></i>Package Consolidation</inertia-link>
+                <inertia-link :href="route('orders.create')" class="btn btn-success float-right m-1">
+                  <i class="fa fa-plus mr-1"></i>Add Package</inertia-link>
             </h2>
-          </div> -->
+          </div>
         </div>
 
         <div class="row my-4">
@@ -42,7 +45,7 @@
                 <button type="button"  :class="{'active':active === 'delivered'}"  class="btn btn-light w-100"  @click="searchPackage('delivered')">Delivered</button>
             </div>
             <div class="col-md-2">
-                <button type="button"  :class="{'active':active === 'consolidated'}"  class="btn btn-light w-100"  @click="searchPackage('consolidated')">Consolidated</button>
+                <button type="button"  :class="{'active':active === 'rejected'}"  class="btn btn-light w-100"  @click="searchPackage('rejected')">Rejected</button>
             </div>
         </div>
         <package-list v-bind="$props"></package-list>

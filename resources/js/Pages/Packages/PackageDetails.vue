@@ -25,98 +25,96 @@
                 <table class="table">
                   <thead>
                   <tr>
-                    <th>Serial #</th>
+                    <th>Package</th>
+                    <th>Dimensions</th>
                     <th>Tracking IN</th>
-                    <th>From</th>
-                    <th>Receive Date</th>
-                    <th scope="col">Image</th>
+                    <th>Received From</th>
+                    <th>Warehouse</th>
                     <th></th>
                   </tr>
                   </thead>
                   <tbody>
-                  <template v-for="(order,index) in packag.orders" :key="order.id">
+                  <template v-for="child_pkg in packag.child_packages" :key="child_pkg.id">
                     <tr>
-                      <td>{{ index + 1 }}</td>
-                      <td>{{ order.tracking_number_in }}</td>
-                      <td>{{ order.received_from }}</td>
-                      <td>{{ order.created_at }}</td>
                       <td>
-                        <a :href="route('orders.show', order.id)" class="link-primary">Details</a>
+                        <span class="badge badge-primary text-sm">PKG #{{ child_pkg.id }}</span>
+                        <span class="badge badge-info text-sm">Order #{{ child_pkg.order.id }}</span>
+                      </td>
+                      <td>
+                         {{ child_pkg.order.package_length }} {{ child_pkg.order.dim_unit }} x {{ child_pkg.order.package_width }} {{ child_pkg.order.dim_unit }} x {{ child_pkg.order.package_height }} {{ child_pkg.order.dim_unit }} 
+                      </td>
+                      <td>{{child_pkg.order.tracking_number_in }}</td>
+                      <td>{{child_pkg.order.received_from }}</td>
+                      <td>{{child_pkg.warehouse_id }}</td>
+                      <td>
+                        <inertia-link class="btn btn-info btn-sm m-1" :href="route('orders.show', child_pkg.order.id)">
+                          <i class="fa fa-list mr-1"></i>Detail</inertia-link>
                       </td>
                     </tr>
                   </template>
                   </tbody>
                 </table>
-                <template v-if="($page.props.auth.user.type == 'customer')">
+                <template v-if="($page.props.auth.user.type == 'customer') && packag.status == 'open'">
                   <inertia-link class="btn btn-primary btn-sm m-1" :href="route('packages.custom', packag.id)">
                     <i class="fa fa-copy mr-1"></i>Customs Declaration Form
                   </inertia-link>
                 </template>
-                <template v-if="(packag.status !='open')">
+                <!-- <template v-if="(packag.status !='open')">
                   <a target="_blank" class="btn btn-info btn-sm m-1" :href="route('packages.pdf', packag.id)">
                     <i class="fa fa-print mr-1"></i>Print Commercial Invoice
                   </a>
-                </template>
+                </template> -->
               </div>
             </div>
           </div>
         </div>
-        <div class="row" v-if="(packag.status !='open') && $page.props.auth.user.type == 'customer'">
+
+        <div class="row" v-if="(packag.status !='open') && $page.props.auth.user.type == 'customer' && packag.admin_status == 'pending'">
           <div class="col-md-12">
             <div class="card">
               <div class="card-header">
-                <h3 v-if="hasConsolidationServed">Consolidated Package</h3>
-                <h3 v-else-if="hasMultiPieceServed">Multipiece Package</h3>
-                <h3 v-else-if="packag.orders.length > 1">Info !</h3>
-                <h3 v-else >Single Order Package</h3>
+                <h3 class="text-uppercase">{{ packag.pkg_type }} Package</h3>
               </div>
               <div class="card-body">
                 <div class="row">
                   <div class="col-md-5">
-                    <table v-if="hasConsolidationServed" class="table">
+                    <table class="table">
                       <thead>
-                      <tr>
-                        <th colspan="2">Consolidated Package Details</th>
-                      </tr>
+                        <tr>
+                          <th colspan="2">Box Dimensions</th>
+                        </tr>
                       </thead>
                       <tbody>
-                      <tr>
-                        <td>
-                          Package
-                        </td>
-                        <td>
-                          {{ packag.package_no }}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          Weight
-                        </td>
-                        <td>
-                          {{ packag.package_weight }} {{ packag.weight_unit}}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          Dimensions
-                        </td>
-                        <td>
-                          {{ packag.package_length }} {{ packag.dim_unit }} x {{ packag.package_width }} {{ packag.dim_unit }} x {{ packag.package_height }} {{ packag.dim_unit }}
-                        </td>
-                      </tr>
-                      <template v-if="packag.tracking_number_out !=''">
                         <tr>
+                          <td>Package</td>
+                          <td>PKG #{{ packag.id }}</td>
+                        </tr>
+                        <tr>
+                          <td>Weight</td>
+                          <td>{{ packag.package_weight }} {{ packag.weight_unit}}</td>
+                        </tr>
+                        <tr>
+                          <td>Dimensions</td>
                           <td>
-                            Tracking Out
-                          </td>
-                          <td>
-                            {{ packag.tracking_number_out }}
+                            {{ packag.package_length }} {{ packag.dim_unit }} x 
+                            {{ packag.package_width }} {{ packag.dim_unit }} x 
+                            {{ packag.package_height }} {{ packag.dim_unit }}
                           </td>
                         </tr>
-                      </template>
+                        <template v-if="packag.tracking_number_out != null">
+                          <tr>
+                            <td>
+                              Tracking Out
+                            </td>
+                            <td>
+                              {{ packag.tracking_number_out }}
+                            </td>
+                          </tr>
+                        </template>
                       </tbody>
                     </table>
-                    <template v-if="((packag.status == 'filled' && packag.orders.length == 1) || (packag.status == 'consolidated' && hasConsolidationServed && !hasMultiPieceServed))&&((packag.package_length !=='' && packag.package_length !== 0) && (packag.package_width !=='' && packag.package_width !== 0) && (packag.package_height !=='' && packag.package_height !== 0)) ">
+
+                    <!-- <template v-if="((packag.status == 'filled' && packag.orders.length == 1) || (packag.status == 'consolidated' && hasConsolidationServed && !hasMultiPieceServed))&&((packag.package_length !=='' && packag.package_length !== 0) && (packag.package_width !=='' && packag.package_width !== 0) && (packag.package_height !=='' && packag.package_height !== 0)) ">
                       <a class="btn btn-success" v-on:click="getShippingRates()">Get Shipping Rates</a>
                     </template>
                     <template v-else-if="((packag.status == 'filled' && packag.orders.length == 1) || (hasMultiPieceServed && !hasConsolidationServed ) && (packag.status != 'labeled' && packag.status != 'shipped')) ">
@@ -127,7 +125,10 @@
                     </template>
                     <template v-else-if="packag.orders.length == 1 && packag.status == 'filled'">
                         <strong>Your package needs an update before getting shipping rates</strong>
-                    </template>
+                    </template> -->
+
+                      <a class="btn btn-success" v-on:click="getShippingRates()">Get Shipping Rates</a>
+
                   </div>
                   <div class="col-md-7">
                     <table class="table" v-if="showEstimatedPrice">
@@ -162,7 +163,7 @@
           </div>
         </div>
 
-        <template v-if="this.hasConsolidationRequest || this.hasConsolidationServed">
+        <!-- <template>
           <template v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">
             <template v-if="(packag.status == 'open' || ( packag.status == 'filled' && packag.orders.length > 1) || (this.hasConsolidationRequest && !this.hasConsolidationServed)) && packag.status != 'labeled' && packag.status != 'shipped'">
               <div class="row" style="margin-top:20px;">
@@ -275,9 +276,76 @@
               </div>
             </template>
           </template>
-        </template>
+        </template> -->
 
-        <template v-if="packag.status != 'shipped'">
+
+        <div class="col-md-12">
+
+                  <div class="card">
+                    <div class="card-header">
+                      <h3>Consolidated Package Dimensions</h3>
+                    </div>
+                    <div class="card-body">
+                      <p style="color:red;">Customer has made consolidation request.</p>
+                      <p>Enter new dimensions of package after consolidation.</p>
+
+                      <form @submit.prevent="submitConsolidateForm">
+                        <div class="row">
+                          <div class="col-md-2">
+                            <div class="form-group">
+                              <breeze-label for="warehouse_id" value="Weight Unit"/>
+                              <select name="weight_unit" class="form-select" v-model="form_consolidate.weight_unit" required @change="changeDimention($event)">
+                                <option value="lb">Lb</option>
+                                <option value="kg">Kg</option>
+                              </select>
+                            </div>
+                          </div>
+                          <div class="col-md-2">
+                            <div class="form-group">
+                              <breeze-label for="package_weight" value="Package Weight"/>
+                              <input v-model="form_consolidate.package_weight" min="1" name="package_weight" id="package_weight" type="number" class="form-control" placeholder="Package Weight" :step="0.01" required/>
+                            </div>
+                          </div>
+
+                          <div class="col-md-2">
+                            <div class="form-group">
+                              <breeze-label for="dim_unit" value="Dimention Unit"/>
+                              <select name="dim_unit" class="form-select" v-model="form_consolidate.dim_unit"   readonly :disabled="1">
+                                <option value="in">Inch</option>
+                                <option value="cm">Cm</option>
+                              </select>
+                            </div>
+                          </div>
+                          <div class="col-md-2">
+                            <div class="form-group">
+                              <breeze-label for="package_length" value="Package Length"/>
+                              <input v-model="form_consolidate.package_length" min="1" name="package_length" id="package_length" type="number" class="form-control" placeholder="Package Length" required/>
+                            </div>
+                          </div>
+                          <div class="col-md-2">
+                            <div class="form-group">
+                              <breeze-label for="package_height" value="Package Height"/>
+                              <input v-model="form_consolidate.package_height" min="1" name="package_height" id="package_height" type="number" class="form-control" placeholder="Package Height" required/>
+                            </div>
+                          </div>
+                          <div class="col-md-2">
+                            <div class="form-group">
+                              <breeze-label for="package_width" value="Package Width"/>
+                              <input v-model="form_consolidate.package_width" min="1" name="package_width" id="package_width" type="number" class="form-control" placeholder="Package Width" required/>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-12">
+                            <input type="submit" value="Consolidate Package" class="btn btn-success float-left"/>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+
+        <template v-if="packag.status != 'shipped' && packag.pkg_type == 'single'">
           <div class="row" v-show="($page.props.auth.user.type == 'customer') || (($page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager') && (service_requests.length > 0))">
             <div class="col-md-12">
               <div class="card">

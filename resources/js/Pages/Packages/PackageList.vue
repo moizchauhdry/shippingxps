@@ -15,16 +15,20 @@
                 <tr v-for="(pkg,index) in pkgs" :key="pkg.id">
                     <td>{{ ++index }}</td>
                     <td>
-                        <a :href="route('packages.show', pkg.id)"><span class="badge badge-primary text-sm">PKG #{{ pkg.id }}</span></a>
-                        <p>Location: <strong>{{ pkg.warehouse.name }}</strong></p>
+                        <span class="badge badge-primary text-sm">PKG #{{ pkg.id }}</span>
+                        <p>Location: <strong>{{ pkg?.warehouse?.name }}</strong></p>
                         <p v-if="pkg.package_length > 0">
                             Dimentions : {{ pkg.package_length }} {{ pkg.dim_unit }} x {{ pkg.package_width }} {{ pkg.dim_unit }} x {{ pkg.package_height }} 
                             {{ pkg.dim_unit }} 
                         </p>
                         <p>Shipped :  <strong>{{ pkg.status == "shipped" ? "Yes" : "No"}}</strong></p>
+                        <template v-for="(child_pkg) in pkg.child_packages" :key="child_pkg.id">
+                            <span class="badge badge-info p-1 mr-1 mb-1">PKG #{{child_pkg.id}}</span>
+                        </template>
                     </td>
-                     <td>
-                        <span v-bind:class="getLabelClass(pkg.status)">{{ pkg.status }}</span>
+                    <td>
+                        <span v-bind:class="getLabelClass(pkg.status)">{{ pkg.status }}</span> <br>
+                        <span class="badge badge-warning text-uppercase">{{ pkg.pkg_type }}</span>
                     </td>
                     <td>
                         <inertia-link :href="route('detail-customer', pkg?.customer?.id)" class="btn btn-link">
@@ -33,10 +37,15 @@
                     </td>
                     <td>{{ pkg.created_at }}</td>
                     <td>
-                        <inertia-link class="btn btn-info btn-sm m-1" :href="route('packages.show', pkg.id)"><i class="fa fa-list mr-1"></i>Detail</inertia-link>
-                        <inertia-link class="btn btn-success btn-sm m-1" :href="route('packages.custom', pkg.id)"><i class="fa fa-print mr-1"></i>Custom Form</inertia-link>
-                        <a class="btn btn-warning btn-sm m-1" :href="route('packages.pdf', pkg.id)" target="_blank">
-                            <i class="fa fa-print mr-1"></i>Commercial Invoice</a>
+                        <template v-if="pkg.pkg_type != 'assigned'">
+                            <inertia-link class="btn btn-info btn-sm m-1" :href="route('packages.show', pkg.id)"><i class="fa fa-list mr-1"></i>Detail</inertia-link>
+                            <!-- <inertia-link class="btn btn-success btn-sm m-1" :href="route('packages.custom', pkg.id)"><i class="fa fa-print mr-1"></i>Custom Form</inertia-link>
+                            <a class="btn btn-warning btn-sm m-1" :href="route('packages.pdf', pkg.id)" target="_blank">
+                                <i class="fa fa-print mr-1"></i>Commercial Invoice</a> -->
+                        </template>
+                        <template v-else>
+                            <span class="badge badge-danger">This Package is assigned to PKG #{{ pkg.package_handler_id }}</span>
+                        </template>
                     </td>
                 </tr>
                 <tr v-if="pkgs.length == 0">
@@ -64,28 +73,28 @@
             getLabelClass(status){
                 switch(status) {
                     case 'pending':
-                    return 'text-uppercase badge badge-warning p-2 text-white';
+                    return 'text-uppercase badge badge-warning p-1 text-white';
                     break;
                     case 'open':
-                    return 'text-uppercase badge badge-info p-2 text-white';
+                    return 'text-uppercase badge badge-info p-1 text-white';
                     break;
                     case 'filled':
-                    return 'text-uppercase badge badge-info p-2 text-white';
+                    return 'text-uppercase badge badge-info p-1 text-white';
                     break;
                     case 'open':
-                    return 'text-uppercase badge badge-success p-2 text-white';
+                    return 'text-uppercase badge badge-success p-1 text-white';
                     break;
                     case 'labeled':
-                    return 'text-uppercase badge badge-success p-2 text-white';
+                    return 'text-uppercase badge badge-success p-1 text-white';
                     break;
                     case 'shipped':
-                    return 'text-uppercase badge badge-primary p-2';
+                    return 'text-uppercase badge badge-primary p-1';
                     break;
                     case 'delivered':
-                    return 'text-uppercase badge badge-success p-2 text-white';
+                    return 'text-uppercase badge badge-success p-1 text-white';
                     break
                     case 'consolidation':
-                    return 'text-uppercase badge badge-danger p-2 text-white';
+                    return 'text-uppercase badge badge-danger p-1 text-white';
                     break;
                     case 'served':
                     return 'label bg-success';
@@ -94,7 +103,7 @@
                     return 'label bg-danger';
                     break;
                     default:
-                    return 'text-uppercase badge badge-primary p-2 text-white';
+                    return 'text-uppercase badge badge-primary p-1 text-white';
                 }
             },
             siuteNum(user_id){
