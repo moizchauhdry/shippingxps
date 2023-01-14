@@ -160,9 +160,20 @@ class OrderController extends Controller
             $package = Package::create([
                 'customer_id' => $validated['customer_id'],
                 'warehouse_id' => $validated['warehouse_id'],
+                'tracking_number_in' => $validated['tracking_number_in'],
+                'weight_unit' => $validated['weight_unit'],
+                'dim_unit' => $validated['dim_unit'],
+                'package_weight' => $validated['package_weight'],
+                'package_length' => $validated['package_length'],
+                'package_width' => $validated['package_width'],
+                'package_height' => $validated['package_height'],
+                'received_from' => $validated['received_from'],
+                'notes' => $validated['notes'],
                 'status' => 'open',
                 'pkg_type' => 'single',
+                'pkg_dim_status' => 'done',
             ]);
+
             $package->update([
                 'package_no' => $package->id,
                 'package_handler_id' => $package->id,
@@ -440,7 +451,7 @@ class OrderController extends Controller
             DB::commit();
             event(new OrderUpdatedEvent($order));
 
-            return redirect('orders')->with('success', 'The order has been updated successfully.');
+            return redirect()->route('packages.show', $order->package_id)->with('success', 'The order has been updated successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect('orders')->with('error', $e->getMessage());

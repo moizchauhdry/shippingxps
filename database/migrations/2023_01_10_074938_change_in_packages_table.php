@@ -16,6 +16,11 @@ class ChangeInPackagesTable extends Migration
         Schema::table('packages', function (Blueprint $table) {
             $table->enum('pkg_type', ['single', 'multiple', 'consolidation', 'assigned'])->nullable();
             $table->enum('admin_status', ['pending', 'accepted', 'rejected'])->nullable()->default('pending');
+            $table->enum('pkg_dim_status', ['pending', 'done'])->nullable()->default('pending');
+            $table->string('tracking_number_in', 100)->nullable();
+            $table->string('received_from', 100)->nullable();
+            $table->text('notes')->nullable();
+            $table->double('consolidation_fee')->nullable();
         });
     }
 
@@ -29,6 +34,11 @@ class ChangeInPackagesTable extends Migration
         Schema::table('packages', function (Blueprint $table) {
             $table->dropColumn('pkg_type');
             $table->dropColumn('admin_status');
+            $table->dropColumn('pkg_dim_status');
+            $table->dropColumn('tracking_number_in');
+            $table->dropColumn('received_from');
+            $table->dropColumn('notes');
+            $table->dropColumn('consolidation_fee');
         });
     }
 }

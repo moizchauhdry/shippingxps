@@ -2,8 +2,16 @@
   <MainLayout>
     <div class="row" style="margin-top:20px;">
       <div class="col-md-12">
-        <div class="row">
-        </div>
+
+        <!-- <div class="row">
+          <div class="col-md-12">
+            <div class="text-center">
+              <span class="text-uppercase badge badge-warning p-2 text-white" v-if="packag.admin_status == 'pending' && packag.pkg_type != 'single'">
+                Waiting For Shippingxps Approval</span>
+            </div>
+          </div>
+        </div> -->
+
         <div class="row">
           <div class="col-md-10">
             <h1 class="font-semibold text-xl text-gray-800 leading-tight form-title">
@@ -12,9 +20,9 @@
           </div>
           <div class="col-md-2">
             <span v-bind:class="getLabelClass(packag.status)" class="text-sm">{{ packag.status }}</span>
-
           </div>
         </div>
+
         <div class="row">
           <div class="col-md-12">
             <div class="card">
@@ -27,7 +35,7 @@
                   <tr>
                     <th>Package</th>
                     <th>Dimensions</th>
-                    <th>Tracking IN</th>
+                    <th>Tracking In</th>
                     <th>Received From</th>
                     <th>Warehouse</th>
                     <th></th>
@@ -45,7 +53,7 @@
                       </td>
                       <td>{{child_pkg.order.tracking_number_in }}</td>
                       <td>{{child_pkg.order.received_from }}</td>
-                      <td>{{child_pkg.warehouse_id }}</td>
+                      <td>{{child_pkg.order.warehouse_id }}</td>
                       <td>
                         <inertia-link class="btn btn-info btn-sm m-1" :href="route('orders.show', child_pkg.order.id)">
                           <i class="fa fa-list mr-1"></i>Detail</inertia-link>
@@ -69,75 +77,50 @@
           </div>
         </div>
 
-        <div class="row" v-if="(packag.status !='open') && $page.props.auth.user.type == 'customer' && packag.admin_status == 'pending'">
+          <div class="row" v-if="packag.status!='open'">
           <div class="col-md-12">
             <div class="card">
               <div class="card-header">
                 <h3 class="text-uppercase">{{ packag.pkg_type }} Package</h3>
               </div>
               <div class="card-body">
-                <div class="row">
-                  <div class="col-md-5">
-                    <table class="table">
-                      <thead>
-                        <tr>
-                          <th colspan="2">Box Dimensions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>Package</td>
-                          <td>PKG #{{ packag.id }}</td>
-                        </tr>
-                        <tr>
-                          <td>Weight</td>
-                          <td>{{ packag.package_weight }} {{ packag.weight_unit}}</td>
-                        </tr>
-                        <tr>
-                          <td>Dimensions</td>
-                          <td>
-                            {{ packag.package_length }} {{ packag.dim_unit }} x 
-                            {{ packag.package_width }} {{ packag.dim_unit }} x 
-                            {{ packag.package_height }} {{ packag.dim_unit }}
-                          </td>
-                        </tr>
-                        <template v-if="packag.tracking_number_out != null">
-                          <tr>
-                            <td>
-                              Tracking Out
-                            </td>
-                            <td>
-                              {{ packag.tracking_number_out }}
-                            </td>
-                          </tr>
-                        </template>
-                      </tbody>
-                    </table>
-
-                    <!-- <template v-if="((packag.status == 'filled' && packag.orders.length == 1) || (packag.status == 'consolidated' && hasConsolidationServed && !hasMultiPieceServed))&&((packag.package_length !=='' && packag.package_length !== 0) && (packag.package_width !=='' && packag.package_width !== 0) && (packag.package_height !=='' && packag.package_height !== 0)) ">
-                      <a class="btn btn-success" v-on:click="getShippingRates()">Get Shipping Rates</a>
-                    </template>
-                    <template v-else-if="((packag.status == 'filled' && packag.orders.length == 1) || (hasMultiPieceServed && !hasConsolidationServed ) && (packag.status != 'labeled' && packag.status != 'shipped')) ">
-                      <a class="btn btn-success" v-on:click="getShippingRatesByOrders()">Get Shipping Rates</a>
-                    </template>
-                    <template v-else-if="packag.orders.length > 1 && packag.status == 'filled'" >
-                      <strong>Please get your package consolidated/Multi piece sets before getting shipping rates</strong>
-                    </template>
-                    <template v-else-if="packag.orders.length == 1 && packag.status == 'filled'">
-                        <strong>Your package needs an update before getting shipping rates</strong>
-                    </template> -->
-
-                      <a class="btn btn-success" v-on:click="getShippingRates()">Get Shipping Rates</a>
-
+                <div class="row mb-4" v-if="packag.pkg_dim_status == 'done'">
+                  <div class="col-md-3">
+                    <div class="card shadow p-4">
+                      <div>Dimension: <b>{{ packag.package_length }}x{{ packag.package_width }}x{{ packag.package_height }} {{ packag.dim_unit }}</b></div>
+                      <div>Weight: <b>{{ packag.package_weight }} {{ packag.weight_unit}}</b></div>
+                      <div>Tracking In: <b>{{ packag.tracking_number_in ?? 'N/A' }}</b></div>
+                      <div>Tracking Out: <b>{{ packag.tracking_number_out ?? 'N/A' }}</b></div>
+                    </div>
                   </div>
-                  <div class="col-md-7">
-                    <table class="table" v-if="showEstimatedPrice">
+                </div>
+                <div class="row" v-else>
+                  <div class="col-md-12">
+                    <span class="badge badge-danger text-sm">The dimensions for consolidation package is not added by ShippingXPS.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" v-if="$page.props.auth.user.type == 'customer' && (packag.status=='filled' || packag.status=='consolidated') && 
+        packag.pkg_dim_status == 'done'">
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="text-uppercase">Shipping Rates</h3>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-3">
+                      <a class="btn btn-success" v-on:click="getShippingRates()">Get Shipping Rates</a>
+                  </div>
+                  <div class="col-md-9">
+                    <table class="table table-sm table-striped" v-if="showEstimatedPrice">
                       <thead>
                       <tr>
-                        <th colspan="3">Available Shipping Services</th>
-                      </tr>
-                      <tr>
-                        <th>Service</th>
+                        <th>Shipping Services</th>
                         <th>Price</th>
                         <th></th>
                       </tr>
@@ -150,9 +133,11 @@
                           <td><a v-on:click="setShippingService(service)" class="btn btn-info">Confirm</a></td>
                         </tr>
                       </template>
-                      <tr colspan="3">
-                        <p style="color:red">Selected service cannot be changed. So make sure you choose correct service.</p>
-                        <p  style="color:red" v-show="displayNoteShipping"><b>Note:</b> Make sure your address is valid to get Shipping Service</p>
+                      <tr>
+                        <td colspan="3">
+                          <p class="text-white bg-warning p-1"><b>Note:</b> Selected service cannot be changed. So make sure you choose correct service.</p>
+                          <p class="text-white bg-danger p-1" v-show="displayNoteShipping"><b>Note:</b> Make sure your address is valid to get Shipping Service</p>
+                        </td>
                       </tr>
                       </tbody>
                     </table>
@@ -163,190 +148,73 @@
           </div>
         </div>
 
-        <!-- <template>
-          <template v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">
-            <template v-if="(packag.status == 'open' || ( packag.status == 'filled' && packag.orders.length > 1) || (this.hasConsolidationRequest && !this.hasConsolidationServed)) && packag.status != 'labeled' && packag.status != 'shipped'">
-              <div class="row" style="margin-top:20px;">
-                <div class="col-md-12">
+        <div class="col-md-12" v-if="$page.props.auth.user.type == 'admin' && packag.pkg_type == 'consolidation' && packag.status == 'consolidated'">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="text-uppercase">{{ packag.pkg_type }} Package Dimensions</h3>
+            </div>
+            <div class="card-body">
+              <p style="color:red;">Customer has made consolidation request.</p>
+              <p>Enter new dimensions of package after consolidation.</p>
 
-                  <div class="card">
-                    <div class="card-header">
-                      <h3>Consolidated Package Dimensions</h3>
+              <form @submit.prevent="submitConsolidateForm">
+                <div class="row">
+                  <div class="col-md-2">
+                    <div class="form-group">
+                      <breeze-label for="warehouse_id" value="Weight Unit"/>
+                      <select name="weight_unit" class="form-select" v-model="form_consolidate.weight_unit" required @change="changeDimention($event)">
+                        <option value="lb">Lb</option>
+                        <option value="kg">Kg</option>
+                      </select>
                     </div>
-                    <div class="card-body">
-                      <p style="color:red;">Customer has made consolidation request.</p>
-                      <p>Enter new dimensions of package after consolidation.</p>
+                  </div>
+                  <div class="col-md-2">
+                    <div class="form-group">
+                      <breeze-label for="package_weight" value="Package Weight"/>
+                      <input v-model="form_consolidate.package_weight" min="1" name="package_weight" id="package_weight" type="number" class="form-control" placeholder="Package Weight" :step="0.01" required/>
+                    </div>
+                  </div>
 
-                      <form @submit.prevent="submitConsolidateForm">
-                        <div class="row">
-                          <div class="col-md-2">
-                            <div class="form-group">
-                              <breeze-label for="warehouse_id" value="Weight Unit"/>
-                              <select name="weight_unit" class="form-select" v-model="form_consolidate.weight_unit" required @change="changeDimention($event)">
-                                <option value="lb">Lb</option>
-                                <option value="kg">Kg</option>
-                              </select>
-                            </div>
-                          </div>
-                          <div class="col-md-2">
-                            <div class="form-group">
-                              <breeze-label for="package_weight" value="Package Weight"/>
-                              <input v-model="form_consolidate.package_weight" min="1" name="package_weight" id="package_weight" type="number" class="form-control" placeholder="Package Weight" :step="0.01" required/>
-                            </div>
-                          </div>
-
-                          <div class="col-md-2">
-                            <div class="form-group">
-                              <breeze-label for="dim_unit" value="Dimention Unit"/>
-                              <select name="dim_unit" class="form-select" v-model="form_consolidate.dim_unit"   readonly :disabled="1">
-                                <option value="in">Inch</option>
-                                <option value="cm">Cm</option>
-                              </select>
-                            </div>
-                          </div>
-                          <div class="col-md-2">
-                            <div class="form-group">
-                              <breeze-label for="package_length" value="Package Length"/>
-                              <input v-model="form_consolidate.package_length" min="1" name="package_length" id="package_length" type="number" class="form-control" placeholder="Package Length" required/>
-                            </div>
-                          </div>
-                          <div class="col-md-2">
-                            <div class="form-group">
-                              <breeze-label for="package_height" value="Package Height"/>
-                              <input v-model="form_consolidate.package_height" min="1" name="package_height" id="package_height" type="number" class="form-control" placeholder="Package Height" required/>
-                            </div>
-                          </div>
-                          <div class="col-md-2">
-                            <div class="form-group">
-                              <breeze-label for="package_width" value="Package Width"/>
-                              <input v-model="form_consolidate.package_width" min="1" name="package_width" id="package_width" type="number" class="form-control" placeholder="Package Width" required/>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="row">
-                          <div class="col-md-12">
-                            <input type="submit" value="Consolidate Package" class="btn btn-success float-left"/>
-                          </div>
-                        </div>
-                      </form>
+                  <div class="col-md-2">
+                    <div class="form-group">
+                      <breeze-label for="dim_unit" value="Dimention Unit"/>
+                      <select name="dim_unit" class="form-select" v-model="form_consolidate.dim_unit"   readonly :disabled="1">
+                        <option value="in">Inch</option>
+                        <option value="cm">Cm</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-2">
+                    <div class="form-group">
+                      <breeze-label for="package_length" value="Package Length"/>
+                      <input v-model="form_consolidate.package_length" min="1" name="package_length" id="package_length" type="number" class="form-control" placeholder="Package Length" required/>
+                    </div>
+                  </div>
+                  <div class="col-md-2">
+                    <div class="form-group">
+                      <breeze-label for="package_height" value="Package Height"/>
+                      <input v-model="form_consolidate.package_height" min="1" name="package_height" id="package_height" type="number" class="form-control" placeholder="Package Height" required/>
+                    </div>
+                  </div>
+                  <div class="col-md-2">
+                    <div class="form-group">
+                      <breeze-label for="package_width" value="Package Width"/>
+                      <input v-model="form_consolidate.package_width" min="1" name="package_width" id="package_width" type="number" class="form-control" placeholder="Package Width" required/>
                     </div>
                   </div>
                 </div>
-              </div>
-            </template>
-            <template v-else>
-              <div class="row" style="margin-top:20px;">
-                <div class="col-md-12">
-                  <div class="card">
-                    <div class="card-header">
-                      <h3>Consolidated Package Dimentions</h3>
-                    </div>
-                    <div class="card-body">
-                      <table class="table">
-                        <tbody>
-                        <tr>
-                          <td>
-                            Package
-                          </td>
-                          <td>
-                            {{ packag.package_no }}
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            Weight
-                          </td>
-                          <td>
-                            {{ packag.package_weight }} {{ packag.weight_unit}}
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            Dimensions
-                          </td>
-                          <td>
-                            {{ packag.package_length }} {{ packag.dim_unit }} x {{ packag.package_width }} {{ packag.dim_unit }} x {{ packag.package_height }} {{ packag.dim_unit }}
-                          </td>
-                        </tr>
-                        </tbody>
-                      </table>
-                    </div>
+                <div class="row">
+                  <div class="col-md-12">
+                    <input type="submit" value="Consolidate Package" class="btn btn-success float-left"/>
                   </div>
                 </div>
-              </div>
-            </template>
-          </template>
-        </template> -->
+              </form>
+            </div>
+          </div>
+        </div>
 
-
-        <div class="col-md-12">
-
-                  <div class="card">
-                    <div class="card-header">
-                      <h3>Consolidated Package Dimensions</h3>
-                    </div>
-                    <div class="card-body">
-                      <p style="color:red;">Customer has made consolidation request.</p>
-                      <p>Enter new dimensions of package after consolidation.</p>
-
-                      <form @submit.prevent="submitConsolidateForm">
-                        <div class="row">
-                          <div class="col-md-2">
-                            <div class="form-group">
-                              <breeze-label for="warehouse_id" value="Weight Unit"/>
-                              <select name="weight_unit" class="form-select" v-model="form_consolidate.weight_unit" required @change="changeDimention($event)">
-                                <option value="lb">Lb</option>
-                                <option value="kg">Kg</option>
-                              </select>
-                            </div>
-                          </div>
-                          <div class="col-md-2">
-                            <div class="form-group">
-                              <breeze-label for="package_weight" value="Package Weight"/>
-                              <input v-model="form_consolidate.package_weight" min="1" name="package_weight" id="package_weight" type="number" class="form-control" placeholder="Package Weight" :step="0.01" required/>
-                            </div>
-                          </div>
-
-                          <div class="col-md-2">
-                            <div class="form-group">
-                              <breeze-label for="dim_unit" value="Dimention Unit"/>
-                              <select name="dim_unit" class="form-select" v-model="form_consolidate.dim_unit"   readonly :disabled="1">
-                                <option value="in">Inch</option>
-                                <option value="cm">Cm</option>
-                              </select>
-                            </div>
-                          </div>
-                          <div class="col-md-2">
-                            <div class="form-group">
-                              <breeze-label for="package_length" value="Package Length"/>
-                              <input v-model="form_consolidate.package_length" min="1" name="package_length" id="package_length" type="number" class="form-control" placeholder="Package Length" required/>
-                            </div>
-                          </div>
-                          <div class="col-md-2">
-                            <div class="form-group">
-                              <breeze-label for="package_height" value="Package Height"/>
-                              <input v-model="form_consolidate.package_height" min="1" name="package_height" id="package_height" type="number" class="form-control" placeholder="Package Height" required/>
-                            </div>
-                          </div>
-                          <div class="col-md-2">
-                            <div class="form-group">
-                              <breeze-label for="package_width" value="Package Width"/>
-                              <input v-model="form_consolidate.package_width" min="1" name="package_width" id="package_width" type="number" class="form-control" placeholder="Package Width" required/>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="row">
-                          <div class="col-md-12">
-                            <input type="submit" value="Consolidate Package" class="btn btn-success float-left"/>
-                          </div>
-                        </div>
-                      </form>
-                    </div>
-                  </div>
-                </div>
-
-        <template v-if="packag.status != 'shipped' && packag.pkg_type == 'single'">
-          <div class="row" v-show="($page.props.auth.user.type == 'customer') || (($page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager') && (service_requests.length > 0))">
+        <template v-if="(packag.status == 'filled' || packag.status == 'labeled') && packag.pkg_type == 'single'">
+          <div class="row">
             <div class="col-md-12">
               <div class="card">
                 <div class="card-header">
@@ -354,38 +222,24 @@
                 </div>
                 <div class="card-body">
                   <div class="row">
-                    <!--<template v-if="$page.props.auth.user.type == 'customer' && packag.status != 'consolidated'">-->
                     <template v-if="$page.props.auth.user.type == 'customer'">
-
                       <div class="col-md-7">
                         <table class="table table-striped">
                           <thead>
-                          <tr>
-                            <th scope="col">Service</th>
-                            <th scope="col">Details</th>
-                            <th scope="col">Fees</th>
-                            <th scope="col"></th>
-                          </tr>
+                            <tr>
+                              <th scope="col">Service</th>
+                              <th scope="col">Details</th>
+                              <th scope="col">Fees</th>
+                              <th scope="col"></th>
+                            </tr>
                           </thead>
                           <tbody>
-                          <tr v-for="service in services" :key="service.id">
-                            <td>
-                              {{ service.title }}
-                            </td>
-                            <td>
-                              {{ service.description }}
-                            </td>
-                            <td>
-                              $ {{ service.price }}
-                            </td>
-                            <td style="width:110px;">
-                              <a v-if="service.title == 'Consolidation' && !hasConsolidationRequest && !hasConsolidationServed && !hasMultiPieceServed && packag.status != 'open'"  v-on:click="setActiveService(service)" class="link-primary"> Make Request</a>
-                              <a v-if="service.title == 'Multi Piece' && !hasConsolidationRequest && !hasConsolidationServed && !hasMultiPieceServed && packag.status != 'open'"  v-on:click="setActiveService(service)" class="link-primary"> Make Request</a>
-                              <span v-if="service.title == 'Consolidation' && !hasConsolidationRequest && packag.status == 'open'"><b>Note: Declare your customs to consolidate package</b></span>
-                              <span v-if="service.title == 'Multi Piece' && !hasConsolidationServed && !hasMultiPieceServed && packag.status == 'open'"><b>Note: Declare your customs to use this service</b></span>
-                              <a v-else-if="service.title != 'Consolidation' && service.title != 'Multi Piece'" v-on:click="setActiveService(service)" class="link-primary"> Make Request</a>
-                            </td>
-                          </tr>
+                            <tr v-for="service in services" :key="service.id">
+                              <td>{{ service.title }}</td>
+                              <td>{{ service.description }}</td>
+                              <td>$ {{ service.price }}</td>
+                              <td><button type="button" v-on:click="setActiveService(service)" class="btn btn-primary btn-sm">Request</button></td>
+                            </tr>
                           </tbody>
                         </table>
                       </div>
@@ -512,7 +366,7 @@
           </div>
         </template>
 
-        <div class="row">
+        <div class="row" v-if="packag.pkg_dim_status == 'done'">
           <div class="col-md-12">
             <div class="card">
               <div class="card-header">
@@ -631,72 +485,55 @@
                       </tr>
                       </thead>
                       <tbody>
-                      <!-- <template v-for="service in service_requests " :key="service.id">
-                        <tr v-if="service.status == 'served'">
-                          <td>{{ service.service_title }}</td>
-                          <td v-if="service.service_title == 'Consolidation'">{{ '$1.5 x ' + packag.orders.length + ' + $' + service.price}}</td>
-                          <td v-if="service.service_title != 'Consolidation'">${{ service.price }}</td>
-                          <td v-if="service.service_title != 'Consolidation'">${{ service.price }}</td>
-                          <td v-if="service.service_title == 'Consolidation'">${{ formatNumber(service.price + 1.5 * packag.orders.length) }}</td>
+                        <template v-if="packag.pkg_type =='consolidation'">
+                          <tr>
+                            <td>Consolidation</td>
+                            <td>{{ '$1.5 x ' + packag.child_packages.length + ' + $' + 5}}</td>
+                            <td>${{ packag.consolidation_fee }}</td>
+                          </tr>
+                        </template>
+                        <template v-for="package_service_request in package_service_requests " :key="package_service_request.id">
+                          <tr>
+                            <td colspan="2">
+                              <span>{{ package_service_request.name }}</span>
+                            </td>
+                            <td>${{ package_service_request.amount }}</td>
+                          </tr>
+                        </template>
+                        <tr>
+                          <td>Mail Out Fee</td>
+                          <td></td>
+                          <td>${{ mailout_fee }}</td>
                           <td></td>
                         </tr>
-                      </template> -->
-                      <template v-for="package_service_request in package_service_requests " :key="package_service_request.id">
-                        <tr>
-                          <td colspan="2">
-                            <span>{{ package_service_request.name }}</span>
-                            <span v-if="package_service_request.name == 'Consolidation'" class="pl-3">
-                              {{ '$1.5 x ' + packag.orders.length + ' + $' + package_service_request.price}}</span>
-                          </td>
-                          <td>${{ package_service_request.amount }}</td>
+                        <tr v-show="storage_fee > 0">
+                          <td>Storage Fee</td>
+                          <td></td>
+                          <td>${{ storage_fee }}</td>
+                          <td></td>
                         </tr>
-                      </template>
-                      <template v-if="service_requests.length > 0">
+                        <tr>
+                          <td>Shipping Total</td>
+                          <td></td>
+                          <td>${{ packag.shipping_total }}</td>
+                          <td></td>
+                        </tr>
                         <tr>
                           <td colspan="2" style="text-align:center;">
-                            <strong>Sub Total</strong>
+                            <strong>Total</strong>
                           </td>
-                          <td>${{ this.subtotal }}</td>
+                          <td class="bg-dark text-white">${{ this.total }}</td>
                           <td></td>
                         </tr>
-                      </template>
-                      <tr>
-                        <td>Mail Out Fee</td>
-                        <td></td>
-                        <td>${{ mailout_fee }}</td>
-                        <td></td>
-                      </tr>
-                      <tr v-show="storage_fee > 0">
-                        <td>Storage Fee</td>
-                        <td></td>
-                        <td>${{ storage_fee }}</td>
-                        <td></td>
-                      </tr>
-                      <tr>
-                        <td>Shipping Total</td>
-                        <td></td>
-                        <td>${{ packag.shipping_total }}</td>
-                        <td></td>
-                      </tr>
-                      <tr>
-                        <td colspan="2" style="text-align:center;">
-                          <strong>Total</strong>
-                        </td>
-                        <td class="bg-dark text-white">${{ this.total }}</td>
-                        <td></td>
-                      </tr>
-                      <tr v-if="$page.props.auth.user.type == 'customer'">
-                        <td v-if="packag.carrier_code != null && packag.payment_status != 'Paid'" colspan="4">
-                          <button type="button"  @click="checkout()" class="btn btn-primary">Checkout</button>
-                        </td>
-                        <td v-else colspan="4">
-                          <button v-if="packag.payment_status != 'Paid'" type="button"  class="btn btn-primary disabled">Checkout</button>
-                          <p ><strong>Note:</strong> For checking out the package should be consolidated/multi piece if package contains
-                          more than one order. And shipping service should be also selected.</p>
-
-                          <span class="badge badge-success" v-if="packag.payment_status == 'Paid'">Paid</span>
-                        </td>
-                      </tr>
+                        <tr>
+                          <td v-if="packag.carrier_code != null && packag.payment_status != 'Paid'" colspan="4">
+                            <button type="button"  @click="checkout()" class="btn btn-primary">Checkout</button>
+                          </td>
+                          <td v-else colspan="4">
+                            <button v-if="packag.payment_status != 'Paid'" type="button" class="btn btn-primary disabled">Checkout</button>
+                            <span class="badge badge-success" v-if="packag.payment_status == 'Paid'">Paid</span>
+                          </td>
+                        </tr>
                       </tbody>
                     </table>
                   </div>
@@ -737,19 +574,16 @@
           </div>
         </div>
 
-        <div class="row">
+        <div class="row" v-if="images.lenghth > 0">
           <div class="col-md-12">
             <div class="card">
               <div class="card-header">
-                <h3>
-                  Order/Item Images
-                </h3>
+                <h3>Package Images</h3>
               </div>
               <div class="card-body">
                 <div class="row">
                   <div v-for="image in images" :key="'image'+image.order_id" class="col-md-2">
                     <div class="text-center">
-                      <!-- <img style="width:150px;height:auto;" class="img-thumbnail" :src="imgURL(image.img_url)"/> -->
                         <img style="width:100px;height:auto;" class="img-thumbnail" @click="viewImage($event)" :src="imgURL(image.img_url)"/>
                     </div>
                   </div>
@@ -758,12 +592,15 @@
             </div>
           </div>
         </div>
+        
         <div v-show="overlay === true" class="overlay">
           <div class="overlay__inner">
             <div class="overlay__content"><span class="spinner"></span></div>
           </div>
         </div>
       </div>
+
+      <div class="mb-5"></div>
 
       <!-- Modal For Delete Package -->
       <div v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'" class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-backdrop="true">
@@ -1008,10 +845,7 @@ export default {
       /*window.location.reload()*/
     },
     getShippingRates() {
-      //this.$refs.buttonRates.innerText = "Loading ..."
-
-      console.log('here');
-
+      this.overlay = true;
       this.showEstimatedPrice = false;
       this.isLoading = true;
       let quote_params = {
@@ -1028,14 +862,13 @@ export default {
         is_residential : this.packag.address.is_residential,
       };
       axios.get(this.route('getServicesList')).then(response => {
-        console.log(response.data.services)
         response.data.services.forEach((ele, index) => {
-          console.log(ele);
           quote_params.service = ele;
           this.getRates(quote_params);
         })
+        this.overlay = false;
       }).catch(error => {
-        console.log(error)
+        this.overlay = false;
       })
     },
     getShippingRatesByOrders() {

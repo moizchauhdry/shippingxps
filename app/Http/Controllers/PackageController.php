@@ -243,7 +243,7 @@ class PackageController extends Controller
             }
         }
 
-        $total = $subtotal + $packag->shipping_total + (float) SiteSetting::getByName('mailout_fee') + $this->calculate_storage_fee($packag->id);
+        $total = $subtotal + $packag->shipping_total + (float) SiteSetting::getByName('mailout_fee') + $this->calculate_storage_fee($packag->id) + $packag->consolidation_fee;
 
         return Inertia::render('Packages/PackageDetails', [
             'packag' => $packag,
@@ -348,8 +348,7 @@ class PackageController extends Controller
      */
     public function store(Request $request)
     {
-
-        $package = Package::find($request->input('package_id'));
+        $package = Package::find($request->package_id);
 
         $validated = $request->validate([
             'address_book_id' => 'required',
@@ -357,47 +356,16 @@ class PackageController extends Controller
             'package_type' => 'required'
         ]);
 
-        //$customer = User::find($package->customer_id);
-
         $package->status = 'filled';
         $package->shipping_total = $validated['shipping_total'];
         $package->address_book_id = $validated['address_book_id'];
         $package->package_type = $validated['package_type'];
-
         $package->save();
 
-        //if package has just 1 order, set package dimentions as order dimentions.
-        $orders = $package->orders;
-
-        //   echo '<pre>';
-        //   print_r($orders);
-        //   exit; 
-
-        if (count($orders) == 1) {
-            $order = $orders[0];
-
-            $package->package_weight = $order->package_weight;
-            $package->weight_unit = $order->weight_unit;
-            $package->package_length = $order->package_length;
-            $package->package_width = $order->package_width;
-            $package->package_height = $order->package_height;
-            $package->dim_unit = $order->dim_unit;
-            $package->save();
-        }
-
-
-        $items = $request->input('items');
-
-        foreach ($items as $key => $item) {
-
-            if (isset($item['id'])) {
-                $order_item = OrderItem::find($item['id']);
-            } else {
-                //problem here, which order to assign this item id. 
-                $order_item = new OrderItem();
-            }
-
-            // $order_item->name = $item['description'];
+        foreach ($request->items as $key => $item) {
+            $order_item = new OrderItem();
+            $order_item->order_id = $package->order->id;
+            $order_item->name = 'NIL';
             $order_item->description = $item['description'];
             $order_item->quantity = $item['quantity'];
             $order_item->unit_price = $item['unit_price'];
@@ -408,7 +376,7 @@ class PackageController extends Controller
 
         event(new CustomFormFilled($package));
 
-        return redirect('packages')->with('success', 'Package updated!');
+        return redirect()->route('packages.show', $package->id)->with('success', 'The custom decration form filled successfully.');
     }
 
     /**
@@ -632,7 +600,6 @@ class PackageController extends Controller
      */
     public function consolidatePackage(Request $request)
     {
-
         $data = $request->all();
 
         $package = Package::find($data['package_id']);
@@ -644,10 +611,10 @@ class PackageController extends Controller
         $package->package_width = $data['package_width'];
         $package->package_height = $data['package_height'];
         $package->package_height = $data['package_height'];
-        $package->package_handler_id = Auth::user()->id;
+        // $package->package_handler_id = Auth::user()->id;
+        $package->pkg_dim_status = 'done';
+        $package->consolidation_fee = (1.5 * count($package->child_packages)) + 5;
         $package->update();
-
-
 
         event(new PackageConsolidated($package));
 
