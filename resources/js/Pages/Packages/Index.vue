@@ -37,19 +37,19 @@
                 <button type="button"  :class="{'active':active === 'filled'}"  class="btn btn-light w-100"  @click="searchPackage('filled')">Filled</button>
             </div>
             <div class="col-md-2">
+                <button type="button"  :class="{'active':active === 'consolidated'}"  class="btn btn-light w-100"  @click="searchPackage('consolidated')">Consolidated</button>
+            </div>
+            <div class="col-md-2">
                 <button type="button"  :class="{'active':active === 'labeled'}"  class="btn btn-light w-100"  @click="searchPackage('labeled')">Labeled</button>
             </div>
             <div class="col-md-2">
                 <button type="button"  :class="{'active':active === 'shipped'}"  class="btn btn-light w-100"  @click="searchPackage('shipped')">Shipped</button>
             </div>
-            <div class="col-md-2">
+            <!-- <div class="col-md-2">
                 <button type="button"  :class="{'active':active === 'delivered'}"  class="btn btn-light w-100"  @click="searchPackage('delivered')">Delivered</button>
-            </div>
+            </div> -->
             <div class="col-md-2">
                 <button type="button"  :class="{'active':active === 'rejected'}"  class="btn btn-light w-100"  @click="searchPackage('rejected')">Rejected</button>
-            </div>
-            <div class="col-md-2">
-                <button type="button"  :class="{'active':active === 'consolidated'}"  class="btn btn-light w-100"  @click="searchPackage('consolidated')">Consolidated</button>
             </div>
         </div>
         <package-list v-bind="$props"></package-list>

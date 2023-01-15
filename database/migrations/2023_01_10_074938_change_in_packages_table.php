@@ -21,6 +21,7 @@ class ChangeInPackagesTable extends Migration
             $table->string('received_from', 100)->nullable();
             $table->text('notes')->nullable();
             $table->double('consolidation_fee')->nullable();
+            $table->enum('address_type', ['domestic', 'international'])->nullable();
         });
     }
 
@@ -39,6 +40,7 @@ class ChangeInPackagesTable extends Migration
             $table->dropColumn('received_from');
             $table->dropColumn('notes');
             $table->dropColumn('consolidation_fee');
+            $table->dropColumn('address_type');
         });
     }
 }

@@ -41,19 +41,19 @@
                   </div>
 
                   <div class="row">
-                      
                     <div class="col-md-6" style="border : 1px solid #6b7280;">
-                      
                       <h2>Ship To : </h2>
-
-                      <div class="form-group">
-                        <select v-on:change="selectAddress($event)" name="address_book_id" class="form-select" v-model="address_book_id" required>
+                      <!-- <div class="form-group">
+                        <select name="address_book_id" class="form-select" v-model="address_book_id" required>
                             <template v-for="(address) in address_book" :key="address.id">
-                            <option  :value="address.id" >{{ address.label}}</option>
+                              <option  :value="address.id" >{{ address.address}}</option>
                             </template>
                         </select>
+                      </div> -->
+                      <div>
+                        {{ packag.address.fullname}}, {{ packag.address.address}}
                       </div>
-                      <div v-html="current_address"></div>
+                      <!-- <div v-html="current_address"></div> -->
                     </div>
 
                     <div class="col-md-6" style="border : 1px solid #6b7280;">

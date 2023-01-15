@@ -30,14 +30,14 @@
                 <h3>Packages/Orders Included</h3>
               </div>
               <div class="card-body">
-                <table class="table">
+                <table class="table table-sm table-striped">
                   <thead>
                   <tr>
-                    <th>Package</th>
+                    <th>Package #</th>
                     <th>Dimensions</th>
                     <th>Tracking In</th>
                     <th>Received From</th>
-                    <th>Warehouse</th>
+                    <!-- <th>Warehouse</th> -->
                     <th></th>
                   </tr>
                   </thead>
@@ -46,14 +46,14 @@
                     <tr>
                       <td>
                         <span class="badge badge-primary text-sm">PKG #{{ child_pkg.id }}</span>
-                        <span class="badge badge-info text-sm">Order #{{ child_pkg.order.id }}</span>
+                        <!-- <span class="badge badge-info text-sm">Order #{{ child_pkg.order.id }}</span> -->
                       </td>
                       <td>
                          {{ child_pkg.order.package_length }} {{ child_pkg.order.dim_unit }} x {{ child_pkg.order.package_width }} {{ child_pkg.order.dim_unit }} x {{ child_pkg.order.package_height }} {{ child_pkg.order.dim_unit }} 
                       </td>
                       <td>{{child_pkg.order.tracking_number_in }}</td>
                       <td>{{child_pkg.order.received_from }}</td>
-                      <td>{{child_pkg.order.warehouse_id }}</td>
+                      <!-- <td>{{child_pkg.order.warehouse_id }}</td> -->
                       <td>
                         <inertia-link class="btn btn-info btn-sm m-1" :href="route('orders.show', child_pkg.order.id)">
                           <i class="fa fa-list mr-1"></i>Detail</inertia-link>
@@ -62,22 +62,51 @@
                   </template>
                   </tbody>
                 </table>
-                <template v-if="($page.props.auth.user.type == 'customer') && packag.status == 'open'">
-                  <inertia-link class="btn btn-primary btn-sm m-1" :href="route('packages.custom', packag.id)">
-                    <i class="fa fa-copy mr-1"></i>Customs Declaration Form
-                  </inertia-link>
-                </template>
-                <!-- <template v-if="(packag.status !='open')">
-                  <a target="_blank" class="btn btn-info btn-sm m-1" :href="route('packages.pdf', packag.id)">
-                    <i class="fa fa-print mr-1"></i>Print Commercial Invoice
-                  </a>
-                </template> -->
               </div>
             </div>
           </div>
         </div>
 
-          <div class="row" v-if="packag.status!='open'">
+
+        <div class="col-md-12" v-if="$page.props.auth.user.type == 'customer' && packag.status == 'open'">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="text-uppercase">Shipping Address</h3>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                  <form @submit.prevent="submitShippingAddressForm">
+                    <div class="form-group col-md-6">
+                      <select name="address_book_id" class="form-select text-uppercase" v-model="address_form.address_book_id" required @change="submitShippingAddressForm">
+                        <option :value="0">--Select Address--</option>
+                        <template v-for="(address) in shipping_address" :key="address.id">
+                          <option  :value="address.id">
+                            {{ address.fullname}}, {{ address.address}}
+                          </option>
+                        </template>                      
+                      </select>
+                    </div>
+                  </form>
+                </div>
+                <div class="row">
+                  <div>
+                    <template v-if="packag.address_type == 'international'">
+                      <inertia-link class="btn btn-primary btn-sm m-1" :href="route('packages.custom', packag.id)">
+                        <i class="fa fa-copy mr-1"></i>Customs Declaration Form
+                      </inertia-link>
+                    </template>
+                    <!-- <template v-if="(packag.status !='open')">
+                      <a target="_blank" class="btn btn-info btn-sm m-1" :href="route('packages.pdf', packag.id)">
+                        <i class="fa fa-print mr-1"></i>Print Commercial Invoice
+                      </a>
+                    </template> -->
+                  </div>
+                </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" v-if="packag.status!='open'">
           <div class="col-md-12">
             <div class="card">
               <div class="card-header">
@@ -87,7 +116,7 @@
                 <div class="row mb-4" v-if="packag.pkg_dim_status == 'done'">
                   <div class="col-md-3">
                     <div class="card shadow p-4">
-                      <div>Dimension: <b>{{ packag.package_length }}x{{ packag.package_width }}x{{ packag.package_height }} {{ packag.dim_unit }}</b></div>
+                      <div>Dimension: <b>{{ packag.package_length }} x {{ packag.package_width }} x {{ packag.package_height }} {{ packag.dim_unit }}</b></div>
                       <div>Weight: <b>{{ packag.package_weight }} {{ packag.weight_unit}}</b></div>
                       <div>Tracking In: <b>{{ packag.tracking_number_in ?? 'N/A' }}</b></div>
                       <div>Tracking Out: <b>{{ packag.tracking_number_out ?? 'N/A' }}</b></div>
@@ -740,6 +769,10 @@ export default {
         package_width: this.packag.package_width,
         package_height: this.packag.package_height,
       }),
+      address_form: this.$inertia.form({
+        package_id: this.packag.id,
+        address_book_id: this.packag.address_book_id
+      }),
       form_shipping_service: this.$inertia.form({
         package_id: this.packag.id,
         status: 'labeled',
@@ -783,6 +816,7 @@ export default {
     hasMultiPieceServed: Object,
     hasMultiPieceStatus: Object,
     package_service_requests: Object,
+    shipping_address: Object,
     subtotal: Object,
     total: Object,
   },
@@ -830,6 +864,10 @@ export default {
     },
     submitConsolidateForm() {
       this.form_consolidate.post(this.route('packages.consolidate'));
+      Inertia.reload();
+    },
+    submitShippingAddressForm() {
+      this.address_form.post(this.route('packages.address.update'));
       Inertia.reload();
     },
     submitShipOutForm() {

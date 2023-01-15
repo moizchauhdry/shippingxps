@@ -80,6 +80,7 @@ Route::post('/packages/destroy', 'PackageController@destroy')->name('packages.de
 
 Route::any('/packages/consolidation', 'PackageController@consolidation')->name('packages.consolidation')->middleware('auth');
 Route::post('/packages/consolidation/store', 'PackageController@storeConsolidation')->name('packages.consolidation.store')->middleware('auth');
+Route::post('/packages/address/update', 'PackageController@updateAddress')->name('packages.address.update')->middleware('auth');
 
 
 Route::get('/services/create', 'ServiceController@create')->name('services.create')->middleware('auth');

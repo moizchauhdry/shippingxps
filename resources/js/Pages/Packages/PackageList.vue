@@ -23,7 +23,7 @@
                         </p>
                         <p>Shipped :  <strong>{{ pkg.status == "shipped" ? "Yes" : "No"}}</strong></p>
                         <template v-for="(child_pkg) in pkg.child_packages" :key="child_pkg.id">
-                            <span class="badge badge-info p-1 mr-1 mb-1">PKG #{{child_pkg.id}}</span>
+                            <span class="badge badge-info p-1 mr-1 mb-1" v-if="child_pkg.id != pkg.id">PKG #{{child_pkg.id}}</span>
                         </template>
                     </td>
                     <td>

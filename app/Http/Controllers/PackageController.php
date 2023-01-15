@@ -157,7 +157,6 @@ class PackageController extends Controller
      */
     public function show($id)
     {
-        // dd('package-detail');
         $packag = Package::with(['orders' => function ($q) {
             $q->where('status', '!=', 'rejected');
         }, 'address', 'warehouse', 'customer', 'items', 'images', 'serviceRequests', 'child_packages', 'order'])->find($id);
@@ -170,10 +169,6 @@ class PackageController extends Controller
         foreach ($packag->child_packages as $key => $child_package) {
             $child_package_orders[] = $child_package->order;
         }
-
-        // dd($child_package_orders);
-        // dd($packag->order);
-
 
         $services = Service::where('status', '=', '1')->get();
         $serviceRequest = ServiceRequest::where('package_id', $packag->id)->where('service_id', 1)->where('status', 'pending')->first();
@@ -194,8 +189,6 @@ class PackageController extends Controller
             ];
         }
 
-        // dd($service_requests);
-
         $images = [];
         foreach ($packag->images as $image) {
             $images[] = [
@@ -207,14 +200,11 @@ class PackageController extends Controller
         $pickup_service_charges = SiteSetting::getByName('pickup_service_charges');
         $order_charges = [];
         foreach ($packag->orders as $order) {
-
             if ($order->order_origin == 'pickup') {
-
                 $total = 0;
                 foreach ($order->items as $item) {
                     $total = $item->unit_price * $item->quantity;
                 }
-                //add sales tax
                 $sales_tax = ($order->sales_tax / 100) * $total;
                 $sub_total = $total + $sales_tax;
                 $service_charges = ($pickup_service_charges / 100) * $sub_total;
@@ -245,6 +235,8 @@ class PackageController extends Controller
 
         $total = $subtotal + $packag->shipping_total + (float) SiteSetting::getByName('mailout_fee') + $this->calculate_storage_fee($packag->id) + $packag->consolidation_fee;
 
+        $shipping_address = Address::where('user_id', Auth::user()->id)->get();
+
         return Inertia::render('Packages/PackageDetails', [
             'packag' => $packag,
             'services' => $services,
@@ -258,6 +250,7 @@ class PackageController extends Controller
             'hasMultiPieceServed' => (bool)$multiPieceRequestServed,
             'hasMultiPieceStatus' => (bool)$multiPieceRequestStatus,
             'package_service_requests' => $package_service_requests,
+            'shipping_address' => $shipping_address,
             'subtotal' => $subtotal,
             'total' => $total,
         ]);
@@ -275,7 +268,7 @@ class PackageController extends Controller
 
         $packag = Package::with(['orders' => function ($q) {
             $q->where('status', '!=', 'rejected');
-        }, 'warehouse', 'customer', 'items'])->find($package_id);
+        }, 'warehouse', 'customer', 'items', 'address'])->find($package_id);
 
 
         $warehouse = $packag->warehouse;
@@ -351,14 +344,14 @@ class PackageController extends Controller
         $package = Package::find($request->package_id);
 
         $validated = $request->validate([
-            'address_book_id' => 'required',
+            // 'address_book_id' => 'required',
             'shipping_total' => 'required',
             'package_type' => 'required'
         ]);
 
         $package->status = 'filled';
         $package->shipping_total = $validated['shipping_total'];
-        $package->address_book_id = $validated['address_book_id'];
+        // $package->address_book_id = $validated['address_book_id'];
         $package->package_type = $validated['package_type'];
         $package->save();
 
@@ -970,5 +963,25 @@ class PackageController extends Controller
         }
 
         return redirect()->route('packages.show', $package->id)->with('success', 'The Package have consolidated successfully.');
+    }
+
+    public function updateAddress(Request $request)
+    {
+        $package = Package::find($request->package_id);
+        $address = Address::find($request->address_book_id);
+        if (isset($address)) {
+            $address_type = $address->country_id == 226 ? 'domestic' : 'international';
+            $package->update([
+                'address_book_id' => $request->address_book_id,
+                'address_type' => $address_type,
+            ]);
+        } else {
+            $package->update([
+                'address_book_id' => 0,
+                'address_type' => NULL,
+            ]);
+        }
+
+        return redirect()->route('packages.show', $package->id);
     }
 }
