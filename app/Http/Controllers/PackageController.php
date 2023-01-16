@@ -606,12 +606,13 @@ class PackageController extends Controller
         $package->package_height = $data['package_height'];
         // $package->package_handler_id = Auth::user()->id;
         $package->pkg_dim_status = 'done';
+        $package->admin_status = 'accepted';
         $package->consolidation_fee = (1.5 * count($package->child_packages)) + 5;
         $package->update();
 
         event(new PackageConsolidated($package));
 
-        return redirect()->back()->with('success', 'Package set for shipment.');
+        return redirect()->back();
     }
 
 

@@ -3,14 +3,7 @@
     <div class="row" style="margin-top:20px;">
       <div class="col-md-12">
 
-        <!-- <div class="row">
-          <div class="col-md-12">
-            <div class="text-center">
-              <span class="text-uppercase badge badge-warning p-2 text-white" v-if="packag.admin_status == 'pending' && packag.pkg_type != 'single'">
-                Waiting For Shippingxps Approval</span>
-            </div>
-          </div>
-        </div> -->
+        <package-notification v-bind="$props"></package-notification>
 
         <div class="row">
           <div class="col-md-10">
@@ -106,7 +99,7 @@
           </div>
         </div>
 
-        <div class="row" v-if="packag.status!='open'">
+        <div class="row" v-if="packag.status!='open' && packag.pkg_dim_status == 'done'">
           <div class="col-md-12">
             <div class="card">
               <div class="card-header">
@@ -121,11 +114,6 @@
                       <div>Tracking In: <b>{{ packag.tracking_number_in ?? 'N/A' }}</b></div>
                       <div>Tracking Out: <b>{{ packag.tracking_number_out ?? 'N/A' }}</b></div>
                     </div>
-                  </div>
-                </div>
-                <div class="row" v-else>
-                  <div class="col-md-12">
-                    <span class="badge badge-danger text-sm">The dimensions for consolidation package is not added by ShippingXPS.</span>
                   </div>
                 </div>
               </div>
@@ -177,14 +165,14 @@
           </div>
         </div>
 
-        <div class="col-md-12" v-if="$page.props.auth.user.type == 'admin' && packag.pkg_type == 'consolidation' && packag.status == 'consolidated'">
+        <div class="col-md-12" v-if="$page.props.auth.user.type == 'admin' && packag.pkg_type == 'consolidation'">
           <div class="card">
             <div class="card-header">
               <h3 class="text-uppercase">{{ packag.pkg_type }} Package Dimensions</h3>
             </div>
             <div class="card-body">
-              <p style="color:red;">Customer has made consolidation request.</p>
-              <p>Enter new dimensions of package after consolidation.</p>
+              <!-- <p class="text-danger">Customer has made consolidation request.</p>
+              <p class="text-danger">Enter new dimensions of package after consolidation.</p> -->
 
               <form @submit.prevent="submitConsolidateForm">
                 <div class="row">
@@ -738,13 +726,15 @@ import BreezeAuthenticatedLayout from '@/Layouts/Authenticated'
 import BreezeLabel from '@/Components/Label'
 import ImageViewer from '@/Components/ImageViewer'
 import $ from 'jquery'
+import PackageNotification from './PackageNotification.vue'
 
 export default {
   components: {
     BreezeAuthenticatedLayout,
     MainLayout,
     BreezeLabel,
-    ImageViewer
+    ImageViewer,
+    PackageNotification
   },
   data() {
     return {

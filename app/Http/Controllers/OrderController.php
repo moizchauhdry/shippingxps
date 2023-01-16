@@ -172,6 +172,7 @@ class OrderController extends Controller
                 'status' => 'open',
                 'pkg_type' => 'single',
                 'pkg_dim_status' => 'done',
+                'admin_status' => 'accepted',
             ]);
 
             $package->update([
