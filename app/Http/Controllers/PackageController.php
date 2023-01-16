@@ -341,23 +341,23 @@ class PackageController extends Controller
      */
     public function store(Request $request)
     {
-        $package = Package::find($request->package_id);
+        $package = Package::with('order')->where('id', $request->package_id)->first();
 
         $validated = $request->validate([
-            // 'address_book_id' => 'required',
+            'items' => 'required|array',
             'shipping_total' => 'required',
             'package_type' => 'required'
         ]);
 
-        $package->status = 'filled';
-        $package->shipping_total = $validated['shipping_total'];
-        // $package->address_book_id = $validated['address_book_id'];
-        $package->package_type = $validated['package_type'];
-        $package->save();
+        $package->update([
+            'status' => 'filled',
+            'shipping_total' => $validated['shipping_total'],
+            'package_type' => $validated['package_type'],
+        ]);
 
         foreach ($request->items as $key => $item) {
             $order_item = new OrderItem();
-            $order_item->order_id = $package->order->id;
+            $order_item->package_id = $package->id;
             $order_item->name = 'NIL';
             $order_item->description = $item['description'];
             $order_item->quantity = $item['quantity'];
