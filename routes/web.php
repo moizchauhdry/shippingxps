@@ -59,8 +59,7 @@ Route::get('/orders/show/{id}', 'OrderController@show')->name('orders.show')->mi
 Route::post('/orders/removeItem', 'OrderController@removeItem')->name('orders.removeItem')->middleware('auth');
 // Route::get('/orders/quote', 'OrderController@quote')->name('orders.quote')->middleware('auth');
 
-// Route::get('/packages', 'PackageController@index')->name('packages')->middleware('auth');
-Route::any('/packages-index', 'PackageController@index')->name('packages.index')->middleware('auth');
+Route::any('/packages/index', 'PackageController@index')->name('packages.index')->middleware('auth');
 Route::get('/packages/show/{id}', 'PackageController@show')->name('packages.show')->middleware('auth');
 Route::get('/packages/create/{order_id}', 'PackageController@create')->name('package.create')->middleware('auth');
 Route::post('/packages/store', 'PackageController@store')->name('package.store')->middleware('auth');
