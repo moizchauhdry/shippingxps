@@ -313,28 +313,35 @@
                           </tr>
                           </thead>
                           <tbody>
-                          <tr v-for="request in service_requests" :key="request.id">
-                            <td>
-                              {{ request.service_title }}
-                            </td>
-                            <td>
-                              {{ request.customer_message }}
-                            </td>
-                            <td>
-                              {{ request.admin_message }}
-                            </td>
-                            <td>
-                              <span v-bind:class="getLabelClass(request.status)" style="padding :5px;"> {{ request.status }} </span>
-                            </td>
-                            <td>
-                              $ {{ request.price }}
-                            </td>
-                            <td>
-                              <template v-if="($page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager' )&& request.status == 'pending'">
-                                <a v-on:click="setServiceResponse(request)" class="link-primary">Respond</a>
-                              </template>
-                            </td>
-                          </tr>
+                            <tr v-for="request in service_requests" :key="request.id">
+                              <td>
+                                {{ request.service_title }}
+                              </td>
+                              <td>
+                                {{ request.customer_message }}
+                              </td>
+                              <td>
+                                {{ request.admin_message }}
+                              </td>
+                              <td>
+                                <span v-bind:class="getLabelClass(request.status)" style="padding :5px;"> {{ request.status }} </span>
+                              </td>
+                              <td>
+                                $ {{ request.price }}
+                              </td>
+                              <td>
+                                <template v-if="($page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager' )&& request.status == 'pending'">
+                                  <a v-on:click="setServiceResponse(request)" class="link-primary">Respond</a>
+                                </template>
+                              </td>
+                            </tr>
+                            <template v-if="service_requests.length == 0">
+                              <tr>
+                                <td>
+                                  There are no services requests from customer.
+                                </td>
+                              </tr>
+                            </template>
                           </tbody>
                         </table>
                       </div>
