@@ -269,7 +269,7 @@ class OrderController extends Controller
             return redirect()->route('packages.index')->with('success', 'The package has been added successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect('packages.index')->with('error', 'Something went wrong');
+            return redirect()->route('packages.index')->with('error', 'Something went wrong');
         }
     }
 
