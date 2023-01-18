@@ -27,10 +27,9 @@
                   <thead>
                   <tr>
                     <th>Package #</th>
-                    <th>Dimensions</th>
+                    <th>Dimension</th>
+                    <th>Weight</th>
                     <th>Tracking In</th>
-                    <th>Received From</th>
-                    <!-- <th>Warehouse</th> -->
                     <th></th>
                   </tr>
                   </thead>
@@ -39,14 +38,12 @@
                     <tr>
                       <td>
                         <span class="badge badge-primary text-sm">PKG #{{ child_pkg.id }}</span>
-                        <!-- <span class="badge badge-info text-sm">Order #{{ child_pkg.order.id }}</span> -->
                       </td>
                       <td>
                          {{ child_pkg.order.package_length }} {{ child_pkg.order.dim_unit }} x {{ child_pkg.order.package_width }} {{ child_pkg.order.dim_unit }} x {{ child_pkg.order.package_height }} {{ child_pkg.order.dim_unit }} 
                       </td>
+                      <td>{{ child_pkg.order.package_weight }} {{ child_pkg.order.weight_unit }}</td>
                       <td>{{child_pkg.order.tracking_number_in }}</td>
-                      <td>{{child_pkg.order.received_from }}</td>
-                      <!-- <td>{{child_pkg.order.warehouse_id }}</td> -->
                       <td>
                         <inertia-link class="btn btn-info btn-sm m-1" :href="route('orders.show', child_pkg.order.id)">
                           <i class="fa fa-list mr-1"></i>Detail</inertia-link>
@@ -121,8 +118,7 @@
           </div>
         </div>
 
-        <div class="row" v-if="$page.props.auth.user.type == 'customer' && (packag.status=='filled' || packag.status=='consolidated') && 
-        packag.pkg_dim_status == 'done'">
+        <div class="row" v-if="$page.props.auth.user.type == 'customer' && (packag.status=='filled' || packag.status=='consolidated' || packag.address_type=='domestic') && packag.pkg_dim_status == 'done'">
           <div class="col-md-12">
             <div class="card">
               <div class="card-header">
@@ -430,7 +426,7 @@
                         </tr>
                         <tr>
                           <td colspan="2">
-                            {{ packag.address.city }},{{ packag.address.state }}
+                            {{ packag.address.city }}, {{ packag.address.state }}, {{ packag.address.zip_code }}
                           </td>
                         </tr>
                         <tr>
@@ -440,12 +436,7 @@
                         </tr>
                         <tr>
                           <td colspan="2">
-                            Phone : {{ packag.address.phone }}
-                          </td>
-                        </tr>
-                        <tr>
-                          <td colspan="2">
-                            Zip Code : {{ packag.address.zip_code }}
+                            Contact : {{ packag.address.phone }}
                           </td>
                         </tr>
                         </tbody>
