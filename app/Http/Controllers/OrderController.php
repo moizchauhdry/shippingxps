@@ -94,7 +94,7 @@ class OrderController extends Controller
 
         $selected_customer = $request->get('customer_id', 0);
 
-        $customers = User::where('type', '=', 'customer')->select(['id', 'name'])->get()->toArray();
+        $customers = User::orderBy('id', 'asc')->where('type', '=', 'customer')->select(['id', 'name'])->get()->toArray();
 
         $warehouses = Warehouse::select(['id', 'name', 'sale_tax'])->get()->toArray();
 
@@ -114,7 +114,6 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
         $validated = $request->validate([
             'customer_id' => 'required',
             'tracking_number_in' => 'required|min:3|max:100|string|unique:orders,tracking_number_in',
@@ -125,38 +124,9 @@ class OrderController extends Controller
             'package_length' => 'required|numeric|gt:0',
             'package_width' => 'required|numeric|gt:0',
             'package_height' => 'required|numeric|gt:0',
-            'notes' => 'nullable',
-            'received_from' => 'required|string',
         ]);
 
         try {
-            // DB::beginTransaction();
-
-
-            // $package = Package::where([
-            //     'status' => 'open',
-            //     'customer_id' => $validated['customer_id'],
-            //     'warehouse_id' => $validated['warehouse_id']
-            // ])->get()->first();
-
-
-            // if (!is_object($package)) {
-
-            //     $count = Package::where([
-            //         'customer_id' => $validated['customer_id']
-            //     ])->count();
-            //     $time = time();
-            //     $next = (int)$count + $time;
-
-            // $package = new Package();
-            // // $package->package_no = 'Pkg-' . $validated['customer_id'] . '-' . $next;
-            // $package->package_no = $package->id;
-            // $package->customer_id = $validated['customer_id'];
-            // $package->warehouse_id = $validated['warehouse_id'];
-            // $package->status = 'open';
-            // $package->save();
-
-
             $package = Package::create([
                 'customer_id' => $validated['customer_id'],
                 'warehouse_id' => $validated['warehouse_id'],
@@ -167,8 +137,8 @@ class OrderController extends Controller
                 'package_length' => $validated['package_length'],
                 'package_width' => $validated['package_width'],
                 'package_height' => $validated['package_height'],
-                'received_from' => $validated['received_from'],
-                'notes' => $validated['notes'],
+                'received_from' => 'NIL',
+                'notes' => 'NIL',
                 'status' => 'open',
                 'pkg_type' => 'single',
                 'pkg_dim_status' => 'done',
@@ -179,8 +149,6 @@ class OrderController extends Controller
                 'package_no' => $package->id,
                 'package_handler_id' => $package->id,
             ]);
-
-            // }
 
             $order = new Order();
             $order->package_id = $package->id;
@@ -193,8 +161,8 @@ class OrderController extends Controller
             $order->package_length = $validated['package_length'];
             $order->package_width = $validated['package_width'];
             $order->package_height = $validated['package_height'];
-            $order->received_from = $validated['received_from'];
-            $order->notes = $validated['notes'];
+            $order->received_from = 'NIL';
+            $order->notes = 'NIL';
             $order->arrived_at = Carbon::now();
             $order->created_at = Carbon::now();
             $order->save();
@@ -229,47 +197,12 @@ class OrderController extends Controller
                 }
             }
 
-            $items = $request->input('items');
-
-            foreach ($items as $key => $item) {
-
-                $order_item = new OrderItem();
-                $order_item->order_id = $order->id;
-                $order_item->name = $item['name'];
-                $order_item->description = $item['description'];
-                $order_item->quantity = $item['qty'];
-                /*$order_item->unit_price = $item['price'];
-                $order_item->price_with_tax = $item['price_with_tax'];
-                $order_item->sub_total = $item['sub_total'];
-                $order_item->url = $item['url'];*/
-
-                $file_name = '';
-
-                if (isset($files['items'][$key]['image'])) {
-
-                    $image_object = $files['items'][$key]['image'];
-                    $file_name = time() . '_' . $image_object->getClientOriginalName();
-                    $image_object->storeAs('uploads', $file_name);
-
-                    if ($_SERVER['HTTP_HOST'] == 'localhost:8000') {
-                        File::move(storage_path('app/uploads/' . $file_name), public_path('/public/uploads/' . $file_name));
-                    } else {
-                        File::move(storage_path('app/uploads/' . $file_name), public_path('../public/uploads/' . $file_name));
-                    }
-                }
-
-                $order_item->image = $file_name;
-
-                $order_item->save();
-            }
-
-            DB::commit();
             event(new OrderCreatedEvent($order));
 
             return redirect()->route('packages.index')->with('success', 'The package has been added successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('packages.index')->with('error', 'Something went wrong');
+            return redirect()->route('packages.index')->with('error', 'Something went wrong. Please try again later.');
         }
     }
 
@@ -452,7 +385,7 @@ class OrderController extends Controller
             DB::commit();
             event(new OrderUpdatedEvent($order));
 
-            return redirect()->route('packages.show', $order->package_id)->with('success', 'The order has been updated successfully.');
+            return redirect()->route('packages.show', $order->package_id)->with('success', 'The package has been updated successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect('orders')->with('error', $e->getMessage());

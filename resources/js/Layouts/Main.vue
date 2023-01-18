@@ -173,9 +173,9 @@
           </div>
 
 
-          <button class="accordion">Orders</button>
+          <button class="accordion">Packages</button>
           <div class="accordion-content">
-            <inertia-link
+            <!-- <inertia-link
                 v-if="
 							$page.props.auth.user.type == 'admin' ||
 							$page.props.auth.user.type == 'manager'
@@ -192,7 +192,7 @@
                 :active="route().current('orders')"
             >
               <i class="fas fa-external-link-alt"></i><span>Manage Orders</span>
-            </inertia-link>
+            </inertia-link> -->
 
             <inertia-link
                 class="nav-link"
@@ -207,7 +207,7 @@
 						}"
                 :active="route().current('shop-for-me.index')"
             >
-              <i class="fas fa-external-link-alt"></i><span>Manage Shopping</span>
+              <i class="fas fa-external-link-alt"></i><span>Shopping</span>
             </inertia-link>
 
             <inertia-link

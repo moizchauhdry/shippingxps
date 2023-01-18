@@ -1,265 +1,117 @@
 <template>
   <MainLayout>
     <div>
-
       <section>
         <div class="container">
-
           <div class="stock-subscription-form">
-
             <form @submit.prevent="submit" enctype="multipart/form-data">
               <div class="order-form">
                 <breeze-validation-errors class="mb-4"/>
                 <flash-messages class="mb-4"/>
 
-                <div class="row">
-                  <div class="col-md-3">
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight form-title">Create Package</h2>
+                <fieldset class="border p-3 mt-2 mb-2">
+                  <div class="row">
+                    <div class="col-md-4 form-group">
+                        <breeze-label for="customer_id" value="Customer"/>
+                        <select name="customer_id" class="form-control" v-model="form.customer_id" :disabled="selected_customer != 0" required>
+                          <option value="">--Select Customer--</option>
+                          <option v-for="customer in customers" :value="customer.id" :key="customer.id">#{{ customer.id }} - {{ customer.name }}</option>
+                        </select>
+                      </div>
 
-                    <div class="form-group">
-                      <breeze-label for="customer_id" value="Customer"/>
-                      <select name="customer_id" class="form-select" v-model="form.customer_id" :disabled="selected_customer != 0" required>
-                        <option selected value="">Select</option>
-                        <option v-for="customer in customers" :value="customer.id" :key="customer.id">{{ customer.name }}</option>
+                      <div class="col-md-4 form-group">
+                        <breeze-label for="warehouse_id" value="Received At"/>
+                        <select name="warehouse_id" class="form-control" v-model="form.warehouse_id" required @change="onChangeWareHouse()">
+                          <option value="">--Select Warehouse--</option>
+                          <option v-for="warehouse in warehouses" :value="warehouse.id" :key="warehouse.id">{{ warehouse.name }}</option>
+                        </select>
+                      </div>
+
+                      <div class="col-md-4 form-group">
+                        <breeze-label for="tracking_number_in" value="Tracking #"/>
+                        <input v-model="form.tracking_number_in" name="tracking_number_in" id="tracking_number_in" type="text" class="form-control" placeholder="Tracking Number" required/>
+                      </div>
+
+                    <div class="col-md-2 form-group">
+                      <breeze-label for="warehouse_id" value="Weight Unit"/>
+                      <select name="weight_unit" class="form-control" v-model="form.weight_unit" required @change="changeDimention($event)">
+                        <option value="lb">Lb</option>
+                        <option value="kg">Kg</option>
                       </select>
                     </div>
 
-                    <div class="form-group">
-                      <breeze-label for="warehouse_id" value="Received At"/>
-                      <select name="warehouse_id" class="form-select" v-model="form.warehouse_id" required @change="onChangeWareHouse()">
-                        <option selected value="">Select</option>
-                        <option v-for="warehouse in warehouses" :value="warehouse.id" :key="warehouse.id">{{ warehouse.name }}</option>
-                      </select>
-                    </div>
-
-                    <div class="form-group">
-                      <breeze-label for="tracking_number_in" value="Tracking #"/>
-                      <input v-model="form.tracking_number_in" name="tracking_number_in" id="tracking_number_in" type="text" class="form-control" placeholder="Tracking Number" required/>
-                    </div>
-
-                  </div>
-
-                  <div class="col-md-3">
-
-                    <div class="form-group">
-                      <breeze-label for="received_from" value="Received From"/>
-                      <input v-model="form.received_from" name="received_from" id="received_from" type="text" class="form-control" placeholder="Like Amazon, Ebay, etc" required/>
-                    </div>
-
-                    <div class="row">
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <breeze-label for="warehouse_id" value="Weight Unit"/>
-                          <select name="weight_unit" class="form-select" v-model="form.weight_unit" required @change="changeDimention($event)">
-                            <option value="lb">Lb</option>
-                            <option value="kg">Kg</option>
-                          </select>
-                        </div>
-                      </div>
-
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <breeze-label for="dim_unit" value="Dimention Unit"/>
-                          <select name="dim_unit" class="form-select" v-model="form.dim_unit" :readonly="1" :disabled="1">
-                            <option value="in">Inch</option>
-                            <option value="cm">Cm</option>
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="form-group">
+                    <div class="col-md-2 form-group">
                       <breeze-label for="package_weight" value="Package Weight"/>
                       <input v-model="form.package_weight" name="package_weight" id="package_weight" type="number" step="0.01" class="form-control" placeholder="Package Weight" required/>
                     </div>
 
-                  </div>
+                    <div class="col-md-2 form-group">
+                      <breeze-label for="dim_unit" value="Dimention Unit"/>
+                      <select name="dim_unit" class="form-control" v-model="form.dim_unit" :readonly="1" :disabled="1">
+                        <option value="in">Inch</option>
+                        <option value="cm">Cm</option>
+                      </select>
+                    </div>
 
-                  <div class="col-md-3">
-
-                    <div class="form-group">
+                    <div class="col-md-2 form-group">
                       <breeze-label for="package_length" value="Package Length"/>
                       <input v-model="form.package_length" name="package_length" id="package_length" type="number" class="form-control" placeholder="Package Length" required/>
                     </div>
 
-                    <div class="form-group">
+                    <div class="col-md-2 form-group">
                       <breeze-label for="package_height" value="Package Height"/>
                       <input v-model="form.package_height" name="package_height" id="package_height" type="number" class="form-control" placeholder="Package Height" required/>
                     </div>
 
-                    <div class="form-group">
+                    <div class="col-md-2 form-group">
                       <breeze-label for="package_weight" value="Package Width"/>
                       <input v-model="form.package_width" name="package_width" id="package_width" type="number" class="form-control" placeholder="Package Width" required/>
                     </div>
-
                   </div>
-
-                  <div class="col-md-3">
-                    <div class="form-group">
-                      <breeze-label for="notes" value="Notes"/>
-                      <textarea v-model="form.notes"
-                                name="notes"
-                                id="notes"
-                                class="form-control"
-                                placeholder="Notes"
-                                rows="7"
-                                style="resize:none;"
-                                >
-                        </textarea>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="row">
-                      <div class="col-md-6">
-                        <h2 class="font-semibold text-xl text-gray-800 leading-tight form-title">
-                          Items
-                        </h2>
-                      </div>
-                      <div class="col-md-6">
-                        <a v-on:click="addItem" class="btn btn-primary" style="float:right;">
-                          <span>Add Item </span>
-                        </a>
-                      </div>
-                    </div>
-
-                    <div class="row mt-3">
-                      <div class="col-md-4 d-none d-md-flex">
-                        <breeze-label for="name" value="Name" />
-                      </div>
-                      <div class="col-md-6 d-none d-md-flex">
-                        <breeze-label for="description" value="Description" />
-                      </div>
-                      <!-- <div class="col-md-2">
-                        <breeze-label for="url" value="Url" />
-                      </div>
-                      <div class="col-md-1 p-0">
-                        <breeze-label for="price" value="Price" />
-                      </div>
-                      <div class="col-md-2">
-                        <breeze-label for="price_with_tax" value="Price after Tax" />
-                      </div> -->
-                      <div class="col-md-2 d-none d-md-flex">
-                        <breeze-label for="qty" value="Qty" />
-                      </div>
-                      <!-- <div class="col-md-2">
-                        <breeze-label for="total" value="Total" />
-                      </div>-->
-                    </div>
-
-                    <div v-for="(item,index) in form.items" :key="item.id" class="row" :id="'order-'+index" :data-id="index">
-
-                      <div class="col-md-4">
-                        <div class="form-group">
-                          <breeze-label for="name" value="Name" class="d-sm-block d-md-none"/>
-                          <input v-model="item.name" name="name" id="name" type="text" class="form-control name" placeholder="Name" required/>
-                        </div>
-                      </div>
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <breeze-label for="description" value="Description" class="d-sm-block d-md-none"/>
-                          <input v-model="item.description" name="description" id="description" type="text" class="form-control option" placeholder="Option"/>
-                        </div>
-                      </div>
-<!--                       <div class="col-md-1 p-0">
-                        <div class="form-group">
-                          <input v-model="item.price" v-on:change="addTax($event)" v-on:click="addTax($event)" v-on:load="addTax($event)" name="price" type="number" class="form-control price" placeholder="Price" ref="price" required/>
-                        </div>
-                      </div>
-                      <div class="col-md-2">
-                        <div class="form-group">
-                          <input v-model="item.price_with_tax" name="price_with_tax" id="price_with_tax" type="number" class="form-control price_with_tax" placeholder="Price After Tax" required readonly/>
-                        </div>
-                      </div> -->
-                      <div class="col-md-1">
-                        <div class="form-group">
-                          <breeze-label for="qty" value="Qty" class="d-sm-block d-md-none"/>
-                          <input v-model="item.qty" name="qty"  id="qty" type="number" class="form-control qty" placeholder="Qty" :min="1" required/>
-                        </div>
-                      </div>
-<!--                       <div class="col-md-2 p-0">
-                        <div class="form-group">
-                          <input v-model="item.sub_total" name="sub_total" id="sub_total" type="number" class="form-control sub_total" placeholder="T.Price" required readonly/>
-                        </div>
-                      </div>-->
-                      <div class="col-md-1" v-show="index!=0">
-                        <div class="form-group">
-                          <a v-on:click="removeItem(index)" class="btn btn-primary" style="margin-top:10px;">
-                            <span>Remove</span>
-                          </a>
-                        </div>
-                      </div>
-                      <div class="col-11 border-bottom border-primary mb-2 mt-2" ></div>
-                    </div>
-<!--                    <div class="row">
-                      <div class="col-2 offset-md-6 text-right">
-                        <breeze-label for="grand_total" value="Grand Total" />
-                      </div>
-                      <div class="col-2 p-0">
-                        <input v-model="form.grand_total" name="grand_total" id="grand_total" type="number" class="form-control grand_total"  placeholder="T.Price" required readonly/>
-                      </div>
-                    </div>-->
-                  </div>
-
-                </div>
-
-
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="row">
-                      <div class="col-md-12">
-                        <h2 class="font-semibold text-xl text-gray-800 leading-tight form-title">
-                          Order Images
-                        </h2>
-                      </div>
-                      <div class="col-md-6">
-                        <a v-on:click="addImage" class="btn btn-primary" style="float:right;">
-                          <span>Add More Image </span>
-                        </a>
-                      </div>
-                    </div>
-
-                    <div class="row">
-                      <div class="col-md-3">
-                        <breeze-label for="name" value="Image"/>
-                      </div>
-                    </div>
-
-                    <div v-for="(image,index) in form.images" :key="image.id" class="row">
-
-                      <div class="col-md-3">
-                        <div class="form-group">
-                          <input type="file" @input="image.image = $event.target.files[0]"/>
-                          <progress v-if="form.progress" :value="form.progress.percentage" max="100">
-                            {{ form.progress.percentage }}%
-                          </progress>
-                        </div>
-                      </div>
-
-                      <div class="col-md-1" v-show="index!=0">
-                        <div class="form-group">
-                          <a v-on:click="removeImage(index)" class="btn btn-primary" style="margin-top:10px;">
-                            <span>Remove</span>
+                </fieldset>
+                
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight form-title">Package Images</h2>
+                <fieldset class="border p-3 mt-2 mb-2">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="row">
+                        <div class="col-md-4">
+                          <a v-on:click="addImage" class="btn btn-primary" style="float:right;">
+                            <span><i class="fa fa-plus mr-1"></i>Image </span>
                           </a>
                         </div>
                       </div>
 
+                      <div v-for="(image,index) in form.images" :key="image.id" class="row">
+                          <div class="col-md-3 form-group">
+                            <div>
+                              <input type="file" @input="image.image = $event.target.files[0]"/>
+                              <progress v-if="form.progress" :value="form.progress.percentage" max="100">
+                                {{ form.progress.percentage }}%
+                              </progress>
+                            </div>
+                            <div v-show="index!=0">
+                              <button v-on:click="removeImage(index)" class="bg-danger text-white p-1 mt-2">
+                                <span><i class="fas fa-trash mr-1 text-sm"></i>Remove</span>
+                              </button>
+                            </div>
+                          </div>
+                      </div>
+
                     </div>
 
                   </div>
-
-                </div>
-
+                </fieldset>
 
                 <div class="order-button">
-                  <input type="submit" value="Create Order" class="btn btn-danger"/>
+                  <input type="submit" value="Save & Submit" class="btn btn-success"/>
                 </div>
               </div>
 
             </form>
-          </div><!-- subscription -->
-        </div><!-- container -->
+          </div>
+        </div>
       </section>
 
     </div>
@@ -282,7 +134,8 @@ export default {
   data() {
     return {
       form: this.$inertia.form({
-        customer_id: this.selected_customer,
+        // customer_id: this.selected_customer,
+        customer_id: '',
         warehouse_id: '',
         received_from: '',
         tracking_number_in: '',
