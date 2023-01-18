@@ -79,8 +79,7 @@ class OrderController extends Controller
     public function show($id)
     {
 
-        $order = Order::with(['customer', 'items', 'warehouse', 'images'])->findOrFail($id);
-
+        $order = Order::with(['customer', 'items', 'warehouse', 'images', 'package'])->findOrFail($id);
         return Inertia::render('Orders/OrderDetail', ['order' => $order]);
     }
 
@@ -286,7 +285,6 @@ class OrderController extends Controller
     {
 
         $id = $request->input('id');
-        $statusChanges = false;
         $order = Order::find($id);
 
         $validated = $request->validate([
@@ -299,19 +297,10 @@ class OrderController extends Controller
             'package_length' => 'required|numeric|gt:0',
             'package_width' => 'required|numeric|gt:0',
             'package_height' => 'required|numeric|gt:0',
-            'status' => 'required|string',
-            'received_from' => 'required|string',
-            'notes' => 'nullable',
         ]);
 
         try {
-            DB::beginTransaction();
 
-            if ($order->status != $validated['status']) {
-                $statusChanges = true;
-            }
-
-            $order->status = $validated['status'];
             $order->tracking_number_in = $validated['tracking_number_in'];
             $order->warehouse_id = $validated['warehouse_id'];
             $order->weight_unit = $validated['weight_unit'];
@@ -320,13 +309,9 @@ class OrderController extends Controller
             $order->package_length = $validated['package_length'];
             $order->package_width = $validated['package_width'];
             $order->package_height = $validated['package_height'];
-            $order->received_from = $validated['received_from'];
-            $order->notes = $validated['notes'];
             $order->update();
 
-            $items = $request->input('items');
             $files = $request->file();
-
             if (isset($files['images'])) {
                 foreach ($files['images'] as $key => $file) {
                     $image_object = $file['image'];
@@ -352,42 +337,19 @@ class OrderController extends Controller
                 }
             }
 
-            foreach ($items as $key => $item) {
-                $item_id = isset($item['id']) ? (int)$item['id'] : 0;
-                $order_item = OrderItem::find($item_id);
-                if (!is_object($order_item)) {
-                    $order_item = new OrderItem();
-                }
-                $order_item->order_id = $order->id;
-                $order_item->name = $item['name'];
-                $order_item->description = $item['description'];
-                $order_item->quantity = $item['quantity'];
-                $order_item->unit_price = $item['price'];
-                $order_item->price_with_tax = $item['price_with_tax'];
-                $order_item->sub_total = $item['sub_total'];
-                $order_item->url = $item['url'];
-                $order_item->save();
-            }
+            $package = Package::find($order->package_id);
+            $package->weight_unit = $validated['weight_unit'];
+            $package->dim_unit = $validated['dim_unit'];
+            $package->package_weight = $validated['package_weight'];
+            $package->package_length = $validated['package_length'];
+            $package->package_width = $validated['package_width'];
+            $package->package_height = $validated['package_height'];
+            $package->save();
 
-            if (isset($order->package_id)) {
-                $package = Package::find($order->package_id);
-                if (count($package->orders) == 1) {
-                    $package->weight_unit = $validated['weight_unit'];
-                    $package->dim_unit = $validated['dim_unit'];
-                    $package->package_weight = $validated['package_weight'];
-                    $package->package_length = $validated['package_length'];
-                    $package->package_width = $validated['package_width'];
-                    $package->package_height = $validated['package_height'];
-                    $package->save();
-                }
-            }
-
-            DB::commit();
             event(new OrderUpdatedEvent($order));
 
             return redirect()->route('packages.show', $order->package_id)->with('success', 'The package has been updated successfully.');
         } catch (\Exception $e) {
-            DB::rollBack();
             return redirect('orders')->with('error', $e->getMessage());
         }
     }

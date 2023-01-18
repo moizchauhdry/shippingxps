@@ -2,7 +2,7 @@
   <MainLayout>
     <div class="card mt-4">
       <div class="card-body">
-        <template v-if="$page.props.auth.user.type == 'admin'">
+        <template v-if="$page.props.auth.user.type == 'admin' && order.package.status == 'open'">
           <div class="row">
             <div class="col-md-12">
               <inertia-link :href="route('order.edit', order.id)" class="btn btn-primary float-right mb-2"><i class="fa fa-edit mr-1"></i>Edit Package</inertia-link>

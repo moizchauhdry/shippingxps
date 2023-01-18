@@ -102,19 +102,21 @@
                   </div>
                 </fieldset>
 
-                <h2 class="font-semibold text-xl text-gray-800 leading-tight">Uploaded Images</h2>
-                <fieldset class="border p-3 mt-2 mb-2">
-                  <div class="row">
-                    <div v-for="(image, index) in order.images" :key="image.id" class="col-md-2">
-                      <div>
-                        <img style="width:100px;height:auto;" class="img-thumbnail" :src="imgURL(image.image)" @click="viewImage($event)"/>
-                      </div>
-                      <div>
-                        <button class="bg-danger text-white p-1 mt-2" @click="deleteImage($event, index, image.id)"><i class="fa fa-trash"></i> Delete</button>
+                <template v-if="order.images.length > 0">
+                  <h2 class="font-semibold text-xl text-gray-800 leading-tight">Uploaded Images</h2>
+                  <fieldset class="border p-3 mt-2 mb-2">
+                    <div class="row">
+                      <div v-for="(image, index) in order.images" :key="image.id" class="col-md-2">
+                        <div>
+                          <img style="width:100px;height:auto;" class="img-thumbnail" :src="imgURL(image.image)" @click="viewImage($event)"/>
+                        </div>
+                        <div>
+                          <button class="bg-danger text-white p-1 mt-2" @click="deleteImage($event, index, image.id)"><i class="fa fa-trash"></i> Delete</button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </fieldset>
+                  </fieldset>
+                </template>
 
                 <div class="order-button">
                   <input type="submit" value="Save & Update" class="btn btn-success" />
