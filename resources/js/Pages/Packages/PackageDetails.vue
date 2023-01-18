@@ -781,8 +781,8 @@ export default {
       serverError: '',
       showEstimatedPrice: false,
       form_checkout: this.$inertia.form({
-        amount: '',
         package_id: this.packag.id,
+        payment_module: 'package',
       }),
       storage_fee : 0,
       overlay: false,
@@ -1043,8 +1043,7 @@ export default {
       }
     },
     checkout() {
-      this.form_checkout.amount = this.getGrandTotal();
-      this.form_checkout.post(this.route('payment.index'))
+      this.$inertia.post(route("payment.index", this.form_checkout));
     },
     getRates(quote_params) {
       axios.get("/getQuote", {

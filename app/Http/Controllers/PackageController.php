@@ -237,6 +237,8 @@ class PackageController extends Controller
 
         $shipping_address = Address::where('user_id', Auth::user()->id)->get();
 
+        $packag->update(['grand_total' => $total]);
+
         return Inertia::render('Packages/PackageDetails', [
             'packag' => $packag,
             'services' => $services,

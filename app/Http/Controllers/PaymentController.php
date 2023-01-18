@@ -17,86 +17,71 @@ use App\Models\Warehouse;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Str;
 use Inertia\Inertia;
 use PDF;
-use Mpdf\Mpdf;
 use net\authorize\api\contract\v1 as AnetAPI;
 use net\authorize\api\controller as AnetController;
-use SebastianBergmann\LinesOfCode\LinesOfCode;
 
 class PaymentController extends Controller
 {
     public function index(Request $request)
     {
-        if ($request->has('amount') && $request->get('amount') > 0) {
-            $amount = $request->amount;
-            Session::put('amount', $amount);
-        } elseif (\Session::has('amount') && \Session::get('amount') > 0) {
-            $amount = \Session::get('amount');
-            Session::put('amount', $amount);
-        } else {
-            return redirect()->route('dashboard')->with('error', 'Please re-checkout to continue');
+        $payment_module = $request->payment_module;
+
+        if (!in_array($payment_module, ['package'])) {
+            return redirect()->back()->with('error', 'PAYMENT ERROR!');
         }
 
+        $shipping_address = [];
+        $status = NULL;
         $user = Auth::user();
-        $addresss = Address::where('user_id', $user->id)->get();
 
-        if ($addresss->count() == 0) {
-            return redirect()->back()->with('error', 'Please add shipping address for further process.');
-        }
+        if ($payment_module == 'package') {
+            $package = Package::query()
+                ->where('payment_status', 'Pending')
+                ->where('id', $request->package_id)
+                ->where('customer_id', $user->id)
+                ->where('grand_total', '>', 0)
+                ->firstOrFail();
 
-        $shippingAddress = [];
-        foreach ($addresss as $address) {
-            $full_address = $address->fullname . " " . $address->address . "<br>" . $address->city . " " . $address->state . " " . $address->zip_code . " " . $address->country->nicename . "<br>" . $address->phone;
-            $shippingAddress[$address->id] = [
-                'id' => $address->id,
-                'label' => $address->fullname . ", " . $address->city . ", " . $address->state . ", " . $address->zip_code,
-                'full_address' => $full_address
-            ];
-        }
-
-        if (count($shippingAddress) == 0) {
-            return redirect()->back()->with('error', 'Cannot continue without shipping address');
-        }
-
-        if ($request->has('package_id')) {
-            \Session::forget(['order_id', 'additional_request_id', 'insurance_id']);
-        }
-        if (\Session::has('order_id')) {
-            \Session::forget(['package_id', 'additional_request_id', 'insurance_id']);
-        }
-        if ($request->has('package_id') || \Session::has('package_id') || \Session::has('order_id') || \Session::has('additional_request_id') || \Session::has('insurance_id') || \Session::has('gift_card_id')) {
-            \Session::put('amount', $amount);
-            if ($request->has('status')) {
-                $status = $request->status;
-            } else {
-                $status = null;
-            }
-
-            if ($request->has('package_id')) {
-                \Session::put('package_id', $request->package_id);
-            }
-
-            $processingFeePayPal = SiteSetting::where('name','paypal_processing_percentage')->first()->value ?? 0.00;
-
-            return Inertia::render(
-                'Payment/OrderPayment',
-                [
-                    'amount' => $amount,
-                    'status' => $status,
-                    'hasInsurance' => \Session::has('insurance_id') ? 1 : 0,
-                    'hasRequest' => \Session::has('additional_request_id') ? 1 : 0,
-                    'hasPackage' => $request->has('package_id') || \Session::has('package_id') ? 1 : 0,
-                    'shippingAddress' => $shippingAddress ?? [],
-                    'processingFeePayPal' => $processingFeePayPal ?? 0,
-                ]
-            );
+            $amount = $package->grand_total;
         } else {
-            return redirect()->back()->with('error', 'Something went wrong, Please try again');
+            $addresss = Address::where('user_id', $user->id)->get();
+
+            if ($addresss->count() == 0) {
+                return redirect()->back()->with('error', 'INVALID ADDRESS!');
+            }
+
+            foreach ($addresss as $address) {
+                $full_address = $address->fullname . " " . $address->address . "<br>" . $address->city . " " . $address->state . " " . $address->zip_code . " " . $address->country->nicename . "<br>" . $address->phone;
+                $shipping_address[$address->id] = [
+                    'id' => $address->id,
+                    'label' => $address->fullname . ", " . $address->city . ", " . $address->state . ", " . $address->zip_code,
+                    'full_address' => $full_address
+                ];
+            }
+
+            if (count($shipping_address) == 0) {
+                return redirect()->back()->with('error', 'INVALID SHIPPING ADDRESS!');
+            }
         }
+
+        $paypal_processing_fee = SiteSetting::where('name', 'paypal_processing_percentage')->first()->value ?? 0.00;
+        $paypal_charged_amount = ($amount * $paypal_processing_fee / 100) + $amount;
+        $paypal_charged_amount =  number_format((float)$paypal_charged_amount, 2, '.', '');
+
+        return Inertia::render(
+            'Payment/OrderPayment',
+            [
+                'status' => $status,
+                'amount' => $amount,
+                'payment_module' => $payment_module,
+                'payment_module_id' => $package->id,
+                'shipping_address' => $shipping_address,
+                'paypal_processing_fee' => $paypal_processing_fee,
+                'paypal_charged_amount' => $paypal_charged_amount,
+            ]
+        );
     }
 
     // AUTHORIZE NET - PAYMENT SUCCESS
@@ -431,14 +416,16 @@ class PaymentController extends Controller
     public function payPalInit(Request $request)
     {
         $data = $request->all();
-
-        return Inertia::render(
-            'Payment/PayPalPayment',
-            [
-                'dataResponse' => $data
-            ]
-        );
-
+        if (isset($data['amount']) && $data['amount'] > 0) {
+            return Inertia::render(
+                'Payment/PayPalPayment',
+                [
+                    'dataResponse' => $data
+                ]
+            );
+        } else {
+            return redirect()->route('dashboard');
+        }
     }
 
     // PAYPAL - PAYMENT SUCCESS
@@ -475,24 +462,27 @@ class PaymentController extends Controller
 
 
         $discount = 0.00;
-        if ($request->has('discount')) {
-            if ($request->discount > 0) {
-                $amt = $request->amount;
-                $discount = $amt * ($request->discount / 100);
-                $request->amount = $amt - $discount;
-            }
-        }
+        // if ($request->has('discount')) {
+        //     if ($request->discount > 0) {
+        //         $amt = $request->amount;
+        //         $discount = $amt * ($request->discount / 100);
+        //         $request->amount = $amt - $discount;
+        //     }
+        // }
+
         $amount = doubleval($request->amount);
         $discount = (float)number_format($discount, 2);
         $lastPayment = Payment::latest()->first();
         $invoiceID = sprintf("%05d", ++$lastPayment->id);
         $payment = new Payment();
         $payment->customer_id = $user->id;
-        $payment->order_id = \Session::has('order_id') ? \Session::get('order_id') : null;
-        $payment->package_id = \Session::has('package_id') ? \Session::get('package_id') : null;
-        $payment->additional_request_id = \Session::has('additional_request_id') ? \Session::get('additional_request_id') : null;
-        $payment->insurance_id = \Session::has('insurance_id') ? \Session::get('insurance_id') : null;
-        $payment->gift_card_id = \Session::has('gift_card_id') ? \Session::get('gift_card_id') : null;
+
+        $payment->order_id = $request->payment_module_type == 'order' ? $request->payment_module_id : NULL;
+        $payment->package_id = $request->payment_module_type == 'package' ? $request->payment_module_id : NULL;
+        $payment->additional_request_id = $request->payment_module_type == 'additional-request' ? $request->payment_module_id : NULL;
+        $payment->insurance_id = $request->payment_module_type == 'insurance' ? $request->payment_module_id : NULL;
+        $payment->gift_card_id = $request->payment_module_type == 'gift-card' ? $request->payment_module_id : NULL;
+
         $payment->transaction_id = $request->transaction_id ?? $invoiceID;
         $payment->payment_type = 'PayPal';
         $payment->charged_amount = $amount;
@@ -502,54 +492,51 @@ class PaymentController extends Controller
         $invoiceID =  sprintf("%05d", $payment->id);
         $payment->invoice_id = $invoiceID;
         $payment->save();
-        if (\Session::has('order_id')) {
-            $id = \Session::get('order_id');
-            $order = Order::find($id);
-            $order->payment_status = "Paid";
-            $order->save();
-        }
 
-        if (\Session::has('additional_request_id')) {
-            $id = \Session::get('additional_request_id');
-            $additionalRequest = AdditionalRequest::find($id);
-            $additionalRequest->payment_status = "Paid";
-            $additionalRequest->save();
-        }
+        // if (\Session::has('order_id')) {
+        //     $id = \Session::get('order_id');
+        //     $order = Order::find($id);
+        //     $order->payment_status = "Paid";
+        //     $order->save();
+        // }
 
-        if (\Session::has('insurance_id')) {
-            $id = \Session::get('insurance_id');
-            $insuranceRequest = InsuranceRequest::find($id);
-            $insuranceRequest->payment_status = "Paid";
-            $insuranceRequest->save();
-            $package = Package::find($insuranceRequest->package_id);
-            $package->payment_status = "Paid";
-            $package->save();
-        }
+        // if (\Session::has('additional_request_id')) {
+        //     $id = \Session::get('additional_request_id');
+        //     $additionalRequest = AdditionalRequest::find($id);
+        //     $additionalRequest->payment_status = "Paid";
+        //     $additionalRequest->save();
+        // }
 
-        if (\Session::has('gift_card_id')) {
-            $id = \Session::get('gift_card_id');
-            $gift_card = GiftCard::find($id);
-            $gift_card->payment_status = "Paid";
-            $gift_card->save();
-        }
+        // if (\Session::has('insurance_id')) {
+        //     $id = \Session::get('insurance_id');
+        //     $insuranceRequest = InsuranceRequest::find($id);
+        //     $insuranceRequest->payment_status = "Paid";
+        //     $insuranceRequest->save();
+        //     $package = Package::find($insuranceRequest->package_id);
+        //     $package->payment_status = "Paid";
+        //     $package->save();
+        // }
 
-        if (\Session::has('package_id')) {
-            $id = \Session::get('package_id');
-            $package = Package::find($id);
+        // if (\Session::has('gift_card_id')) {
+        //     $id = \Session::get('gift_card_id');
+        //     $gift_card = GiftCard::find($id);
+        //     $gift_card->payment_status = "Paid";
+        //     $gift_card->save();
+        // }
+
+        if ($request->payment_module_type == 'package') {
+            $package = Package::find($request->payment_module_id);
             $package->payment_status = "Paid";
             $package->save();
 
             if ($package->address_book_id != null) {
-
                 $shippingAddress = Address::where('id', $package->address_book_id)->first();
-
                 $shipping['email'] = $description['payer']['email_address'] ?? '';
                 $shipping['fullname'] = $shippingAddress->fullname ?? '';
                 $shipping['phone'] = $shippingAddress->phone ?? '';
                 $shipping['address'] = $shippingAddress->address . ', ' . $shippingAddress->city . ', ' . $shippingAddress->state . ', ' . $shippingAddress->country_name ?? '';
             } else {
                 $shippingAddress = Address::where('user_id', $user->id)->first();
-
                 $shipping['email'] = $description['payer']['email_address'] ?? '';
                 $shipping['fullname'] = $shippingAddress->fullname ?? '';
                 $shipping['phone'] = $shippingAddress->phone ?? '';
@@ -566,11 +553,8 @@ class PaymentController extends Controller
             }
         }
 
-        \Log::info('b4 invoice');
         $this->buildInvoice($payment->id, $billing, $shipping);
-        \Log::info('after invoice');
 
-        \Session::forget(['order_id', 'package_id', 'amount', 'additional_request_id', 'insurance_id', 'gift_card_id']);
         return response()->json([
             'status' => 1,
             'message' => 'Please Check card Expiry',
@@ -602,7 +586,7 @@ class PaymentController extends Controller
             try {
                 $pushOrderService = new PackageController();
                 $pushOrderService->pushPackage($package->id);
-            }catch (\Throwable $exception){
+            } catch (\Throwable $exception) {
                 \Log::info($exception);
             }
             // return view('pdfs.payment-invoice',compact('payment','package','customer'));
@@ -700,7 +684,7 @@ class PaymentController extends Controller
         $payment->invoice_url = 'invoices/pdf/' . $payment->invoice_id . '.pdf';
         $payment->save();
 
-        event(new PaymentEventHandler($payment));
+        // event(new PaymentEventHandler($payment));
     }
 
     public function getPayments(Request $request)

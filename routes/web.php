@@ -18,15 +18,6 @@ use Inertia\Inertia;
 |
 */
 
-// Route::get('/', function () {
-//     // $promotional = \App\Models\Configuration::find(1);
-//     // return Inertia::render('Welcome', [
-//     //     'promotionalMessage' => $promotional->description ?? "Shopping and Shipping for You With ShippingXPS",
-//     //     'canLogin' => Route::has('login'),
-//     //     'canRegister' => Route::has('register'),
-//     // ]);
-// })->name('homePage');
-
 Route::get('/', function () {
     return redirect()->route('dashboard');
 })->name('homePage');

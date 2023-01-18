@@ -5,10 +5,6 @@ use App\Http\Controllers\GiftCardController;
 
 
 Route::middleware('auth')->group(function () {
-
-    /*
-     * Shop for me routes
-     */
     Route::prefix('shop-for-me')->group(function () {
         Route::get('', [\App\Http\Controllers\ShopController::class, 'index'])->name('shop-for-me.index');
         Route::get('/create', [\App\Http\Controllers\ShopController::class, 'create'])->name('shop-for-me.create');
@@ -24,16 +20,10 @@ Route::middleware('auth')->group(function () {
         Route::any('/changeStatus', [\App\Http\Controllers\ShopController::class, 'changeStatus'])->name('shop-for-me.changeStatus');
     });
 
-    /*
-     * Notification Routes
-     */
     Route::any('notifications', [\App\Http\Controllers\HomeController::class, 'notifications'])->name('notifications');
     Route::get('mark-all-read', [\App\Http\Controllers\HomeController::class, 'markAllRead'])->name('notifications.mark-all-read');
     Route::post('mark-read', [\App\Http\Controllers\HomeController::class, 'markRead'])->name('notifications.mark-read');
 
-    /*
-     * Store Routes
-     */
     Route::prefix('store')->group(function () {
         Route::get('/', [\App\Http\Controllers\StoreController::class, 'index'])->name('store.index');
         Route::get('/create', [\App\Http\Controllers\StoreController::class, 'create'])->name('store.create');
@@ -90,9 +80,6 @@ Route::middleware('auth')->group(function () {
         Route::any('/storeComment/{id}', [\App\Http\Controllers\InsuranceController::class, 'storeComment'])->name('insurance.storeComment');
     });
 
-    /*
-     * Shop for me routes
-     */
     Route::prefix('payment')->group(function () {
         Route::any('/setup', [\App\Http\Controllers\PaymentController::class, 'index'])->name('payment.index');
         Route::post('pay', [\App\Http\Controllers\PaymentController::class,  'pay'])->name('payment.pay');
@@ -101,21 +88,11 @@ Route::middleware('auth')->group(function () {
         Route::any('list', [\App\Http\Controllers\PaymentController::class,  'getPayments'])->name('payments.getPayments');
         Route::get('PaymentSuccess/{id}', [\App\Http\Controllers\PaymentController::class,  'PaymentSuccess'])->name('payments.PaymentSuccess');
         Route::post('check/coupon', [\App\Http\Controllers\PaymentController::class, 'checkCoupon'])->name('checkCoupon');
-        // Route::get('invoice/{id}', [\App\Http\Controllers\PaymentController::class, 'buildInvoice'])->name('buildInvoice');
         Route::get('invoice/{id}', [\App\Http\Controllers\PaymentController::class, 'invoice'])->name('payment.invoice');
         Route::get('generateReport/{id}', [\App\Http\Controllers\PaymentController::class, 'generateReport'])->name('generateReport');
         Route::any('generateReportList', [\App\Http\Controllers\PaymentController::class, 'generateReportList'])->name('generateReportList');
     });
 
     Route::get('getShippingAddress/{id}', [\App\Http\Controllers\AddressController::class, 'getShippingAddress'])->name('getShippingAddress');
-
     Route::get('getMailingAddress', [\App\Http\Controllers\HomeController::class, 'getMailingAddress'])->name('getMailingAddress');
-});
-
-
-Route::get('migrate', function () {
-    $m = \Illuminate\Support\Facades\Artisan::call('migrate', [
-        '--force' => true
-    ]);
-    dd($m);
 });

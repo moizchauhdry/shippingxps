@@ -3,7 +3,7 @@
     <div class="container">
       <div class="card" style="margin-top: 0px">
         <BreezeValidationErrors/>
-        <div class="card-header">Pay Pal Payment</div>
+        <div class="card-header">PayPal Payment</div>
         <div class="card-body">
           <div class="container">
             <div class="row">
@@ -12,19 +12,8 @@
               </div>
             </div>
             <div class="row">
-              {{ status }}
               <div class="col-md-6 offset-md-3">
                 <a href="javascript:void(0)" id="paymentSuccess" @click="paymentSuccess" class="hidden">pay Success</a>
-                <!--                  <a href="https://www.paypal.com/signin" class="btn btn-info w-100" target="_blank">Pay With PayPal</a>-->
-                <!--                  <form method="post" action="https://www.paypal.com/cgi-bin/webscr">
-                                    <input type="hidden" name="cmd" value="_xclick">
-                                    &lt;!&ndash; Modify the below items to suit your needs &ndash;&gt;
-                                    <input type="hidden" name="business" value="info@shippingxps.com">
-                                    <input type="hidden" name="amount" :value="amount">
-                                    <input type="hidden" name="currency_code" value="USD">
-                                    <input type="hidden" name="return" :value="this.route('payments.PaymentSuccess')">
-                                    <button class="btn btn-info w-100" type="submit">Pay With Pay Pal</button>
-                                  </form>-->
                 <div id="smart-button-container">
                   <div style="text-align: center;">
                     <div id="paypal-button-container"></div>
@@ -115,6 +104,8 @@ export default {
       shipping_address_id: null,
       hasPackage: this.hasPackage,
       form: this.$inertia.form({
+        payment_module_type:this.dataResponse.payment_module_type,
+        payment_module_id:this.dataResponse.payment_module_id,
         amount: this.dataResponse.amount,
         first_name: this.dataResponse.first_name,
         last_name: this.dataResponse.last_name,
