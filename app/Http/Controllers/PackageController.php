@@ -63,9 +63,15 @@ class PackageController extends Controller
 
     public function index(Request $request)
     {
-        $status = $request->has('status') ? $request->status : 'open';
+        $status = $request->has('status') ? $request->status : 'packages';
 
-        $query = Package::with('customer', 'warehouse', 'child_packages')->where('status', $status);
+        $query = Package::with('customer', 'warehouse', 'child_packages');
+
+        if ($status == 'rejected') {
+            $query->where('status', 'rejected');
+        } else {
+            $query->where('status', '<>', 'rejected');
+        }
 
         if (Auth::user()->type == 'customer') {
             $query->where('customer_id', Auth::user()->id);

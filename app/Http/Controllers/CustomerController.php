@@ -148,7 +148,7 @@ class CustomerController extends Controller
             $query->where('id', $suite_no);
         }
 
-        $customers = $query->orderBy('id', 'desc')->paginate(100)
+        $customers = $query->orderBy('id', 'desc')->paginate(10)
             ->through(fn ($customer) => [
                 'id' => $customer->id,
                 'suite_no' => $customer->id,

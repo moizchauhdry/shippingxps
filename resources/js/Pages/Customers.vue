@@ -52,7 +52,9 @@
                 </tr>
               </tbody>
             </table>
-            <pagination class="mt-6" :links="customers.links" />
+
+            <pagination class="mt-6" :links="customers.links"></pagination>
+
           </div>
         </div>
         </div>
@@ -62,8 +64,8 @@
 <script>
     import MainLayout from '@/Layouts/Main'
     import BreezeAuthenticatedLayout from '@/Layouts/Authenticated'
-    import Pagination from '@/Components/Pagination'
     import {useForm, Head} from "@inertiajs/inertia-vue3";
+import Pagination from '@/Components/Pagination.vue';
 
     export default {
         data() {

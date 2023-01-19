@@ -30,7 +30,7 @@
         </div>
 
         <div class="row my-4">
-            <div class="col-md-2">
+            <!-- <div class="col-md-2">
                 <button type="button"  :class="{'active':active === 'open'}"  class="btn btn-light w-100"  @click="searchPackage('open')">Open</button>
             </div>
             <div class="col-md-2">
@@ -44,11 +44,14 @@
             </div>
             <div class="col-md-2">
                 <button type="button"  :class="{'active':active === 'shipped'}"  class="btn btn-light w-100"  @click="searchPackage('shipped')">Shipped</button>
-            </div>
+            </div> -->
             <!-- <div class="col-md-2">
                 <button type="button"  :class="{'active':active === 'delivered'}"  class="btn btn-light w-100"  @click="searchPackage('delivered')">Delivered</button>
             </div> -->
-            <div class="col-md-2">
+            <div class="col-md-6">
+                <button type="button"  :class="{'active':active === 'packages'}"  class="btn btn-light w-100"  @click="searchPackage('packages')">Packages</button>
+            </div>
+            <div class="col-md-6">
                 <button type="button"  :class="{'active':active === 'rejected'}"  class="btn btn-light w-100"  @click="searchPackage('rejected')">Rejected</button>
             </div>
         </div>
@@ -83,7 +86,7 @@ export default {
   },
   data() {
     return {
-      active : 'open',
+      active : 'packages',
       form: useForm({
         suite_no: "",
       }),
