@@ -12,7 +12,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(pkg,index) in pkgs" :key="pkg.id">
+                <tr v-for="(pkg,index) in pkgs.data" :key="pkg.id">
                     <td>{{ ++index }}</td>
                     <td>
                         <span class="badge badge-primary text-sm">PKG #{{ pkg.id }}</span>
@@ -54,7 +54,7 @@
             </tbody>
         </table>
 
-        <pagination class="mt-6" :links="customers.links"></pagination>
+        <pagination class="mt-6" :links="pkgs.links"></pagination>
     </div>
 </template>
 
