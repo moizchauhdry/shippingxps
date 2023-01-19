@@ -52,6 +52,11 @@ class Package extends Model
         return $this->hasMany(OrderItem::class);
     }
 
+    public function boxes()
+    {
+        return $this->hasMany(PackageBox::class);
+    }
+
     // public function items()
     // {
     //     return $this->hasManyThrough('App\Models\OrderItem', 'App\Models\Order');

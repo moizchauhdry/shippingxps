@@ -15,6 +15,7 @@ use App\Models\City;
 use App\Models\OrderItem;
 use App\Models\OrderImage;
 use App\Models\Package;
+use App\Models\PackageBox;
 use App\Models\User;
 use App\Models\SiteSetting;
 use App\Models\Warehouse;
@@ -130,12 +131,12 @@ class OrderController extends Controller
                 'customer_id' => $validated['customer_id'],
                 'warehouse_id' => $validated['warehouse_id'],
                 'tracking_number_in' => $validated['tracking_number_in'],
-                'weight_unit' => $validated['weight_unit'],
-                'dim_unit' => $validated['dim_unit'],
-                'package_weight' => $validated['package_weight'],
-                'package_length' => $validated['package_length'],
-                'package_width' => $validated['package_width'],
-                'package_height' => $validated['package_height'],
+                // 'weight_unit' => $validated['weight_unit'],
+                // 'dim_unit' => $validated['dim_unit'],
+                // 'package_weight' => $validated['package_weight'],
+                // 'package_length' => $validated['package_length'],
+                // 'package_width' => $validated['package_width'],
+                // 'package_height' => $validated['package_height'],
                 'received_from' => 'NIL',
                 'notes' => 'NIL',
                 'status' => 'open',
@@ -147,6 +148,17 @@ class OrderController extends Controller
             $package->update([
                 'package_no' => $package->id,
                 'package_handler_id' => $package->id,
+            ]);
+
+            PackageBox::create([
+                'package_id' => $package->id,
+                'pkg_type' => $package->pkg_type,
+                'weight_unit' => $validated['weight_unit'],
+                'dim_unit' => $validated['dim_unit'],
+                'weight' => $validated['package_weight'],
+                'length' => $validated['package_length'],
+                'width' => $validated['package_width'],
+                'height' => $validated['package_height'],
             ]);
 
             $order = new Order();

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Shippingxps') }}</title>
+    <title>{{ config('app.name', 'ShippingXPS') }}</title>
 
     <script src="https://www.google.com/recaptcha/api.js?render=6LcKxb0hAAAAALPcMiT1eLu03DnQfxaluzJhgD8F"></script>
 
@@ -27,7 +27,8 @@
     <link rel="stylesheet" href="{{ asset('theme/css/theme.css') }}">
     <link rel="stylesheet" href="{{ asset('theme/css/theme-elements.css') }}">
     <!-- Demo CSS -->
-    <link rel="stylesheet" href="{{ asset('theme/css/demos/demo-business-consulting-3.css') }}">
+    {{--
+    <link rel="stylesheet" href="{{ asset('theme/css/demos/demo-business-consulting-3.css') }}"> --}}
     <!-- Skin CSS -->
     <link id="skinCSS" rel="stylesheet" href="{{ asset('theme/css/skins/skin-business-consulting-3.css') }}">
     <!-- Theme Custom CSS -->
@@ -35,15 +36,17 @@
     <!-- Head Libs -->
     <script src="{{ asset('theme/vendor/modernizr/modernizr.min.js') }}"></script>
 
-    {{--LIVE API CREDENTIALS - au.haseeb@icloud.com --}}
-    {{-- <script
+    @env('production')
+    <script
         src="https://www.paypal.com/sdk/js?client-id=Ad_mOnLAjPkl17HazcpuehUPrOIEP9rsM90Ta1BRuUSdvAe14-lcWx1ZWjCcESkSrqjJ_xjnogdy4ft6&enable-funding=venmo&currency=USD"
-        data-sdk-integration-source="button-factory"></script> --}}
+        data-sdk-integration-source="button-factory"></script>
+    @endenv
 
-    {{-- SandBox --}}
+    @env('staging')
     <script
         src="https://www.paypal.com/sdk/js?client-id=AZKXMPfJscqaryDzTCEnfpzP7CUT6rXYvS6EdQiX2FkCcSodMhqjYBmgBZvJLbRLonXetJ4BQClbYsJM&enable-funding=venmo&currency=USD"
         data-sdk-integration-source="button-factory"></script>
+    @endenv
 
     <!-- Styles -->
     {{-- if default path is public then remove 'public'. from below --}}
@@ -86,7 +89,6 @@
 
 <body class="font-sans antialiased">
     <div class="body">
-
         @inertia
     </div>
 

@@ -18,6 +18,7 @@ use App\Models\Order;
 use App\Models\Package;
 use App\Models\Country;
 use App\Models\OrderItem;
+use App\Models\PackageBox;
 use App\Models\Service;
 use App\Models\ServiceRequest;
 use App\Models\User;
@@ -96,7 +97,7 @@ class PackageController extends Controller
 
     public function show($id)
     {
-        $packag = Package::with('orders', 'address', 'warehouse', 'customer', 'images', 'serviceRequests', 'child_packages', 'order')->find($id);
+        $packag = Package::with('orders', 'address', 'warehouse', 'customer', 'images', 'serviceRequests', 'child_packages', 'order', 'boxes')->find($id);
 
         if ($packag == null) {
             return back()->with('error', 'No Package Found');
@@ -176,7 +177,21 @@ class PackageController extends Controller
 
         $packag->update(['grand_total' => $total]);
 
-        return Inertia::render('Packages/PackageDetails', [
+
+        $package_boxes = [];
+        foreach ($packag->boxes as $pkg_box) {
+            $package_boxes[] = [
+                'id' => $pkg_box->id,
+                'weight_unit' => $pkg_box->weight_unit,
+                'dim_unit' => $pkg_box->dim_unit,
+                'weight' => $pkg_box->weight,
+                'length' => $pkg_box->length,
+                'width' => $pkg_box->width,
+                'height' => $pkg_box->height,
+            ];
+        }
+
+        return Inertia::render('Packages/Show', [
             'packag' => $packag,
             'services' => $services,
             'service_requests' => $service_requests,
@@ -192,6 +207,7 @@ class PackageController extends Controller
             'shipping_address' => $shipping_address,
             'subtotal' => $subtotal,
             'total' => $total,
+            'package_boxes' => $package_boxes,
         ]);
     }
 
@@ -244,7 +260,7 @@ class PackageController extends Controller
 
         $countries = Country::all(['id', 'nicename as name'])->toArray();
 
-        return Inertia::render('Packages/CreatePackage', [
+        return Inertia::render('Packages/Customs/Create', [
             'countries' => $countries,
             'package_items' => $package_items,
             'address_book' => $address_book,
@@ -477,18 +493,23 @@ class PackageController extends Controller
 
     public function consolidatePackage(Request $request)
     {
-        $data = $request->all();
+        $package = Package::findOrFail($request->package_id);
 
-        $package = Package::find($data['package_id']);
-        $package->status = $data['status'];
-        $package->weight_unit = $data['weight_unit'];
-        $package->dim_unit = $data['dim_unit'];
-        $package->package_weight = $data['package_weight'];
-        $package->package_length = $data['package_length'];
-        $package->package_width = $data['package_width'];
-        $package->package_height = $data['package_height'];
-        $package->package_height = $data['package_height'];
-        // $package->package_handler_id = Auth::user()->id;
+        PackageBox::where('package_id', $package->id)->delete();
+        foreach ($request->package_boxes as $pkg_box) {
+            PackageBox::create([
+                'package_id' => $package->id,
+                'pkg_type' => 'consolidation',
+                'weight_unit' => $pkg_box['weight_unit'],
+                'dim_unit' => $pkg_box['dim_unit'],
+                'weight' => $pkg_box['weight'],
+                'length' => $pkg_box['length'],
+                'width' => $pkg_box['width'],
+                'height' => $pkg_box['height'],
+            ]);
+        }
+
+        $package->status = 'consolidated';
         $package->pkg_dim_status = 'done';
         $package->admin_status = 'accepted';
         $package->consolidation_fee = (1.5 * count($package->child_packages)) + 5;
