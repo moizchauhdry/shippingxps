@@ -84,7 +84,7 @@ class PackageController extends Controller
             });
         }
 
-        $packages = $query->orderBy('id', 'desc')->get();
+        $packages = $query->orderBy('id', 'desc')->paginate(10);
 
         return Inertia::render('Packages/Index', [
             'pkgs' => $packages,

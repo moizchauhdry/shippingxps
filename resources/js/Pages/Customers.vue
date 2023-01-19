@@ -6,7 +6,7 @@
           <form @submit.prevent="submit">          
               <div class="row">
                   <div class="form-group col-md-4">
-                    <input type="number" name="search" v-model="form.suite_no"  class="form-control" placeholder="Search By Suite #" >
+                    <input type="search" name="search" v-model="form.suite_no"  class="form-control" placeholder="Search By Suite #" >
                   </div>
                   <div class="form-group col-md-4">
                     <button type="submit" class="btn btn-primary">Search</button>

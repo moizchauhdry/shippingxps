@@ -53,12 +53,16 @@
                 </tr>
             </tbody>
         </table>
+
+        <pagination class="mt-6" :links="customers.links"></pagination>
     </div>
 </template>
 
 <script>
+import Pagination from '@/Components/Pagination.vue';
     export default {
-        name: "Order List",
+  components: { Pagination },
+        name: "Packages List",
         props: {
             auth: Object,
             pkgs:Object,
