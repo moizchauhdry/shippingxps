@@ -47,10 +47,15 @@ class Package extends Model
         return $this->hasMany(ServiceRequest::class);
     }
 
-    public function items()
+    public function packageItems()
     {
-        return $this->hasManyThrough('App\Models\OrderItem', 'App\Models\Order');
+        return $this->hasMany(OrderItem::class);
     }
+
+    // public function items()
+    // {
+    //     return $this->hasManyThrough('App\Models\OrderItem', 'App\Models\Order');
+    // }
 
     // public function orderItems(){
     //     return $this->hasManyThrough('App\Models\OrderItem', 'App\Models\Order');

@@ -94,78 +94,9 @@ class PackageController extends Controller
         ]);
     }
 
-    // public function index()
-    // {
-    //     $user_type = Auth::user()->type;
-
-    //     if ($user_type == 'customer') {
-    //         return $this->customer_packages();
-    //     } else {
-
-    //         $query = Package::with(['warehouse', 'customer', 'orders' => function ($q) {
-    //             $q->where('status', '!=', 'rejected');
-    //         }]);
-    //         $packages = $query->orderByDesc('id')->paginate(25);
-
-    //         return Inertia::render('Packages/AdminPackageList', [
-    //             'packages' => $packages
-    //         ]);
-    //     }
-    // }
-
-    public function customer_packages()
-    {
-
-        $customer_id = Auth::user()->id;
-
-        $query = Package::with(['warehouse', 'customer', 'orders' => function ($q) {
-            $q->where('status', '!=', 'rejected');
-        }]);
-        $query->where('customer_id', '=', $customer_id);
-        $query->whereIn('status', ['open', 'filled', 'consolidated'])->orderBy('id', 'desc');
-        $packages_account = $query->paginate(25);
-
-        $query_ready = Package::with(['warehouse', 'customer', 'orders' => function ($q) {
-            $q->where('status', '!=', 'rejected');
-        }]);
-        $query_ready->where('customer_id', '=', $customer_id);
-        $query_ready->whereIn('status', ['labeled'])->orderBy('id', 'desc');
-        $packages_ready = $query_ready->paginate(25);
-
-        $query_sent = Package::with(['warehouse', 'customer', 'orders' => function ($q) {
-            $q->where('status', '!=', 'rejected');
-        }]);
-        $query_sent->where('customer_id', '=', $customer_id);
-        $query_sent->whereIn('status', ['shipped', 'complete', 'delivered'])->orderBy('id', 'desc');
-        $packages_sent = $query_sent->paginate(25);
-
-        $query_delivered = Package::with(['warehouse', 'customer', 'orders' => function ($q) {
-            $q->where('status', '!=', 'rejected');
-        }]);
-        $query_delivered->where('customer_id', '=', $customer_id);
-        $query_delivered->whereIn('status', ['delivered'])->orderBy('id', 'desc');
-        $packages_delivered = $query_delivered->paginate(25);
-
-        return Inertia::render('Packages/CustomerPackageList', [
-            'packages_account' => $packages_account,
-            'packages_ready' => $packages_ready,
-            'packages_sent' => $packages_sent,
-            'packages_delivered' => $packages_delivered,
-        ]);
-    }
-
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
-        $packag = Package::with(['orders' => function ($q) {
-            $q->where('status', '!=', 'rejected');
-        }, 'address', 'warehouse', 'customer', 'items', 'images', 'serviceRequests', 'child_packages', 'order'])->find($id);
+        $packag = Package::with('orders', 'address', 'warehouse', 'customer', 'images', 'serviceRequests', 'child_packages', 'order')->find($id);
 
         if ($packag == null) {
             return back()->with('error', 'No Package Found');
@@ -264,52 +195,40 @@ class PackageController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function custom(Request $request, $package_id)
     {
-
         $user_id = Auth::user()->id;
-
-        $packag = Package::with(['orders' => function ($q) {
-            $q->where('status', '!=', 'rejected');
-        }, 'warehouse', 'customer', 'items', 'address'])->find($package_id);
-
-
+        $packag = Package::with('orders', 'warehouse', 'customer', 'packageItems', 'address')->find($package_id);
+        $addresses = Address::where('user_id', $user_id)->get();
         $warehouse = $packag->warehouse;
 
-        $items = [];
-
-        foreach ($packag->items as $item) {
-            $items[] = [
-                'id' => $item->id,
-                'description' => $item->description,
-                'quantity' => $item->quantity,
-                'unit_price' => $item->unit_price,
-                'origin_country' => $item->origin_country,
-                'batteries' => $item->batteries,
+        $package_items = [];
+        foreach ($packag->packageItems as $pkg_item) {
+            $package_items[] = [
+                'id' => $pkg_item->id,
+                'description' => $pkg_item->description,
+                'quantity' => $pkg_item->quantity,
+                'unit_price' => $pkg_item->unit_price,
+                'origin_country' => $pkg_item->origin_country,
+                'batteries' => $pkg_item->batteries,
             ];
         }
 
         $tracking_numbers = [];
-
         foreach ($packag->orders as $order) {
             $tracking_numbers[] = $order->tracking_number_in;
         }
 
-        $addresses = Address::where('user_id', $user_id)->get();
 
         $address_book = [];
-
         $selected_address = '';
         $address_book_id = 0;
 
         foreach ($addresses as $address) {
 
-            $full_address = $address->fullname . " " . $address->address . "<br>" . $address->city . " " . $address->state . " " . $address->zip_code . " " . $address->country->nicename . "<br>" . $address->phone;
+            $full_address = $address->fullname . " " . $address->address . "<br>" .
+                $address->city . " " . $address->state . " " . $address->zip_code . " " . $address->country->nicename . "<br>" .
+                $address->phone;
 
             if ($selected_address == '') {
                 $selected_address = $full_address;
@@ -327,7 +246,7 @@ class PackageController extends Controller
 
         return Inertia::render('Packages/CreatePackage', [
             'countries' => $countries,
-            'items' => $items,
+            'package_items' => $package_items,
             'address_book' => $address_book,
             'address_book_id' => $address_book_id,
             'selected_address' => $selected_address,
@@ -335,24 +254,15 @@ class PackageController extends Controller
             'warehouse' => $warehouse,
             'tracking_numbers' => $tracking_numbers,
             'package_date' => date('Y-m-d'),
-
-
         ]);
     }
 
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        $package = Package::with('order')->where('id', $request->package_id)->first();
+        $package = Package::with('order', 'packageItems')->where('id', $request->package_id)->first();
 
         $validated = $request->validate([
-            'items' => 'required|array',
+            'package_items' => 'required|array',
             'shipping_total' => 'required',
             'package_type' => 'required'
         ]);
@@ -363,15 +273,15 @@ class PackageController extends Controller
             'package_type' => $validated['package_type'],
         ]);
 
-        foreach ($request->items as $key => $item) {
+        foreach ($request->package_items as $key => $pkg_item) {
             $order_item = new OrderItem();
             $order_item->package_id = $package->id;
             $order_item->name = 'NIL';
-            $order_item->description = $item['description'];
-            $order_item->quantity = $item['quantity'];
-            $order_item->unit_price = $item['unit_price'];
-            $order_item->origin_country = $item['origin_country'];
-            $order_item->batteries = $item['batteries'];
+            $order_item->description = $pkg_item['description'];
+            $order_item->quantity = $pkg_item['quantity'];
+            $order_item->unit_price = $pkg_item['unit_price'];
+            $order_item->origin_country = $pkg_item['origin_country'];
+            $order_item->batteries = $pkg_item['batteries'];
             $order_item->save();
         }
 
@@ -380,12 +290,6 @@ class PackageController extends Controller
         return redirect()->route('packages.show', $package->id)->with('success', 'The custom decration form filled successfully.');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
 
@@ -441,13 +345,6 @@ class PackageController extends Controller
         ]);
     }
 
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request)
     {
 
@@ -501,7 +398,6 @@ class PackageController extends Controller
         return redirect('packages')->with('success', 'Package  Updated !');
     }
 
-
     public function getPdf(Request $request, $order_id)
     {
         $package = Package::with(['items', 'warehouse.country'])->find($order_id);
@@ -539,12 +435,6 @@ class PackageController extends Controller
         $mpdf->Output();
     }
 
-    /**
-     * Create service request against package by customer
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function serviceRequest(Request $request)
     {
 
@@ -569,13 +459,6 @@ class PackageController extends Controller
         return redirect()->back()->with('success', 'Your service request sent to Admin.');
     }
 
-
-    /**
-     * Create service request against package by customer
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function serviceHandle(Request $request)
     {
 
@@ -592,13 +475,6 @@ class PackageController extends Controller
         return redirect()->back()->with('success', 'Service request updated, customer notfied.');
     }
 
-
-    /**
-     * Create service request against package by customer
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function consolidatePackage(Request $request)
     {
         $data = $request->all();
@@ -623,13 +499,6 @@ class PackageController extends Controller
         return redirect()->back();
     }
 
-
-    /**
-     * Create service request against package by customer
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function shipPackage(Request $request)
     {
 
@@ -645,13 +514,6 @@ class PackageController extends Controller
         return redirect()->back()->with('success', 'Package set for shipment.');
     }
 
-
-    /**
-     * Create service request against package by customer
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function setShippingService(Request $request)
     {
 
@@ -676,8 +538,6 @@ class PackageController extends Controller
         return redirect()->route('packages.show', $package->id)->with('success', 'Package set for shipment.');
     }
 
-
-
     public function removeItem(Request $request)
     {
 
@@ -687,8 +547,6 @@ class PackageController extends Controller
 
     public function getStorageFee(Request $request)
     {
-        // dd('here');
-        // dd($request->package_id);
         $id = $request->package_id;
         $package = Package::find($id);
         $orders = $package->orders;

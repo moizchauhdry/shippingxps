@@ -66,7 +66,7 @@
             <div class="card-body">
               <div class="row">
                   <form @submit.prevent="submitShippingAddressForm">
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-4">
                       <select name="address_book_id" class="form-select text-uppercase" v-model="address_form.address_book_id" required @change="submitShippingAddressForm">
                         <option :value="0">--Select Address--</option>
                         <template v-for="(address) in shipping_address" :key="address.id">
@@ -541,12 +541,16 @@
                           <td></td>
                         </tr>
                         <tr>
-                          <td v-if="packag.carrier_code != null && packag.payment_status != 'Paid'" colspan="4">
-                            <button type="button"  @click="checkout()" class="btn btn-primary">Checkout</button>
-                          </td>
-                          <td v-else colspan="4">
-                            <button v-if="packag.payment_status != 'Paid'" type="button" class="btn btn-primary disabled">Checkout</button>
-                            <span class="badge badge-success" v-if="packag.payment_status == 'Paid'">Paid</span>
+                          <template v-if="$page.props.auth.user.type == 'customer'">
+                             <td v-if="packag.carrier_code != null && packag.payment_status != 'Paid'" colspan="4">
+                              <button type="button"  @click="checkout()" class="btn btn-primary">Checkout</button>
+                            </td>
+                            <td v-else colspan="4">
+                              <button v-if="packag.payment_status != 'Paid'" type="button" class="btn btn-primary disabled">Checkout</button>
+                            </td>
+                          </template>
+                          <td v-if="packag.payment_status == 'Paid'">
+                            <span class="badge badge-success text-lg">Paid</span>
                           </td>
                         </tr>
                       </tbody>
