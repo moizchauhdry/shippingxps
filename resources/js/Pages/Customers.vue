@@ -36,15 +36,14 @@
                   <td>{{ customer.phone }}</td>
                   <td>{{ customer.created_at }}</td>
                   <td>
-                    <inertia-link class="btn btn-success btn-xs m-1" :href="createOrderLink(customer.id)">
-                      <i class="fa fa-plus mr-1"></i>Create Order
-                    </inertia-link>
-                    <inertia-link  v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'" :href="route('edit-customer',{ id: customer.id })" class="btn btn-primary btn-xs m-1">
-                      <i class="fa fa-pencil-alt mr-1"></i>Edit</inertia-link>
-                    <inertia-link  v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'" :href="route('detail-customer',{ id: customer.id })" class="btn btn-info btn-xs m-1" >
-                      <i class="fa fa-list mr-1"></i>Detail</inertia-link>
-                     <!-- <inertia-link  v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'" href="" class="btn btn-danger btn-xs m-1" @click="destroy(customer.id)">
-                      <i class="fa fa-trash mr-1"></i>Delete</inertia-link> -->
+                    <template  v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">
+                      <inertia-link class="btn btn-success btn-xs m-1" :href="createOrderLink(customer.id)">
+                        <i class="fa fa-plus mr-1"></i>Create Package</inertia-link>
+                      <inertia-link  :href="route('edit-customer',{ id: customer.id })" class="btn btn-primary btn-xs m-1">
+                        <i class="fa fa-pencil-alt mr-1"></i>Edit</inertia-link>
+                      <inertia-link :href="route('detail-customer',{ id: customer.id })" class="btn btn-info btn-xs m-1" >
+                        <i class="fa fa-list mr-1"></i>Detail</inertia-link>
+                    </template>
                   </td>
                 </tr>
                 <tr v-if="customers.data.length == 0">
@@ -52,10 +51,8 @@
                 </tr>
               </tbody>
             </table>
-
-            <pagination class="mt-6" :links="customers.links"></pagination>
-
           </div>
+            <pagination class="mt-6" :links="customers.links"></pagination>
         </div>
         </div>
     </MainLayout>

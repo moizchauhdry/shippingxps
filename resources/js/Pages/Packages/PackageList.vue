@@ -38,8 +38,10 @@
                     <td>{{ pkg.created_at }}</td>
                     <td>
                         <template v-if="pkg.pkg_type != 'assigned'">
-                            <inertia-link class="btn btn-info btn-sm m-1" :href="route('packages.show', pkg.id)"><i class="fa fa-list mr-1"></i>Detail</inertia-link>
-                            <!-- <inertia-link class="btn btn-success btn-sm m-1" :href="route('packages.custom', pkg.id)"><i class="fa fa-print mr-1"></i>Custom Form</inertia-link>
+                            <inertia-link class="btn btn-info btn-sm m-1" :href="route('packages.show', pkg.id)">
+                                <i class="fa fa-list mr-1"></i>Detail</inertia-link>
+                            <!-- <inertia-link class="btn btn-success btn-sm m-1" :href="route('packages.custom', pkg.id)">
+                                <i class="fa fa-print mr-1"></i>Custom Form</inertia-link>
                             <a class="btn btn-warning btn-sm m-1" :href="route('packages.pdf', pkg.id)" target="_blank">
                                 <i class="fa fa-print mr-1"></i>Commercial Invoice</a> -->
                         </template>
@@ -48,14 +50,13 @@
                         </template>
                     </td>
                 </tr>
-                <tr v-if="pkgs.length == 0">
+                <tr v-if="pkgs.data.length == 0">
                     <td class="text-primary text-center" colspan="9">There are no packages found.</td>
                 </tr>
             </tbody>
         </table>
-
-        <pagination class="mt-6" :links="pkgs.links"></pagination>
-    </div>
+    </div>        
+    <pagination class="mt-6" :links="pkgs.links"></pagination>
 </template>
 
 <script>
