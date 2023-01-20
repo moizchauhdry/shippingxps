@@ -22,7 +22,6 @@ class ChangeInPackagesTable extends Migration
             $table->text('notes')->nullable();
             $table->double('consolidation_fee')->nullable();
             $table->enum('address_type', ['domestic', 'international'])->nullable();
-            $table->longText('pkg_boxes')->nullable();
         });
     }
 
@@ -42,7 +41,6 @@ class ChangeInPackagesTable extends Migration
             $table->dropColumn('notes');
             $table->dropColumn('consolidation_fee');
             $table->dropColumn('address_type');
-            $table->dropColumn('pkg_boxes');
         });
     }
 }
