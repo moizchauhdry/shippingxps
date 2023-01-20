@@ -350,13 +350,24 @@ class OrderController extends Controller
             }
 
             $package = Package::find($order->package_id);
-            $package->weight_unit = $validated['weight_unit'];
-            $package->dim_unit = $validated['dim_unit'];
-            $package->package_weight = $validated['package_weight'];
-            $package->package_length = $validated['package_length'];
-            $package->package_width = $validated['package_width'];
-            $package->package_height = $validated['package_height'];
-            $package->save();
+            // $package->weight_unit = $validated['weight_unit'];
+            // $package->dim_unit = $validated['dim_unit'];
+            // $package->package_weight = $validated['package_weight'];
+            // $package->package_length = $validated['package_length'];
+            // $package->package_width = $validated['package_width'];
+            // $package->package_height = $validated['package_height'];
+            // $package->save();
+
+            PackageBox::updateOrCreate(['package_id' => $package->id], [
+                'package_id' => $package->id,
+                'pkg_type' => $package->pkg_type,
+                'weight_unit' => $validated['weight_unit'],
+                'dim_unit' => $validated['dim_unit'],
+                'weight' => $validated['package_weight'],
+                'length' => $validated['package_length'],
+                'width' => $validated['package_width'],
+                'height' => $validated['package_height'],
+            ]);
 
             event(new OrderUpdatedEvent($order));
 

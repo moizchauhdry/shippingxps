@@ -8,7 +8,9 @@
 
     <title>{{ config('app.name', 'ShippingXPS') }}</title>
 
+    @env('production')
     <script src="https://www.google.com/recaptcha/api.js?render=6LcKxb0hAAAAALPcMiT1eLu03DnQfxaluzJhgD8F"></script>
+    @endenv
 
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, shrink-to-fit=no">
     <link rel="icon" type="image/x-icon" href="{{ asset('theme/img/favicon.png') }}">
@@ -34,7 +36,7 @@
     <!-- Theme Custom CSS -->
     <link rel="stylesheet" href="{{ asset('theme/css/custom.css') }}">
     <!-- Head Libs -->
-    <script src="{{ asset('theme/vendor/modernizr/modernizr.min.js') }}"></script>
+    {{-- <script src="{{ asset('theme/vendor/modernizr/modernizr.min.js') }}"></script> --}}
 
     @env('production')
     <script
