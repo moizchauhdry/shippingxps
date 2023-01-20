@@ -14,7 +14,7 @@ class ChangeInPackagesTable extends Migration
     public function up()
     {
         Schema::table('packages', function (Blueprint $table) {
-            $table->enum('pkg_type', ['single', 'multiple', 'consolidation', 'assigned'])->nullable();
+            $table->enum('pkg_type', ['single', 'multipiece', 'consolidation', 'assigned'])->nullable();
             $table->enum('admin_status', ['pending', 'accepted', 'rejected'])->nullable()->default('pending');
             $table->enum('pkg_dim_status', ['pending', 'done'])->nullable()->default('pending');
             $table->string('tracking_number_in', 100)->nullable();

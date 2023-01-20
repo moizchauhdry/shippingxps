@@ -37,7 +37,7 @@
 								v-for="child_pkg in packag.child_packages"
 								:key="child_pkg.id"
 							>
-								<tr>
+								<tr v-if="child_pkg.order">
 									<td>
 										<span class="badge badge-primary text-sm"
 											>PKG #{{ child_pkg.id }}</span

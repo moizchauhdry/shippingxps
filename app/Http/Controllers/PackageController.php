@@ -834,6 +834,10 @@ class PackageController extends Controller
 
     public function storeConsolidation(Request $request)
     {
+        if ($request->package_consolidation == []) {
+            return redirect()->back()->with('error', 'Please select package for consolidation.');
+        }
+
         $user = Auth::user();
 
         $package = Package::create([
@@ -875,15 +879,21 @@ class PackageController extends Controller
 
     public function storeMultipiece(Request $request)
     {
+        if ($request->multipiece_package == []) {
+            return redirect()->back()->with('error', 'Please select packages for multipiece.');
+        }
+
         $user = Auth::user();
 
-        $package = Package::create([
+        $package = Package::with('order')->create([
             'customer_id' => $user->id,
             'warehouse_id' => $request->warehouse_id,
-            'pkg_type' => 'multiple',
+            'pkg_type' => 'multipiece',
+            'admin_status' => 'accepted',
+            'pkg_dim_status' => 'done',
         ]);
 
-        foreach ($request->package_consolidation as $key => $pkg) {
+        foreach ($request->multipiece_package as $key => $pkg) {
             $pkg = Package::find($pkg);
             $pkg->update([
                 'package_handler_id' => $package->id,
@@ -891,7 +901,21 @@ class PackageController extends Controller
             ]);
         }
 
-        return redirect()->route('packages.show', $package->id)->with('success', 'The package have multi-piece successfully.');
+
+        foreach ($package->child_packages as $child_pkg) {
+            PackageBox::create([
+                'pkg_type' => 'multipiece',
+                'package_id' => $package->id,
+                'weight_unit' => $child_pkg->order->weight_unit,
+                'dim_unit' => $child_pkg->order->dim_unit,
+                'weight' => $child_pkg->order->package_weight,
+                'length' => $child_pkg->order->package_length,
+                'width' => $child_pkg->order->package_width,
+                'height' => $child_pkg->order->package_height,
+            ]);
+        }
+
+        return redirect()->route('packages.show', $package->id)->with('success', 'The package have multipiece successfully.');
     }
 
     public function updateAddress(Request $request)

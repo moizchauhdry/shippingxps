@@ -10,7 +10,7 @@
 		"
 	>
 		<div class="col-md-12">
-			<div class="card">
+			<div class="card mt-2">
 				<div class="card-header">
 					<h3 class="text-uppercase">Shipping Rates</h3>
 				</div>

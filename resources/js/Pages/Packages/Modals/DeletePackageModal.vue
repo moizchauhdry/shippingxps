@@ -28,8 +28,7 @@
 				</div>
 				<div class="modal-body">
 					<div class="text-center mt-2 mb-5">
-						Are You sure you want to delete this "Package #
-						{{ packag.id }}"?
+						Are You sure you want to delete this Package
 						<br />
 						You can't undo this action.
 					</div>

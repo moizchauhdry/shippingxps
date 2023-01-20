@@ -371,7 +371,7 @@ class OrderController extends Controller
 
             event(new OrderUpdatedEvent($order));
 
-            return redirect()->route('packages.show', $order->package_id)->with('success', 'The package has been updated successfully.');
+            return redirect()->route('packages.show', $order->package->package_handler_id)->with('success', 'The package has been updated successfully.');
         } catch (\Exception $e) {
             return redirect('orders')->with('error', $e->getMessage());
         }
