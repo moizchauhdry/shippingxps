@@ -33,14 +33,14 @@ class ChangeInPackagesTable extends Migration
     public function down()
     {
         Schema::table('packages', function (Blueprint $table) {
-            $table->dropColumn('pkg_type');
-            $table->dropColumn('admin_status');
-            $table->dropColumn('pkg_dim_status');
-            $table->dropColumn('tracking_number_in');
-            $table->dropColumn('received_from');
-            $table->dropColumn('notes');
-            $table->dropColumn('consolidation_fee');
-            $table->dropColumn('address_type');
+            // $table->dropColumn('pkg_type');
+            // $table->dropColumn('admin_status');
+            // $table->dropColumn('pkg_dim_status');
+            // $table->dropColumn('tracking_number_in');
+            // $table->dropColumn('received_from');
+            // $table->dropColumn('notes');
+            // $table->dropColumn('consolidation_fee');
+            // $table->dropColumn('address_type');
         });
     }
 }
