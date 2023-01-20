@@ -850,7 +850,48 @@ class PackageController extends Controller
             ]);
         }
 
-        return redirect()->route('packages.show', $package->id)->with('success', 'The Package have consolidated successfully.');
+        return redirect()->route('packages.show', $package->id)->with('success', 'The package have consolidated successfully.');
+    }
+
+    public function multipiece(Request $request)
+    {
+        $query = Package::with('customer', 'warehouse')
+            ->where('warehouse_id', $request->warehouse_id)
+            ->where('status', 'open')
+            ->where('pkg_type', 'single');
+
+        if (Auth::user()->type == 'customer') {
+            $query->where('customer_id', Auth::user()->id);
+        }
+
+        $packages = $query->orderBy('id', 'desc')->get();
+        $warehouses = Warehouse::get();
+
+        return Inertia::render('Packages/Multipiece', [
+            'pkgs' => $packages,
+            'warehouses' => $warehouses,
+        ]);
+    }
+
+    public function storeMultipiece(Request $request)
+    {
+        $user = Auth::user();
+
+        $package = Package::create([
+            'customer_id' => $user->id,
+            'warehouse_id' => $request->warehouse_id,
+            'pkg_type' => 'multiple',
+        ]);
+
+        foreach ($request->package_consolidation as $key => $pkg) {
+            $pkg = Package::find($pkg);
+            $pkg->update([
+                'package_handler_id' => $package->id,
+                'pkg_type' => 'assigned',
+            ]);
+        }
+
+        return redirect()->route('packages.show', $package->id)->with('success', 'The package have multi-piece successfully.');
     }
 
     public function updateAddress(Request $request)

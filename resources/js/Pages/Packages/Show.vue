@@ -3,7 +3,7 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-md-12">
-					<package-notification v-bind="$props"></package-notification>
+					<notification-component v-bind="$props"></notification-component>
 					<child-package-component v-bind="$props"></child-package-component>
 					<shipping-address-component
 						v-bind="$props"
@@ -36,7 +36,6 @@
 	import BreezeLabel from "@/Components/Label";
 	import ImageViewer from "@/Components/ImageViewer";
 	import $ from "jquery";
-	import PackageNotification from "./PackageNotification.vue";
 	import ConsolidationComponent from "./Components/ConsolidationComponent.vue";
 	import ChildPackageComponent from "./Components/ChildPackageComponent.vue";
 	import ShippingAddressComponent from "./Components/ShippingAddressComponent.vue";
@@ -47,6 +46,7 @@
 	import ServiceComponent from "./Components/ServiceComponent.vue";
 	import MailoutComponent from "./Components/MailoutComponent.vue";
 	import ShipoutComponent from "./Components/ShipoutComponent.vue";
+	import NotificationComponent from "./Components/NotificationComponent.vue";
 
 	export default {
 		components: {
@@ -54,7 +54,6 @@
 			MainLayout,
 			BreezeLabel,
 			ImageViewer,
-			PackageNotification,
 			ConsolidationComponent,
 			ChildPackageComponent,
 			ShippingAddressComponent,
@@ -65,6 +64,7 @@
 			ServiceComponent,
 			MailoutComponent,
 			ShipoutComponent,
+			NotificationComponent,
 		},
 		data() {
 			return {
@@ -374,32 +374,32 @@
 					});
 			},
 
-			confirmDeletion() {
-				let packageID = this.packag.id;
-				var modal = document.getElementById("deleteModal");
-				modal.classList.add("show");
-				$("#deleteModal").show();
-			},
-			closeDeletionModal() {
-				var modal = document.getElementById("deleteModal");
-				modal.style.display = "none";
-			},
-			deletePackage() {
-				this.overlay = true;
-				axios
-					.post(this.route("packages.destroy"), { id: this.packag.id })
-					.then(({ data }) => {
-						if (data.status == 1) {
-							alert(data.message);
-							location.href = data.url;
-						} else {
-							alert(data.message);
-							this.overlay = false;
-							var modal = document.getElementById("deleteModal");
-							modal.style.display = "none";
-						}
-					});
-			},
+			// confirmDeletion() {
+			// 	let packageID = this.packag.id;
+			// 	var modal = document.getElementById("deleteModal");
+			// 	modal.classList.add("show");
+			// 	$("#deleteModal").show();
+			// },
+			// closeDeletionModal() {
+			// 	var modal = document.getElementById("deleteModal");
+			// 	modal.style.display = "none";
+			// },
+			// deletePackage() {
+			// 	this.overlay = true;
+			// 	axios
+			// 		.post(this.route("packages.destroy"), { id: this.packag.id })
+			// 		.then(({ data }) => {
+			// 			if (data.status == 1) {
+			// 				alert(data.message);
+			// 				location.href = data.url;
+			// 			} else {
+			// 				alert(data.message);
+			// 				this.overlay = false;
+			// 				var modal = document.getElementById("deleteModal");
+			// 				modal.style.display = "none";
+			// 			}
+			// 		});
+			// },
 			/*imgURL(url) {
       return "/public" + url;
     },*/

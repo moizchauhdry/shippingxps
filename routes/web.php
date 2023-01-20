@@ -70,6 +70,10 @@ Route::post('/packages/destroy', 'PackageController@destroy')->name('packages.de
 
 Route::any('/packages/consolidation', 'PackageController@consolidation')->name('packages.consolidation')->middleware('auth');
 Route::post('/packages/consolidation/store', 'PackageController@storeConsolidation')->name('packages.consolidation.store')->middleware('auth');
+
+Route::any('/packages/multipiece', 'PackageController@multipiece')->name('packages.multipiece')->middleware('auth');
+Route::post('/packages/multipiece/store', 'PackageController@storeMultipiece')->name('packages.multipiece.store')->middleware('auth');
+
 Route::post('/packages/address/update', 'PackageController@updateAddress')->name('packages.address.update')->middleware('auth');
 
 
