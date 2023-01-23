@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Commercial Invoice - 00{{$package->id}} </title>
+    <title>Commercial Invoice - {{$package->id}} </title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;500;600;700&display=swap"
@@ -71,7 +71,7 @@
                 <strong>EORI:</strong><br>
                 <strong>Telephone No.</strong> : {{ $warehouse->phone}}<br>
                 <strong>E-mail</strong> : {{ $warehouse->email}}<br>
-                <strong>Company Name / Address</strong> :<br>
+                <strong>Company / Address</strong> :<br>
                 {{ $warehouse->address}},{{ $warehouse->city }},<br>{{ $warehouse->state }}, {{ $warehouse->zip. ', ' ??
                 ''
                 }}{{ $warehouse->country->nicename }}
@@ -82,10 +82,9 @@
 
             </td>
             <td style="padding: 5px" width="50%">
-                <strong>Tracking Number</strong>:<br> {{ $package->tracking_number_out ?? 'N/A'}}<br><br>
+                <strong>Tracking Number</strong>:<br> {{ $package->tracking_number_out}}<br><br>
                 <strong>Date</strong> : {{ date('Y-m-d') }}<br>
                 <strong>Package ID</strong>: {{ $package->package_no}} <br>
-                {{--<b>Invoice No.</b> : --}}
             </td>
         </tr>
         <tr>
@@ -94,7 +93,7 @@
                 <strong>Contact Name</strong> : {{ strtoupper($address->fullname) ?? '- -' }}<br>
                 <strong>Telephone No.</strong> : {{ $address->phone ?? '- -'}}<br>
                 <strong>E-mail</strong> : {{ $user->email ?? '- -'}}<br>
-                <strong>Company Name / Address</strong> :<br>
+                <strong>Company / Address</strong> :<br>
                 {{ $address->address ?? '- -'}} <br>
                 <strong>City</strong> : {{ $address->city ?? '- -'}} <br>
                 <strong>State</strong> : {{ $address->state ?? '- -'}} <br> <br>
@@ -107,15 +106,10 @@
         </tr>
     </table>
     <table style="width:100%;" style="margin-top:5px;">
-        {{--<tr>
-            <td colspan="7" style="text-align: center;">
-                <h3>Items</h3>
-            </td>
-        </tr>--}}
         <tr class="header-row">
             <th><strong>No. of Units</strong></th>
             <th><strong>Unit of measure</strong></th>
-            <th colspan="3"><strong>Description of Goods</strong></th>
+            <th colspan="4"><strong>Description of Goods</strong></th>
             <th><strong>Country of Origin</strong></th>
             <th><strong>Price per Unit (USD)</strong></th>
             <th><strong>Total Value(USD)</strong></th>
@@ -124,12 +118,10 @@
         @php
         $total = 0;
         $package_count = 1;
-        $items_count = count($package->items);
+        $items_count = count($package->packageItems);
         @endphp
 
-
-
-        @foreach($package->items as $item)
+        @forelse($package->packageItems as $item)
         @php
         $total += $item->unit_price * $item->quantity;
         $country = $item->originCountry;
@@ -137,13 +129,17 @@
         <tr>
             <td style="text-align: center;">{{ $item->quantity}}</td>
             <td style="text-align: center;">PCS</td>
-            <td colspan="3">{{ $item->description}}</td>
+            <td colspan="4">{{ $item->description}}</td>
             <td style="text-align: center;">{{ $country->nicename ?? '- -'}}</td>
             <td style="text-align: center;">{{ $item->unit_price}}</td>
             <td style="text-align: center;">{{ $item->unit_price*$item->quantity}}</td>
         </tr>
+        @empty
+        <tr>
+            <td colspan="9" style="text-align: center">There are no items added yet.</td>
+        </tr>
+        @endforelse
 
-        @endforeach
         <tr>
             <td colspan="6"><strong>Total Packages</strong>: {{ $package_count }}</td>
             <td colspan="2"><strong>Sub Total</strong></td>
@@ -195,12 +191,9 @@
 
         <tr>
             <td colspan="2" style="height:80px; padding: 10px;border-right:none">
-                {{--<strong>Signature</strong>:<br> @if(isset($package->package_handler_id) &&
-                $package->package_handler_id
-                != NULL) {{ $package->packageHandler->name }} @endif--}}
-                <strong>Signature</strong>:<br> <b>{{ $warehouse->contact_person ?? '' }}</b>
+                <strong>Signature</strong>:<br> <b>{{ $warehouse->contact_person }}</b>
             </td>
-            <td colspan="6" style="height:80px;border-left:none;text-align: right">
+            <td colspan="7" style="height:80px;border-left:none;text-align: right">
                 <img style="height: 75px; width: auto;margin-right:10px"
                     src="{{ asset('storage/'.$warehouse->signature) }}" alt="">
             </td>

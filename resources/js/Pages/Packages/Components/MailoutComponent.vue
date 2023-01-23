@@ -214,9 +214,6 @@
 												</button>
 											</td>
 										</template>
-										<td v-if="packag.payment_status == 'Paid'">
-											<span class="badge badge-success text-lg">Paid</span>
-										</td>
 									</tr>
 								</tbody>
 							</table>

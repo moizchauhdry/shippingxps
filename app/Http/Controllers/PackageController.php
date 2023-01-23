@@ -414,31 +414,19 @@ class PackageController extends Controller
         return redirect('packages')->with('success', 'Package  Updated !');
     }
 
-    public function getPdf(Request $request, $order_id)
+    public function commercialInvoice($package_id)
     {
-        $package = Package::with(['items', 'warehouse.country'])->find($order_id);
-
+        $package = Package::with(['packageItems', 'warehouse.country'])->find($package_id);
         $warehouse = $package->warehouse;
-
         $user = User::find($package->customer_id);
-
         $address = Address::find($package->address_book_id);
 
-
-        $html = view('pdfs.invoice', [
+        $html = view('pdfs.commercial-invoice', [
             'package' => $package,
             'warehouse' => $warehouse,
             'user' => $user,
             'address' => $address
         ])->render();
-
-        //echo $html; exit;
-        //        return view('pdfs.invoice',[
-        //            'package' => $package,
-        //            'warehouse' => $warehouse,
-        //            'user' => $user,
-        //            'address' => $address
-        //        ]);
 
         $mpdf = new \Mpdf\Mpdf();
         $mpdf->WriteHTML($html);

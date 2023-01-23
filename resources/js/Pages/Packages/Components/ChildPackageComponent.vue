@@ -9,9 +9,14 @@
 			</h1>
 		</div>
 		<div class="col-md-2">
-			<span v-bind:class="getLabelClass(packag.status)" class="text-sm">{{
-				packag.status
-			}}</span>
+			<span v-bind:class="getLabelClass(packag.status)" class="text-sm m-1">
+				{{ packag.status }}
+			</span>
+			<span
+				class="text-uppercase badge badge-success p-2 text-white text-sm m-1"
+				v-if="packag.payment_status == 'Paid'"
+				>Paid
+			</span>
 		</div>
 	</div>
 
@@ -22,7 +27,9 @@
 					<h3>Packages/Orders Included</h3>
 				</div>
 				<div class="card-body">
-					<table class="table table-sm table-striped">
+					<table
+						class="table table-sm table-striped table-bordered text-center"
+					>
 						<thead>
 							<tr>
 								<th>Package #</th>
@@ -68,6 +75,16 @@
 							</template>
 						</tbody>
 					</table>
+
+					<template v-if="packag.status != 'open'">
+						<a
+							class="btn btn-warning btn-sm m-1"
+							:href="route('packages.pdf', packag.id)"
+							target="_blank"
+						>
+							<i class="fa fa-print mr-1"></i>Commercial Invoice</a
+						>
+					</template>
 				</div>
 			</div>
 		</div>
