@@ -329,21 +329,33 @@ class HomeController extends Controller
 
     public function dashboard(Request $request)
     {
-        $order_status = $request->has('order_status') ? $request->order_status : 'arrived';
+        $status = $request->has('status') ? $request->status : 'packages';
 
-        $query = Order::with(['customer', 'warehouse'])->orderBy('id', 'desc');
-        $query->where('status', $order_status);
+        $query = Package::with('customer', 'warehouse', 'child_packages');
+
+        if ($status == 'rejected') {
+            $query->where('status', 'rejected');
+        } else {
+            $query->where('status', '<>', 'rejected');
+        }
 
         if (Auth::user()->type == 'customer') {
             $query->where('customer_id', Auth::user()->id);
         }
 
-        $orders = $query->get();
+        if (!empty($request->suite_no)) {
+            $suite_no = intval($request->suite_no) - 4000;
+            $query->whereHas('customer', function ($query) use ($suite_no) {
+                $query->where('id', $suite_no);
+            });
+        }
+
+        $packages = $query->orderBy('id', 'desc')->paginate(25);
 
         return Inertia::render('Dashboard', [
-            'orders' => $orders,
+            'pkgs' => $packages,
             'filter' => [
-                'order_status' => $order_status
+                'status' => $status
             ]
         ]);
     }
