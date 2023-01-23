@@ -211,7 +211,7 @@ class PackageController extends Controller
         ]);
     }
 
-    public function custom(Request $request, $package_id)
+    public function custom($package_id)
     {
         $user_id = Auth::user()->id;
         $packag = Package::with('orders', 'warehouse', 'customer', 'packageItems', 'address')->find($package_id);
@@ -525,13 +525,11 @@ class PackageController extends Controller
 
     public function setShippingService(Request $request)
     {
-
         $data = $request->all();
         $service = $data['service'];
 
-
         $package = Package::find($data['package_id']);
-        $package->status = $data['status'];
+        // $package->status = $data['status'];
         $package->carrier_code = isset($service['carrierCode']) ? $service['carrierCode'] : " ";
         $package->service_label = isset($service['serviceLabel']) ? $service['serviceLabel'] : " ";
         $package->service_code = $service['serviceCode'];

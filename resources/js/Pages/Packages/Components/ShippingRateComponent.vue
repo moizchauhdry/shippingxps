@@ -9,7 +9,7 @@
 			packag.pkg_dim_status == 'done'
 		"
 	>
-		<div class="col-md-12">
+		<div class="col-md-12" v-if="packag.service_code == null">
 			<div class="card mt-2">
 				<div class="card-header">
 					<h3 class="text-uppercase">Shipping Rates</h3>
@@ -93,7 +93,7 @@
 				showEstimatedPrice: false,
 				form_shipping_service: this.$inertia.form({
 					package_id: this.packag.id,
-					status: "labeled",
+					// status: "labeled",
 					service: null,
 				}),
 			};
