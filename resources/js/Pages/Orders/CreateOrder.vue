@@ -241,8 +241,8 @@
 		data() {
 			return {
 				form: this.$inertia.form({
-					// customer_id: this.selected_customer,
-					customer_id: "",
+					customer_id: this.selected_customer,
+					// customer_id: "",
 					warehouse_id: "",
 					received_from: "",
 					tracking_number_in: "",
