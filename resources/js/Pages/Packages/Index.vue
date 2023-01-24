@@ -13,13 +13,13 @@
 					<div class="col-md-6">
 						<form @submit.prevent="submit">
 							<div class="row">
-								<div class="form-group col-md-4">
+								<div class="form-group col-md-6">
 									<input
 										type="search"
 										name="search"
-										v-model="form.suite_no"
+										v-model="form.pkg_id"
 										class="form-control"
-										placeholder="Search By Suite #"
+										placeholder="Search By Package #"
 									/>
 								</div>
 								<div class="form-group col-md-4">
@@ -30,22 +30,25 @@
 					</div>
 					<div class="col-md-6">
 						<h2 class="font-semibold text-xl text-gray-800 leading-tight">
-							<inertia-link
-								:href="route('packages.consolidation')"
-								class="btn btn-success float-right m-1"
-								v-if="$page.props.auth.user.type == 'customer'"
-							>
-								<i class="fa fa-plus mr-1"></i>Package
-								Consolidation</inertia-link
-							>
+							<template v-if="open_pkgs_count >= 2">
+								<inertia-link
+									:href="route('packages.consolidation')"
+									class="btn btn-success float-right m-1"
+									v-if="$page.props.auth.user.type == 'customer'"
+								>
+									<i class="fa fa-plus mr-1"></i>Package
+									Consolidation</inertia-link
+								>
 
-							<inertia-link
-								:href="route('packages.multipiece')"
-								class="btn btn-primary float-right m-1"
-								v-if="$page.props.auth.user.type == 'customer'"
-							>
-								<i class="fa fa-plus mr-1"></i>Multipiece Package</inertia-link
-							>
+								<inertia-link
+									:href="route('packages.multipiece')"
+									class="btn btn-primary float-right m-1"
+									v-if="$page.props.auth.user.type == 'customer'"
+								>
+									<i class="fa fa-plus mr-1"></i>Multipiece
+									Package</inertia-link
+								>
+							</template>
 
 							<inertia-link
 								:href="route('orders.create')"
@@ -106,17 +109,18 @@
 		props: {
 			auth: Object,
 			pkgs: Object,
+			open_pkgs_count: Object,
 			filter: Object,
 		},
 		data() {
 			return {
 				active: "packages",
 				form: useForm({
-					suite_no: "",
+					pkg_id: "",
 				}),
 				pkg_form: {
 					status: this.filter.status,
-					suite_no: "",
+					pkg_id: "",
 					processing: false,
 				},
 			};
@@ -125,7 +129,7 @@
 			searchPackage(status) {
 				this.active = status;
 				this.pkg_form.status = status;
-				this.pkg_form.suite_no = this.form.suite_no;
+				this.pkg_form.pkg_id = this.form.pkg_id;
 				Inertia.post(route("packages.index"), this.pkg_form);
 			},
 			siuteNum(user_id) {

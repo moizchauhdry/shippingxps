@@ -78,17 +78,17 @@ class PackageController extends Controller
             $query->where('customer_id', Auth::user()->id);
         }
 
-        if (!empty($request->suite_no)) {
-            $suite_no = intval($request->suite_no) - 4000;
-            $query->whereHas('customer', function ($query) use ($suite_no) {
-                $query->where('id', $suite_no);
-            });
+        if (!empty($request->pkg_id)) {
+            $query->where('id', $request->pkg_id);
         }
 
         $packages = $query->orderBy('id', 'desc')->paginate(25);
 
+        $open_pkgs_count = Package::where('status', 'open')->where('pkg_type', 'single')->count();
+
         return Inertia::render('Packages/Index', [
             'pkgs' => $packages,
+            'open_pkgs_count' => $open_pkgs_count,
             'filter' => [
                 'status' => $status
             ]
@@ -97,22 +97,30 @@ class PackageController extends Controller
 
     public function show($id)
     {
-        $packag = Package::with('orders', 'address', 'warehouse', 'customer', 'images', 'serviceRequests', 'child_packages', 'order', 'boxes')->find($id);
-
-        if ($packag == null) {
-            return back()->with('error', 'No Package Found');
-        }
+        $packag = Package::with('orders', 'address', 'warehouse', 'customer', 'images', 'serviceRequests', 'child_packages', 'order', 'boxes')
+            ->findOrFail($id);
 
         $child_package_orders = [];
         foreach ($packag->child_packages as $key => $child_package) {
-            $child_package_orders[] = $child_package->order;
+            $child_package_orders[] = [
+                'pkg_id' => $child_package->id,
+                'order_id' => $child_package->order->id,
+                'weight' => $child_package->order->package_weight,
+                'weight_unit' => $child_package->order->weight_unit,
+                'dim_unit' => $child_package->order->dim_unit,
+                'height' => $child_package->order->package_height,
+                'width' => $child_package->order->package_width,
+                'length' => $child_package->order->package_length,
+                'warehouse' => $child_package->order->warehouse->name,
+                'tracking_in' => $child_package->order->tracking_number_in,
+                'images' => $child_package->order->images,
+                'status' => $child_package->status,
+            ];
         }
 
         $services = Service::where('status', '=', '1')->get();
         $serviceRequest = ServiceRequest::where('package_id', $packag->id)->where('service_id', 1)->where('status', 'pending')->first();
-        $servedConsolidation = ServiceRequest::where('package_id', $packag->id)->where('status', 'served')->where('service_id', 1)->first();
-        $multiPieceRequestStatus = ServiceRequest::where('package_id', $packag->id)->where('status', 'pending')->where('service_id', 5)->first();
-        $multiPieceRequestServed = ServiceRequest::where('package_id', $packag->id)->where('status', 'served')->where('service_id', 5)->first();
+
         $service_requests = [];
         foreach ($packag->serviceRequests as $req) {
             $service_requests[] = [
@@ -193,16 +201,13 @@ class PackageController extends Controller
 
         return Inertia::render('Packages/Show', [
             'packag' => $packag,
+            'child_package_orders' => $child_package_orders,
             'services' => $services,
             'service_requests' => $service_requests,
             'images' => $images,
             'order_charges' => $order_charges,
             'mailout_fee' => (float) SiteSetting::getByName('mailout_fee'),
             'shipping_services' => Shipping::getShippingServices(),
-            'hasConsolidationRequest' => (bool)$serviceRequest,
-            'hasConsolidationServed' => (bool)$servedConsolidation,
-            'hasMultiPieceServed' => (bool)$multiPieceRequestServed,
-            'hasMultiPieceStatus' => (bool)$multiPieceRequestStatus,
             'package_service_requests' => $package_service_requests,
             'shipping_address' => $shipping_address,
             'subtotal' => $subtotal,
@@ -813,7 +818,7 @@ class PackageController extends Controller
         $warehouses = Warehouse::get();
 
         return Inertia::render('Packages/Consolidation', [
-            'pkgs' => $packages,
+            'open_pkg_count' => $packages,
             'warehouses' => $warehouses,
         ]);
     }

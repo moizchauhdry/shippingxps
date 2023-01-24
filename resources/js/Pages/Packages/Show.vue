@@ -116,6 +116,7 @@
 		props: {
 			auth: Object,
 			packag: Object,
+			child_package_orders: Object,
 			services: Object,
 			service_requests: Object,
 			images: Object,

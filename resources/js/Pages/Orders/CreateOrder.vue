@@ -31,7 +31,7 @@
 													:value="customer.id"
 													:key="customer.id"
 												>
-													#{{ customer.id }} - {{ customer.name }}
+													{{ customer.id + 4000 }} - {{ customer.name }}
 												</option>
 											</select>
 										</div>

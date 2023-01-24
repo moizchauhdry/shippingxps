@@ -35,40 +35,64 @@
 								<th>Package #</th>
 								<th>Dimension</th>
 								<th>Weight</th>
+								<th>Warehouse</th>
 								<th>Tracking In</th>
+								<th>Images</th>
 								<th></th>
 							</tr>
 						</thead>
 						<tbody>
 							<template
-								v-for="child_pkg in packag.child_packages"
+								v-for="child_pkg in child_package_orders"
 								:key="child_pkg.id"
 							>
-								<tr v-if="child_pkg.order">
+								<tr>
 									<td>
 										<span class="badge badge-primary text-sm"
-											>PKG #{{ child_pkg.id }}</span
+											>PKG #{{ child_pkg.pkg_id }}</span
 										>
 									</td>
 									<td>
-										{{ child_pkg.order.package_length }}
-										{{ child_pkg.order.dim_unit }} x
-										{{ child_pkg.order.package_width }}
-										{{ child_pkg.order.dim_unit }} x
-										{{ child_pkg.order.package_height }}
-										{{ child_pkg.order.dim_unit }}
+										{{ child_pkg.length }}
+										{{ child_pkg.dim_unit }} x
+										{{ child_pkg.width }}
+										{{ child_pkg.dim_unit }} x
+										{{ child_pkg.height }}
+										{{ child_pkg.dim_unit }}
 									</td>
 									<td>
-										{{ child_pkg.order.package_weight }}
-										{{ child_pkg.order.weight_unit }}
+										{{ child_pkg.weight }}
+										{{ child_pkg.weight_unit }}
 									</td>
-									<td>{{ child_pkg.order.tracking_number_in }}</td>
+									<td>{{ child_pkg.warehouse }}</td>
+									<td>{{ child_pkg.tracking_in }}</td>
+									<td>
+										<div v-for="image in child_pkg.images" :key="image.id">
+											<div class="m-1 p-1">
+												<img
+													style="width: 100px; height: auto"
+													class="img-thumbnail"
+													@click="viewImage($event)"
+													:src="imgURL(image.image)"
+												/>
+											</div>
+										</div>
+										<div
+											class="text-xs text-danger"
+											v-if="child_pkg.images.length == 0"
+										>
+											Not uploaded yet.
+										</div>
+									</td>
 									<td>
 										<inertia-link
-											class="btn btn-info btn-sm m-1"
-											:href="route('orders.show', child_pkg.order.id)"
-										>
-											<i class="fa fa-list mr-1"></i>Detail</inertia-link
+											v-if="
+												$page.props.auth.user.type == 'admin' &&
+												child_pkg.status == 'open'
+											"
+											:href="route('order.edit', child_pkg.order_id)"
+											class="btn btn-primary btn-sm m-1"
+											><i class="fa fa-edit mr-1"></i>Edit</inertia-link
 										>
 									</td>
 								</tr>
@@ -95,6 +119,7 @@
 		name: "Child Package Component",
 		props: {
 			packag: Object,
+			child_package_orders: Object,
 		},
 		data() {
 			return {
@@ -102,6 +127,17 @@
 			};
 		},
 		methods: {
+			imgURL(url) {
+				return "/public/uploads/" + url;
+			},
+			viewImage(event) {
+				console.log(event.target.src);
+				var modal = document.getElementById("imageViewer");
+				var imageSRC = document.querySelector("#imageViewer img");
+				imageSRC.src = event.target.src;
+				modal.classList.add("show");
+				$("#imageViewer").show();
+			},
 			getLabelClass(status) {
 				switch (status) {
 					case "pending":

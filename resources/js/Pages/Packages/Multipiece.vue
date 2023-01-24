@@ -28,8 +28,8 @@
 						<div class="col-md-">
 							<button
 								type="submit"
-								class="btn btn-primary float-right mb-2"
-								v-if="form.warehouse_id"
+								class="btn btn-primary float-right"
+								v-if="form.warehouse_id && form.multipiece_package.length >= 2"
 							>
 								Save & Next
 							</button>
@@ -38,7 +38,7 @@
 
 					<div class="table-responsive" v-if="form.warehouse_id">
 						<table
-							class="table table-striped table-bordered text-center text-sm table-sm"
+							class="table table-striped table-bordered text-center text-sm table-sm mt-4"
 						>
 							<thead>
 								<tr>
