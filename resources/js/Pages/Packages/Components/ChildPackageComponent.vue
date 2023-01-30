@@ -24,7 +24,16 @@
 		<div class="col-md-12">
 			<div class="card mt-2">
 				<div class="card-header">
-					<h3>Packages/Orders Included</h3>
+					<h3 class="float-left">Packages/Orders Included</h3>
+					<h3 class="float-right">
+						<inertia-link
+							:href="route('detail-customer', packag?.customer?.id)"
+							class="btn btn-link"
+						>
+							# {{ siuteNum(packag?.customer?.id) }} -
+							{{ packag?.customer?.name }}
+						</inertia-link>
+					</h3>
 				</div>
 				<div class="card-body">
 					<table
@@ -128,6 +137,9 @@
 			};
 		},
 		methods: {
+			siuteNum(user_id) {
+				return 4000 + user_id;
+			},
 			imgURL(url) {
 				return "/public/uploads/" + url;
 			},

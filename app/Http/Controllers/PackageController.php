@@ -167,19 +167,17 @@ class PackageController extends Controller
         $package_service_requests = [];
         foreach ($packag->serviceRequests as $key => $service_request) {
             if ($service_request->status == 'served') {
-                if ($service_request->service->title == 'Consolidation') {
-                    $subtotal = 1.5 * $packag->orders->count();
-                }
                 $package_service_requests[] = [
                     'name' => $service_request->service->title,
                     'price' => $service_request->price,
-                    'amount' => $service_request->service->title == 'Consolidation' ? $service_request->price + 1.5 * $packag->orders->count() : $service_request->price,
+                    'amount' => $service_request->price,
                 ];
                 $subtotal = $subtotal + $service_request->price;
             }
         }
 
-        $total = $subtotal + $packag->shipping_total + (float) SiteSetting::getByName('mailout_fee') + $this->calculate_storage_fee($packag->id) + $packag->consolidation_fee;
+        $total = $subtotal + $packag->shipping_total + (float) SiteSetting::getByName('mailout_fee') +
+            $this->calculate_storage_fee($packag->id) + $packag->consolidation_fee;
 
         $shipping_address = Address::where('user_id', Auth::user()->id)->get();
 

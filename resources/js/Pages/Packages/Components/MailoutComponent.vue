@@ -230,6 +230,7 @@
 		name: "Mailout Component",
 		props: {
 			packag: Object,
+			package_service_requests: Object,
 			total: Object,
 			mailout_fee: Number,
 		},
