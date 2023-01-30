@@ -45,9 +45,14 @@
 							pkg.status
 						}}</span>
 						<br />
-						<span class="badge badge-warning text-uppercase">{{
-							pkg.pkg_type
-						}}</span>
+						<span
+							class="badge badge-warning text-uppercase"
+							v-if="
+								pkg.pkg_type == 'consolidation' || pkg.pkg_type == 'multipiece'
+							"
+						>
+							{{ pkg.pkg_type }}</span
+						>
 					</td>
 					<td>
 						<inertia-link
@@ -78,7 +83,7 @@
 						</template>
 						<template v-else>
 							<span class="badge badge-danger"
-								>This Package is assigned to PKG #{{
+								>This package is assigned to PKG #{{
 									pkg.package_handler_id
 								}}</span
 							>

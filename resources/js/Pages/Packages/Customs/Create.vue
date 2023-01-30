@@ -362,7 +362,7 @@
 		computed: {
 			shipping_total() {
 				return this.form.package_items.reduce((acc, item) => {
-					var res = acc + parseInt(item.unit_price) * parseInt(item.quantity);
+					var res = acc + parseFloat(item.unit_price) * parseInt(item.quantity);
 					if (res > 0) {
 						return res;
 					} else {
