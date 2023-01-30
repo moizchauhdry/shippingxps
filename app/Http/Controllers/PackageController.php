@@ -818,7 +818,7 @@ class PackageController extends Controller
         $warehouses = Warehouse::get();
 
         return Inertia::render('Packages/Consolidation', [
-            'open_pkg_count' => $packages,
+            'pkgs' => $packages,
             'warehouses' => $warehouses,
         ]);
     }

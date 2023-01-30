@@ -11,7 +11,7 @@
 				</div>
 				<form @submit.prevent="submit">
 					<div class="row">
-						<div class="col-md-6 offset-md-3">
+						<div class="col-md-2 offset-md-5">
 							<select
 								class="form-control"
 								name="warehouse_id"
@@ -19,16 +19,16 @@
 								v-model="form.warehouse_id"
 								@change="filterPackages()"
 							>
-								<option value="" selected>Select Warehouse</option>
+								<option value="" selected>--Select Warehouse--</option>
 								<template v-for="warehouse in warehouses" :key="warehouse.id">
 									<option :value="warehouse.id">{{ warehouse.name }}</option>
 								</template>
 							</select>
 						</div>
-						<div class="col-md-">
+						<div class="col-md">
 							<button
 								type="submit"
-								class="btn btn-primary float-right"
+								class="btn btn-primary float-right mb-2"
 								v-if="form.warehouse_id && form.multipiece_package.length >= 2"
 							>
 								Save & Next

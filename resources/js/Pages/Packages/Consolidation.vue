@@ -11,7 +11,7 @@
 				</div>
 				<form @submit.prevent="submit">
 					<div class="row">
-						<div class="col-md-6 offset-md-3">
+						<div class="col-md-2 offset-md-5">
 							<select
 								class="form-control"
 								name="warehouse_id"
@@ -19,26 +19,28 @@
 								v-model="form.warehouse_id"
 								@change="filterPackages()"
 							>
-								<option value="" selected>Select Warehouse</option>
+								<option value="" selected>--Select Warehouse--</option>
 								<template v-for="warehouse in warehouses" :key="warehouse.id">
 									<option :value="warehouse.id">{{ warehouse.name }}</option>
 								</template>
 							</select>
 						</div>
-						<div class="col-md-">
+						<div class="col-md">
 							<button
 								type="submit"
 								class="btn btn-primary float-right mb-2"
-								v-if="form.warehouse_id"
+								v-if="
+									form.warehouse_id && form.package_consolidation.length >= 2
+								"
 							>
-								Save & Consolidate Package
+								Save & Next
 							</button>
 						</div>
 					</div>
 
 					<div class="table-responsive" v-if="form.warehouse_id">
 						<table
-							class="table table-striped table-bordered text-center text-sm table-sm"
+							class="table table-striped table-bordered text-center text-sm table-sm mt-4"
 						>
 							<thead>
 								<tr>
