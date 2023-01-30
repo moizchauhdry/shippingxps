@@ -115,6 +115,7 @@
 	</div>
 </template>
 <script>
+	import $ from "jquery";
 	export default {
 		name: "Child Package Component",
 		props: {
