@@ -26,12 +26,14 @@
 								<div class="row">
 									<div class="col-md-6" style="border: 1px solid #6b7280">
 										<h1><b>SHIPPED FROM :</b>&nbsp;{{ warehouse.name }}</h1>
-										<b>Contact Name:</b> {{ warehouse.contact_person }} <br />
-										<b>Phone:</b> {{ warehouse.phone }} <br />
-										<b>Email:</b> {{ warehouse.email }} <br />
-										<b>Company/Address:</b> {{ warehouse.address }} <br />
-										<b>Country:</b> {{ warehouse.country ?? "USA" }} <br />
-										<b>Incoterms</b> DDU/DAP
+										<div class="mb-2">
+											<b>Contact Name:</b> {{ warehouse.contact_person }} <br />
+											<b>Phone:</b> {{ warehouse.phone }} <br />
+											<b>Email:</b> {{ warehouse.email }} <br />
+											<b>Company/Address:</b> {{ warehouse.address }} <br />
+											<b>Country:</b> {{ warehouse.country ?? "USA" }} <br />
+											<b>Incoterms</b> DDU/DAP
+										</div>
 									</div>
 
 									<div class="col-md-6" style="border: 1px solid #6b7280">
@@ -45,7 +47,7 @@
 								<div class="row">
 									<div class="col-md-6" style="border: 1px solid #6b7280">
 										<h1><b>SHIPPED TO :</b></h1>
-										<div>
+										<div class="mb-2">
 											<b>Contact Name:</b>&nbsp;{{ packag.address.fullname
 											}}<br />
 											<b>Phone:</b>&nbsp;{{ packag.address.phone }}<br />
@@ -64,34 +66,28 @@
 								<div class="row">
 									<fieldset class="mt-4 mb-2 border p-4">
 										<div class="col-md-12">
-											<div class="row">
-												<div class="col-md-4">
-													<breeze-label value="Description" />
-												</div>
-
-												<div class="col-md-1">
-													<breeze-label value="Qty" />
-												</div>
-
-												<div class="col-md-2">
-													<breeze-label value="Value(Unit Price)" />
-												</div>
-												<div class="col-md-2">
-													<breeze-label value="Origin" />
-												</div>
-												<div class="col-md-2">
-													<breeze-label value="Batteries" />
-												</div>
-												<div class="col-md-1"></div>
-											</div>
-
 											<div
 												v-for="(item, index) in form.package_items"
 												:key="item.id"
 												class="row"
 											>
-												<div class="col-md-4">
+												<div class="col-md-2">
 													<div class="form-group">
+														<label for=""><b>HS Code</b></label>
+														<input
+															v-model="item.hs_code"
+															name="hs_code"
+															id="hs_code"
+															type="text"
+															class="form-control"
+															placeholder="HS Code"
+														/>
+													</div>
+												</div>
+
+												<div class="col-md-3">
+													<div class="form-group">
+														<label for=""><b>Description *</b></label>
 														<input
 															v-model="item.description"
 															name="description"
@@ -106,6 +102,7 @@
 
 												<div class="col-md-1">
 													<div class="form-group">
+														<label for=""><b>Qty *</b></label>
 														<input
 															v-model="item.quantity"
 															name="quantity"
@@ -119,8 +116,9 @@
 													</div>
 												</div>
 
-												<div class="col-md-2">
+												<div class="col-md-1">
 													<div class="form-group">
+														<label for=""><b>Price *</b></label>
 														<input
 															v-model="item.unit_price"
 															name="value"
@@ -137,6 +135,7 @@
 
 												<div class="col-md-2">
 													<div class="form-group">
+														<label for=""><b>Origin Country *</b></label>
 														<select
 															name="origin_country"
 															class="form-select"
@@ -158,6 +157,7 @@
 
 												<div class="col-md-2">
 													<div class="form-group">
+														<label for=""><b>Batteries *</b></label>
 														<select
 															name="batteries"
 															class="form-select"
@@ -181,6 +181,7 @@
 
 												<div class="col-md-1" v-show="index != 0">
 													<div class="form-group">
+														<label for=""></label>
 														<a
 															v-on:click="removeItem(index)"
 															class="btn btn-primary"
@@ -295,7 +296,6 @@
 					package_type: this.packag.package_type,
 				}),
 				current_address: this.selected_address,
-				//list is status which have printable invoice filled.
 				printable: ["filled", "labeled", "shipped", "delivered"],
 			};
 		},
@@ -323,6 +323,7 @@
 			},
 			addItem() {
 				this.form.package_items.push({
+					hs_code: "",
 					description: "",
 					quantity: "",
 					value: 0,
@@ -362,7 +363,6 @@
 			shipping_total() {
 				return this.form.package_items.reduce((acc, item) => {
 					var res = acc + parseInt(item.unit_price) * parseInt(item.quantity);
-					console.log(res);
 					if (res > 0) {
 						return res;
 					} else {

@@ -107,12 +107,13 @@
     </table>
     <table style="width:100%;" style="margin-top:5px;">
         <tr class="header-row">
-            <th><strong>No. of Units</strong></th>
-            <th><strong>Unit of measure</strong></th>
-            <th colspan="4"><strong>Description of Goods</strong></th>
+            <th><strong>HS Code</strong></th>
+            <th colspan="3"><strong>Description of Goods</strong></th>
             <th><strong>Country of Origin</strong></th>
             <th><strong>Price per Unit (USD)</strong></th>
-            <th><strong>Total Value(USD)</strong></th>
+            <th><strong>No. of Units</strong></th>
+            <th><strong>Unit of measure</strong></th>
+            <th><strong>Total Value (USD)</strong></th>
         </tr>
 
         @php
@@ -127,11 +128,12 @@
         $country = $item->originCountry;
         @endphp
         <tr>
+            <td style="text-align: center;">{{ $item->hs_code ?? '-'}}</td>
+            <td colspan="3">{{ $item->description}}</td>
+            <td style="text-align: center;">{{ $country->nicename ?? '-'}}</td>
+            <td style="text-align: center;">{{ $item->unit_price}}</td>
             <td style="text-align: center;">{{ $item->quantity}}</td>
             <td style="text-align: center;">PCS</td>
-            <td colspan="4">{{ $item->description}}</td>
-            <td style="text-align: center;">{{ $country->nicename ?? '- -'}}</td>
-            <td style="text-align: center;">{{ $item->unit_price}}</td>
             <td style="text-align: center;">{{ $item->unit_price*$item->quantity}}</td>
         </tr>
         @empty

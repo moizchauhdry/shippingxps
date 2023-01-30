@@ -285,7 +285,7 @@ class PackageController extends Controller
         $validated = $request->validate([
             'package_items' => 'required|array',
             'shipping_total' => 'required',
-            'package_type' => 'required'
+            'package_type' => 'required',
         ]);
 
         $package->update([
@@ -297,7 +297,7 @@ class PackageController extends Controller
         foreach ($request->package_items as $key => $pkg_item) {
             $order_item = new OrderItem();
             $order_item->package_id = $package->id;
-            $order_item->name = 'NIL';
+            $order_item->hs_code = $pkg_item['hs_code'];
             $order_item->description = $pkg_item['description'];
             $order_item->quantity = $pkg_item['quantity'];
             $order_item->unit_price = $pkg_item['unit_price'];
