@@ -15,15 +15,20 @@
 							<div class="row">
 								<div class="form-group col-md-6">
 									<input
-										type="search"
-										name="search"
+										type="number"
+										name="number"
 										v-model="form.pkg_id"
 										class="form-control"
 										placeholder="Search By Package #"
 									/>
 								</div>
 								<div class="form-group col-md-4">
-									<button type="submit" class="btn btn-primary">Search</button>
+									<button type="submit" class="btn btn-primary mr-1">
+										Search
+									</button>
+									<button type="button" class="btn btn-info" @click="clear()">
+										Clear
+									</button>
 								</div>
 							</div>
 						</form>
@@ -137,6 +142,10 @@
 			},
 			submit() {
 				this.searchPackage(this.pkg_form.status);
+			},
+			clear() {
+				this.form.pkg_id = "";
+				this.submit();
 			},
 		},
 		watch: {
