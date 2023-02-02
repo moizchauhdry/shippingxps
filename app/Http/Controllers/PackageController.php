@@ -424,8 +424,15 @@ class PackageController extends Controller
         $user = User::find($package->customer_id);
         $address = Address::find($package->address_book_id);
 
+        $package_weight = 0;
+        if (isset($package->boxes)) {
+            $package_weight = $package->boxes->sum('weight');
+        }
+
+
         $html = view('pdfs.commercial-invoice', [
             'package' => $package,
+            'package_weight' => $package_weight,
             'warehouse' => $warehouse,
             'user' => $user,
             'address' => $address

@@ -66,7 +66,7 @@
     <table style="margin-bottom: 30px;">
         <tr>
             <td style="padding: 5px" width="50%">
-                <strong>{{ strtoupper('Shipped From') }}</strong> : <br>
+                <h4>{{ strtoupper('Shipped From') }}:</h4><br>
                 <strong>Contact Name</strong> : {{ $warehouse->contact_person}}<br>
                 <strong>EORI:</strong><br>
                 <strong>Telephone No.</strong> : {{ $warehouse->phone}}<br>
@@ -89,14 +89,15 @@
         </tr>
         <tr>
             <td style="padding: 5px" width="50%">
-                <strong>{{ strtoupper('Shipped To') }}</strong> : <br>
+                <h4>{{ strtoupper('Shipped To') }}:</h4><br>
                 <strong>Contact Name</strong> : {{ strtoupper($address->fullname) ?? '- -' }}<br>
                 <strong>Telephone No.</strong> : {{ $address->phone ?? '- -'}}<br>
                 <strong>E-mail</strong> : {{ $user->email ?? '- -'}}<br>
                 <strong>Company / Address</strong> :<br>
                 {{ $address->address ?? '- -'}} <br>
                 <strong>City</strong> : {{ $address->city ?? '- -'}} <br>
-                <strong>State</strong> : {{ $address->state ?? '- -'}} <br> <br>
+                <strong>State</strong> : {{ $address->state ?? '- -'}} <br>
+                <strong>Zip code</strong> : {{ $address->zip_code ?? '- -'}} <br> <br>
                 <strong>Country</strong> : {{ $address->country->name ?? '- -' }}
             </td>
 
@@ -107,8 +108,8 @@
     </table>
     <table style="width:100%;" style="margin-top:5px;">
         <tr class="header-row">
-            <th><strong>HS Code</strong></th>
             <th colspan="3"><strong>Description of Goods</strong></th>
+            <th><strong>HS Code</strong></th>
             <th><strong>Country of Origin</strong></th>
             <th><strong>Price per Unit (USD)</strong></th>
             <th><strong>No. of Units</strong></th>
@@ -128,8 +129,8 @@
         $country = $item->originCountry;
         @endphp
         <tr>
-            <td style="text-align: center;">{{ $item->hs_code ?? '-'}}</td>
             <td colspan="3">{{ $item->description}}</td>
+            <td style="text-align: center;">{{ $item->hs_code ?? '-'}}</td>
             <td style="text-align: center;">{{ $country->nicename ?? '-'}}</td>
             <td style="text-align: center;">{{ $item->unit_price}}</td>
             <td style="text-align: center;">{{ $item->quantity}}</td>
@@ -155,7 +156,7 @@
         </tr>
 
         <tr>
-            <td colspan="6"><strong>Total Weight</strong>: {{ $package->package_weight}} {{ $package->weight_unit }}
+            <td colspan="6"><strong>Total Weight</strong>: {{ $package_weight }} lb
             </td>
             <td colspan="2"></td>
             <td colspan="1">

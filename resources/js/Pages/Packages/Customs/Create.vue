@@ -30,7 +30,11 @@
 											<b>Contact Name:</b> {{ warehouse.contact_person }} <br />
 											<b>Phone:</b> {{ warehouse.phone }} <br />
 											<b>Email:</b> {{ warehouse.email }} <br />
-											<b>Company/Address:</b> {{ warehouse.address }} <br />
+											<b>Company/Address:</b> {{ warehouse.address }},
+											{{ warehouse.city }},{{ warehouse.state }},{{
+												warehouse.zip
+											}}
+											<br />
 											<b>Country:</b> {{ warehouse.country ?? "USA" }} <br />
 											<b>Incoterms</b> DDU/DAP
 										</div>
@@ -54,6 +58,7 @@
 											<b>Address:</b>&nbsp;{{ packag.address.address }}<br />
 											<b>City:</b>&nbsp;{{ packag.address.city }}<br />
 											<b>State:</b>&nbsp;{{ packag.address.state }}<br />
+											<b>Zip code:</b>&nbsp;{{ packag.address.zip_code }}<br />
 											<b>Country:</b>&nbsp;{{ packag.address.country.name }}
 										</div>
 									</div>
@@ -71,20 +76,6 @@
 												:key="item.id"
 												class="row"
 											>
-												<div class="col-md-2">
-													<div class="form-group">
-														<label for=""><b>HS Code</b></label>
-														<input
-															v-model="item.hs_code"
-															name="hs_code"
-															id="hs_code"
-															type="text"
-															class="form-control"
-															placeholder="HS Code"
-														/>
-													</div>
-												</div>
-
 												<div class="col-md-3">
 													<div class="form-group">
 														<label for=""><b>Description *</b></label>
@@ -96,6 +87,20 @@
 															class="form-control"
 															placeholder="Description"
 															required
+														/>
+													</div>
+												</div>
+
+												<div class="col-md-2">
+													<div class="form-group">
+														<label for=""><b>HS Code</b></label>
+														<input
+															v-model="item.hs_code"
+															name="hs_code"
+															id="hs_code"
+															type="text"
+															class="form-control"
+															placeholder="HS Code"
 														/>
 													</div>
 												</div>

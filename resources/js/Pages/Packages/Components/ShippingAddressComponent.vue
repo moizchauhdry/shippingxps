@@ -1,7 +1,11 @@
 <template>
 	<div
 		class="col-md-12"
-		v-if="$page.props.auth.user.type == 'customer' && packag.status == 'open'"
+		v-if="
+			$page.props.auth.user.type == 'customer' &&
+			packag.status == 'open' &&
+			!packag.service_code
+		"
 	>
 		<div class="card mt-2">
 			<div class="card-header">
