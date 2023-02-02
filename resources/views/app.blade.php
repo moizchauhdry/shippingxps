@@ -86,7 +86,7 @@
 
     @routes
     {{-- if default path is public then remove 'public'. from below --}}
-    <script src="{{ url(mix('js/app.js')) }}" defer></script>
+    <script src="{{ url(mix('js/app.js?v=1.1')) }}" defer></script>
 </head>
 
 <body class="font-sans antialiased">
