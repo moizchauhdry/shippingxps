@@ -112,6 +112,7 @@
 															v-model="item.quantity"
 															name="quantity"
 															min="1"
+															step="1"
 															id="quantity"
 															type="number"
 															class="form-control"
@@ -238,7 +239,7 @@
 											<div class="row">
 												<div class="form-group">
 													<breeze-label value="Package Type" />
-													<label style="margin-bottom: 10px">
+													<label>
 														<input
 															v-model="form.package_type"
 															type="radio"
@@ -256,6 +257,16 @@
 															value="gift"
 														/>
 														Gift
+													</label>
+													<br />
+													<label>
+														<input
+															v-model="form.package_type"
+															type="radio"
+															id="sample"
+															value="sample"
+														/>
+														Sample
 													</label>
 												</div>
 											</div>
@@ -369,7 +380,7 @@
 				return this.form.package_items.reduce((acc, item) => {
 					var res = acc + parseFloat(item.unit_price) * parseInt(item.quantity);
 					if (res > 0) {
-						return res;
+						return parseFloat(res).toFixed(2);
 					} else {
 						return "";
 					}
