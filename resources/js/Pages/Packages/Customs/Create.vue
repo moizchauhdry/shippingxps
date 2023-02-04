@@ -44,7 +44,7 @@
 										<p><b>Tracking Number:</b></p>
 										<br />
 										<p><b>Date:</b> {{ package_date }}</p>
-										<p><b>Package ID:</b> {{ packag.package_no }}</p>
+										<p><b>Package ID:</b> PKG #{{ packag.id }}</p>
 									</div>
 								</div>
 
