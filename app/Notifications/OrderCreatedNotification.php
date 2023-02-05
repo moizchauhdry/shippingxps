@@ -44,14 +44,14 @@ class OrderCreatedNotification extends Notification
      */
     public function toMail($notifiable)
     {
-        
+
         return (new MailMessage)
-                    ->subject('Order Received by '.config('app.name'))
-                    ->line('We have received your order. ')
-                    ->line('Tracking Number : '.$this->order->tracking_number_in)
-                    ->line('Order Id '.$this->order->id)
-                    ->action('Check your order', url('/orders/'.$this->order->id))
-                    ->line('Thank your for using '.config('app.name').'!');
+            ->subject('Order Received by ' . config('app.name'))
+            ->line('We have received your order. ')
+            ->line('Tracking Number : ' . $this->order->tracking_number_in)
+            ->line('Order Id ' . $this->order->id)
+            ->action('Check your order', url('/orders/' . $this->order->id))
+            ->line('Thank your for using ' . config('app.name') . '!');
     }
 
     /**
@@ -61,9 +61,10 @@ class OrderCreatedNotification extends Notification
      * @return array
      */
     public function toArray($notifiable)
-    {        
+    {
         $url = route("packages.show", ["id" => $this->order->package_id]);
-        $message = 'Your <a class="link-primary notification-read" href="'.$url.'" >order </a> from <strong>'.$this->order->received_from.'</strong> has been received at ware house <strong>'.$this->order->warehouse->name.'</strong>';
+        $message = '<a class="link-primary notification-read" href="' . $url . '" >Package - PKG #' . $this->order->package_id . ' </a> </strong> 
+        has been received at warehouse <strong>' . $this->order->warehouse->name . '</strong>.';
 
         return [
             'order_id' => $this->order->id,
@@ -72,6 +73,5 @@ class OrderCreatedNotification extends Notification
             'message' => $message,
             'url' => $url
         ];
-
     }
 }

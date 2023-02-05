@@ -263,10 +263,7 @@
 						{
 							name: "",
 							description: "",
-							/*price: "",
-            price_with_tax: "",*/
 							qty: "",
-							/* sub_total: "",*/
 						},
 					],
 				}),
@@ -286,14 +283,10 @@
 				this.form.items.push({
 					name: "",
 					description: "",
-					/* price: "",
-            price_with_tax: "",*/
 					qty: "",
-					/*sub_total: "",*/
 				});
 			},
 			onChangeWareHouse() {
-				console.log("triggered...");
 				this.$refs.price.click();
 			},
 			removeItem(index) {
@@ -341,13 +334,9 @@
 				this.form.items.forEach(function (n) {
 					sum += n["sub_total"];
 				});
-				console.log(sum);
-
 				this.form.grand_total = sum;
 			},
 			changeDimention(event) {
-				console.log(event.target.value);
-
 				this.form.dim_unit = event.target.value == "kg" ? "cm" : "in";
 			},
 		},

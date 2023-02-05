@@ -92,7 +92,7 @@ class OrderController extends Controller
     public function create(Request $request)
     {
 
-        $selected_customer = $request->get('customer_id', 0);
+        $selected_customer = $request->get('customer_id', '');
 
         $customers = User::orderBy('id', 'asc')->where('type', '=', 'customer')->select(['id', 'name'])->get()->toArray();
 
@@ -131,12 +131,6 @@ class OrderController extends Controller
                 'customer_id' => $validated['customer_id'],
                 'warehouse_id' => $validated['warehouse_id'],
                 'tracking_number_in' => $validated['tracking_number_in'],
-                // 'weight_unit' => $validated['weight_unit'],
-                // 'dim_unit' => $validated['dim_unit'],
-                // 'package_weight' => $validated['package_weight'],
-                // 'package_length' => $validated['package_length'],
-                // 'package_width' => $validated['package_width'],
-                // 'package_height' => $validated['package_height'],
                 'received_from' => 'NIL',
                 'notes' => 'NIL',
                 'status' => 'open',
