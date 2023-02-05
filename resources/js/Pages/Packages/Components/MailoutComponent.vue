@@ -25,35 +25,30 @@
 									<tbody>
 										<tr>
 											<td colspan="2">
-												{{
-													packag.address.fullname === null
-														? "- -"
-														: packag.address.fullname
-												}}
+												{{ packag?.address?.fullname }}
 											</td>
 										</tr>
 										<tr>
 											<td colspan="2">
-												{{
-													packag.address.address === null
-														? "- -"
-														: packag.address.address
-												}}
+												{{ packag?.address?.address }}
 											</td>
 										</tr>
 										<tr>
 											<td colspan="2">
-												{{ packag.address.city }}, {{ packag.address.state }},
-												{{ packag.address.zip_code }}
+												{{ packag?.address?.city }},
+												{{ packag?.address?.state }},
+												{{ packag?.address?.zip_code }}
 											</td>
 										</tr>
 										<tr>
 											<td colspan="2">
-												{{ packag.address.country_name }}
+												{{ packag?.address?.country_name }}
 											</td>
 										</tr>
 										<tr>
-											<td colspan="2">Contact : {{ packag.address.phone }}</td>
+											<td colspan="2">
+												Contact : {{ packag?.address?.phone }}
+											</td>
 										</tr>
 									</tbody>
 								</template>

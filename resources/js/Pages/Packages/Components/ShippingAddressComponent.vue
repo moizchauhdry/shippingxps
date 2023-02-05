@@ -13,40 +13,180 @@
 			</div>
 			<div class="card-body">
 				<div class="row">
-					<form @submit.prevent="submitShippingAddressForm">
-						<div class="form-group col-md-4">
-							<select
-								name="address_book_id"
-								class="form-select text-uppercase"
-								v-model="address_form.address_book_id"
-								required
-								@change="submitShippingAddressForm"
-							>
-								<option :value="0">--Select Address--</option>
-								<template v-for="address in shipping_address" :key="address.id">
-									<option :value="address.id">
-										{{ address.fullname }}, {{ address.address }}
-									</option>
-								</template>
-							</select>
+					<div class="col-md-6">
+						<div class="row">
+							<form @submit.prevent="submitPkgAddress">
+								<div class="form-group col-md-10">
+									<select
+										name="address_book_id"
+										class="form-select text-uppercase"
+										v-model="address_form.address_book_id"
+										required
+										@change="submitPkgAddress"
+									>
+										<option :value="0">--Select Address--</option>
+										<template
+											v-for="address in shipping_address"
+											:key="address.id"
+										>
+											<option :value="address.id">
+												{{ address.fullname }}, {{ address.address }}
+											</option>
+										</template>
+									</select>
+								</div>
+							</form>
 						</div>
-					</form>
-				</div>
-				<div class="row">
-					<div>
-						<template v-if="packag.address_type == 'international'">
-							<inertia-link
-								class="btn btn-primary btn-sm m-1"
-								:href="route('packages.custom', packag.id)"
-							>
-								<i class="fa fa-copy mr-1"></i>Customs Declaration Form
-							</inertia-link>
-						</template>
-						<!-- <template v-if="(packag.status !='open')">
-                    <a target="_blank" class="btn btn-info btn-sm m-1" :href="route('packages.pdf', packag.id)">
-                    <i class="fa fa-print mr-1"></i>Print Commercial Invoice
-                    </a>
-                </template> -->
+						<div class="row">
+							<div>
+								<template v-if="packag.address_type == 'international'">
+									<inertia-link
+										class="btn btn-primary btn-sm m-1"
+										:href="route('packages.custom', packag.id)"
+									>
+										<i class="fa fa-copy mr-1"></i>Customs Declaration Form
+									</inertia-link>
+								</template>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="row" v-if="!create_shipping_address">
+							<div class="col-md-12">
+								<button
+									type="button"
+									class="btn btn-success float-right"
+									v-on:click="create_shipping_address = true"
+								>
+									<i class="fa fa-plus mr-1"></i>Address
+								</button>
+							</div>
+						</div>
+						<div class="row">
+							<div v-if="create_shipping_address">
+								<div class="card p-4 shadow">
+									<form @submit.prevent="submitShippingAddress">
+										<div class="order-form">
+											<breeze-validation-errors class="mb-4" />
+											<flash-messages class="mb-4" />
+
+											<div class="row">
+												<div class="form-group col-md-6">
+													<breeze-label for="name" value="Name" />
+													<input
+														type="text"
+														class="form-control"
+														v-model="create_shipping_address_form.fullname"
+														required
+													/>
+												</div>
+
+												<div class="form-group col-md-6">
+													<breeze-label for="address" value="Address" />
+													<input
+														type="text"
+														class="form-control"
+														v-model="create_shipping_address_form.address"
+														required
+													/>
+												</div>
+
+												<div class="form-group col-md-6">
+													<breeze-label for="city" value="City" />
+													<input
+														type="text"
+														class="form-control"
+														v-model="create_shipping_address_form.city"
+														required
+													/>
+												</div>
+
+												<div class="form-group col-md-6">
+													<breeze-label for="state" value="State" />
+													<input
+														type="text"
+														class="form-control"
+														v-model="create_shipping_address_form.state"
+													/>
+												</div>
+
+												<div class="form-group col-md-6">
+													<breeze-label for="country" value="Country" />
+													<select
+														required
+														v-model="create_shipping_address_form.country_id"
+														class="form-control"
+														aria-label="Default select example"
+													>
+														<option value="" selected>Select</option>
+														<template
+															v-for="country in countries"
+															:key="country"
+														>
+															<option :value="country.id">
+																{{ country.name }}
+															</option>
+														</template>
+													</select>
+												</div>
+
+												<div class="form-group col-md-6">
+													<breeze-label for="zip_code" value="Zip Code" />
+													<input
+														type="text"
+														class="form-control"
+														v-model="create_shipping_address_form.zip_code"
+														required
+													/>
+												</div>
+
+												<div class="form-group col-md-6">
+													<breeze-label for="phone" value="Phone" />
+													<input
+														type="text"
+														class="form-control"
+														v-model="create_shipping_address_form.phone"
+														required
+													/>
+												</div>
+
+												<div class="form-group col-md-6">
+													<breeze-label
+														for="Commercial/Residential"
+														value="Commercial/Residential"
+													/>
+													<select
+														class="form-control"
+														v-model="
+															create_shipping_address_form.is_residential
+														"
+													>
+														<option value="" selected>Select</option>
+														<option value="0">Commercial</option>
+														<option value="1">Residential</option>
+													</select>
+												</div>
+											</div>
+
+											<div class="order-button">
+												<input
+													type="submit"
+													value="Save & Submit"
+													class="btn btn-success"
+												/>
+												<button
+													type="button"
+													class="btn btn-danger float-right"
+													v-on:click="cancelShippingAddress"
+												>
+													Cancel
+												</button>
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -55,23 +195,55 @@
 </template>
 
 <script>
+	import MainLayout from "@/Layouts/Main";
+	import BreezeAuthenticatedLayout from "@/Layouts/Authenticated";
+	import BreezeLabel from "@/Components/Label";
+	import BreezeValidationErrors from "@/Components/ValidationErrors";
+
 	export default {
 		name: "Shipping Address Component",
 		props: {
 			packag: Object,
 			shipping_address: Object,
+			countries: Object,
+		},
+		components: {
+			BreezeAuthenticatedLayout,
+			MainLayout,
+			BreezeLabel,
+			BreezeValidationErrors,
 		},
 		data() {
 			return {
+				create_shipping_address: false,
 				address_form: this.$inertia.form({
 					package_id: this.packag.id,
 					address_book_id: this.packag.address_book_id,
 				}),
+				create_shipping_address_form: this.$inertia.form({
+					fullname: "",
+					country_id: "",
+					state: "",
+					city: "",
+					phone: "",
+					address: "",
+					zip_code: "",
+					is_residential: "",
+				}),
 			};
 		},
 		methods: {
-			submitShippingAddressForm() {
+			submitPkgAddress() {
 				this.address_form.post(this.route("packages.address.update"));
+			},
+			submitShippingAddress() {
+				this.create_shipping_address_form.post(this.route("address.store"));
+				this.create_shipping_address = false;
+				this.create_shipping_address_form.reset();
+			},
+			cancelShippingAddress() {
+				this.create_shipping_address_form.reset();
+				this.create_shipping_address = false;
 			},
 		},
 	};

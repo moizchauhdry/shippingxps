@@ -197,6 +197,8 @@ class PackageController extends Controller
             ];
         }
 
+        $countries = Country::get(['id', 'nicename as name', 'iso'])->toArray();
+
         return Inertia::render('Packages/Show', [
             'packag' => $packag,
             'child_package_orders' => $child_package_orders,
@@ -211,6 +213,7 @@ class PackageController extends Controller
             'subtotal' => $subtotal,
             'total' => $total,
             'package_boxes' => $package_boxes,
+            'countries' => $countries,
         ]);
     }
 

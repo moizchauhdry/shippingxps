@@ -73,7 +73,7 @@ class AddressController extends Controller
 
         $address->save();
 
-        return redirect('addresses')->with('success', 'Address Created Successfully.');
+        return redirect()->back()->with('success', 'Address Created Successfully.');
     }
 
     /**

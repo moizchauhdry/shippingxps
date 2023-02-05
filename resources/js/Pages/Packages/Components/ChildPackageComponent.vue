@@ -115,7 +115,7 @@
 							:href="route('packages.pdf', packag.id)"
 							target="_blank"
 						>
-							<i class="fa fa-print mr-1"></i>Commercial Invoice</a
+							<i class="fa fa-print mr-1"></i>Print Commercial Invoice</a
 						>
 					</template>
 				</div>

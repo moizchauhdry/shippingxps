@@ -68,27 +68,10 @@
 		},
 		data() {
 			return {
-				// form: this.$inertia.form({
-				//   package_id: this.packag.id,
-				//   service_id: null,
-				//   customer_message: '',
-				//   service: null
-				// }),
-				// form_respond: this.$inertia.form({
-				//   admin_message: '',
-				//   status: 'pending',
-				//   request: null
-				// }),
-
 				address_form: this.$inertia.form({
 					package_id: this.packag.id,
 					address_book_id: this.packag.address_book_id,
 				}),
-				// form_shipping_service: this.$inertia.form({
-				//   package_id: this.packag.id,
-				//   status: 'labeled',
-				//   service: null,
-				// }),
 				form_ship: this.$inertia.form({
 					package_id: this.packag.id,
 					status: "shipped",
@@ -101,12 +84,6 @@
 					tab3: false,
 					tab4: false,
 				},
-				// serverError: '',
-				// showEstimatedPrice: false,
-				// form_checkout: this.$inertia.form({
-				//   package_id: this.packag.id,
-				//   payment_module: 'package',
-				// }),
 				storage_fee: 0,
 				overlay: false,
 				displayNoteShipping: true,
@@ -123,15 +100,11 @@
 			order_charges: Object,
 			mailout_fee: Number,
 			shipping_services: Object,
-			// hasConsolidationRequest: Object,
-			// hasConsolidationServed: Object,
-			// hasMultiPieceServed: Object,
-			// hasMultiPieceStatus: Object,s
 			package_service_requests: Object,
 			shipping_address: Object,
-			// subtotal: Object,
 			total: Object,
 			package_boxes: Object,
+			countries: Object,
 		},
 		computed: {
 			siuteNum() {
@@ -145,35 +118,6 @@
 			formatNumber(num) {
 				return parseFloat(num).toFixed(2);
 			},
-			// submit() {
-			//   this.form.post(this.route('packages.service-request'));
-			//   this.form.reset();
-			//   Inertia.reload({only: ['service_requests']});
-			// },
-			// setActiveService(service) {
-			//   this.form.service_id = service.id;
-			//   this.form.service = service;
-			// },
-			// cancelServiceForm() {
-			//   this.form.service_id = null;
-			// },
-			// submitRespondForm() {
-			//   this.form_respond.post(this.route('packages.service-handle'));
-			//   this.form_respond.reset();
-			//   Inertia.reload({only: ['service_requests']});
-			// },
-			// setServiceResponse(request) {
-			//   this.form_respond.request_id = request.id;
-			//   this.form_respond.request = request;
-			// },
-			// requestComplete() {
-			//   this.form_respond.status = 'served';
-			//   this.submitRespondForm();
-			// },
-			// requestReject() {
-			//   this.form_respond.status = 'rejected';
-			//   this.submitRespondForm();
-			// },
 			submitShippingAddressForm() {
 				this.address_form.post(this.route("packages.address.update"));
 				Inertia.reload();
@@ -182,82 +126,6 @@
 				this.form_ship.post(this.route("packages.ship-package"));
 				this.tracking_edit = false;
 			},
-			// setShippingService(service) {
-			//   var result = window.confirm('After Confirming the shippment method you wont be able to change. Are you sure to confirm ?')
-			//   if(result){
-			//     this.form_shipping_service.service = service;
-			//     this.form_shipping_service.post(this.route('packages.set-shipping-service'));
-			//   }
-			// },
-			// getShippingRates() {
-			//   this.overlay = true;
-			//   this.showEstimatedPrice = false;
-			//   this.isLoading = true;
-			//   let quote_params = {
-			//     ship_from: this.packag.warehouse_id,
-			//     ship_to: this.packag.address.country_id,
-			//     weight: this.packag.package_weight,
-			//     unit: this.packag.weight_unit,
-			//     weight_unit: this.packag.weight_unit +"_"+ this.packag.dim_unit,
-			//     length: this.packag.package_length,
-			//     width: this.packag.package_width,
-			//     height: this.packag.package_height,
-			//     zipcode: this.packag.address.zip_code,
-			//     city : this.packag.address.city,
-			//     is_residential : this.packag.address.is_residential,
-			//   };
-			//   axios.get(this.route('getServicesList')).then(response => {
-			//     response.data.services.forEach((ele, index) => {
-			//       quote_params.service = ele;
-			//       this.getRates(quote_params);
-			//     })
-			//     this.overlay = false;
-			//   }).catch(error => {
-			//     this.overlay = false;
-			//   })
-			// },
-			// getShippingRatesByOrders() {
-
-			//   this.showEstimatedPrice = false;
-			//   this.isLoading = true;
-			//   let pieces = [];
-
-			//   this.packag.orders.forEach(function (value,index) {
-			//     let piece = {
-			//       "weight": value.package_weight.toString(),
-			//       "length": value.package_length.toString(),
-			//       "width": value.package_width.toString(),
-			//       "height": value.package_height.toString(),
-			//       "insuranceAmount": "0",
-			//       "declaredValue": value.declared_value == 0 ? "1" : value.declared_value.toString()
-			//     };
-
-			//     pieces.push(piece)
-			//   })
-
-			//   let quote_params = {
-			//     ship_from: this.packag.warehouse_id,
-			//     ship_to: this.packag.address.country_id,
-			//     weight: this.packag.package_weight,
-			//     unit: this.packag.weight_unit,
-			//     weight_unit: this.packag.weight_unit +"_"+ this.packag.dim_unit,
-			//     pieces:pieces,
-			//     zipcode: this.packag.address.zip_code,
-			//     city : this.packag.address.city,
-			//     is_residential : this.packag.address.is_residential,
-			//   };
-			//   axios.get(this.route('getServicesList')).then(response => {
-			//     console.log(response.data.services)
-			//     response.data.services.forEach((ele, index) => {
-			//       console.log(ele);
-			//       quote_params.service = ele;
-			//       this.getRatesByOrders(quote_params);
-			//     })
-			//   }).catch(error => {
-			//     console.log(error)
-			//   })
-
-			// },
 			getServiceSubTotal() {
 				let request_total = 0;
 				this.service_requests.forEach(function (item) {
@@ -321,48 +189,6 @@
 			makePackageUrl(order_id) {
 				return route("package.create") + "?order_id=" + order_id;
 			},
-
-			// checkout() {
-			//   this.$inertia.post(route("payment.index", this.form_checkout));
-			// },
-			// getRates(quote_params) {
-			//   axios.get("/getQuote", {
-			//     params: quote_params,
-			//   }).then((response) => {
-			//         console.log(response.data.service)
-			//         this.isLoading = false;
-			//         if (response.data.status) {
-			//           this.showEstimatedPrice = true;
-			//           this.shipping_services[response.data.service.service_id] = response.data.service;
-
-			//         } else {
-			//           this.serverError = response.data.message;
-			//         }
-			//         if(response.data.service.isReady !== undefined && response.data.service.isReady  === true){
-			//           this.displayNoteShipping = false;
-			//         }
-			//       }
-			//   );
-			// },
-			// getRatesByOrders(quote_params) {
-			//   axios.get("/getQuoteByOrders", {
-			//     params: quote_params,
-			//   }).then((response) => {
-			//         console.log(response.data.service)
-			//         this.isLoading = false;
-			//         if (response.data.status) {
-			//           this.showEstimatedPrice = true;
-			//           this.shipping_services[response.data.service.service_id] = response.data.service;
-
-			//         } else {
-			//           this.serverError = response.data.message;
-			//         }
-			//         if(response.data.service.isReady !== undefined && response.data.service.isReady  === true){
-			//           this.displayNoteShipping = false;
-			//         }
-			//       }
-			//   );
-			// },
 			getStorageFee() {
 				axios
 					.get(this.route("getStorageFee"), {
@@ -374,102 +200,6 @@
 						this.storage_fee = response.data;
 					});
 			},
-
-			// confirmDeletion() {
-			// 	let packageID = this.packag.id;
-			// 	var modal = document.getElementById("deleteModal");
-			// 	modal.classList.add("show");
-			// 	$("#deleteModal").show();
-			// },
-			// closeDeletionModal() {
-			// 	var modal = document.getElementById("deleteModal");
-			// 	modal.style.display = "none";
-			// },
-			// deletePackage() {
-			// 	this.overlay = true;
-			// 	axios
-			// 		.post(this.route("packages.destroy"), { id: this.packag.id })
-			// 		.then(({ data }) => {
-			// 			if (data.status == 1) {
-			// 				alert(data.message);
-			// 				location.href = data.url;
-			// 			} else {
-			// 				alert(data.message);
-			// 				this.overlay = false;
-			// 				var modal = document.getElementById("deleteModal");
-			// 				modal.style.display = "none";
-			// 			}
-			// 		});
-			// },
-			/*imgURL(url) {
-      return "/public" + url;
-    },*/
 		},
 	};
 </script>
-
-<!-- 
-<style scoped>
-.overlay {
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  position: fixed;
-  background: rgba(0,0,0,0.5);
-  z-index:9999999999;
-}
-
-.overlay__inner {
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  position: absolute;
-}
-
-.overlay__content {
-  left: 50%;
-  position: absolute;
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.spinner {
-  width: 75px;
-  height: 75px;
-  display: inline-block;
-  border-width: 2px;
-  border-color: rgba(255, 255, 255, 0.05);
-  border-top-color: #fff;
-  animation: spin 1s infinite linear;
-  border-radius: 100%;
-  border-style: solid;
-}
-
-@keyframes spin {
-  100% {
-    transform: rotate(360deg);
-  }
-}
-.card {
-  margin-top: 25px;
-}
-
-.card-body {
-  padding: 0.8rem;
-}
-
-.card-body p strong {
-  color: #212529;
-  margin-right: 12px;
-}
-
-.address-card {
-  height: 130px;
-}
-
-.card-header > h3 {
-  font-weight: bold;
-}
-</style> -->
