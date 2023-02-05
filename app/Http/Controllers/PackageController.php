@@ -298,7 +298,7 @@ class PackageController extends Controller
             $order_item->hs_code = $pkg_item['hs_code'];
             $order_item->description = $pkg_item['description'];
             $order_item->quantity = $pkg_item['quantity'];
-            $order_item->unit_price = $pkg_item['unit_price'];
+            $order_item->unit_price = $pkg_item['price'];
             $order_item->origin_country = $pkg_item['origin_country'];
             $order_item->batteries = $pkg_item['batteries'];
             $order_item->save();

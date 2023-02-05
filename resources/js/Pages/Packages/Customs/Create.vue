@@ -110,6 +110,8 @@
 														<label for=""><b>Qty *</b></label>
 														<input
 															v-model="item.quantity"
+															@keyup="calculateShippingTotal"
+															v-on:change="calculateShippingTotal"
 															name="quantity"
 															min="1"
 															step="1"
@@ -126,14 +128,14 @@
 													<div class="form-group">
 														<label for=""><b>Price *</b></label>
 														<input
-															v-model="item.unit_price"
-															name="value"
+															v-model="item.price"
+															@keyup="calculateShippingTotal"
+															v-on:change="calculateShippingTotal"
 															min="1"
-															id="value"
 															type="number"
 															step="0.01"
 															class="form-control"
-															placeholder="Value"
+															placeholder="Price"
 															required
 														/>
 													</div>
@@ -211,7 +213,7 @@
 												<div class="col-md-2" style="padding-right: 0px">
 													<div class="form-group">
 														<input
-															v-model="shipping_total"
+															v-model="form.shipping_total"
 															readonly
 															name="shipping_total"
 															id="shipping_total"
@@ -341,8 +343,8 @@
 				this.form.package_items.push({
 					hs_code: "",
 					description: "",
-					quantity: "",
-					value: 0,
+					quantity: 1,
+					price: 0,
 					origin_country: "",
 					batteries: "",
 				});
@@ -371,21 +373,35 @@
 				this.form.address_book_id = event.target.value;
 				console.log("new value " + this.form.address_book_id);
 			},
+			calculateShippingTotal() {
+				let final_amount = 0;
+				this.form.package_items.forEach((pkg_item, index) => {
+					final_amount =
+						final_amount +
+						parseFloat(pkg_item.price) * parseInt(pkg_item.quantity);
+				});
+
+				if (final_amount > 0) {
+					this.form.shipping_total = parseFloat(final_amount).toFixed(2);
+				} else {
+					this.form.shipping_total = "";
+				}
+			},
 		},
 		mounted() {
 			this.addItem();
 		},
-		computed: {
-			shipping_total() {
-				return this.form.package_items.reduce((acc, item) => {
-					var res = acc + parseFloat(item.unit_price) * parseInt(item.quantity);
-					if (res > 0) {
-						return parseFloat(res).toFixed(2);
-					} else {
-						return "";
-					}
-				}, 0);
-			},
-		},
+		// computed: {
+		// 	shipping_total() {
+		// 		return this.form.package_items.reduce((acc, item) => {
+		// 			var res = acc + parseFloat(item.unit_price) * parseInt(item.quantity);
+		// 			if (res > 0) {
+		// 				return parseFloat(res).toFixed(2);
+		// 			} else {
+		// 				return "";
+		// 			}
+		// 		}, 0);
+		// 	},
+		// },
 	};
 </script>
