@@ -25,9 +25,12 @@ use App\Models\User;
 use App\Models\SiteSetting;
 use App\Models\Shipping;
 use App\Models\Warehouse;
+use App\Notifications\CustomerPackageRequestNotification;
 use Illuminate\Support\Facades\Auth;
 use File;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Notification;
+
 use function Couchbase\basicDecoderV1;
 
 
@@ -853,6 +856,9 @@ class PackageController extends Controller
             ]);
         }
 
+        $users = User::where(['type' => 'admin'])->get();
+        Notification::send($users, new CustomerPackageRequestNotification($package));
+
         return redirect()->route('packages.show', $package->id)->with('success', 'The package have consolidated successfully.');
     }
 
@@ -913,6 +919,10 @@ class PackageController extends Controller
                 'height' => $child_pkg->order->package_height,
             ]);
         }
+
+
+        $users = User::where(['type' => 'admin'])->get();
+        Notification::send($users, new CustomerPackageRequestNotification($package));
 
         return redirect()->route('packages.show', $package->id)->with('success', 'The package have multipiece successfully.');
     }
