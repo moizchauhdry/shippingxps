@@ -43,9 +43,9 @@ class PackageShippingServiceNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+            ->line('The introduction to the notification.')
+            ->action('Notification Action', url('/'))
+            ->line('Thank you for using our application!');
     }
 
     /**
@@ -55,12 +55,12 @@ class PackageShippingServiceNotification extends Notification
      * @return array
      */
     public function toArray($notifiable)
-    {        
+    {
         $url = route("packages.show", ["id" => $this->package->id]);
         return [
-            'package_id' => $this->package->package_no,
-            'message' => 'Customer '.$this->package->customer->suite_no.' has selected Shipping service <strong>'.$this->package->service_code.'</strong> and Payment is pending, Shipping Total,<strong>$'.$this->package->shipping_total.'</strong> for <a class="link-primary" href="'.$url.'" >Package # '.$this->package->package_no.'</a>',
-            'url' =>$url
+            'package_id' => $this->package->id,
+            'message' => 'Customer ' . $this->package->customer->suite_no . ' has selected Shipping service <strong>' . $this->package->service_code . '</strong> and Payment is pending, Shipping Total,<strong>$' . $this->package->shipping_total . '</strong> for <a class="link-primary" href="' . $url . '" >Package # ' . $this->package->id . '</a>',
+            'url' => $url
         ];
     }
 }

@@ -44,9 +44,9 @@ class CustomFormFilledNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+            ->line('The introduction to the notification.')
+            ->action('Notification Action', url('/'))
+            ->line('Thank you for using our application!');
     }
 
     /**
@@ -58,11 +58,11 @@ class CustomFormFilledNotification extends Notification
     public function toArray($notifiable)
     {
         $url = route("packages.show", ["id" => $this->package->id]);
-        
+
         return [
             'package_id' => $this->package->id,
-            'message' => 'Customer has filled Custom Declaration form for package  <a class="link-primary" href="'.$url.'" ><strong>'.$this->package->package_no.'</strong></a>',
-            'url'=>$url
+            'message' => 'Customer has filled Custom Declaration form for package  <a class="link-primary" href="' . $url . '" ><strong>' . $this->package->id . '</strong></a>',
+            'url' => $url
         ];
     }
 }

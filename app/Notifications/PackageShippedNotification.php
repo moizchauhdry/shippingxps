@@ -43,9 +43,9 @@ class PackageShippedNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+            ->line('The introduction to the notification.')
+            ->action('Notification Action', url('/'))
+            ->line('Thank you for using our application!');
     }
 
     /**
@@ -59,7 +59,7 @@ class PackageShippedNotification extends Notification
         $url = route("packages.show", ["id" => $this->package->id]);
         return [
             'package_id' => $this->package->id,
-            'message' => 'Admin has shipped your package <a class="link-primary" href="'.$url.'" ><strong>'.$this->package->package_no.'</strong></a>',
+            'message' => 'Admin has shipped your package <a class="link-primary" href="' . $url . '" ><strong>' . $this->package->id . '</strong></a>',
             'url' => $url
         ];
     }
