@@ -138,6 +138,11 @@ class PackageController extends Controller
             ];
         }
 
+        $service_requests_service_ids = [];
+        foreach ($packag->serviceRequests as $request) {
+            $service_requests_service_ids[] = $request->service_id;
+        }
+
         $images = [];
         foreach ($packag->images as $image) {
             $images[] = [
@@ -217,6 +222,7 @@ class PackageController extends Controller
             'total' => $total,
             'package_boxes' => $package_boxes,
             'countries' => $countries,
+            'service_requests_service_ids' => $service_requests_service_ids,
         ]);
     }
 

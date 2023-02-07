@@ -29,9 +29,17 @@
 														type="button"
 														v-on:click="setActiveService(service)"
 														class="btn btn-primary btn-sm"
+														v-if="
+															!this.service_requests_service_ids.includes(
+																service.id
+															)
+														"
 													>
 														Request
 													</button>
+													<span class="badge badge-success" v-else>
+														Request Sent
+													</span>
 												</td>
 											</template>
 											<template v-else>
@@ -44,9 +52,17 @@
 															type="button"
 															v-on:click="setActiveService(service)"
 															class="btn btn-primary btn-sm"
+															v-if="
+																!this.service_requests_service_ids.includes(
+																	service.id
+																)
+															"
 														>
 															Request
 														</button>
+														<span class="badge badge-success" v-else>
+															Request Sent
+														</span>
 													</td>
 												</template>
 											</template>
@@ -261,6 +277,7 @@
 		props: {
 			packag: Object,
 			service_requests: Object,
+			service_requests_service_ids: Object,
 			services: Object,
 		},
 		data() {
