@@ -25,12 +25,6 @@
 						for this package is not added.
 					</span>
 				</div>
-				<div v-if="packag.service_request_pending_count != 0">
-					<span class="text-uppercase badge badge-danger p-1">
-						<i class="fas fa-exclamation-circle mr-1"></i>There are some pending
-						service request.
-					</span>
-				</div>
 			</div>
 		</div>
 	</div>
