@@ -1,5 +1,5 @@
 <template>
-	<div class="row" v-if="packag.pkg_dim_status == 'done'">
+	<div class="row">
 		<div class="col-md-12">
 			<div class="card mt-2 mb-5">
 				<div class="card-header">
@@ -170,9 +170,9 @@
 										<td></td>
 									</tr>
 									<tr>
-										<td>Shipping Total</td>
+										<td>Shipping Charges</td>
 										<td></td>
-										<td>${{ packag.shipping_total }}</td>
+										<td>${{ packag.shipping_charges ?? 0 }}</td>
 										<td></td>
 									</tr>
 									<tr>

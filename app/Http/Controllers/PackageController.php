@@ -184,7 +184,7 @@ class PackageController extends Controller
             }
         }
 
-        $total = $subtotal + $packag->shipping_total + (float) SiteSetting::getByName('mailout_fee') +
+        $total = $subtotal + $packag->shipping_charges + (float) SiteSetting::getByName('mailout_fee') +
             $this->calculate_storage_fee($packag->id) + $packag->consolidation_fee;
 
         $shipping_address = Address::where('user_id', Auth::user()->id)->get();
@@ -207,6 +207,9 @@ class PackageController extends Controller
 
         $countries = Country::get(['id', 'nicename as name', 'iso'])->toArray();
 
+
+        $service_request_pending_count = ServiceRequest::where('package_id', $packag->id)->where('status', 'pending')->count();
+
         return Inertia::render('Packages/Show', [
             'packag' => $packag,
             'child_package_orders' => $child_package_orders,
@@ -223,6 +226,7 @@ class PackageController extends Controller
             'package_boxes' => $package_boxes,
             'countries' => $countries,
             'service_requests_service_ids' => $service_requests_service_ids,
+            'service_request_pending_count' => $service_request_pending_count,
         ]);
     }
 
@@ -551,14 +555,13 @@ class PackageController extends Controller
         $service = $data['service'];
 
         $package = Package::find($data['package_id']);
-        // $package->status = $data['status'];
+        $package->status = 'SHIPPING SERVICE SELECTED';
         $package->carrier_code = isset($service['carrierCode']) ? $service['carrierCode'] : " ";
         $package->service_label = isset($service['serviceLabel']) ? $service['serviceLabel'] : " ";
         $package->service_code = $service['serviceCode'];
         $package->package_type_code = $service['packageTypeCode'];
         $package->currency = $service['currency'];
         $package->markup_fee = $service['markup_fee'];
-        $package->shipping_total = doubleval(str_replace(',', '', $service['totalAmount']));
         $package->shipping_charges = doubleval(str_replace(',', '', $service['totalAmount']));
         $package->update();
 

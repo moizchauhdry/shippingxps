@@ -1,5 +1,5 @@
 <template>
-	<div class="row" v-if="!packag.service_code">
+	<div class="row">
 		<div class="col-md-12">
 			<div class="card mt-2">
 				<div class="card-header">
@@ -7,7 +7,12 @@
 				</div>
 				<div class="card-body">
 					<div class="row">
-						<template v-if="$page.props.auth.user.type == 'customer'">
+						<template
+							v-if="
+								$page.props.auth.user.type == 'customer' &&
+								(packag.status == 'open' || packag.status == 'filled')
+							"
+						>
 							<div class="col-md-7">
 								<table class="table table-striped">
 									<thead>
@@ -195,12 +200,8 @@
 								</tbody>
 							</table>
 						</div>
-						<div
-							v-if="
-								$page.props.auth.user.type == 'admin' && service_requests == 0
-							"
-						>
-							<span>There are no services requests from customer.</span>
+						<div v-if="service_requests == 0">
+							<span>There are no services requests added.</span>
 						</div>
 						<div
 							v-if="

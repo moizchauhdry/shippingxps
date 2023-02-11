@@ -106,6 +106,7 @@
 			package_boxes: Object,
 			countries: Object,
 			service_requests_service_ids: Object,
+			service_request_pending_count: Object,
 		},
 		computed: {
 			siuteNum() {

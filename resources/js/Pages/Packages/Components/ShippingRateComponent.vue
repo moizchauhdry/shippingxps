@@ -17,9 +17,19 @@
 				<div class="card-body">
 					<div class="row">
 						<div class="col-md-3">
-							<a class="btn btn-success" v-on:click="getShippingRatesByOrders()"
-								>Get Shipping Rates</a
-							>
+							<template v-if="service_request_pending_count == 0">
+								<a
+									class="btn btn-success"
+									v-on:click="getShippingRatesByOrders()"
+									>Get Shipping Rates</a
+								>
+							</template>
+							<template v-else>
+								<span class="text-uppercase badge badge-danger p-1">
+									<i class="fas fa-exclamation-circle mr-1"></i>There are some
+									pending service request.
+								</span>
+							</template>
 						</div>
 						<div class="col-md-9">
 							<table
@@ -85,6 +95,7 @@
 		props: {
 			packag: Object,
 			shipping_services: Object,
+			service_request_pending_count: Object,
 		},
 		data() {
 			return {
@@ -99,36 +110,6 @@
 			};
 		},
 		methods: {
-			// getShippingRates() {
-			// 	this.overlay = true;
-			// 	this.showEstimatedPrice = false;
-			// 	this.isLoading = true;
-			// 	let quote_params = {
-			// 		ship_from: this.packag.warehouse_id,
-			// 		ship_to: this.packag.address.country_id,
-			// 		weight: this.packag.package_weight,
-			// 		unit: this.packag.weight_unit,
-			// 		weight_unit: this.packag.weight_unit + "_" + this.packag.dim_unit,
-			// 		length: this.packag.package_length,
-			// 		width: this.packag.package_width,
-			// 		height: this.packag.package_height,
-			// 		zipcode: this.packag.address.zip_code,
-			// 		city: this.packag.address.city,
-			// 		is_residential: this.packag.address.is_residential,
-			// 	};
-			// 	axios
-			// 		.get(this.route("getServicesList"))
-			// 		.then((response) => {
-			// 			response.data.services.forEach((ele, index) => {
-			// 				quote_params.service = ele;
-			// 				this.getRates(quote_params);
-			// 			});
-			// 			this.overlay = false;
-			// 		})
-			// 		.catch((error) => {
-			// 			this.overlay = false;
-			// 		});
-			// },
 			getShippingRatesByOrders() {
 				this.showEstimatedPrice = false;
 				this.overlay = true;
