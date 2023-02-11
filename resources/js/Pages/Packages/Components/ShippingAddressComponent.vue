@@ -71,8 +71,8 @@
 											<flash-messages class="mb-4" />
 
 											<div class="row">
-												<div class="form-group col-md-6">
-													<breeze-label for="name" value="Full Name" />
+												<div class="form-group col-md-12">
+													<breeze-label for="name" value="Full Name *" />
 													<input
 														type="text"
 														class="form-control"
@@ -81,8 +81,8 @@
 													/>
 												</div>
 
-												<div class="form-group col-md-6">
-													<breeze-label for="address" value="Address" />
+												<div class="form-group col-md-12">
+													<breeze-label for="address" value="Address *" />
 													<input
 														type="text"
 														class="form-control"
@@ -92,7 +92,7 @@
 												</div>
 
 												<div class="form-group col-md-6">
-													<breeze-label for="city" value="City" />
+													<breeze-label for="city" value="City *" />
 													<input
 														type="text"
 														class="form-control"
@@ -111,7 +111,7 @@
 												</div>
 
 												<div class="form-group col-md-6">
-													<breeze-label for="country" value="Country" />
+													<breeze-label for="country" value="Country *" />
 													<select
 														required
 														v-model="create_shipping_address_form.country_id"
@@ -131,7 +131,7 @@
 												</div>
 
 												<div class="form-group col-md-6">
-													<breeze-label for="zip_code" value="Zip Code" />
+													<breeze-label for="zip_code" value="Zip Code *" />
 													<input
 														type="text"
 														class="form-control"
@@ -141,7 +141,7 @@
 												</div>
 
 												<div class="form-group col-md-6">
-													<breeze-label for="phone" value="Phone" />
+													<breeze-label for="phone" value="Phone *" />
 													<input
 														type="text"
 														class="form-control"
@@ -153,13 +153,14 @@
 												<div class="form-group col-md-6">
 													<breeze-label
 														for="Commercial/Residential"
-														value="Commercial/Residential"
+														value="Commercial/Residential *"
 													/>
 													<select
 														class="form-control"
 														v-model="
 															create_shipping_address_form.is_residential
 														"
+														required
 													>
 														<option value="" selected>Select</option>
 														<option value="0">Commercial</option>
