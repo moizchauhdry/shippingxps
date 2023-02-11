@@ -72,7 +72,7 @@
 
 											<div class="row">
 												<div class="form-group col-md-6">
-													<breeze-label for="name" value="Name" />
+													<breeze-label for="name" value="Full Name" />
 													<input
 														type="text"
 														class="form-control"
