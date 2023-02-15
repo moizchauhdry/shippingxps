@@ -135,7 +135,12 @@
 									</tr>
 								</thead>
 								<tbody>
-									<template v-if="packag.pkg_type == 'consolidation'">
+									<template
+										v-if="
+											packag.pkg_type == 'consolidation' &&
+											packag.pkg_dim_status == 'done'
+										"
+									>
 										<tr>
 											<td>Consolidation</td>
 											<td>
