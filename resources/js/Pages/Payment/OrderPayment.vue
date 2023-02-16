@@ -471,8 +471,20 @@
 				this.overlay = true;
 				axios
 					.post(this.route("payment.pay"), this.form)
-					.then((response) => (this.response = response))
-					.finally(() => this.responseFromSubmit());
+					.then(
+						(response) => (
+							(this.response = response),
+							(this.response_message = response.data.message),
+							(this.overlay = false)
+						)
+					)
+					.finally(
+						() =>
+							(location.href = this.route(
+								"payments.PaymentSuccess",
+								this.response.data.payment_id
+							))
+					);
 			},
 			submitPayPal() {
 				if (
