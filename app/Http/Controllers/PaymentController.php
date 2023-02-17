@@ -26,9 +26,10 @@ class PaymentController extends Controller
 {
     public function index(Request $request)
     {
+        // dd($request->all());
         $payment_module = $request->payment_module;
 
-        if (!in_array($payment_module, ['package', 'gift_card'])) {
+        if (!in_array($payment_module, ['package', 'gift_card', 'order'])) {
             return redirect()->back()->with('error', 'PAYMENT DENIED!');
         }
 
@@ -57,6 +58,17 @@ class PaymentController extends Controller
                 ->firstOrFail();
             $amount = $gift_card->final_amount;
             $payment_module_id = $gift_card->id;
+        }
+
+        if ($payment_module == 'order') {
+            $order = Order::query()
+                ->where('payment_status', 'Pending')
+                ->where('id', $request->payment_module_id)
+                ->where('customer_id', $user->id)
+                ->where('grand_total', '>', 0)
+                ->firstOrFail();
+            $amount = $order->grand_total;
+            $payment_module_id = $order->id;
         }
 
         if ($payment_module != 'package') {
@@ -90,7 +102,7 @@ class PaymentController extends Controller
     // AUTHORIZE NET - PAYMENT SUCCESS
     public function pay(Request $request)
     {
-        if (!in_array($request->payment_module_type, ['package', 'gift_card'])) {
+        if (!in_array($request->payment_module_type, ['package', 'gift_card', 'order'])) {
             return redirect()->back()->with('error', 'PAYMENT DENIED!');
         }
 

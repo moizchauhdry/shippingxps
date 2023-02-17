@@ -23,7 +23,7 @@
 								Online Order
 							</button>
 						</li>
-						<li class="nav-item" role="presentation">
+						<!-- <li class="nav-item" role="presentation">
 							<button
 								v-on:click="setActiveTabAB('tab2')"
 								:class="getTabClass('tab2')"
@@ -37,7 +37,7 @@
 							>
 								Pickup Order
 							</button>
-						</li>
+						</li> -->
 					</ul>
 					<div class="tab-content" id="pills-tabContent">
 						<div class="stock-subscription-form">

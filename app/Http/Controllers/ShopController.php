@@ -345,7 +345,6 @@ class ShopController extends Controller
      */
     public function updateOrder(Request $request)
     {
-        // dd($request->all());
         $id = $request->input('id');
         $order = Order::findOrFail($id);
         $rules = [
@@ -545,8 +544,10 @@ class ShopController extends Controller
 
             DB::commit();
             if (!$isAdmin && $request->has('changes_approved') && $request->get('changes_approved') == 1) {
-                \Session::put('order_id', $order->id);
-                return redirect()->route('payment.index')->with('amount', $order->grand_total);
+                return redirect()->route('payment.index', [
+                    'payment_module' => 'order',
+                    'payment_module_id' => $order->id,
+                ]);
             } else {
                 return redirect('shop-for-me')->with('success', 'Order Updated !');
             }
