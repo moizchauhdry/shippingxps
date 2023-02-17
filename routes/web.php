@@ -60,20 +60,15 @@ Route::get('/getStorageFee', 'PackageController@getStorageFee')->name('getStorag
 Route::post('/packages/service-request', 'PackageController@serviceRequest')->name('packages.service-request')->middleware('auth');
 Route::post('/packages/service-handle', 'PackageController@serviceHandle')->name('packages.service-handle')->middleware('auth');
 Route::post('/packages/ship-package', 'PackageController@shipPackage')->name('packages.ship-package')->middleware('auth');
-
 Route::post('/packages/consolidate-package', 'PackageController@consolidatePackage')->name('packages.consolidate')->middleware('auth');
-
 Route::post('/packages/set-shipping-service', 'PackageController@setShippingService')->name('packages.set-shipping-service')->middleware('auth');
 Route::get('/packages/custom/{package_id}', 'PackageController@custom')->name('packages.custom')->middleware('auth');
 Route::get('/packages/commercial-invoice/{package_id}', 'PackageController@commercialInvoice')->name('packages.pdf')->middleware('auth');
 Route::post('/packages/destroy', 'PackageController@destroy')->name('packages.destroy')->middleware('auth');
-
 Route::any('/packages/consolidation', 'PackageController@consolidation')->name('packages.consolidation')->middleware('auth');
 Route::post('/packages/consolidation/store', 'PackageController@storeConsolidation')->name('packages.consolidation.store')->middleware('auth');
-
 Route::any('/packages/multipiece', 'PackageController@multipiece')->name('packages.multipiece')->middleware('auth');
 Route::post('/packages/multipiece/store', 'PackageController@storeMultipiece')->name('packages.multipiece.store')->middleware('auth');
-
 Route::post('/packages/address/update', 'PackageController@updateAddress')->name('packages.address.update')->middleware('auth');
 
 

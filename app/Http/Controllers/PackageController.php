@@ -11,7 +11,6 @@ use App\Events\ServiceRequestUpdatedEvent;
 use App\Models\Address;
 use App\Models\Payment;
 use Illuminate\Http\Request;
-use \Illuminate\Http\Response;
 use Inertia\Inertia;
 use GuzzleHttp\Client;
 use App\Models\Order;
@@ -27,7 +26,6 @@ use App\Models\Shipping;
 use App\Models\Warehouse;
 use App\Notifications\CustomerPackageRequestNotification;
 use Illuminate\Support\Facades\Auth;
-use File;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Notification;
 
@@ -536,15 +534,15 @@ class PackageController extends Controller
 
     public function shipPackage(Request $request)
     {
+        $data = $request->validate([
+            'tracking_out' => 'required',
+            'box_id' => 'required'
+        ]);
 
-        $data = $request->all();
+        $pkg_box = PackageBox::find($data['box_id']);
+        $pkg_box->update(['tracking_out' => $data['tracking_out']]);
 
-        $package = Package::find($data['package_id']);
-        $package->status = $data['status'];
-        $package->tracking_number_out = $data['tracking_number_out'];
-        $package->update();
-
-        event(new PackageShipped($package));
+        // event(new PackageShipped($package));
 
         return redirect()->back()->with('success', 'Package set for shipment.');
     }

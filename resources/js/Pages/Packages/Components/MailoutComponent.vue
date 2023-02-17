@@ -89,41 +89,6 @@
 											<template v-else>Not Set</template>
 										</td>
 									</tr>
-									<tr>
-										<td>Tracking Number Out</td>
-										<td>
-											<template v-if="packag.tracking_number_out">
-												{{ packag.tracking_number_out }}
-												<a
-													href="javascript:void(0)"
-													class="badge badge-dark"
-													v-show="
-														packag.payment_status == 'Paid' &&
-														!tracking_edit &&
-														($page.props.auth.user.type == 'admin' ||
-															$page.props.auth.user.type == 'manager')
-													"
-													@click="tracking_edit = !tracking_edit"
-													>Edit</a
-												>
-											</template>
-											<template v-else
-												>Not Set
-												<a
-													href="javascript:void(0)"
-													class="badge badge-dark"
-													v-show="
-														packag.payment_status == 'Paid' &&
-														!tracking_edit &&
-														($page.props.auth.user.type == 'admin' ||
-															$page.props.auth.user.type == 'manager')
-													"
-													@click="tracking_edit = !tracking_edit"
-													>Edit</a
-												></template
-											>
-										</td>
-									</tr>
 								</tbody>
 							</table>
 						</div>
@@ -240,6 +205,7 @@
 					package_id: this.packag.id,
 					payment_module: "package",
 				}),
+				tracking_edit: false,
 			};
 		},
 		methods: {

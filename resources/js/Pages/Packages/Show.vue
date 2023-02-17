@@ -13,7 +13,7 @@
 					<consolidation-component v-bind="$props"></consolidation-component>
 					<service-component v-bind="$props"></service-component>
 					<mailout-component v-bind="$props"></mailout-component>
-					<shipout-component v-bind="$props"></shipout-component>
+					<!-- <shipout-component v-bind="$props"></shipout-component> -->
 					<package-image-component v-bind="$props"></package-image-component>
 
 					<div v-show="overlay === true" class="overlay">
@@ -72,12 +72,6 @@
 					package_id: this.packag.id,
 					address_book_id: this.packag.address_book_id,
 				}),
-				form_ship: this.$inertia.form({
-					package_id: this.packag.id,
-					status: "shipped",
-					tracking_number_out: "",
-					service: null,
-				}),
 				tabs: {
 					tab1: true,
 					tab2: false,
@@ -87,7 +81,6 @@
 				storage_fee: 0,
 				overlay: false,
 				displayNoteShipping: true,
-				tracking_edit: false,
 			};
 		},
 		props: {
