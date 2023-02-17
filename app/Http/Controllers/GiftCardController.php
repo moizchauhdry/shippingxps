@@ -4,33 +4,34 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Models\Package;
-use App\Models\Shipping;
 use App\Models\User;
 use App\Models\GiftCard;
 use App\Models\GiftCardComment;
 use App\Models\GiftCardFile;
-use Inertia\Inertia;
-use Auth;
 use App\Notifications\GiftCardNotification;
-use Carbon\Carbon;
-use File;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Validation\Rule;
-use Session;
+use Inertia\Inertia;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\File;
 
 class GiftCardController extends Controller
 {
     public function index()
     {
         $user = Auth::user();
-        if ($user->type == 'admin') {
-            $gift_cards = GiftCard::with('user')->orderBy('id', 'desc')->get();
-        } else {
-            $gift_cards = GiftCard::with('user')->where('user_id', $user->id)->get();
+
+        $query = GiftCard::with('user')->orderBy('id', 'desc');
+
+        if ($user->type == 'customer') {
+            $query->where('user_id', $user->id);
         }
 
+        $gift_cards = $query->get();
+
         return Inertia::render('GiftCard/Index', [
-            'gift_cards' => $gift_cards,
+            'gift_cards' => $gift_cards
         ]);
     }
 
@@ -57,12 +58,15 @@ class GiftCardController extends Controller
                 'notes' => $validated_data['notes'],
             ]);
 
-            $url = \URL::route('gift-card.edit', $gift_card->id);
+            $this->gift_card_final_amount($gift_card->id);
+
+
+            $url = URL::route('gift-card.edit', $gift_card->id);
             $customer = $gift_card->user;
             $customerDetailURL = '<a href="' . route('detail-customer', $customer->id) . '">' . $customer->name_with_suite_no . '</a>';
 
             $data = [
-                'url' => \URL::route('gift-card.edit', $gift_card->id),
+                'url' => URL::route('gift-card.edit', $gift_card->id),
                 'message' => 'Customer <strong>' . $customerDetailURL . '</strong> has created an gift card request. <a href="' . $url . '">Click Here</a>',
             ];
             $admins = User::where('type', 'admin')->get();
@@ -82,7 +86,6 @@ class GiftCardController extends Controller
         $gift_card = GiftCard::with('files', 'user')->findOrFail($id);
 
         if ($request->isMethod('POST')) {
-
             $validated_data = $request->validate([
                 'title' => 'required|string|max:150',
                 'type' => 'required|string|in:PHYSICAL,ELECTRONIC',
@@ -100,6 +103,8 @@ class GiftCardController extends Controller
                 'notes' => $request->notes,
                 'status' => $request->status,
             ]);
+
+            $this->gift_card_final_amount($gift_card->id);
 
             $files = $request->file();
             if (isset($files['images'])) {
@@ -127,13 +132,13 @@ class GiftCardController extends Controller
                 }
             }
 
-            $url = \URL::route('gift-card.edit', $gift_card->id);
+            $url = URL::route('gift-card.edit', $gift_card->id);
             $customer = $gift_card->user;
             $customerDetailURL = 'Customer <strong><a href="' . route('detail-customer', $customer->id) . '">' . $customer->name_with_suite_no . '</strong></a>';
 
             $auser = $user->type == 'admin' ? 'Admin' : $customerDetailURL;
             $data = [
-                'url' => \URL::route('gift-card.edit', $gift_card->id),
+                'url' => URL::route('gift-card.edit', $gift_card->id),
                 'message' => $auser . ' has modified an gift card request. <a href="' . $url . '">Click Here</a>',
             ];
 
@@ -153,9 +158,6 @@ class GiftCardController extends Controller
             }
 
             if ($request->has('approve') && $request->approve == 1) {
-                Session::forget(['gift_card_id']);
-                Session::put('gift_card_id', $id);
-
                 $amount = $gift_card->amount * $gift_card->qty;
                 if ($amount <= 0) {
                     return redirect()->back()->with('error', 'OPERRATION FAILED TO PERFORM, AMOUNT MUST BE GREATER THAN 0');
@@ -172,7 +174,10 @@ class GiftCardController extends Controller
                     $final_amount = $final_amount + 25;
                 }
 
-                return redirect()->route('payment.index')->with('amount', $final_amount);
+                return redirect()->route('payment.index', [
+                    'payment_module' => 'gift_card',
+                    'payment_module_id' => $gift_card->id,
+                ]);
             }
 
             return redirect()->route('gift-card.index')->with('success', 'Successfully Modified');
@@ -188,7 +193,7 @@ class GiftCardController extends Controller
 
     public function storeComment(Request $request, $id)
     {
-        $user = \Auth::user();
+        $user = Auth::user();
         $gift_card = GiftCard::find($id);
         $validated_data = $request->validate([
             'message' => 'required',
@@ -200,13 +205,13 @@ class GiftCardController extends Controller
             'message' => $validated_data['message'],
         ]);
 
-        $url = \URL::route('gift-card.edit', $gift_card->id);
+        $url = URL::route('gift-card.edit', $gift_card->id);
         $customer = $gift_card->user;
         $customerDetailURL = 'Customer <strong><a href="' . route('detail-customer', $customer->id) . '">' . $customer->name_with_suite_no . '</strong></a>';
 
         $auser = $user->type == 'admin' ? 'Admin' : $customerDetailURL;
         $data = [
-            'url' => \URL::route('gift-card.edit', $gift_card->id),
+            'url' => URL::route('gift-card.edit', $gift_card->id),
             'message' => $auser . ' has commented on an gift card request. <a href="' . $url . '">Click Here</a>',
         ];
         if ($user->type == 'admin') {
@@ -226,5 +231,24 @@ class GiftCardController extends Controller
     {
         GiftCardFile::find($request->id)->delete();
         return redirect()->back();
+    }
+
+    private function gift_card_final_amount($id)
+    {
+        $gift_card = GiftCard::find($id);
+        $sub_total = $gift_card->amount * $gift_card->qty;
+
+        if ($sub_total > 5) {
+            $percentage_amount =  $sub_total * 5 / 100;
+            $final_amount = $sub_total + $percentage_amount;
+        } else {
+            $final_amount =  $sub_total + 5;
+        }
+
+        if ($gift_card->type == 'PHYSICAL') {
+            $final_amount = $final_amount + 25;
+        }
+
+        $gift_card->update(['final_amount' => $final_amount]);
     }
 }

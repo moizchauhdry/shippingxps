@@ -28,7 +28,7 @@ class PaymentController extends Controller
     {
         $payment_module = $request->payment_module;
 
-        if (!in_array($payment_module, ['package'])) {
+        if (!in_array($payment_module, ['package', 'gift_card'])) {
             return redirect()->back()->with('error', 'PAYMENT DENIED!');
         }
 
@@ -45,24 +45,27 @@ class PaymentController extends Controller
                 ->firstOrFail();
 
             $amount = $package->grand_total;
-        } else {
+            $payment_module_id = $package->id;
+        }
+
+        if ($payment_module == 'gift_card') {
+            $gift_card = GiftCard::query()
+                ->where('payment_status', 'Pending')
+                ->where('id', $request->payment_module_id)
+                ->where('user_id', $user->id)
+                ->where('final_amount', '>', 0)
+                ->firstOrFail();
+            $amount = $gift_card->final_amount;
+            $payment_module_id = $gift_card->id;
+        }
+
+        if ($payment_module != 'package') {
             $addresss = Address::where('user_id', $user->id)->get();
-
-            if ($addresss->count() == 0) {
-                return redirect()->back()->with('error', 'INVALID ADDRESS!');
-            }
-
             foreach ($addresss as $address) {
-                $full_address = $address->fullname . " " . $address->address . "<br>" . $address->city . " " . $address->state . " " . $address->zip_code . " " . $address->country->nicename . "<br>" . $address->phone;
                 $shipping_address[$address->id] = [
                     'id' => $address->id,
                     'label' => $address->fullname . ", " . $address->city . ", " . $address->state . ", " . $address->zip_code,
-                    'full_address' => $full_address
                 ];
-            }
-
-            if (count($shipping_address) == 0) {
-                return redirect()->back()->with('error', 'INVALID SHIPPING ADDRESS!');
             }
         }
 
@@ -76,7 +79,7 @@ class PaymentController extends Controller
                 'status' => $status,
                 'amount' => $amount,
                 'payment_module' => $payment_module,
-                'payment_module_id' => $package->id,
+                'payment_module_id' => $payment_module_id,
                 'shipping_address' => $shipping_address,
                 'paypal_processing_fee' => $paypal_processing_fee,
                 'paypal_charged_amount' => $paypal_charged_amount,
@@ -87,7 +90,7 @@ class PaymentController extends Controller
     // AUTHORIZE NET - PAYMENT SUCCESS
     public function pay(Request $request)
     {
-        if (!in_array($request->payment_module_type, ['package'])) {
+        if (!in_array($request->payment_module_type, ['package', 'gift_card'])) {
             return redirect()->back()->with('error', 'PAYMENT DENIED!');
         }
 
@@ -171,7 +174,8 @@ class PaymentController extends Controller
 
         // Create the controller and get the response
         $controller = new AnetController\CreateTransactionController($transaction);
-        $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::PRODUCTION);
+        // $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::PRODUCTION);
+        $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::SANDBOX);
 
         // Check to see if the API request was successfully received and acted upon
         if ($response->getMessages()->getResultCode() == "Ok") {
@@ -329,17 +333,17 @@ class PaymentController extends Controller
         $shipping = $description['purchase_units'][0]['shipping'];
         $billing['email'] = $description['payer']['email_address'] ?? '';
         $billing['fullname'] = $shipping['name']['full_name'] ?? '';
+
         $billing['address'] = null;
         if (!empty($shipping['address'])) {
             foreach ($shipping['address'] as $key => $address) {
                 $billing['address'] .= $address . (($key) == 'country_code' ? '' : ', ');
             }
         }
+
         $shipping = [];
         if ($request->has('shipping_address_id') && $request->get('shipping_address_id') != null) {
-
             $shippingAddress = Address::where('id', $request->shipping_address_id)->first();
-
             $shipping['email'] = $description['payer']['email_address'] ?? '';
             $shipping['fullname'] = $shippingAddress->fullname ?? '';
             $shipping['phone'] = $shippingAddress->phone ?? '';
@@ -353,16 +357,7 @@ class PaymentController extends Controller
             $shipping['address'] = $shippingAddress->address . ', ' . $shippingAddress->city . ', ' . $shippingAddress->state . ', ' . $shippingAddress->country_name ?? '';
         }
 
-
         $discount = 0.00;
-        // if ($request->has('discount')) {
-        //     if ($request->discount > 0) {
-        //         $amt = $request->amount;
-        //         $discount = $amt * ($request->discount / 100);
-        //         $request->amount = $amt - $discount;
-        //     }
-        // }
-
         $amount = doubleval($request->amount);
         $discount = (float)number_format($discount, 2);
         $lastPayment = Payment::latest()->first();
@@ -386,39 +381,36 @@ class PaymentController extends Controller
         $payment->invoice_id = $invoiceID;
         $payment->save();
 
-        // if (\Session::has('order_id')) {
-        //     $id = \Session::get('order_id');
-        //     $order = Order::find($id);
-        //     $order->payment_status = "Paid";
-        //     $order->save();
-        // }
+        $payment_module_id = $request->payment_module_id;
+        if ($request->payment_module_type == 'order') {
+            $order = Order::find($payment_module_id);
+            $order->payment_status = "Paid";
+            $order->save();
+        }
 
-        // if (\Session::has('additional_request_id')) {
-        //     $id = \Session::get('additional_request_id');
-        //     $additionalRequest = AdditionalRequest::find($id);
-        //     $additionalRequest->payment_status = "Paid";
-        //     $additionalRequest->save();
-        // }
+        if ($request->payment_module_type == 'additional_request') {
+            $additionalRequest = AdditionalRequest::find($payment_module_id);
+            $additionalRequest->payment_status = "Paid";
+            $additionalRequest->save();
+        }
 
-        // if (\Session::has('insurance_id')) {
-        //     $id = \Session::get('insurance_id');
-        //     $insuranceRequest = InsuranceRequest::find($id);
-        //     $insuranceRequest->payment_status = "Paid";
-        //     $insuranceRequest->save();
-        //     $package = Package::find($insuranceRequest->package_id);
-        //     $package->payment_status = "Paid";
-        //     $package->save();
-        // }
+        if ($request->payment_module_type == 'insurance') {
+            $insuranceRequest = InsuranceRequest::find($payment_module_id);
+            $insuranceRequest->payment_status = "Paid";
+            $insuranceRequest->save();
+            $package = Package::find($insuranceRequest->package_id);
+            $package->payment_status = "Paid";
+            $package->save();
+        }
 
-        // if (\Session::has('gift_card_id')) {
-        //     $id = \Session::get('gift_card_id');
-        //     $gift_card = GiftCard::find($id);
-        //     $gift_card->payment_status = "Paid";
-        //     $gift_card->save();
-        // }
+        if ($request->payment_module_type == 'gift_card') {
+            $gift_card = GiftCard::find($payment_module_id);
+            $gift_card->payment_status = "Paid";
+            $gift_card->save();
+        }
 
         if ($request->payment_module_type == 'package') {
-            $package = Package::find($request->payment_module_id);
+            $package = Package::find($payment_module_id);
             $package->payment_status = "Paid";
             $package->save();
 

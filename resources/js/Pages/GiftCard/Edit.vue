@@ -234,10 +234,16 @@
 									</tr>
 								</thead>
 								<tbody>
-									<tr v-for="(image, index) in gift_card.files" :key="image.id" v-show="gift_card.files">
+									<tr
+										v-for="(image, index) in gift_card.files"
+										:key="image.id"
+										v-show="gift_card.files"
+									>
 										<th scope="row">00{{ ++index }}</th>
 										<td>
-											<template v-if="image.file_name.split('.').pop() == 'pdf'">
+											<template
+												v-if="image.file_name.split('.').pop() == 'pdf'"
+											>
 												<i class="fas fa-file-pdf mr-1 text-lg"></i>
 											</template>
 											<template v-else>
@@ -248,18 +254,21 @@
 													@click="viewImage($event)"
 												/>
 											</template>
-											<a :href="imgURL(image.file_name)" class="m-1" download >{{ image.file_name }}</a>
+											<a :href="imgURL(image.file_name)" class="m-1" download>{{
+												image.file_name
+											}}</a>
 										</td>
 										<td>
-											<a :href="imgURL(image.file_name)" class="m-1" download ><i class="fa fa-download mr-1"></i>Download</a
+											<a :href="imgURL(image.file_name)" class="m-1" download
+												><i class="fa fa-download mr-1"></i>Download</a
 											>
 											<template v-if="$page.props.auth.user.type == 'admin'">
 												<a
-												href="void(0);"
-												class="m-1"
-												@click="deleteImage($event, index, image.id)"
-												><i class="fa fa-trash mr-1"></i>Delete</a
-											>
+													href="void(0);"
+													class="m-1"
+													@click="deleteImage($event, index, image.id)"
+													><i class="fa fa-trash mr-1"></i>Delete</a
+												>
 											</template>
 										</td>
 									</tr>
@@ -363,8 +372,8 @@
 	import BreezeAuthenticatedLayout from "@/Layouts/Authenticated";
 	import BreezeLabel from "@/Components/Label";
 	import BreezeValidationErrors from "@/Components/ValidationErrors";
-	import ImageViewer from '@/Components/ImageViewer'
-	import $ from 'jquery'
+	import ImageViewer from "@/Components/ImageViewer";
+	import $ from "jquery";
 
 	export default {
 		components: {
@@ -372,7 +381,7 @@
 			MainLayout,
 			BreezeLabel,
 			BreezeValidationErrors,
-			ImageViewer
+			ImageViewer,
 		},
 		data() {
 			return {
@@ -434,7 +443,9 @@
 			deleteImage(e, index, id) {
 				e.preventDefault();
 				if (typeof id !== "undefined") {
-					let r = confirm("Are you sure you want to delete this file? This action cannot be undone.");
+					let r = confirm(
+						"Are you sure you want to delete this file? This action cannot be undone."
+					);
 					if (r) {
 						this.form.post(this.route("gift-card.removeImage", { id: id }));
 						// axios
@@ -478,7 +489,7 @@
 		},
 		created() {
 			this.calculate_amount();
-		}
+		},
 	};
 </script>
 
