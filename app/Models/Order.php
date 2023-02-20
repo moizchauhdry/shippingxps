@@ -8,41 +8,50 @@ use Illuminate\Notifications\Notifiable;
 
 class Order extends Model
 {
-    use HasFactory,Notifiable;
-    
-    public function customer(){
-        return $this->belongsTo(User::class,'customer_id');
+    use HasFactory, Notifiable;
+    protected $guarded = [];
+
+    public function customer()
+    {
+        return $this->belongsTo(User::class, 'customer_id');
     }
-    public function user(){
-        return $this->belongsTo(User::class,'customer_id');
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'customer_id');
     }
 
 
-    public function warehouse(){
+    public function warehouse()
+    {
         return $this->belongsTo(Warehouse::class);
     }
 
-    public function items(){
+    public function items()
+    {
         return $this->hasMany(OrderItem::class);
     }
 
-    public function images(){
+    public function images()
+    {
         return $this->hasMany(OrderImage::class);
     }
 
-    public function displayImage(){
-        return $this->hasOne(OrderImage::class)->where('display',1);
+    public function displayImage()
+    {
+        return $this->hasOne(OrderImage::class)->where('display', 1);
     }
 
-    public function store() {
+    public function store()
+    {
         return $this->belongsTo(Store::class);
     }
 
-    public function package(){
+    public function package()
+    {
         return $this->belongsTo(Package::class);
     }
 
-   /**
+    /**
      * Route notifications for the mail channel.
      *
      * @param  \Illuminate\Notifications\Notification  $notification
@@ -59,7 +68,6 @@ class Order extends Model
 
     public function getCreatedAtAttribute($value)
     {
-        return date('Y-m-d h:i:s',strtotime($value));
+        return date('Y-m-d h:i:s', strtotime($value));
     }
-
 }
