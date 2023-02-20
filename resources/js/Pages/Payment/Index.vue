@@ -1,172 +1,122 @@
 <template>
 	<MainLayout>
-		<div class="card mt-4 pr-2">
+		<div class="card">
 			<div class="card-header">
-				Payments
+				Manage Payments
 				<div class="float-right">
-					<a
+					<!-- <a
 						v-if="$page.props.auth.user.type == 'admin'"
 						:href="route('generateReportList')"
 						class="btn btn-primary"
 						target="_blank"
 						>Download Reports</a
-					>
+					> -->
 				</div>
 			</div>
 			<div class="card-body">
-				<div class="container">
-					<div class="row">
-						<div class="form-group col-sm-12 col-md-4">
-							<label for="">Filter By</label>
-							<select
-								class="form-control"
-								@change="getResults(route('payments.getPayments'))"
-								v-model="filter.date_selection"
-								id=""
-							>
-								<option value="1">Today</option>
-								<option value="2">Yesterday</option>
-								<option value="3">Last 7 Days</option>
-								<option value="4">Last 30 Days</option>
-								<option value="5">Custom Range</option>
-							</select>
-						</div>
-						<div class="form-group col-sm-12 col-md-4">
-							<label for="" v-show="filter.date_selection === '5'"
-								>Date Range</label
-							>
-							<Datepicker
-								v-show="filter.date_selection === '5'"
-								v-model="date"
-								range
-								:format="format"
-								:enableTimePicker="false"
-							></Datepicker>
-						</div>
-						<div class="form-group col-sm-12 col-md-4">
-							<label for="">Search</label>
-							<input
-								type="text"
-								class="form-control"
-								v-model="filter.search"
-								@keyup="getResults(route('payments.getPayments'))"
-							/>
-						</div>
+				<div class="row">
+					<div class="col-md-3 form-group">
+						<label for="">Search</label>
+						<input
+							type="text"
+							class="form-control"
+							v-model="filter.search"
+							placeholder="Search by Invoice ID"
+							@keyup="getResults(route('payments.getPayments'))"
+						/>
+					</div>
+					<div class="col-md-3 form-group">
+						<label for="">Filter By</label>
+						<select
+							class="form-control"
+							@change="getResults(route('payments.getPayments'))"
+							v-model="filter.date_selection"
+							id=""
+						>
+							<option value="" selected>Select</option>
+							<option value="1">Today</option>
+							<option value="2">Yesterday</option>
+							<option value="3">Last 7 Days</option>
+							<option value="4">Last 30 Days</option>
+							<option value="5">Custom Range</option>
+						</select>
+					</div>
+					<div class="col-md-3 form-group">
+						<label for="" v-show="filter.date_selection === '5'"
+							>Date Range</label
+						>
+						<Datepicker
+							v-show="filter.date_selection === '5'"
+							v-model="date"
+							range
+							:format="format"
+							:enableTimePicker="false"
+						></Datepicker>
 					</div>
 				</div>
 				<div class="table-responsive">
-					<table class="table table-hover">
+					<table class="table table-striped text-center">
 						<thead>
 							<tr>
-								<th>ID</th>
+								<th>Sr. #</th>
+								<th>Invoice ID</th>
 								<th>Customer</th>
-								<th>Order</th>
-								<th>Package</th>
-								<th>Transaction Id</th>
 								<th>Payment Type</th>
-								<th>Invoice Id</th>
-								<th>Invoice</th>
-								<th>Destination Country</th>
-								<th>Service Type</th>
-								<th>Service Shipping Charges (USD)</th>
-								<th v-if="$page.props.auth.user.type == 'admin'">
-									MarkUp Fee (USD)
-								</th>
-								<th>Service Charges (USD)</th>
+								<th>Transaction ID</th>
+								<th>Payment Method</th>
+								<th>Shipping Service</th>
 								<th>Charged Amount (USD)</th>
-								<th>Charged At</th>
-								<th>Tracking No.</th>
+								<th>Charged Date</th>
 								<th>Action</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr v-for="(item, index) in data.data" :key="item.id">
+								<td>{{ ++index }}</td>
 								<td>{{ item.id }}</td>
 								<td>
-									{{
-										item.customer_id != null
-											? item.customer.name + " - " + item.customer.suite_no
-											: "- -"
-									}}
+									<span v-if="item.customer">
+										{{ item.customer.name + " - " + item.customer.suite_no }}
+									</span>
 								</td>
 								<td>
 									<template v-if="item.order_id != null">
+										ORDER #{{ item.order_id }}
+									</template>
+									<template v-if="item.gift_card_id != null">
 										<inertia-link
-											:href="route('orders.show', item.order_id)"
+											:href="route('gift-card.edit', item.gift_card_id)"
 											class="link-hover-style-1 ms-1"
-											>{{ item.order_id }}</inertia-link
+											>GIFT #{{ item.gift_card_id }}</inertia-link
 										>
 									</template>
-									<template v-else>- -</template>
-								</td>
-								<td>
 									<template v-if="item.package_id != null">
 										<inertia-link
 											:href="route('packages.show', item.package.id)"
 											class="link-hover-style-1 ms-1"
-											>{{ item.package.id }}</inertia-link
+											>PKG #{{ item.package.id }}</inertia-link
 										>
 									</template>
-									<template v-else>- -</template>
 								</td>
 								<td>{{ item.transaction_id }}</td>
-								<td>{{ item.payment_type }}</td>
-								<td>{{ item.invoice_id }}</td>
+								<td>{{ item.payment_type ?? "Authorize.net" }}</td>
 								<td>
-									<!-- <a :href="'/public/' + item.invoice_url" target="_blank"
-										>View Invoice</a
-									> -->
-									<a :href="route('payment.invoice', item.id)" target="_blank"
-										>View Invoice</a
-									>
-								</td>
-								<td>
-									{{
-										item.package != NULL
-											? getAddress(item.package.address)
-											: "- -"
-									}}
-								</td>
-								<td>
-									{{
-										item.package != NULL ? item.package.service_label : "- -"
-									}}
-								</td>
-								<td v-if="$page.props.auth.user.type != 'admin'">
-									{{
-										item.package != NULL ? item.package.shipping_total : "- -"
-									}}
-								</td>
-								<td v-if="$page.props.auth.user.type == 'admin'">
-									{{
-										item.package != NULL
-											? (
-													item.package.shipping_total - item.package.markup_fee
-											  ).toFixed(2)
-											: "- -"
-									}}
-								</td>
-								<td v-if="$page.props.auth.user.type == 'admin'">
-									{{ item.package != NULL ? item.package.markup_fee : "- -" }}
-								</td>
-								<td>
-									{{
-										item.package != NULL ? item.package.service_charges : "- -"
-									}}
+									{{ item.package != NULL ? item.package.service_label : "" }}
 								</td>
 								<td>{{ item.charged_amount }}</td>
 								<td>{{ item.charged_at }}</td>
 								<td>
-									{{
-										item.package != NULL
-											? item.package.tracking_number_out
-											: "- -"
-									}}
-								</td>
-								<td>
-									<!-- Action Here -->
-									<a :href="route('generateReport', item.id)" target="_blank"
-										>Download Report</a
+									<a
+										:href="route('payment.invoice', item.id)"
+										class="btn btn-primary btn-sm m-1"
+										target="_blank"
+										>Print Invoice</a
+									>
+									<a
+										:href="route('generateReport', item.id)"
+										target="_blank"
+										class="btn btn-info btn-sm m-1"
+										>Print Report</a
 									>
 								</td>
 							</tr>
