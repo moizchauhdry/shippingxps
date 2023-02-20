@@ -22,6 +22,15 @@
 										placeholder="Search By Package #"
 									/>
 								</div>
+								<div class="form-group col-md-6">
+									<input
+										type="number"
+										name="number"
+										v-model="form.suit_no"
+										class="form-control"
+										placeholder="Search By Suit #"
+									/>
+								</div>
 								<div class="form-group col-md-4">
 									<button type="submit" class="btn btn-primary mr-1">
 										Search
@@ -122,10 +131,12 @@
 				active: "packages",
 				form: useForm({
 					pkg_id: "",
+					suit_no: "",
 				}),
 				pkg_form: {
 					status: this.filter.status,
 					pkg_id: "",
+					suit_no: "",
 					processing: false,
 				},
 			};
@@ -135,6 +146,7 @@
 				this.active = status;
 				this.pkg_form.status = status;
 				this.pkg_form.pkg_id = this.form.pkg_id;
+				this.pkg_form.suit_no = this.form.suit_no;
 				Inertia.post(route("packages.index"), this.pkg_form);
 			},
 			siuteNum(user_id) {
@@ -145,6 +157,7 @@
 			},
 			clear() {
 				this.form.pkg_id = "";
+				this.form.suit_no = "";
 				this.submit();
 			},
 		},

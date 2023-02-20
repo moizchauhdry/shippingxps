@@ -90,15 +90,16 @@
         <tr>
             <td style="padding: 5px" width="50%">
                 <h4>{{ strtoupper('Shipped To') }}:</h4><br>
-                <strong>Contact Name</strong> : {{ strtoupper($address->fullname) ?? '- -' }}<br>
-                <strong>Telephone No.</strong> : {{ $address->phone ?? '- -'}}<br>
-                <strong>E-mail</strong> : {{ $user->email ?? '- -'}}<br>
+                <strong>Contact Name</strong> :
+                {{ isset($address->fullname) ? strtoupper($address->fullname) : '' }}<br>
+                <strong>Telephone No.</strong> : {{ $address->phone ?? ''}}<br>
+                <strong>E-mail</strong> : {{ $user->email ?? ''}}<br>
                 <strong>Company / Address</strong> :<br>
-                {{ $address->address ?? '- -'}} <br>
-                <strong>City</strong> : {{ $address->city ?? '- -'}} <br>
-                <strong>State</strong> : {{ $address->state ?? '- -'}} <br>
-                <strong>Zip code</strong> : {{ $address->zip_code ?? '- -'}} <br> <br>
-                <strong>Country</strong> : {{ $address->country->name ?? '- -' }}
+                {{ $address->address ?? ''}} <br>
+                <strong>City</strong> : {{ $address->city ?? ''}} <br>
+                <strong>State</strong> : {{ $address->state ?? ''}} <br>
+                <strong>Zip code</strong> : {{ $address->zip_code ?? ''}} <br> <br>
+                <strong>Country</strong> : {{ $address->country->name ?? '' }}
             </td>
 
             <td style="padding: 5px" width="50%">

@@ -40,9 +40,20 @@ class order_packages_command extends Command
      */
     public function handle()
     {
+        $packages = Package::get();
+        foreach ($packages as $key => $package) {
+            $package->update(['package_handler_id' => NULL]);
+            if (in_array($package->status, ['labeled', 'shipped'])) {
+                $package->update([
+                    'admin_status' => 'accepted',
+                    'pkg_dim_status' => 'done',
+                ]);
+            }
+        }
+
         $customers = User::query()
             ->where('type', 'customer')
-            ->where('id', '137')->get();
+            ->get();
 
         foreach ($customers as $key => $customer) {
             foreach ($customer->orders as $key => $order) {

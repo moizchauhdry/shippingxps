@@ -83,6 +83,11 @@ class PackageController extends Controller
             $query->where('id', $request->pkg_id);
         }
 
+        if (!empty($request->suit_no)) {
+            $suit_no = intval($request->suit_no) - 4000;
+            $query->where('customer_id', $suit_no);
+        }
+
         $packages = $query->orderBy('id', 'desc')->paginate(25);
 
         $open_pkgs_count = Package::where('status', 'open')->where('pkg_type', 'single')->count();
@@ -103,20 +108,22 @@ class PackageController extends Controller
 
         $child_package_orders = [];
         foreach ($packag->child_packages as $key => $child_package) {
-            $child_package_orders[] = [
-                'pkg_id' => $child_package->id,
-                'order_id' => $child_package->order->id,
-                'weight' => $child_package->order->package_weight,
-                'weight_unit' => $child_package->order->weight_unit,
-                'dim_unit' => $child_package->order->dim_unit,
-                'height' => $child_package->order->package_height,
-                'width' => $child_package->order->package_width,
-                'length' => $child_package->order->package_length,
-                'warehouse' => $child_package->order->warehouse->name,
-                'tracking_in' => $child_package->order->tracking_number_in,
-                'images' => $child_package->order->images,
-                'status' => $child_package->status,
-            ];
+            if ($child_package->order) {
+                $child_package_orders[] = [
+                    'pkg_id' => $child_package->id,
+                    'order_id' => $child_package->order->id,
+                    'weight' => $child_package->order->package_weight,
+                    'weight_unit' => $child_package->order->weight_unit,
+                    'dim_unit' => $child_package->order->dim_unit,
+                    'height' => $child_package->order->package_height,
+                    'width' => $child_package->order->package_width,
+                    'length' => $child_package->order->package_length,
+                    'warehouse' => $child_package->order->warehouse->name,
+                    'tracking_in' => $child_package->order->tracking_number_in,
+                    'images' => $child_package->order->images,
+                    'status' => $child_package->status,
+                ];
+            }
         }
 
         $services = Service::where('status', '=', '1')->get();
@@ -124,16 +131,18 @@ class PackageController extends Controller
 
         $service_requests = [];
         foreach ($packag->serviceRequests as $req) {
-            $service_requests[] = [
-                'id' => $req->id,
-                'service_title' => $req->service->title,
-                'service_description' => $req->service->description,
-                'status' => $req->status,
-                'customer_message' => $req->customer_message,
-                'admin_message' => $req->admin_message,
-                'price' => $req->price,
-                'date' => $req->created_at,
-            ];
+            if ($req->service) {
+                $service_requests[] = [
+                    'id' => $req->id,
+                    'service_title' => $req->service->title,
+                    'service_description' => $req->service->description,
+                    'status' => $req->status,
+                    'customer_message' => $req->customer_message,
+                    'admin_message' => $req->admin_message,
+                    'price' => $req->price,
+                    'date' => $req->created_at,
+                ];
+            }
         }
 
         $service_requests_service_ids = [];
@@ -553,7 +562,7 @@ class PackageController extends Controller
         $service = $data['service'];
 
         $package = Package::find($data['package_id']);
-        $package->status = 'SHIPPING SERVICE SELECTED';
+        $package->status = 'checkout';
         $package->carrier_code = isset($service['carrierCode']) ? $service['carrierCode'] : " ";
         $package->service_label = isset($service['serviceLabel']) ? $service['serviceLabel'] : " ";
         $package->service_code = $service['serviceCode'];
