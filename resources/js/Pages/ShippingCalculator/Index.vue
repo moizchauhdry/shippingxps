@@ -9,7 +9,7 @@
 			style="background-size: 100%; background-repeat: no-repeat"
 		>
 			<div class="container">
-				<div class="row mx-3 mx-xl-0">
+				<div class="row">
 					<div class="col-md-12 px-0">
 						<div class="bg-grey-soft h-100">
 							<div class="text-center text-md-start p-5 h-100">
@@ -18,7 +18,7 @@
 									class="contact-form form-style-4 form-placeholders-light form-errors-light mb-5 mb-lg-0"
 								>
 									<div class="row">
-										<div class="col-md-5">
+										<div class="col-md-4">
 											<div class="form-group">
 												<div
 													class="input-title text-dark mb-2 text-6 font-weight-medium text-center"
@@ -27,22 +27,41 @@
 												</div>
 												<select
 													required
-													v-model="form.ship_from_postal_code"
+													v-model="form.ship_from"
 													class="form-select text-4"
 												>
 													<option value="">Select</option>
 													<option
 														v-for="warehouse in warehouses"
-														:value="warehouse.zip"
+														:value="warehouse.id"
 														:key="warehouse.id"
 													>
 														{{ warehouse.name }}
 													</option>
+													<option value="other">Other USA</option>
 												</select>
 											</div>
 										</div>
 
-										<div class="col-md-5">
+										<div class="col-md-2" v-show="form.ship_from == 'other'">
+											<div
+												class="form-group sizes-input mt-5"
+												style="margin-top: 0px !important"
+											>
+												<label
+													class="text-6 text-center text-dark font-weight-medium d-block"
+													for="weight"
+													>Zip</label
+												>
+												<input
+													v-model="form.ship_from_postal_code"
+													type="text"
+													class="form-control text-dark text-4 mt-2"
+												/>
+											</div>
+										</div>
+
+										<div class="col-md-4">
 											<div class="form-group md-mrgn">
 												<div
 													class="input-title text-dark mb-2 text-6 font-weight-medium text-center"
@@ -271,6 +290,7 @@
 				loader: false,
 				shipping_rates: [],
 				form: this.$inertia.form({
+					ship_from: "",
 					ship_from_postal_code: "",
 					ship_from_country_code: "US",
 					ship_to_postal_code: "",
@@ -356,5 +376,8 @@
 	}
 	.page-header.page-header-modern.page-header-lg {
 		padding: 15px 0 !important;
+	}
+	.text-6 {
+		font-size: 1.3em !important;
 	}
 </style>

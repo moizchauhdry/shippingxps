@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Warehouse;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 
@@ -11,6 +12,14 @@ class ShippingRatesController extends Controller
     {
         try {
             // dd($request->all());
+
+            if ($request->ship_from == 'other') {
+                $ship_from_postal_code = $request->ship_from_postal_code;
+            } else {
+                $warehouse = Warehouse::find($request->ship_from);
+                $ship_from_postal_code = $warehouse->zip;
+            }
+
             $client = new Client();
 
             $result = $client->post('https://apis.fedex.com/oauth/token', [
@@ -51,8 +60,6 @@ class ShippingRatesController extends Controller
                 ];
             }
 
-            // dd($requested_package_line_items);
-
             $body = [
                 "accountNumber" => [
                     "value" => "695684150"
@@ -60,7 +67,7 @@ class ShippingRatesController extends Controller
                 "requestedShipment" => [
                     "shipper" => [
                         "address" => [
-                            "postalCode" => $request->ship_from_postal_code,
+                            "postalCode" => $ship_from_postal_code,
                             "countryCode" => $request->ship_from_country_code
                         ]
                     ],
