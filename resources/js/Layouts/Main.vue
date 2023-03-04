@@ -28,24 +28,23 @@
 			</div>
 		</nav>
 		<ul class="flex-md-row inline-flex navbar-nav px-3">
-      <inertia-link :href="route('notifications')"
-                    class="mb-2 me-2 inline-flex i+tems-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-        Notifications <span class="badge badge-danger ml-1.5" v-if="notification_count > 0" >{{ notification_count }}</span>
-      </inertia-link>
+			<inertia-link
+				:href="route('notifications')"
+				class="mb-2 me-2 inline-flex i+tems-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
+			>
+				Notifications
+				<span class="badge badge-danger ml-1.5" v-if="notification_count > 0">{{
+					notification_count
+				}}</span>
+			</inertia-link>
 			<breeze-dropdown align="right">
 				<template #trigger>
 					<span class="inline-flex rounded-md">
-
 						<button
 							type="button"
 							class="mb-2 inline-flex i+tems-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
 						>
 							{{ $page.props.auth.user.name }}
-<!--							<span
-								class="badge badge-danger ml-1.5"
-								v-if="notification_count > 0"
-								>{{ notification_count }}</span
-							>-->
 							<svg
 								class="ml-2 -mr-0.5 h-4 w-4"
 								xmlns="http://www.w3.org/2000/svg"
@@ -62,28 +61,23 @@
 					</span>
 				</template>
 				<template #content>
-
-          <breeze-dropdown-link v-if="$page.props.auth.user.type == 'customer'" :href="route('profile')" as="button">
-            My Profile
-          </breeze-dropdown-link>
-          <breeze-dropdown-link :href="route('update-password')" as="button">
-            Update Password
-          </breeze-dropdown-link>
-          <breeze-dropdown-link
-              :href="route('logout')"
-              method="post"
-              as="button"
-          >
-            Logout
-          </breeze-dropdown-link>
-<!--					<breeze-dropdown-link :href="route('notifications')" as="button">
-						Notifications
-						<span
-							class="badge badge-danger ml-1.5"
-							v-if="notification_count > 0"
-							>{{ notification_count }}</span
-						>
-					</breeze-dropdown-link>-->
+					<breeze-dropdown-link
+						v-if="$page.props.auth.user.type == 'customer'"
+						:href="route('profile')"
+						as="button"
+					>
+						My Profile
+					</breeze-dropdown-link>
+					<breeze-dropdown-link :href="route('update-password')" as="button">
+						Update Password
+					</breeze-dropdown-link>
+					<breeze-dropdown-link
+						:href="route('logout')"
+						method="post"
+						as="button"
+					>
+						Logout
+					</breeze-dropdown-link>
 				</template>
 			</breeze-dropdown>
 		</ul>
@@ -101,365 +95,302 @@
 					>
 						<i class="fas fa-home"></i><span>Dashboard</span>
 					</inertia-link>
-          <button v-if="
-							$page.props.auth.user.type == 'admin' ||
-							$page.props.auth.user.type == 'manager'
-						"  class="accordion">Users</button>
-          <div v-if="
-							$page.props.auth.user.type == 'admin' ||
-							$page.props.auth.user.type == 'manager'
-						" class="accordion-content">
-            <inertia-link
-                v-if="
-							$page.props.auth.user.type == 'admin' &&
-							$page.props.auth.user.type != 'manager'
-						"
-                class="nav-link"
-                :href="route('manage-users')"
-                :class="{
-							active:
-								route().current('manage-users') ||
-								route().current('create-users'),
-						}"
-                :active="route().current('manage-users')"
-            >
-              <i class="fas fa-external-link-alt"></i><span>Manage Users</span>
-            </inertia-link>
-
-            <inertia-link
-                v-if="$page.props.auth.user.type != 'customer'"
-                class="nav-link"
-                :href="route('customers')"
-                :class="{
-							active:
-								route().current('customers') ||
-								route().current('edit-customer') ||
-								route().current('detail-customer'),
-						}"
-                :active="route().current('customers')"
-            >
-              <i class="fas fa-external-link-alt"></i><span>Manage Customers</span>
-            </inertia-link>
-          </div>
-
-
-          <button class="accordion">Address</button>
-          <div class="accordion-content">
-            <inertia-link
-                  class="nav-link"
-                  :href="route('address.suite')"
-                  :class="{ active: route().current('address.suite') }"
-                  :active="route().current('address.suite')"
-              >
-                <i class="fas fa-external-link-alt"></i><span>Mailing Addresses</span>
-              </inertia-link>
-                <inertia-link
-                    v-if="
-							$page.props.auth.user.type != 'admin'
-						"
-                    class="nav-link"
-                    :href="route('addresses')"
-                    :class="{
-							active:
-								route().current('addresses') ||
-								route().current('address.create') ||
-								route().current('address.edit'),
-						}"
-                    :active="route().current('addresses')"
-                >
-                  <i class="fas fa-external-link-alt"></i
-                  ><span>Shipping Address</span>
-                </inertia-link>
-          </div>
-
-
-          <button class="accordion">Packages</button>
-          <div class="accordion-content">
-            <!-- <inertia-link
-                v-if="
+					<button
+						v-if="
 							$page.props.auth.user.type == 'admin' ||
 							$page.props.auth.user.type == 'manager'
 						"
-                class="nav-link"
-                :href="route('orders')"
-                :class="{
-							active:
-								route().current('orders') ||
-								route().current('orders.show') ||
-								route().current('orders.create') ||
-								route().current('order.edit'),
-						}"
-                :active="route().current('orders')"
-            >
-              <i class="fas fa-external-link-alt"></i><span>Manage Orders</span>
-            </inertia-link> -->
-
-            <inertia-link
-                class="nav-link"
-                v-if="
-							$page.props.auth.user.type == 'admin'"
-                :href="route('shop-for-me.index')"
-                :class="{
-							active:
-								route().current('shop-for-me.index') ||
-								route().current('shop-for-me.edit') ||
-								route().current('shop-for-me.show'),
-						}"
-                :active="route().current('shop-for-me.index')"
-            >
-              <i class="fas fa-external-link-alt"></i><span>Shopping</span>
-            </inertia-link>
-
-            <inertia-link
-                class="nav-link"
-                :href="route('packages.index')"
-                :class="{
-							active:
-								route().current('packages.index') ||
-								route().current('packages.show') ||
-								route().current('packages.custom'),
-						}"
-                :active="route().current('packages.index')"
-            >
-              <i class="fas fa-external-link-alt"></i><span>Packages</span>
-            </inertia-link>
-
-            <inertia-link
-                v-if="$page.props.auth.user.type != 'manager'"
-                class="nav-link"
-                :href="route('payments.getPayments')"
-                :class="{ active: route().current('payments.getPayments') }"
-                :active="route().current('payments.getPayments')"
-            >
-              <i class="fas fa-external-link-alt"></i><span>Payments</span>
-            </inertia-link>
-
-            <inertia-link
-                class="nav-link"
-                v-if="$page.props.auth.user.type == 'customer'"
-                :href="route('shop-for-me.index')"
-                :class="{
-							active:
-								route().current('shop-for-me.index') ||
-								route().current('shop-for-me.edit') ||
-								route().current('shop-for-me.show'),
-						}"
-                :active="route().current('shop-for-me.index')"
-            >
-              <i class="fas fa-external-link-alt"></i
-              ><span>My Shopping List</span>
-            </inertia-link>
-
-            <inertia-link
-                class="nav-link"
-                v-if="$page.props.auth.user.type == 'customer'"
-                :href="route('shop-for-me.create')"
-                :class="{ active: route().current('shop-for-me.create') }"
-                :active="route().current('shop-for-me.create')"
-            >
-              <i class="fas fa-external-link-alt"></i><span>Shop for me</span>
-            </inertia-link>
-
-            <inertia-link
-                v-if="$page.props.auth.user.type == 'admin'"
-                class="nav-link"
-                :href="route('coupon.index')"
-                :class="{
-							active:
-								route().current('coupon.index') ||
-								route().current('coupon.create') ||
-								route().current('coupon.edit'),
-						}"
-                :active="route().current('coupon.index')"
-            >
-              <i class="fas fa-external-link-alt"></i><span>Coupons</span>
-            </inertia-link>
-          </div>
-
-          <button class="accordion">Services</button>
-          <div class="accordion-content">
-            <inertia-link
-                v-if="$page.props.auth.user.type != 'manager'"
-                class="nav-link"
-                :href="route('insurance.index')"
-                :class="{
-							active:
-								route().current('insurance.index') ||
-								route().current('insurance.show') ||
-								route().current('insurance.create'),
-						}"
-                :active="route().current('insurance.index')"
-            >
-              <i class="fas fa-external-link-alt"></i><span>Insurance</span>
-            </inertia-link>
-
-            <inertia-link
-                class="nav-link"
-                v-if="
-							$page.props.auth.user.type != 'manager'"
-                :href="route('additional-request.index')"
-                :class="{
-							active:
-								route().current('additional-request.index') ||
-								route().current('additional-request.create') ||
-								route().current('additional-request.edit'),
-						}"
-                :active="route().current('additional-request')"
-            >
-              <i class="fas fa-external-link-alt"></i
-              ><span>Additional Request</span>
-            </inertia-link>
-
-            <inertia-link
-                class="nav-link"
-                v-if="
-							$page.props.auth.user.type != 'manager'"
-                :href="route('gift-card.index')"
-                :class="{
-							active:
-								route().current('gift-card.index') ||
-								route().current('gift-card.create') ||
-								route().current('gift-card.edit'),
-						}"
-                :active="route().current('gift-card')"
-            >
-              <i class="fas fa-external-link-alt"></i><span>Gift Card</span>
-            </inertia-link>
-          </div>
-
-
-
-
-          <button v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager' " class="accordion">Manage</button>
-          <div v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager' " class="accordion-content">
-            <!--            <inertia-link
-                v-if="$page.props.auth.user.type == 'admin'"
-                class="nav-link"
-                :href="route('pages_list')"
-                :class="{ active: route().current('pages_list') }"
-                :active="route().current('pages_list')"
-            >
-              <i class="fas fa-external-link-alt"></i><span>Manage Pages</span>
-            </inertia-link>-->
-
-            <inertia-link
-                v-if="$page.props.auth.user.type == 'admin'"
-                class="nav-link"
-                :href="route('services')"
-                :class="{
-							active:
-								route().current('services') ||
-								route().current('services.create') ||
-								route().current('services.edit'),
-						}"
-                :active="route().current('services')"
-            >
-              <i class="fas fa-external-link-alt"></i><span>Services</span>
-            </inertia-link>
-
-            <inertia-link
-                v-if="
-							$page.props.auth.user.type == 'admin' &&
-							$page.props.auth.user.type != 'manager'
+						class="accordion"
+					>
+						Users
+					</button>
+					<div
+						v-if="
+							$page.props.auth.user.type == 'admin' ||
+							$page.props.auth.user.type == 'manager'
 						"
-                class="nav-link"
-                :href="route('warehouses')"
-                :class="{
-							active:
-								route().current('warehouses') ||
-								route().current('warehouses.create') ||
-								route().current('warehouses.edit'),
-						}"
-                :active="route().current('warehouses')"
-            >
-              <i class="fas fa-external-link-alt"></i><span>Warehouses</span>
-            </inertia-link>
+						class="accordion-content"
+					>
+						<inertia-link
+							v-if="
+								$page.props.auth.user.type == 'admin' &&
+								$page.props.auth.user.type != 'manager'
+							"
+							class="nav-link"
+							:href="route('manage-users')"
+							:class="{
+								active:
+									route().current('manage-users') ||
+									route().current('create-users'),
+							}"
+							:active="route().current('manage-users')"
+						>
+							<i class="fas fa-external-link-alt"></i><span>Manage Users</span>
+						</inertia-link>
 
-            <inertia-link
-                v-if="$page.props.auth.user.type == 'admin'"
-                class="nav-link"
-                :href="route('store.index')"
-                :class="{
-							active:
-								route().current('store.index') ||
-								route().current('store.create') ||
-								route().current('store.edit'),
-						}"
-                :active="route().current('store.index')"
-            >
-              <i class="fas fa-external-link-alt"></i><span>Stores</span>
-            </inertia-link>
+						<inertia-link
+							v-if="$page.props.auth.user.type != 'customer'"
+							class="nav-link"
+							:href="route('customers')"
+							:class="{
+								active:
+									route().current('customers') ||
+									route().current('edit-customer') ||
+									route().current('detail-customer'),
+							}"
+							:active="route().current('customers')"
+						>
+							<i class="fas fa-external-link-alt"></i
+							><span>Manage Customers</span>
+						</inertia-link>
+					</div>
 
+					<button class="accordion">Address</button>
+					<div class="accordion-content">
+						<inertia-link
+							class="nav-link"
+							:href="route('address.suite')"
+							:class="{ active: route().current('address.suite') }"
+							:active="route().current('address.suite')"
+						>
+							<i class="fas fa-external-link-alt"></i
+							><span>Mailing Addresses</span>
+						</inertia-link>
+						<inertia-link
+							v-if="$page.props.auth.user.type != 'admin'"
+							class="nav-link"
+							:href="route('addresses')"
+							:class="{
+								active:
+									route().current('addresses') ||
+									route().current('address.create') ||
+									route().current('address.edit'),
+							}"
+							:active="route().current('addresses')"
+						>
+							<i class="fas fa-external-link-alt"></i
+							><span>Shipping Address</span>
+						</inertia-link>
+					</div>
 
+					<button class="accordion">Packages</button>
+					<div class="accordion-content">
+						<inertia-link
+							class="nav-link"
+							v-if="$page.props.auth.user.type == 'admin'"
+							:href="route('shop-for-me.index')"
+							:class="{
+								active:
+									route().current('shop-for-me.index') ||
+									route().current('shop-for-me.edit') ||
+									route().current('shop-for-me.show'),
+							}"
+							:active="route().current('shop-for-me.index')"
+						>
+							<i class="fas fa-external-link-alt"></i><span>Shopping</span>
+						</inertia-link>
 
-            <!--            <inertia-link
-                v-if="$page.props.auth.user.type == 'admin'"
-                class="nav-link"
-                :href="route('promotional.edit', 1)"
-                :class="{ active: route().current('promotional.edit', 1) }"
-                :active="route().current('promotional.edit', 1)"
-            >
-              <i class="fas fa-external-link-alt"></i><span>Promo Message</span>
-            </inertia-link>
+						<inertia-link
+							class="nav-link"
+							:href="route('packages.index')"
+							:class="{
+								active:
+									route().current('packages.index') ||
+									route().current('packages.show') ||
+									route().current('packages.custom'),
+							}"
+							:active="route().current('packages.index')"
+						>
+							<i class="fas fa-external-link-alt"></i><span>Packages</span>
+						</inertia-link>
 
-            <inertia-link
-                v-if="$page.props.auth.user.type == 'admin'"
-                class="nav-link"
-                :href="route('service-page.edit')"
-                :class="{ active: route().current('service-page.edit') }"
-                :active="route().current('service-page.edit')"
-            >
-              <i class="fas fa-external-link-alt"></i><span>Service Pricing</span>
-            </inertia-link>-->
+						<inertia-link
+							v-if="$page.props.auth.user.type != 'manager'"
+							class="nav-link"
+							:href="route('payments.getPayments')"
+							:class="{ active: route().current('payments.getPayments') }"
+							:active="route().current('payments.getPayments')"
+						>
+							<i class="fas fa-external-link-alt"></i><span>Payments</span>
+						</inertia-link>
 
-            <inertia-link
-                v-if="$page.props.auth.user.type == 'admin'"
-                class="nav-link"
-                :href="route('settings')"
-                :class="{ active: route().current('settings') }"
-                :active="route().current('settings')"
-            >
-              <i class="fas fa-external-link-alt"></i><span>Fee & Charges</span>
-            </inertia-link>
+						<inertia-link
+							class="nav-link"
+							v-if="$page.props.auth.user.type == 'customer'"
+							:href="route('shop-for-me.index')"
+							:class="{
+								active:
+									route().current('shop-for-me.index') ||
+									route().current('shop-for-me.edit') ||
+									route().current('shop-for-me.show'),
+							}"
+							:active="route().current('shop-for-me.index')"
+						>
+							<i class="fas fa-external-link-alt"></i
+							><span>My Shopping List</span>
+						</inertia-link>
 
-<!--            <inertia-link
-                v-if="$page.props.auth.user.type == 'customer'"
-                class="nav-link"
-                :href="route('profile')"
-                :class="{ active: route().current('profile') }"
-                :active="route().current('profile')"
-            >
-              <i class="fas fa-external-link-alt"></i><span>Profile</span>
-            </inertia-link>
+						<inertia-link
+							class="nav-link"
+							v-if="$page.props.auth.user.type == 'customer'"
+							:href="route('shop-for-me.create')"
+							:class="{ active: route().current('shop-for-me.create') }"
+							:active="route().current('shop-for-me.create')"
+						>
+							<i class="fas fa-external-link-alt"></i><span>Shop for me</span>
+						</inertia-link>
 
+						<inertia-link
+							v-if="$page.props.auth.user.type == 'admin'"
+							class="nav-link"
+							:href="route('coupon.index')"
+							:class="{
+								active:
+									route().current('coupon.index') ||
+									route().current('coupon.create') ||
+									route().current('coupon.edit'),
+							}"
+							:active="route().current('coupon.index')"
+						>
+							<i class="fas fa-external-link-alt"></i><span>Coupons</span>
+						</inertia-link>
+					</div>
 
+					<button class="accordion">Services</button>
+					<div class="accordion-content">
+						<inertia-link
+							v-if="$page.props.auth.user.type != 'manager'"
+							class="nav-link"
+							:href="route('insurance.index')"
+							:class="{
+								active:
+									route().current('insurance.index') ||
+									route().current('insurance.show') ||
+									route().current('insurance.create'),
+							}"
+							:active="route().current('insurance.index')"
+						>
+							<i class="fas fa-external-link-alt"></i><span>Insurance</span>
+						</inertia-link>
 
-            <inertia-link
-                class="nav-link"
-                :href="route('update-password')"
-                :class="{ active: route().current('update-password') }"
-                :active="route().current('update-password')"
-            >
-              <i class="fas fa-external-link-alt"></i><span>Update Password</span>
-            </inertia-link>-->
+						<inertia-link
+							class="nav-link"
+							v-if="$page.props.auth.user.type != 'manager'"
+							:href="route('additional-request.index')"
+							:class="{
+								active:
+									route().current('additional-request.index') ||
+									route().current('additional-request.create') ||
+									route().current('additional-request.edit'),
+							}"
+							:active="route().current('additional-request')"
+						>
+							<i class="fas fa-external-link-alt"></i
+							><span>Additional Request</span>
+						</inertia-link>
 
+						<inertia-link
+							class="nav-link"
+							v-if="$page.props.auth.user.type != 'manager'"
+							:href="route('gift-card.index')"
+							:class="{
+								active:
+									route().current('gift-card.index') ||
+									route().current('gift-card.create') ||
+									route().current('gift-card.edit'),
+							}"
+							:active="route().current('gift-card')"
+						>
+							<i class="fas fa-external-link-alt"></i><span>Gift Card</span>
+						</inertia-link>
 
+						<inertia-link
+							class="nav-link"
+							:href="route('dashboard.shipping-calculator.index')"
+							:class="{
+								active: route().current('dashboard.shipping-calculator.index'),
+							}"
+							:active="route().current('dashboard.shipping-calculator.index')"
+						>
+							<i class="fas fa-external-link-alt"></i
+							><span>Shipping Calculator</span>
+						</inertia-link>
+					</div>
 
-            <!--<inertia-link
-                class="nav-link"
-                v-if="$page.props.auth.user.type == 'customer'"
-                :href="route('notifications')"
-                :class="{ active: route().current('notifications') }"
-                :active="route().current('notifications')"
-            >
-              <i class="fas fa-external-link-alt"></i><span>Notifications</span>
-            </inertia-link>-->
-          </div>
+					<button
+						v-if="
+							$page.props.auth.user.type == 'admin' ||
+							$page.props.auth.user.type == 'manager'
+						"
+						class="accordion"
+					>
+						Manage
+					</button>
+					<div
+						v-if="
+							$page.props.auth.user.type == 'admin' ||
+							$page.props.auth.user.type == 'manager'
+						"
+						class="accordion-content"
+					>
+						<inertia-link
+							v-if="$page.props.auth.user.type == 'admin'"
+							class="nav-link"
+							:href="route('services')"
+							:class="{
+								active:
+									route().current('services') ||
+									route().current('services.create') ||
+									route().current('services.edit'),
+							}"
+							:active="route().current('services')"
+						>
+							<i class="fas fa-external-link-alt"></i><span>Services</span>
+						</inertia-link>
 
+						<inertia-link
+							v-if="
+								$page.props.auth.user.type == 'admin' &&
+								$page.props.auth.user.type != 'manager'
+							"
+							class="nav-link"
+							:href="route('warehouses')"
+							:class="{
+								active:
+									route().current('warehouses') ||
+									route().current('warehouses.create') ||
+									route().current('warehouses.edit'),
+							}"
+							:active="route().current('warehouses')"
+						>
+							<i class="fas fa-external-link-alt"></i><span>Warehouses</span>
+						</inertia-link>
 
+						<inertia-link
+							v-if="$page.props.auth.user.type == 'admin'"
+							class="nav-link"
+							:href="route('store.index')"
+							:class="{
+								active:
+									route().current('store.index') ||
+									route().current('store.create') ||
+									route().current('store.edit'),
+							}"
+							:active="route().current('store.index')"
+						>
+							<i class="fas fa-external-link-alt"></i><span>Stores</span>
+						</inertia-link>
 
-
-
+						<inertia-link
+							v-if="$page.props.auth.user.type == 'admin'"
+							class="nav-link"
+							:href="route('settings')"
+							:class="{ active: route().current('settings') }"
+							:active="route().current('settings')"
+						>
+							<i class="fas fa-external-link-alt"></i><span>Fee & Charges</span>
+						</inertia-link>
+					</div>
 				</div>
 			</div>
 			<div class="toggle-side" @click="toggleSideBar()">
@@ -524,11 +455,11 @@
 		}
 	}
 
-  @media (max-width: 768px){
-    .sidebar-menu{
-      margin-top: 20px !important;
-    }
-  }
+	@media (max-width: 768px) {
+		.sidebar-menu {
+			margin-top: 20px !important;
+		}
+	}
 
 	.badge-danger {
 		border-radius: 50px !important;
@@ -814,28 +745,28 @@
 		padding: 0 0.4rem;
 	}
 
-  button.accordion {
-    width: 100%;
-    border: none;
-    outline: none;
-    text-align: left;
-    padding: 15px 10px 15px 0px;
-    font-size: 14px;
-    text-transform: capitalize;
-    color: #ffffff;
-    cursor: pointer;
-    transition: background-color 0.2s linear;
-  }
+	button.accordion {
+		width: 100%;
+		border: none;
+		outline: none;
+		text-align: left;
+		padding: 15px 10px 15px 0px;
+		font-size: 14px;
+		text-transform: capitalize;
+		color: #ffffff;
+		cursor: pointer;
+		transition: background-color 0.2s linear;
+	}
 
-  button.accordion.is-open {
-    background-color: rgba(93, 42, 42, 0.03);
-  }
-  .accordion-content {
-    padding: 0 20 0 0;
-    /*max-height: 0;*/
-    /*overflow: hidden;*/
-    /*transition: max-height 0.5s ease-in-out;*/
-  }
+	button.accordion.is-open {
+		background-color: rgba(93, 42, 42, 0.03);
+	}
+	.accordion-content {
+		padding: 0 20 0 0;
+		/*max-height: 0;*/
+		/*overflow: hidden;*/
+		/*transition: max-height 0.5s ease-in-out;*/
+	}
 </style>
 <style>
 	.form-control {
@@ -851,7 +782,7 @@
 	import BreezeNavLink from "@/Components/NavLink";
 	import FlashMessages from "@/Components/FlashMessages";
 	import BreezeResponsiveNavLink from "@/Components/ResponsiveNavLink";
-import { cornsilk } from "color-name";
+	import { cornsilk } from "color-name";
 
 	export default {
 		// components: {
@@ -868,7 +799,7 @@ import { cornsilk } from "color-name";
 		data() {
 			return {
 				usertype: this.$auth,
-				main_sidebar: 0
+				main_sidebar: 0,
 			};
 		},
 		props: {
@@ -882,10 +813,10 @@ import { cornsilk } from "color-name";
 			this.sidebar();
 		},
 		created() {
-			// 
+			//
 		},
 		destroyed() {
-			// 
+			//
 		},
 		methods: {
 			initTawkTo() {
@@ -915,27 +846,27 @@ import { cornsilk } from "color-name";
 					}
 				}
 			},
-			sidebar(){
+			sidebar() {
 				if (window.innerWidth > 1300) {
 					this.main_sidebar = 1;
 				} else {
 					this.main_sidebar = 0;
 				}
 			},
-      collapseToggle(event){
-        console.log(event);
-        if(event.target.classList.contains('is-open')){
-          event.target.classList.remove('is-open')
-        }else{
-          event.target.classList.add('is-open')
-        }
-        var content = event.target.nextElementSibling;
-        if (content.style.maxHeight) {
-          content.style.maxHeight = null;
-        } else {
-          content.style.maxHeight = content.scrollHeight + "px";
-        }
-      }
+			collapseToggle(event) {
+				console.log(event);
+				if (event.target.classList.contains("is-open")) {
+					event.target.classList.remove("is-open");
+				} else {
+					event.target.classList.add("is-open");
+				}
+				var content = event.target.nextElementSibling;
+				if (content.style.maxHeight) {
+					content.style.maxHeight = null;
+				} else {
+					content.style.maxHeight = content.scrollHeight + "px";
+				}
+			},
 		},
 	};
 </script>

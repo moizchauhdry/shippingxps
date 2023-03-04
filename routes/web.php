@@ -4,6 +4,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ShippingCalculatorController;
 use Inertia\Inertia;
 
 
@@ -166,18 +167,6 @@ Route::post('pages/update', 'CMSPageController@update')->middleware(['auth', 've
 Route::get('pages/add', 'PostController@add')->middleware(['auth', 'verified'])->name('page_new');
 Route::post('pages/save', 'PostController@save')->middleware(['auth', 'verified'])->name('page_save');
 Route::get('page/{slug}', 'CMSPageController@show')->name('page-show');
-
-
 Route::get('packages-to-dash/{id}', 'PackageController@pushPackage')->name('pushPackage');
 
-
-
-//Route::get('{post_url}', 'PostController@index');
-
-// Route::get('/clear-cache', function () {
-//     \Artisan::call('cache:clear');
-//     \Artisan::call('route:clear');
-//     \Artisan::call('view:clear');
-//     \Artisan::call('optimize:clear');
-//     return 'Cache Cleared';
-// });
+Route::get('dashboard/shipping-calculator', [ShippingCalculatorController::class, 'index'])->middleware(['auth'])->name('dashboard.shipping-calculator.index');
