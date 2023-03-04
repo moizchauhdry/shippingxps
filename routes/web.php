@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ShippingCalculatorController;
+use App\Http\Controllers\ShippingRatesController;
 use Inertia\Inertia;
 
 
@@ -170,3 +171,4 @@ Route::get('page/{slug}', 'CMSPageController@show')->name('page-show');
 Route::get('packages-to-dash/{id}', 'PackageController@pushPackage')->name('pushPackage');
 
 Route::get('dashboard/shipping-calculator', [ShippingCalculatorController::class, 'index'])->middleware(['auth'])->name('dashboard.shipping-calculator.index');
+Route::any('shipping-rates', [ShippingRatesController::class, 'index'])->middleware(['auth'])->name('shipping-rates.index');
