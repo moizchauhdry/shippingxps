@@ -107,6 +107,7 @@ class ShippingRatesController extends Controller
                 'data' => $fedex_rates,
             ]);
         } catch (\Throwable $th) {
+            dd($th);
             return response()->json([
                 'status' => false,
                 'message' => 'error',
