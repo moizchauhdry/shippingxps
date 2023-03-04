@@ -20,6 +20,8 @@ class ShippingRatesController extends Controller
                 $ship_from_postal_code = $warehouse->zip;
             }
 
+            dd($ship_from_postal_code);
+
             $client = new Client();
 
             $result = $client->post('https://apis.fedex.com/oauth/token', [
