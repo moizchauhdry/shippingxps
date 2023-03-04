@@ -10,6 +10,7 @@ class ShippingRatesController extends Controller
     public function index(Request $request)
     {
         try {
+            // dd($request->all());
             $client = new Client();
 
             $result = $client->post('https://apis.fedex.com/oauth/token', [
@@ -50,6 +51,8 @@ class ShippingRatesController extends Controller
                 ];
             }
 
+            // dd($requested_package_line_items);
+
             $body = [
                 "accountNumber" => [
                     "value" => "695684150"
@@ -71,20 +74,7 @@ class ShippingRatesController extends Controller
                     "rateRequestType" => [
                         "ACCOUNT"
                     ],
-                    "requestedPackageLineItems" => [
-                        [
-                            "weight" => [
-                                "units" => $weight_units,
-                                "value" => 20
-                            ],
-                            "dimensions" => [
-                                "length" => 10,
-                                "width" => 10,
-                                "height" => 10,
-                                "units" => $dimension_units
-                            ]
-                        ]
-                    ]
+                    "requestedPackageLineItems" => $requested_package_line_items
                 ]
             ];
 

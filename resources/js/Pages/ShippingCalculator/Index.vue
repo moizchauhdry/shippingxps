@@ -30,6 +30,7 @@
 													v-model="form.ship_from_postal_code"
 													class="form-select text-4"
 												>
+													<option value="">Select</option>
 													<option
 														v-for="warehouse in warehouses"
 														:value="warehouse.zip"
@@ -53,6 +54,7 @@
 													v-model="form.ship_to_country_code"
 													class="form-select text-4"
 												>
+													<option value="">Select</option>
 													<option
 														v-for="country in countries"
 														:value="country.iso"
@@ -108,7 +110,7 @@
 													class="form-select text-4 mt-2"
 													aria-label="Default select example"
 												>
-													<option value="LB_IN" selected>Lb / Inch</option>
+													<option value="LB_IN">Lb / Inch</option>
 													<option value="KG_CM">Kg / Cm</option>
 												</select>
 											</div>
@@ -191,14 +193,14 @@
 										</div>
 									</div>
 
-									<!-- <div class="container text-center">
-											<span
-												class="btn btn-primary mt-2 mb-2"
-												v-show="multipiece"
-												v-on:click="addDimensions()"
-												>+ Add Another Package</span
-											>
-										</div> -->
+									<div class="">
+										<button
+											class="btn btn-link mt-2 mb-2 font-bold"
+											v-on:click="add_dimension()"
+										>
+											+ ADD ANOTHER PACKAGE
+										</button>
+									</div>
 
 									<div class="row">
 										<div class="form-group col text-center mt-4">
@@ -259,6 +261,11 @@
 			MainLayout,
 			LoaderComponent,
 		},
+		props: {
+			auth: Object,
+			warehouses: Object,
+			countries: Object,
+		},
 		data() {
 			return {
 				loader: false,
@@ -280,12 +287,6 @@
 				}),
 			};
 		},
-		props: {
-			auth: Object,
-			warehouses: Object,
-			countries: Object,
-		},
-
 		methods: {
 			submit() {
 				this.loader = true;
@@ -301,6 +302,14 @@
 					.finally(() => {
 						this.loader = false;
 					});
+			},
+			add_dimension() {
+				this.form.dimensions.push({
+					weight: "",
+					length: "",
+					width: "",
+					height: "",
+				});
 			},
 		},
 		mounted() {
