@@ -4,7 +4,7 @@
 		style=""
 		id="header2"
 	>
-		<a href="http://shippingxps.com/" style="padding: 5px 10px">
+		<a href="http://shippingxps.com" style="padding: 5px 10px" target="_blank">
 			<img alt="Porto" width="100" height="35" src="/theme/img/logo.png" />
 		</a>
 		<nav
@@ -125,7 +125,7 @@
 							}"
 							:active="route().current('manage-users')"
 						>
-							<i class="fas fa-external-link-alt"></i><span>Manage Users</span>
+							<i class="fas fa-user-tie"></i><span>Manage Users</span>
 						</inertia-link>
 
 						<inertia-link
@@ -140,8 +140,7 @@
 							}"
 							:active="route().current('customers')"
 						>
-							<i class="fas fa-external-link-alt"></i
-							><span>Manage Customers</span>
+							<i class="fas fa-users"></i><span>Manage Customers</span>
 						</inertia-link>
 					</div>
 
@@ -153,8 +152,8 @@
 							:class="{ active: route().current('address.suite') }"
 							:active="route().current('address.suite')"
 						>
-							<i class="fas fa-external-link-alt"></i
-							><span>Mailing Addresses</span>
+							<i class="fas fa-address-book"></i>
+							<span>Mailing Addresses</span>
 						</inertia-link>
 						<inertia-link
 							v-if="$page.props.auth.user.type != 'admin'"
@@ -168,8 +167,8 @@
 							}"
 							:active="route().current('addresses')"
 						>
-							<i class="fas fa-external-link-alt"></i
-							><span>Shipping Address</span>
+							<i class="fas fa-address-book"></i>
+							<span>Shipping Address</span>
 						</inertia-link>
 					</div>
 
@@ -187,7 +186,8 @@
 							}"
 							:active="route().current('shop-for-me.index')"
 						>
-							<i class="fas fa-external-link-alt"></i><span>Shopping</span>
+							<i class="fas fa-shopping-cart"></i>
+							<span>Shopping</span>
 						</inertia-link>
 
 						<inertia-link
@@ -201,7 +201,8 @@
 							}"
 							:active="route().current('packages.index')"
 						>
-							<i class="fas fa-external-link-alt"></i><span>Packages</span>
+							<i class="fas fa-box"></i>
+							<span>Packages</span>
 						</inertia-link>
 
 						<inertia-link
@@ -211,7 +212,8 @@
 							:class="{ active: route().current('payments.getPayments') }"
 							:active="route().current('payments.getPayments')"
 						>
-							<i class="fas fa-external-link-alt"></i><span>Payments</span>
+							<i class="fas fa-money-check-alt"></i>
+							<span>Payments</span>
 						</inertia-link>
 
 						<inertia-link
@@ -226,8 +228,8 @@
 							}"
 							:active="route().current('shop-for-me.index')"
 						>
-							<i class="fas fa-external-link-alt"></i
-							><span>My Shopping List</span>
+							<i class="fas fa-list"></i>
+							<span>My Shopping List</span>
 						</inertia-link>
 
 						<inertia-link
@@ -237,7 +239,8 @@
 							:class="{ active: route().current('shop-for-me.create') }"
 							:active="route().current('shop-for-me.create')"
 						>
-							<i class="fas fa-external-link-alt"></i><span>Shop for me</span>
+							<i class="fas fa-shopping-cart"></i>
+							<span>Shop for me</span>
 						</inertia-link>
 
 						<inertia-link
@@ -252,7 +255,8 @@
 							}"
 							:active="route().current('coupon.index')"
 						>
-							<i class="fas fa-external-link-alt"></i><span>Coupons</span>
+							<i class="fas fa-tag"></i>
+							<span>Coupons</span>
 						</inertia-link>
 					</div>
 
@@ -270,7 +274,8 @@
 							}"
 							:active="route().current('insurance.index')"
 						>
-							<i class="fas fa-external-link-alt"></i><span>Insurance</span>
+							<i class="fas fa-boxes"></i>
+							<span>Insurance</span>
 						</inertia-link>
 
 						<inertia-link
@@ -285,8 +290,8 @@
 							}"
 							:active="route().current('additional-request')"
 						>
-							<i class="fas fa-external-link-alt"></i
-							><span>Additional Request</span>
+							<i class="fas fa-truck"></i>
+							<span>Additional Request</span>
 						</inertia-link>
 
 						<inertia-link
@@ -301,7 +306,8 @@
 							}"
 							:active="route().current('gift-card')"
 						>
-							<i class="fas fa-external-link-alt"></i><span>Gift Card</span>
+							<i class="fas fa-gift"></i>
+							<span>Gift Card</span>
 						</inertia-link>
 
 						<inertia-link
@@ -312,8 +318,8 @@
 							}"
 							:active="route().current('dashboard.shipping-calculator.index')"
 						>
-							<i class="fas fa-external-link-alt"></i
-							><span>Shipping Calculator</span>
+							<i class="fas fa-calculator"></i>
+							<span>Shipping Calculator</span>
 						</inertia-link>
 					</div>
 
@@ -345,7 +351,8 @@
 							}"
 							:active="route().current('services')"
 						>
-							<i class="fas fa-external-link-alt"></i><span>Services</span>
+							<i class="fas fa-shipping-fast"></i>
+							<span>Services</span>
 						</inertia-link>
 
 						<inertia-link
@@ -363,7 +370,8 @@
 							}"
 							:active="route().current('warehouses')"
 						>
-							<i class="fas fa-external-link-alt"></i><span>Warehouses</span>
+							<i class="fas fa-warehouse"></i>
+							<span>Warehouses</span>
 						</inertia-link>
 
 						<inertia-link
@@ -378,7 +386,8 @@
 							}"
 							:active="route().current('store.index')"
 						>
-							<i class="fas fa-external-link-alt"></i><span>Stores</span>
+							<i class="fas fa-store-alt"></i>
+							<span>Stores</span>
 						</inertia-link>
 
 						<inertia-link
@@ -388,7 +397,8 @@
 							:class="{ active: route().current('settings') }"
 							:active="route().current('settings')"
 						>
-							<i class="fas fa-external-link-alt"></i><span>Fee & Charges</span>
+							<i class="fas fa-file-invoice"></i>
+							<span>Fee & Charges</span>
 						</inertia-link>
 					</div>
 				</div>
