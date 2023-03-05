@@ -307,12 +307,14 @@ class PackageController extends Controller
             'package_items' => 'required|array',
             'shipping_total' => 'required',
             'package_type' => 'required',
+            'special_instructions' => 'nullable',
         ]);
 
         $package->update([
             'status' => 'filled',
             'shipping_total' => $validated['shipping_total'],
             'package_type' => $validated['package_type'],
+            'special_instructions' => $validated['special_instructions'],
         ]);
 
         foreach ($request->package_items as $key => $pkg_item) {

@@ -97,7 +97,7 @@
                 <strong>Company / Address</strong> :<br>
                 {{ $address->address ?? ''}} <br>
                 <strong>City</strong> : {{ $address->city ?? ''}} <br>
-                <strong>State</strong> : {{ $address->state ?? ''}} <br>
+                <strong>State/Province</strong> : {{ $address->state ?? ''}} <br>
                 <strong>Zip code</strong> : {{ $address->zip_code ?? ''}} <br> <br>
                 <strong>Country</strong> : {{ $address->country->name ?? '' }}
             </td>
@@ -165,7 +165,10 @@
         </tr>
 
         <tr>
-            <td colspan="6"><strong>Special Instructions</strong></td>
+            <td colspan="6">
+                <strong>Special Instructions:</strong>
+                {{$package->special_instructions}}
+            </td>
             <td colspan="2"></td>
             <td colspan="1"></td>
         </tr>

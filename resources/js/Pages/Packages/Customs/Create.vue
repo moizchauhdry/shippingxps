@@ -131,7 +131,7 @@
 															v-model="item.price"
 															@keyup="calculateShippingTotal"
 															v-on:change="calculateShippingTotal"
-															min="1"
+															min="0"
 															type="number"
 															step="0.01"
 															class="form-control"
@@ -245,10 +245,10 @@
 														<input
 															v-model="form.package_type"
 															type="radio"
-															id="merchandise"
-															value="merchandise"
+															id="commercial"
+															value="Commercial"
 														/>
-														Merchandise
+														Commercial
 													</label>
 													<br />
 													<label>
@@ -256,7 +256,7 @@
 															v-model="form.package_type"
 															type="radio"
 															id="gift"
-															value="gift"
+															value="Gift"
 														/>
 														Gift
 													</label>
@@ -266,11 +266,32 @@
 															v-model="form.package_type"
 															type="radio"
 															id="sample"
-															value="sample"
+															value="Sample"
 														/>
 														Sample
 													</label>
+													<br />
+													<label>
+														<input
+															v-model="form.package_type"
+															type="radio"
+															id="personal"
+															value="Personal - Not for sale"
+														/>
+														Personal - Not for sale
+													</label>
 												</div>
+											</div>
+
+											<div class="row">
+												<label for="" class="font-bold"
+													>Special Instrcutions</label
+												>
+												<textarea
+													v-model="form.special_instructions"
+													id=""
+													rows="5"
+												></textarea>
 											</div>
 										</div>
 									</fieldset>
@@ -304,19 +325,6 @@
 			MainLayout,
 			BreezeLabel,
 		},
-		data() {
-			return {
-				form: this.$inertia.form({
-					package_id: this.packag.id,
-					address_book_id: this.address_book_id,
-					package_items: this.package_items,
-					shipping_total: this.packag.shipping_total,
-					package_type: this.packag.package_type,
-				}),
-				current_address: this.selected_address,
-				printable: ["filled", "labeled", "shipped", "delivered"],
-			};
-		},
 		props: {
 			auth: Object,
 			countries: Object,
@@ -328,6 +336,20 @@
 			warehouse: Object,
 			tracking_numbers: Object,
 			package_date: String,
+		},
+		data() {
+			return {
+				form: this.$inertia.form({
+					package_id: this.packag.id,
+					address_book_id: this.address_book_id,
+					package_items: this.package_items,
+					shipping_total: this.packag.shipping_total,
+					package_type: this.packag.package_type,
+					special_instructions: this.packag.special_instructions,
+				}),
+				current_address: this.selected_address,
+				printable: ["filled", "labeled", "shipped", "delivered"],
+			};
 		},
 		methods: {
 			submit() {
