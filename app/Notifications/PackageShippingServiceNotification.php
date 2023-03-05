@@ -59,7 +59,9 @@ class PackageShippingServiceNotification extends Notification
         $url = route("packages.show", ["id" => $this->package->id]);
         return [
             'package_id' => $this->package->id,
-            'message' => 'Customer ' . $this->package->customer->suite_no . ' has selected Shipping service <strong>' . $this->package->service_code . '</strong> and Payment is pending, Shipping Total,<strong>$' . $this->package->shipping_total . '</strong> for <a class="link-primary" href="' . $url . '" >Package # ' . $this->package->id . '</a>',
+            'message' => $this->package->customer->name . ' #' . $this->package->customer->suite_no . ' has selected shipping service 
+            <strong>' . $this->package->service_code . '</strong> and payment is pending, Grand Total,
+            <strong> $' . $this->package->grand_total . '</strong> for <a class="link-primary" href="' . $url . '" >Package # ' . $this->package->id . '</a>',
             'url' => $url
         ];
     }

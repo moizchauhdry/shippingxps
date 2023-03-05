@@ -61,7 +61,7 @@ class CustomFormFilledNotification extends Notification
 
         return [
             'package_id' => $this->package->id,
-            'message' => 'Customer has filled Custom Declaration form for package  <a class="link-primary" href="' . $url . '" ><strong>' . $this->package->id . '</strong></a>',
+            'message' => 'Customer has filled Custom Declaration form for package  <a class="link-primary" href="' . $url . '" ><strong>Package - PKG #' . $this->package->id . '</strong></a>',
             'url' => $url
         ];
     }

@@ -198,7 +198,6 @@ class PackageController extends Controller
 
         $packag->update(['grand_total' => $total]);
 
-
         $package_boxes = [];
         foreach ($packag->boxes as $pkg_box) {
             $package_boxes[] = [
@@ -213,9 +212,12 @@ class PackageController extends Controller
         }
 
         $countries = Country::get(['id', 'nicename as name', 'iso'])->toArray();
-
-
         $service_request_pending_count = ServiceRequest::where('package_id', $packag->id)->where('status', 'pending')->count();
+
+        if ($packag->status == 'shipping_service_selected') {
+            $packag->update(['status' => 'checkout']);
+            event(new PackageShippingServiceSelected($packag));
+        }
 
         return Inertia::render('Packages/Show', [
             'packag' => $packag,
@@ -564,7 +566,7 @@ class PackageController extends Controller
         $service = $data['service'];
 
         $package = Package::find($data['package_id']);
-        $package->status = 'checkout';
+        $package->status = 'shipping_service_selected';
         $package->carrier_code = isset($service['carrierCode']) ? $service['carrierCode'] : " ";
         $package->service_label = isset($service['serviceLabel']) ? $service['serviceLabel'] : " ";
         $package->service_code = $service['serviceCode'];
@@ -573,8 +575,6 @@ class PackageController extends Controller
         $package->markup_fee = $service['markup_fee'];
         $package->shipping_charges = doubleval(str_replace(',', '', $service['totalAmount']));
         $package->update();
-
-        event(new PackageShippingServiceSelected($package));
 
         return redirect()->route('packages.show', $package->id)->with('success', 'Package set for shipment.');
     }
