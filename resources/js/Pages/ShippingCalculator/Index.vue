@@ -222,15 +222,8 @@
 									</div>
 
 									<div class="row">
-										<div class="form-group col text-center mt-4">
-											<button
-												type="submit"
-												class="btn btn-primary custom-btn-style-1 font-weight-normal btn-px-4 btn-py-2 text-5-5"
-												data-loading-text="Loading..."
-												data-cursor-effect-hover="plus"
-												data-cursor-effect-hover-color="light"
-												ref="buttonRates"
-											>
+										<div class="form-group text-center">
+											<button type="submit" class="btn btn-primary btn-lg">
 												<span>Get Shipping Rates</span>
 											</button>
 										</div>
