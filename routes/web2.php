@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GiftCardController;
-
+use App\Http\Controllers\PaymentController;
 
 Route::middleware('auth')->group(function () {
     Route::prefix('shop-for-me')->group(function () {
@@ -91,6 +91,7 @@ Route::middleware('auth')->group(function () {
         Route::get('invoice/{id}', [\App\Http\Controllers\PaymentController::class, 'invoice'])->name('payment.invoice');
         Route::get('generateReport/{id}', [\App\Http\Controllers\PaymentController::class, 'generateReport'])->name('generateReport');
         Route::any('generateReportList', [\App\Http\Controllers\PaymentController::class, 'generateReportList'])->name('generateReportList');
+        Route::post('add', [PaymentController::class, 'add_payment'])->middleware(['auth'])->name('payment.add');
     });
 
     Route::get('getShippingAddress/{id}', [\App\Http\Controllers\AddressController::class, 'getShippingAddress'])->name('getShippingAddress');

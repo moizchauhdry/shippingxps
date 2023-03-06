@@ -829,4 +829,31 @@ class PaymentController extends Controller
         $pdf->setPaper('A4', 'portrait');
         return $pdf->stream('SHIPPING-XPS-INVOICE.pdf', array("Attachment" => false));
     }
+
+    public function add_payment(Request $request)
+    {
+        $data = $request->validate([
+            'transaction_id' => 'required',
+            'payment_type' => 'required',
+        ]);
+
+        $package = Package::find($request->package_id);
+
+        if ($package->payment_status != 'Paid') {
+            Payment::create([
+                'customer_id' => $package->customer_id,
+                'package_id' => $package->id,
+                'transaction_id' => $data['transaction_id'],
+                'payment_type' => $data['payment_type'],
+                'charged_amount' => $package->grand_total,
+                'charged_at' => Carbon::now()
+            ]);
+        }
+
+        $package->update([
+            'payment_status' => 'Paid'
+        ]);
+
+        return redirect()->back();
+    }
 }

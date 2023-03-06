@@ -15,6 +15,8 @@
 					<mailout-component v-bind="$props"></mailout-component>
 					<!-- <shipout-component v-bind="$props"></shipout-component> -->
 					<package-image-component v-bind="$props"></package-image-component>
+					<payment-component v-bind="$props"></payment-component>
+					<package-delete-component v-bind="$props"></package-delete-component>
 
 					<div v-show="overlay === true" class="overlay">
 						<div class="overlay__inner">
@@ -27,7 +29,6 @@
 	</MainLayout>
 
 	<ImageViewer></ImageViewer>
-	<delete-package-modal></delete-package-modal>
 </template>
 
 <script>
@@ -41,12 +42,13 @@
 	import ShippingAddressComponent from "./Components/ShippingAddressComponent.vue";
 	import PackageBoxComponent from "./Components/PackageBoxComponent.vue";
 	import ShippingRateComponent from "./Components/ShippingRateComponent.vue";
-	import DeletePackageModal from "./Modals/DeletePackageModal.vue";
 	import PackageImageComponent from "./Components/PackageImageComponent.vue";
 	import ServiceComponent from "./Components/ServiceComponent.vue";
 	import MailoutComponent from "./Components/MailoutComponent.vue";
 	import ShipoutComponent from "./Components/ShipoutComponent.vue";
 	import NotificationComponent from "./Components/NotificationComponent.vue";
+	import PaymentComponent from "./Components/PaymentComponent.vue";
+	import PackageDeleteComponent from "./Components/PackageDeleteComponent.vue";
 
 	export default {
 		components: {
@@ -59,12 +61,13 @@
 			ShippingAddressComponent,
 			PackageBoxComponent,
 			ShippingRateComponent,
-			DeletePackageModal,
 			PackageImageComponent,
 			ServiceComponent,
 			MailoutComponent,
 			ShipoutComponent,
 			NotificationComponent,
+			PaymentComponent,
+			PackageDeleteComponent,
 		},
 		data() {
 			return {

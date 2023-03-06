@@ -613,43 +613,9 @@ class PackageController extends Controller
 
     public function destroy(Request $request)
     {
-        $id = $request->id;
-
-        $package = Package::find($id);
-
-        $orderIDS = $package->orders()->pluck('id')->toArray();
-
-        $packagePaymentsCheck = Payment::where('package_id', $package->id)->whereNotNull('charged_at')->get();
-        $ordersPaymentsCheck = Payment::whereIn('order_id', $orderIDS)->whereNotNull('charged_at')->get();
-
-
-
-        if (count($packagePaymentsCheck) > 0 || count($ordersPaymentsCheck) > 0) {
-            return response()->json([
-                'status' => 0,
-                'message' => 'Cannot Delete This package due to One of your Order or this package has been paid by the customer',
-                'url' => route('packages')
-            ]);
-        }
-
-
-        try {
-            $package->orders()->delete();
-            $package->delete();
-
-            return response()->json([
-                'status' => 1,
-                'message' => 'Package Deleted Successfully',
-                'url' => route('packages')
-            ]);
-        } catch (\Throwable $e) {
-            \Log::error($e);
-            return response()->json([
-                'status' => 0,
-                'message' => 'Something went wrong',
-                'url' => route('packages')
-            ]);
-        }
+        $package = Package::find($request->package_id);
+        $package->delete();
+        return redirect()->route('packages.index')->with('error', 'The package have been deleted successfully.');
     }
 
     public function pushPackage($packageID)

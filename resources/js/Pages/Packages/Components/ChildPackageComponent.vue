@@ -3,9 +3,6 @@
 		<div class="col-md-10">
 			<h1 class="font-semibold text-xl text-gray-800 leading-tight form-title">
 				Package #{{ packag.id }}
-				<!-- <a v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'" 
-              class="btn btn-outline-danger ml-2" v-show="packag.status === 'open'|| packag.status === 'filled' || packag.status === 'labeled' " 
-              v-on:click="confirmDeletion()">Delete Package</a> -->
 			</h1>
 		</div>
 		<div class="col-md-2">
