@@ -4,7 +4,7 @@
 			$page.props.auth.user.type == 'admin' ||
 			$page.props.auth.user.type == 'manager'
 		"
-		class="btn btn-danger float-left"
+		class="btn btn-danger float-left mb-4"
 		v-show="
 			packag.status == 'open' ||
 			packag.status == 'filled' ||

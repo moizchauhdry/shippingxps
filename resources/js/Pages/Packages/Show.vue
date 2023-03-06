@@ -18,7 +18,6 @@
 					<payment-component v-bind="$props"></payment-component>
 					<package-delete-component v-bind="$props"></package-delete-component>
 
-					<div class="mt-4 mb-4"></div>
 					<div v-show="overlay === true" class="overlay">
 						<div class="overlay__inner">
 							<div class="overlay__content"><span class="spinner"></span></div>
