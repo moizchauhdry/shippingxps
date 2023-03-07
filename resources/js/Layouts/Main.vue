@@ -310,7 +310,7 @@
 							<span>Gift Card</span>
 						</inertia-link>
 
-						<inertia-link
+						<!-- <inertia-link
 							class="nav-link"
 							:href="route('dashboard.shipping-calculator.index')"
 							:class="{
@@ -320,7 +320,7 @@
 						>
 							<i class="fas fa-calculator"></i>
 							<span>Shipping Calculator</span>
-						</inertia-link>
+						</inertia-link> -->
 					</div>
 
 					<button
