@@ -170,5 +170,5 @@ Route::post('pages/save', 'PostController@save')->middleware(['auth', 'verified'
 Route::get('page/{slug}', 'CMSPageController@show')->name('page-show');
 Route::get('packages-to-dash/{id}', 'PackageController@pushPackage')->name('pushPackage');
 
-Route::get('dashboard/shipping-calculator', [ShippingCalculatorController::class, 'index'])->middleware(['auth'])->name('dashboard.shipping-calculator.index');
-Route::any('shipping-rates', [ShippingRatesController::class, 'index'])->middleware(['auth'])->name('shipping-rates.index');
+// Route::get('dashboard/shipping-calculator', [ShippingCalculatorController::class, 'index'])->middleware(['auth'])->name('dashboard.shipping-calculator.index');
+// Route::any('shipping-rates', [ShippingRatesController::class, 'index'])->middleware(['auth'])->name('shipping-rates.index');
