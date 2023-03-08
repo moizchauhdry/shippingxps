@@ -186,6 +186,7 @@ class PackageController extends Controller
                     'name' => $service_request->service->title,
                     'price' => $service_request->price,
                     'amount' => $service_request->price,
+                    'child_package_id' => $service_request->child_package_id,
                 ];
                 $subtotal = $subtotal + $service_request->price;
             }
@@ -840,6 +841,21 @@ class PackageController extends Controller
             ]);
         }
 
+        foreach ($package->child_packages as $child_pkg) {
+            $service_requests = ServiceRequest::where('package_id', $child_pkg->id)->get();
+            foreach ($service_requests as $key => $service_request) {
+                ServiceRequest::create([
+                    'service_id' => $service_request->service_id,
+                    'package_id' => $package->id,
+                    'child_package_id' => $service_request->package_id,
+                    'price' => $service_request->price,
+                    'status' => $service_request->status,
+                    'admin_message' => $service_request->admin_message,
+                    'customer_message' => $service_request->customer_message,
+                ]);
+            }
+        }
+
         $users = User::where(['type' => 'admin'])->get();
         Notification::send($users, new CustomerPackageRequestNotification($package));
 
@@ -902,6 +918,19 @@ class PackageController extends Controller
                 'width' => $child_pkg->order->package_width,
                 'height' => $child_pkg->order->package_height,
             ]);
+
+            $service_requests = ServiceRequest::where('package_id', $child_pkg->id)->get();
+            foreach ($service_requests as $key => $service_request) {
+                ServiceRequest::create([
+                    'service_id' => $service_request->service_id,
+                    'package_id' => $package->id,
+                    'child_package_id' => $service_request->package_id,
+                    'price' => $service_request->price,
+                    'status' => $service_request->status,
+                    'admin_message' => $service_request->admin_message,
+                    'customer_message' => $service_request->customer_message,
+                ]);
+            }
         }
 
 

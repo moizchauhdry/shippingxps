@@ -122,7 +122,26 @@
 									>
 										<tr>
 											<td colspan="2">
-												<span>{{ package_service_request.name }}</span>
+												<span>
+													{{ package_service_request.name }}
+													<br />
+													<small
+														v-if="package_service_request.child_package_id"
+													>
+														<inertia-link
+															:href="
+																route(
+																	'packages.show',
+																	package_service_request.child_package_id
+																)
+															"
+														>
+															PKG #{{
+																package_service_request.child_package_id
+															}}
+														</inertia-link>
+													</small>
+												</span>
 											</td>
 											<td>${{ package_service_request.amount }}</td>
 										</tr>

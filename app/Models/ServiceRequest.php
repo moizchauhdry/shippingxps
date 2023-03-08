@@ -8,12 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class ServiceRequest extends Model
 {
     use HasFactory;
+    protected $guarded = [];
 
-    public function package(){
+    public function package()
+    {
         return $this->belongsTo(Package::class);
     }
 
-    public function service(){
+    public function service()
+    {
         return $this->belongsTo(Service::class);
     }
 }
