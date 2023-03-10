@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\SiteSetting;
 use App\Models\Warehouse;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
@@ -93,11 +94,20 @@ class ShippingRatesController extends Controller
             $response = $request->getBody()->getContents();
             $response = json_decode($response);
 
+            $markup = SiteSetting::getByName('markup');
+
             $fedex_rates = [];
             foreach ($response->output->rateReplyDetails as $key => $fedex) {
+                $price = $fedex->ratedShipmentDetails[0]->totalNetFedExCharge;
+                $markup_amount = $fedex->ratedShipmentDetails[0]->totalNetFedExCharge * ((int)$markup / 100);
+                $total = $price + $markup_amount;
+                $total = number_format((float)$total, 2, '.', '');
+
                 $fedex_rates[] = [
                     'name' => $fedex->serviceName,
-                    'price' => $fedex->ratedShipmentDetails[0]->totalNetFedExCharge,
+                    'price' => $price,
+                    'markup' => $markup_amount,
+                    'total' => $total,
                 ];
             }
 
@@ -107,7 +117,6 @@ class ShippingRatesController extends Controller
                 'data' => $fedex_rates,
             ]);
         } catch (\Throwable $th) {
-            dd($th);
             return response()->json([
                 'status' => false,
                 'message' => 'error',
