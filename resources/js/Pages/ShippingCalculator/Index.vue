@@ -260,10 +260,16 @@
 										</h6>
 									</div>
 									<div class="col-md-4">
-										<h6 class="text-5-5 font-weight-medium mb-0 float-right">
-											<span v-if="$page.props.auth.user.type == 'admin'">
+										<h6 class="text-5-5 font-weight-medium float-right">
+											<div
+												v-if="$page.props.auth.user.type == 'admin'"
+												class="mb-2"
+											>
 												${{ rate.price }}
-											</span>
+											</div>
+											<small v-if="$page.props.auth.user.type == 'admin'">
+												Final: ${{ rate.total }}
+											</small>
 											<span v-else>${{ rate.total }}</span>
 										</h6>
 									</div>
