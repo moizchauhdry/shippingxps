@@ -72,6 +72,7 @@ Route::post('/packages/consolidation/store', 'PackageController@storeConsolidati
 Route::any('/packages/multipiece', 'PackageController@multipiece')->name('packages.multipiece')->middleware('auth');
 Route::post('/packages/multipiece/store', 'PackageController@storeMultipiece')->name('packages.multipiece.store')->middleware('auth');
 Route::post('/packages/address/update', 'PackageController@updateAddress')->name('packages.address.update')->middleware('auth');
+Route::post('/packages/charges/update', 'PackageController@updateCharges')->name('packages.charges.update')->middleware('auth');
 
 
 Route::get('/services/create', 'ServiceController@create')->name('services.create')->middleware('auth');

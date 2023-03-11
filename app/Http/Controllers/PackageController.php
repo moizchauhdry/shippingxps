@@ -183,6 +183,7 @@ class PackageController extends Controller
         foreach ($packag->serviceRequests as $key => $service_request) {
             if ($service_request->status == 'served') {
                 $package_service_requests[] = [
+                    'id' => $service_request->id,
                     'name' => $service_request->service->title,
                     'price' => $service_request->price,
                     'amount' => $service_request->price,
@@ -956,5 +957,20 @@ class PackageController extends Controller
         }
 
         return redirect()->route('packages.show', $package->id);
+    }
+
+    public function updateCharges(Request $request)
+    {
+        if ($request->type == 'service_request') {
+            ServiceRequest::find($request->id)->update(['price' => $request->amount]);
+        } else {
+            $package = Package::find($request->package_id);
+
+            if ($request->type == 'shipping_charges') {
+                $package->update(['shipping_charges' => $request->amount]);
+            }
+        }
+
+        return redirect()->back()->with('success', 'Charges Updated');
     }
 }

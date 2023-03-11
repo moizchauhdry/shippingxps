@@ -143,7 +143,19 @@
 													</small>
 												</span>
 											</td>
-											<td>${{ package_service_request.amount }}</td>
+											<td>
+												${{ package_service_request.amount }}
+												<button
+													v-if="
+														$page.props.auth.user.type == 'admin' &&
+														packag.payment_status != 'paid'
+													"
+													class="btn btn-link"
+													@click="editServiceCharges(package_service_request)"
+												>
+													<i class="fa fa-edit"></i>
+												</button>
+											</td>
 										</tr>
 									</template>
 									<tr>
@@ -152,16 +164,33 @@
 										<td>${{ mailout_fee }}</td>
 										<td></td>
 									</tr>
-									<tr v-show="storage_fee > 0">
+									<tr v-if="storage_fee > 0">
 										<td>Storage Fee</td>
 										<td></td>
 										<td>${{ storage_fee }}</td>
 										<td></td>
 									</tr>
-									<tr>
+									<tr v-if="storage_fee > 0">
 										<td>Shipping Charges</td>
 										<td></td>
-										<td>${{ packag.shipping_charges ?? 0 }}</td>
+										<td>
+											${{ packag.shipping_charges ?? 0 }}
+											<button
+												v-if="
+													$page.props.auth.user.type == 'admin' &&
+													packag.payment_status != 'paid'
+												"
+												class="btn btn-link"
+												@click="
+													editCharges(
+														packag.shipping_charges,
+														'shipping_charges'
+													)
+												"
+											>
+												<i class="fa fa-edit"></i>
+											</button>
+										</td>
 										<td></td>
 									</tr>
 									<tr>
@@ -207,9 +236,67 @@
 			</div>
 		</div>
 	</div>
+
+	<div
+		v-if="
+			$page.props.auth.user.type == 'admin' && packag.payment_status != 'paid'
+		"
+		class="modal fade"
+		id="charges_update_modal"
+		tabindex="-1"
+		aria-labelledby="charges_update_label"
+		aria-hidden="true"
+	>
+		<div class="modal-dialog border">
+			<form @submit.prevent="updateServiceCharges">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="charges_update_label">
+							Charges Update
+						</h5>
+						<button
+							type="button"
+							class="close"
+							data-dismiss="modal"
+							aria-label="Close"
+							v-on:click="closeServiceCharges"
+						>
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="row">
+							<breeze-validation-errors class="mb-4" />
+							<div class="form-group">
+								<input
+									type="text"
+									class="form-control"
+									v-model="charges_form.amount"
+									placeholder="Transaction ID"
+								/>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button
+							type="button"
+							class="btn btn-secondary"
+							data-dismiss="modal"
+							v-on:click="closeServiceCharges"
+						>
+							Close
+						</button>
+						<button type="submit" class="btn btn-success">Update</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
 </template>
 
 <script>
+	import $ from "jquery";
+
 	export default {
 		name: "Mailout Component",
 		props: {
@@ -220,16 +307,50 @@
 		},
 		data() {
 			return {
+				edit_mode: false,
 				form_checkout: this.$inertia.form({
 					package_id: this.packag.id,
 					payment_module: "package",
 				}),
 				tracking_edit: false,
+				charges_form: this.$inertia.form({
+					package_id: "",
+					id: "",
+					amount: "",
+					type: "",
+				}),
 			};
 		},
 		methods: {
 			checkout() {
 				this.$inertia.post(route("payment.index", this.form_checkout));
+			},
+
+			editCharges(amount, type) {
+				this.edit_mode = true;
+				this.charges_form.package_id = this.packag.id;
+				this.charges_form.amount = amount;
+				this.charges_form.type = type;
+				var modal = document.getElementById("charges_update_modal");
+				modal.classList.add("show");
+				$("#charges_update_modal").show();
+			},
+			editServiceCharges(package_service_request) {
+				this.edit_mode = true;
+				this.charges_form.id = package_service_request.id;
+				this.charges_form.amount = package_service_request.amount;
+				this.charges_form.type = "service_request";
+				var modal = document.getElementById("charges_update_modal");
+				modal.classList.add("show");
+				$("#charges_update_modal").show();
+			},
+			updateServiceCharges() {
+				this.charges_form.post(this.route("packages.charges.update"));
+				this.closeServiceCharges();
+			},
+			closeServiceCharges() {
+				var modal = document.getElementById("charges_update_modal");
+				modal.style.display = "none";
 			},
 		},
 	};
