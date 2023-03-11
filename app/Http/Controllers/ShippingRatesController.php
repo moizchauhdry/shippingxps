@@ -104,7 +104,10 @@ class ShippingRatesController extends Controller
                 $total = number_format((float)$total, 2, '.', '');
 
                 $fedex_rates[] = [
+                    'code' => 'fedex',
+                    'type' => $fedex->serviceType,
                     'name' => $fedex->serviceName,
+                    'pkg_type' => $fedex->packagingType,
                     'price' => $price,
                     'markup' => $markup_amount,
                     'total' => $total,
@@ -117,6 +120,7 @@ class ShippingRatesController extends Controller
                 'data' => $fedex_rates,
             ]);
         } catch (\Throwable $th) {
+            dd($th);
             return response()->json([
                 'status' => false,
                 'message' => 'error',

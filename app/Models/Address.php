@@ -11,10 +11,10 @@ class Address extends Model
 
     protected $appends = ['country_name'];
 
-    public function country(){
+    public function country()
+    {
         return $this->belongsTo(Country::class);
     }
-
 
     public function getCountryNameAttribute()
     {

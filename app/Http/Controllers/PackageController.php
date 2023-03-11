@@ -563,21 +563,19 @@ class PackageController extends Controller
 
     public function setShippingService(Request $request)
     {
-        $data = $request->all();
-        $service = $data['service'];
-
-        $package = Package::find($data['package_id']);
+        $package = Package::find($request->package_id);
         $package->status = 'shipping_service_selected';
-        $package->carrier_code = isset($service['carrierCode']) ? $service['carrierCode'] : " ";
-        $package->service_label = isset($service['serviceLabel']) ? $service['serviceLabel'] : " ";
-        $package->service_code = $service['serviceCode'];
-        $package->package_type_code = $service['packageTypeCode'];
-        $package->currency = $service['currency'];
-        $package->markup_fee = $service['markup_fee'];
-        $package->shipping_charges = doubleval(str_replace(',', '', $service['totalAmount']));
+
+        $package->carrier_code = $request->code;
+        $package->service_code = $request->type;
+        $package->service_label = $request->name;
+        $package->package_type_code = $request->pkg_type;
+        $package->currency = "USD";
+        $package->markup_fee = $request->markup;
+        $package->shipping_charges = $request->total;
         $package->update();
 
-        return redirect()->route('packages.show', $package->id)->with('success', 'Package set for shipment.');
+        return redirect()->route('packages.show', $package->id)->with('success', 'The package has been set for shipment.');
     }
 
     public function removeItem(Request $request)
