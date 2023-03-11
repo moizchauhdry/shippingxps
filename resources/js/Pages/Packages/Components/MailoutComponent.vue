@@ -170,7 +170,7 @@
 										<td>${{ storage_fee }}</td>
 										<td></td>
 									</tr>
-									<tr v-if="packag.shipping_charges > 0">
+									<tr>
 										<td>Shipping Charges</td>
 										<td></td>
 										<td>
