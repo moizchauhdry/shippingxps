@@ -109,6 +109,7 @@
 											</h6>
 										</div>
 									</div>
+
 									<div
 										class="row"
 										v-for="(item, index) in form.dimensions"
@@ -134,6 +135,7 @@
 												</select>
 											</div>
 										</div>
+
 										<div
 											class="col-md-3"
 											:class="index != 0 ? 'offset-md-3' : ''"
@@ -209,6 +211,15 @@
 													required=""
 												/>
 											</div>
+										</div>
+
+										<div v-show="index != 0">
+											<a
+												v-on:click="remove_dimension(index)"
+												class="btn btn-link float-right font-bold"
+											>
+												Remove
+											</a>
 										</div>
 									</div>
 
@@ -326,6 +337,10 @@
 					width: "",
 					height: "",
 				});
+			},
+			remove_dimension(index) {
+				this.form.dimensions.splice(index, 1);
+				this.submit();
 			},
 		},
 		mounted() {
