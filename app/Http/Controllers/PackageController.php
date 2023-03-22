@@ -318,7 +318,7 @@ class PackageController extends Controller
             'status' => 'filled',
             'shipping_total' => $validated['shipping_total'],
             'package_type' => $validated['package_type'],
-            'special_instructions' => $validated['special_instructions'],
+            'special_instructions' => $request->special_instructions,
         ]);
 
         foreach ($request->package_items as $key => $pkg_item) {
