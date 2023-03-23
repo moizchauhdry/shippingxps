@@ -146,6 +146,7 @@
 											<div
 												class="form-group sizes-input mt-5"
 												style="margin-top: 0px !important"
+												v-if="form.ship_to_country_code != 'US'"
 											>
 												<label
 													class="text-6 text-center text-dark font-weight-medium d-block"

@@ -160,102 +160,107 @@ class ShippingRatesController extends Controller
 
     public function dhl($data)
     {
-        $packages = [];
-        foreach ($data['dimensions'] as $key => $dimension) {
-            $packages[] =  [
-                "weight" => $dimension['weight'],
-                "dimensions" => [
-                    "length" => $dimension['length'],
-                    "width" => $dimension['width'],
-                    "height" => $dimension['height']
-                ]
+        try {
+            $packages = [];
+            foreach ($data['dimensions'] as $key => $dimension) {
+                $packages[] =  [
+                    "weight" => $dimension['weight'],
+                    "dimensions" => [
+                        "length" => $dimension['length'],
+                        "width" => $dimension['width'],
+                        "height" => $dimension['height']
+                    ]
+                ];
+            }
+
+            $client = new Client();
+
+            $headers = [
+                'Content-Type' => 'application/json',
+                'Authorization' => 'Basic YXBHN3RWNGNSMWFVOGQ6Wl40c0ckMXlSQDZ4VSM5Yw=='
             ];
-        }
 
-        $client = new Client();
-
-        $headers = [
-            'Content-Type' => 'application/json',
-            'Authorization' => 'Basic YXBHN3RWNGNSMWFVOGQ6Wl40c0ckMXlSQDZ4VSM5Yw=='
-        ];
-
-        $body = [
-            "customerDetails" => [
-                "shipperDetails" => [
-                    "postalCode" => $data['ship_from_postal_code'],
-                    "cityName" => $data['ship_from_city'],
-                    "countryCode" => $data['ship_from_country_code']
+            $body = [
+                "customerDetails" => [
+                    "shipperDetails" => [
+                        "postalCode" => $data['ship_from_postal_code'],
+                        "cityName" => $data['ship_from_city'],
+                        "countryCode" => $data['ship_from_country_code']
+                    ],
+                    "receiverDetails" => [
+                        "postalCode" => $data['ship_to_postal_code'],
+                        "cityName" => $data['ship_to_city'],
+                        "countryCode" => $data['ship_to_country_code']
+                    ]
                 ],
-                "receiverDetails" => [
-                    "postalCode" => $data['ship_to_postal_code'],
-                    "cityName" => $data['ship_to_city'],
-                    "countryCode" => $data['ship_to_country_code']
-                ]
-            ],
-            "accounts" => [
-                [
-                    "typeCode" => "shipper",
-                    "number" => "849192247"
-                ]
-            ],
-            "productsAndServices" => [
-                [
-                    "productCode" => "P",
-                    "localProductCode" => "P"
-                ]
-            ],
-            "payerCountryCode" => "US",
-            "plannedShippingDateAndTime" => Carbon::now(),
-            "unitOfMeasurement" => $data['measurement_unit'],
-            "isCustomsDeclarable" => true,
-            "monetaryAmount" => [
-                [
-                    "typeCode" => "declaredValue",
-                    "value" => (float) $data['customs_value'],
-                    "currency" => "USD"
-                ]
-            ],
-            "estimatedDeliveryDate" => [
-                "isRequested" => true,
-                "typeCode" => "QDDC"
-            ],
-            "getAdditionalInformation" => [
-                [
-                    "typeCode" => "allValueAddedServices",
-                    "isRequested" => true
-                ]
-            ],
-            "returnStandardProductsOnly" => false,
-            "nextBusinessDay" => true,
-            "productTypeCode" => "all",
-            "packages" => $packages
-        ];
+                "accounts" => [
+                    [
+                        "typeCode" => "shipper",
+                        "number" => "849192247"
+                    ]
+                ],
+                "productsAndServices" => [
+                    [
+                        "productCode" => "P",
+                        "localProductCode" => "P"
+                    ]
+                ],
+                "payerCountryCode" => "US",
+                "plannedShippingDateAndTime" => Carbon::now(),
+                "unitOfMeasurement" => $data['measurement_unit'],
+                "isCustomsDeclarable" => true,
+                "monetaryAmount" => [
+                    [
+                        "typeCode" => "declaredValue",
+                        "value" => (float) $data['customs_value'],
+                        "currency" => "USD"
+                    ]
+                ],
+                "estimatedDeliveryDate" => [
+                    "isRequested" => true,
+                    "typeCode" => "QDDC"
+                ],
+                "getAdditionalInformation" => [
+                    [
+                        "typeCode" => "allValueAddedServices",
+                        "isRequested" => true
+                    ]
+                ],
+                "returnStandardProductsOnly" => false,
+                "nextBusinessDay" => true,
+                "productTypeCode" => "all",
+                "packages" => $packages
+            ];
 
-        $request = $client->post('https://express.api.dhl.com/mydhlapi/test/rates', [
-            'headers' => $headers,
-            'body' => json_encode($body)
-        ]);
+            $request = $client->post('https://express.api.dhl.com/mydhlapi/test/rates', [
+                'headers' => $headers,
+                'body' => json_encode($body)
+            ]);
 
-        $response = $request->getBody()->getContents();
-        $response = json_decode($response);
+            $response = $request->getBody()->getContents();
+            $response = json_decode($response);
 
-        $markup = SiteSetting::getByName('markup');
-        $price = $response->products[0]->totalPrice[0]->price;
-        $markup_amount = $response->products[0]->totalPrice[0]->price * ((int)$markup / 100);
-        $total = $price + $markup_amount;
-        $total = number_format((float)$total, 2, '.', '');
+            $markup = SiteSetting::getByName('markup');
+            $price = $response->products[0]->totalPrice[0]->price;
+            $markup_amount = $response->products[0]->totalPrice[0]->price * ((int)$markup / 100);
+            $total = $price + $markup_amount;
+            $total = number_format((float)$total, 2, '.', '');
 
-        $rates = [];
-        $rates[] = [
-            'code' => 'dhl',
-            'type' => 'EXPRESS_WORLDWIDE',
-            'name' => 'DHL Express Worldwide',
-            'pkg_type' => 'YOUR_PACKAGING',
-            'price' => $price,
-            'markup' => $markup_amount,
-            'total' => $total,
-        ];
+            $rates = [];
+            $rates[] = [
+                'code' => 'dhl',
+                'type' => 'EXPRESS_WORLDWIDE',
+                'name' => 'DHL Express Worldwide',
+                'pkg_type' => 'YOUR_PACKAGING',
+                'price' => $price,
+                'markup' => $markup_amount,
+                'total' => $total,
+            ];
 
-        return $rates;
+            return $rates;
+        } catch (\Throwable $th) {
+            return [];
+            //throw $th;
+        }
     }
 }
