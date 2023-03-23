@@ -18,8 +18,14 @@
 									class="contact-form form-style-4 form-placeholders-light form-errors-light mb-5 mb-lg-0"
 								>
 									<div class="row">
-										<div class="col-md-4">
-											<div class="form-group">
+										<div class="form-heading text-center mb-4">
+											<h6 class="text-6 text-warning font-weight-bold">
+												Ship From Address
+											</h6>
+										</div>
+
+										<div class="d-flex justify-content-center">
+											<div class="form-group mr-2">
 												<div
 													class="input-title text-dark mb-2 text-6 font-weight-medium text-center"
 												>
@@ -41,12 +47,28 @@
 													<option value="other">Other USA</option>
 												</select>
 											</div>
-										</div>
 
-										<div class="col-md-2" v-show="form.ship_from == 'other'">
+											<div
+												class="form-group sizes-input mt-5 mr-2"
+												style="margin-top: 0px !important"
+												v-show="form.ship_from == 'other'"
+											>
+												<label
+													class="text-6 text-center text-dark font-weight-medium d-block"
+													for="weight"
+													>City</label
+												>
+												<input
+													v-model="form.ship_from_city"
+													type="text"
+													class="form-control text-dark text-4 mt-2"
+												/>
+											</div>
+
 											<div
 												class="form-group sizes-input mt-5"
 												style="margin-top: 0px !important"
+												v-show="form.ship_from == 'other'"
 											>
 												<label
 													class="text-6 text-center text-dark font-weight-medium d-block"
@@ -61,8 +83,14 @@
 											</div>
 										</div>
 
-										<div class="col-md-4">
-											<div class="form-group md-mrgn">
+										<div class="form-heading text-center mb-4">
+											<h6 class="text-6 text-warning font-weight-bold">
+												Ship To Address
+											</h6>
+										</div>
+
+										<div class="d-flex justify-content-center">
+											<div class="col-md-3 form-group md-mrgn mr-2">
 												<div
 													class="input-title text-dark mb-2 text-6 font-weight-medium text-center"
 												>
@@ -83,11 +111,25 @@
 													</option>
 												</select>
 											</div>
-										</div>
 
-										<div class="col-md-2">
 											<div
-												class="form-group sizes-input mt-5"
+												class="form-group sizes-input mt-5 mr-2"
+												style="margin-top: 0px !important"
+											>
+												<label
+													class="text-6 text-center text-dark font-weight-medium d-block"
+													for="weight"
+													>City</label
+												>
+												<input
+													v-model="form.ship_to_city"
+													type="text"
+													class="form-control text-dark text-4 mt-2"
+												/>
+											</div>
+
+											<div
+												class="form-group sizes-input mt-5 mr-2"
 												style="margin-top: 0px !important"
 											>
 												<label
@@ -97,6 +139,21 @@
 												>
 												<input
 													v-model="form.ship_to_postal_code"
+													type="text"
+													class="form-control text-dark text-4 mt-2"
+												/>
+											</div>
+											<div
+												class="form-group sizes-input mt-5"
+												style="margin-top: 0px !important"
+											>
+												<label
+													class="text-6 text-center text-dark font-weight-medium d-block"
+													for="weight"
+													>Customs Value (USD)</label
+												>
+												<input
+													v-model="form.customs_value"
 													type="text"
 													class="form-control text-dark text-4 mt-2"
 												/>
@@ -252,6 +309,12 @@
 										<img
 											src="https://app.shippingxps.com/theme/img/demos/business-consulting-3/partner-03.png"
 											style="width: 100px"
+											v-if="rate.code == 'fedex'"
+										/>
+										<img
+											src="https://app.shippingxps.com/theme/img/demos/business-consulting-3/partner-02.png"
+											style="width: 100px"
+											v-if="rate.code == 'dhl'"
 										/>
 									</div>
 									<div class="col-md-4">
@@ -306,8 +369,11 @@
 					ship_from: "",
 					ship_from_postal_code: "",
 					ship_from_country_code: "US",
+					ship_from_city: "",
 					ship_to_postal_code: "",
 					ship_to_country_code: "",
+					ship_to_city: "",
+					customs_value: "",
 					units: "LB_IN",
 					dimensions: [
 						{
