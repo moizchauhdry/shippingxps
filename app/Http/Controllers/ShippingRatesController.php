@@ -13,6 +13,7 @@ class ShippingRatesController extends Controller
     public function index(Request $request)
     {
         try {
+
             if ($request->ship_from == 'other') {
                 $ship_from_postal_code = $request->ship_from_postal_code;
                 $ship_from_city = $request->ship_from_city;
@@ -41,8 +42,8 @@ class ShippingRatesController extends Controller
                 'weight_units' => $weight_units,
                 'dimension_units' => $dimension_units,
                 'measurement_unit' => $measurement_unit,
-                'dimensions' => $request->dimensions,
                 'customs_value' => $request->customs_value,
+                'dimensions' => $request->dimensions,
             ];
 
             $fedex_rates = $this->fedex($data);
@@ -164,11 +165,11 @@ class ShippingRatesController extends Controller
             $packages = [];
             foreach ($data['dimensions'] as $key => $dimension) {
                 $packages[] =  [
-                    "weight" => $dimension['weight'],
+                    "weight" => (float) $dimension['weight'],
                     "dimensions" => [
-                        "length" => $dimension['length'],
-                        "width" => $dimension['width'],
-                        "height" => $dimension['height']
+                        "length" => (float) $dimension['length'],
+                        "width" => (float) $dimension['width'],
+                        "height" => (float) $dimension['height']
                     ]
                 ];
             }
@@ -259,6 +260,7 @@ class ShippingRatesController extends Controller
 
             return $rates;
         } catch (\Throwable $th) {
+            dd($th);
             return [];
             //throw $th;
         }
