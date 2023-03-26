@@ -57,7 +57,6 @@ class ShippingRatesController extends Controller
                 'data' => $rates,
             ]);
         } catch (\Throwable $th) {
-            dd($th);
             return response()->json([
                 'status' => false,
                 'message' => 'error',
@@ -260,9 +259,7 @@ class ShippingRatesController extends Controller
 
             return $rates;
         } catch (\Throwable $th) {
-            dd($th);
             return [];
-            //throw $th;
         }
     }
 }
