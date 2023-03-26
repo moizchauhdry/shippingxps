@@ -14,6 +14,12 @@ class ShippingRatesController extends Controller
     {
         try {
 
+            if ($request->ship_to_postal_code) {
+                $ship_to_postal_code = $request->ship_to_postal_code;
+            } else {
+                $ship_to_postal_code = '00000';
+            }
+
             if ($request->ship_from == 'other') {
                 $ship_from_postal_code = $request->ship_from_postal_code;
                 $ship_from_city = $request->ship_from_city;
@@ -36,7 +42,7 @@ class ShippingRatesController extends Controller
                 'ship_from_postal_code' => $ship_from_postal_code,
                 'ship_from_country_code' => $request->ship_from_country_code,
                 'ship_from_city' => $ship_from_city,
-                'ship_to_postal_code' => $request->ship_to_postal_code,
+                'ship_to_postal_code' => $ship_to_postal_code,
                 'ship_to_country_code' => $request->ship_to_country_code,
                 'ship_to_city' => $request->ship_to_city,
                 'weight_units' => $weight_units,
