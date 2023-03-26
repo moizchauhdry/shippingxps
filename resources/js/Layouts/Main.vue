@@ -332,6 +332,7 @@
 					>
 						Manage
 					</button>
+
 					<div
 						v-if="
 							$page.props.auth.user.type == 'admin' ||
@@ -793,6 +794,7 @@
 	import FlashMessages from "@/Components/FlashMessages";
 	import BreezeResponsiveNavLink from "@/Components/ResponsiveNavLink";
 	import { cornsilk } from "color-name";
+	import packageLockJson from "../../../package-lock.json";
 
 	export default {
 		// components: {
@@ -810,6 +812,7 @@
 			return {
 				usertype: this.$auth,
 				main_sidebar: 0,
+				version: packageLockJson.version,
 			};
 		},
 		props: {
