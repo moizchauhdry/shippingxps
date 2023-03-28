@@ -90,11 +90,11 @@
 										</div>
 
 										<div class="d-flex justify-content-center">
-											<div class="col-md-3 form-group md-mrgn mr-2">
+											<div class="col form-group md-mrgn mr-2">
 												<div
 													class="input-title text-dark mb-2 text-6 font-weight-medium text-center"
 												>
-													Where are you shipping to?
+													Ship To
 												</div>
 												<select
 													required
@@ -144,20 +144,39 @@
 												/>
 											</div>
 											<div
-												class="form-group sizes-input mt-5"
+												class="form-group sizes-input mt-5 mr-2"
 												style="margin-top: 0px !important"
 												v-if="form.ship_to_country_code != 'US'"
 											>
 												<label
 													class="text-6 text-center text-dark font-weight-medium d-block"
 													for="weight"
-													>Customs Value (USD)</label
+													>Customs Value</label
 												>
 												<input
 													v-model="form.customs_value"
 													type="text"
 													class="form-control text-dark text-4 mt-2"
 												/>
+											</div>
+											<div
+												class="form-group sizes-input mt-5"
+												style="margin-top: 0px !important"
+											>
+												<label
+													class="text-6 text-center text-dark font-weight-medium d-block mb-2"
+													for="weight"
+													>Address</label
+												>
+												<select
+													required
+													v-model="form.address_type"
+													class="form-select text-4"
+												>
+													<option value="">Select</option>
+													<option value="residential">Residential</option>
+													<option value="business">Business</option>
+												</select>
 											</div>
 										</div>
 
@@ -375,6 +394,7 @@
 					ship_to_country_code: "",
 					ship_to_city: "",
 					customs_value: "",
+					address_type: "",
 					units: "LB_IN",
 					dimensions: [
 						{

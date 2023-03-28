@@ -38,6 +38,11 @@ class ShippingRatesController extends Controller
                 $measurement_unit = 'metric';
             }
 
+            $residential = false;
+            if ($request->address_type == 'residential') {
+                $residential = true;
+            }
+
             $data = [
                 'ship_from_postal_code' => $ship_from_postal_code,
                 'ship_from_country_code' => $request->ship_from_country_code,
@@ -49,6 +54,7 @@ class ShippingRatesController extends Controller
                 'dimension_units' => $dimension_units,
                 'measurement_unit' => $measurement_unit,
                 'customs_value' => $request->customs_value,
+                'residential' => $residential,
                 'dimensions' => $request->dimensions,
             ];
 
@@ -63,6 +69,7 @@ class ShippingRatesController extends Controller
                 'data' => $rates,
             ]);
         } catch (\Throwable $th) {
+            dd($th);
             return response()->json([
                 'status' => false,
                 'message' => 'error',
@@ -79,7 +86,7 @@ class ShippingRatesController extends Controller
             'form_params' => [
                 'grant_type' => 'client_credentials',
                 'client_id' => 'l7ef7275cc94544aaabf802ef4308bb66a',
-                'client_secret' => 'e4c4374b-aa10-4c7a-89a6-4ff0d4236d56',
+                'client_secret' => '48b51793-fd0d-426d-8bf0-3ecc62d9c876',
             ]
         ]);
 
@@ -116,13 +123,15 @@ class ShippingRatesController extends Controller
                 "shipper" => [
                     "address" => [
                         "postalCode" => $data['ship_from_postal_code'],
-                        "countryCode" => $data['ship_from_country_code']
+                        "countryCode" => $data['ship_from_country_code'],
+                        "residential" => false
                     ]
                 ],
                 "recipient" => [
                     "address" => [
                         "postalCode" => $data['ship_to_postal_code'],
-                        "countryCode" => $data['ship_to_country_code']
+                        "countryCode" => $data['ship_to_country_code'],
+                        "residential" => $data['residential']
                     ]
                 ],
                 "pickupType" => "DROPOFF_AT_FEDEX_LOCATION",
