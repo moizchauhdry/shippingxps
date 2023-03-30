@@ -1,17 +1,15 @@
 <template>
-	<div id="wireLoadingBar">
-		<div class="lds-roller">
-			<div></div>
-			<div></div>
-			<div></div>
-			<div></div>
-			<div></div>
-			<div></div>
-			<div></div>
-			<div></div>
-		</div>
-		<div class="modal-backdrop show backStyle"></div>
+	<div class="lds-roller">
+		<div></div>
+		<div></div>
+		<div></div>
+		<div></div>
+		<div></div>
+		<div></div>
+		<div></div>
+		<div></div>
 	</div>
+	<div class="modal-backdrop show backStyle"></div>
 </template>
 
 <style scoped>
@@ -19,9 +17,9 @@
 		display: inline-block;
 		width: 80px;
 		height: 80px;
-		position: fixed;
-		top: 40%;
-		left: 47%;
+		/* position: fixed; */
+		/* top: 40%;
+		left: 47%; */
 		z-index: 100000;
 	}
 

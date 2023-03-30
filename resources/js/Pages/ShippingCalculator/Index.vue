@@ -1,370 +1,356 @@
 <template>
 	<MainLayout>
-		<div class="col">
-			<h1 class="text-center font-bold text-xl">Shipping Calculator</h1>
-		</div>
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12">
+					<h1
+						class="text-5 text-lg-5 text-xl-5 line-height-3 text-transform-none font-weight-semibold"
+					>
+						Shipping Calculator
+					</h1>
 
-		<section
-			class="section price-section-padd section-height-3 bg-light border-0 pt-4 m-0"
-			style="background-size: 100%; background-repeat: no-repeat"
-		>
-			<div class="container">
-				<div class="row">
-					<div class="col-md-12 px-0">
-						<div class="bg-grey-soft h-100">
-							<div class="text-center text-md-start p-5 h-100">
-								<form
-									@submit.prevent="submit"
-									class="contact-form form-style-4 form-placeholders-light form-errors-light mb-5 mb-lg-0"
-								>
-									<div class="row">
-										<div class="form-heading text-center mb-4">
-											<h6 class="text-6 text-warning font-weight-bold">
-												Ship From Address
-											</h6>
-										</div>
-
-										<div class="d-flex justify-content-center">
-											<div class="form-group mr-2">
-												<div
-													class="input-title text-dark mb-2 text-6 font-weight-medium text-center"
-												>
-													Where is your merchandise?
-												</div>
-												<select
-													required
-													v-model="form.ship_from"
-													class="form-select text-4"
-												>
-													<option value="">Select</option>
-													<option
-														v-for="warehouse in warehouses"
-														:value="warehouse.id"
-														:key="warehouse.id"
-													>
-														{{ warehouse.name }}
-													</option>
-													<option value="other">Other USA</option>
-												</select>
-											</div>
-
-											<div
-												class="form-group sizes-input mt-5 mr-2"
-												style="margin-top: 0px !important"
-												v-show="form.ship_from == 'other'"
-											>
-												<label
-													class="text-6 text-center text-dark font-weight-medium d-block"
-													for="weight"
-													>City</label
-												>
-												<input
-													v-model="form.ship_from_city"
-													type="text"
-													class="form-control text-dark text-4 mt-2"
-												/>
-											</div>
-
-											<div
-												class="form-group sizes-input mt-5"
-												style="margin-top: 0px !important"
-												v-show="form.ship_from == 'other'"
-											>
-												<label
-													class="text-6 text-center text-dark font-weight-medium d-block"
-													for="weight"
-													>Zip</label
-												>
-												<input
-													v-model="form.ship_from_postal_code"
-													type="text"
-													class="form-control text-dark text-4 mt-2"
-												/>
-											</div>
-										</div>
-
-										<div class="form-heading text-center mb-4">
-											<h6 class="text-6 text-warning font-weight-bold">
-												Ship To Address
-											</h6>
-										</div>
-
-										<div class="d-flex justify-content-center">
-											<div class="col form-group md-mrgn mr-2">
-												<div
-													class="input-title text-dark mb-2 text-6 font-weight-medium text-center"
-												>
-													Ship To
-												</div>
-												<select
-													required
-													v-model="form.ship_to_country_code"
-													class="form-select text-4"
-												>
-													<option value="">Select</option>
-													<option
-														v-for="country in countries"
-														:value="country.iso"
-														:key="country.id"
-													>
-														{{ country.name }}
-													</option>
-												</select>
-											</div>
-
-											<div
-												class="form-group sizes-input mt-5 mr-2"
-												style="margin-top: 0px !important"
-											>
-												<label
-													class="text-6 text-center text-dark font-weight-medium d-block"
-													for="weight"
-													>City</label
-												>
-												<input
-													v-model="form.ship_to_city"
-													type="text"
-													class="form-control text-dark text-4 mt-2"
-												/>
-											</div>
-
-											<div
-												class="form-group sizes-input mt-5 mr-2"
-												style="margin-top: 0px !important"
-											>
-												<label
-													class="text-6 text-center text-dark font-weight-medium d-block"
-													for="weight"
-													>Zip</label
-												>
-												<input
-													v-model="form.ship_to_postal_code"
-													type="text"
-													class="form-control text-dark text-4 mt-2"
-												/>
-											</div>
-											<div
-												class="form-group sizes-input mt-5 mr-2"
-												style="margin-top: 0px !important"
-												v-if="form.ship_to_country_code != 'US'"
-											>
-												<label
-													class="text-6 text-center text-dark font-weight-medium d-block"
-													for="weight"
-													>Customs Value</label
-												>
-												<input
-													v-model="form.customs_value"
-													type="text"
-													class="form-control text-dark text-4 mt-2"
-												/>
-											</div>
-											<div
-												class="form-group sizes-input mt-5"
-												style="margin-top: 0px !important"
-											>
-												<label
-													class="text-6 text-center text-dark font-weight-medium d-block mb-2"
-													for="weight"
-													>Address</label
-												>
-												<select
-													required
-													v-model="form.address_type"
-													class="form-select text-4"
-												>
-													<option value="">Select</option>
-													<option value="residential">Residential</option>
-													<option value="business">Business</option>
-												</select>
-											</div>
-										</div>
-
-										<div class="form-heading text-center mt-2">
-											<h6 class="text-6 text-warning font-weight-bold">
-												Tell us more about your shipment.
-											</h6>
-										</div>
-									</div>
-
-									<div
-										class="row"
-										v-for="(item, index) in form.dimensions"
-										:key="item.id"
+					<h6 class="text-4 mb-4 mt-2">
+						To get shipping rates for any destination just use the postage
+						calculator below. We offer discounted rates on all shipping methods.
+						These rates are tens of percents better than official rates of
+						carriers.
+					</h6>
+				</div>
+				<div class="col-md-6">
+					<div class="card p-4 shadow">
+						<form @submit.prevent="submit">
+							<div class="d-flex justify-content-center">
+								<div class="form-group">
+									<h6>Ship from</h6>
+									<select
+										required
+										v-model="form.ship_from"
+										class="form-control custom-select"
 									>
-										<div class="col-md-3" v-show="index == 0">
-											<div
-												class="form-group sizes-input mt-3"
-												v-if="index == 0"
-											>
-												<label
-													class="text-6 text-center text-dark font-weight-medium d-block"
-													for="weight"
-													>Unit</label
-												>
-												<select
-													v-model="form.units"
-													class="form-select text-4 mt-2"
-													aria-label="Default select example"
-												>
-													<option value="LB_IN">Lb / Inch</option>
-													<option value="KG_CM">Kg / Cm</option>
-												</select>
-											</div>
-										</div>
-
-										<div
-											class="col-md-3"
-											:class="index != 0 ? 'offset-md-3' : ''"
+										<option value="">Select</option>
+										<option
+											v-for="warehouse in warehouses"
+											:value="warehouse.id"
+											:key="warehouse.id"
 										>
-											<div class="form-group sizes-input mt-3">
-												<label
-													class="text-6 text-center text-dark font-weight-medium d-block"
-													for="weight"
-													>Weight</label
-												>
-												<input
-													v-model="item.weight"
-													type="number"
-													class="form-control text-dark text-4 mt-2"
-													name="name"
-													:step="0.01"
-													:min="1"
-													required=""
-												/>
-											</div>
-										</div>
+											{{ warehouse.name }}
+										</option>
+										<option value="other">Other USA</option>
+									</select>
+								</div>
 
-										<div class="col-md-2">
-											<div class="form-group sizes-input mt-3">
-												<label
-													class="text-6 text-center text-dark font-weight-medium d-block"
-													for="weight"
-													>Length</label
-												>
-												<input
-													v-model="item.length"
-													type="number"
-													class="form-control text-dark text-4 mt-2"
-													name="name"
-													:step="0.01"
-													:min="1"
-													required=""
-												/>
-											</div>
-										</div>
-										<div class="col-md-2">
-											<div class="form-group sizes-input mt-3">
-												<label
-													class="text-6 text-center text-dark font-weight-medium d-block"
-													for="weight"
-													>Width</label
-												>
-												<input
-													v-model="item.width"
-													type="number"
-													class="form-control text-dark text-4 mt-2"
-													name="name"
-													:step="0.01"
-													:min="1"
-													required=""
-												/>
-											</div>
-										</div>
-										<div class="col-md-2">
-											<div class="form-group sizes-input mt-3">
-												<label
-													class="text-6 text-center text-dark font-weight-medium d-block"
-													for="height"
-													>Height</label
-												>
-												<input
-													v-model="item.height"
-													type="number"
-													class="form-control text-dark text-4 mt-2"
-													name="name"
-													:step="0.01"
-													:min="1"
-													required=""
-												/>
-											</div>
-										</div>
+								<div class="form-group" v-show="form.ship_from == 'other'">
+									<h6 for="city">City</h6>
+									<input
+										v-model="form.ship_from_city"
+										type="text"
+										class="form-control"
+									/>
+								</div>
 
-										<div v-show="index != 0">
-											<a
-												v-on:click="remove_dimension(index)"
-												class="btn btn-link float-right font-bold"
-											>
-												Remove
-											</a>
-										</div>
-									</div>
+								<div class="form-group" v-show="form.ship_from == 'other'">
+									<h6 for="zip">Zip</h6>
+									<input
+										v-model="form.ship_from_postal_code"
+										type="text"
+										class="form-control"
+									/>
+								</div>
+							</div>
 
-									<div class="">
-										<button
-											class="btn btn-link mt-2 mb-2 font-bold"
-											v-on:click="add_dimension()"
+							<div class="d-flex justify-content-center">
+								<div class="form-group">
+									<h6>Ship To</h6>
+									<select
+										required
+										v-model="form.ship_to_country_code"
+										class="form-control custom-select"
+									>
+										<option value="">Select</option>
+										<option
+											v-for="country in countries"
+											:value="country.iso"
+											:key="country.id"
 										>
-											+ ADD ANOTHER PACKAGE
-										</button>
-									</div>
+											{{ country.name }}
+										</option>
+									</select>
+								</div>
 
-									<div class="row">
-										<div class="form-group text-center">
-											<button type="submit" class="btn btn-primary btn-lg">
-												<span>Get Shipping Rates</span>
-											</button>
-										</div>
+								<div class="form-group">
+									<h6 for="">City</h6>
+									<input
+										v-model="form.ship_to_city"
+										type="text"
+										class="form-control"
+									/>
+								</div>
+
+								<div class="form-group">
+									<h6>Zip</h6>
+									<input
+										v-model="form.ship_to_postal_code"
+										type="text"
+										class="form-control"
+									/>
+								</div>
+								<div
+									class="form-group"
+									v-if="form.ship_to_country_code != 'US'"
+								>
+									<h6>Value</h6>
+									<input
+										v-model="form.customs_value"
+										type="text"
+										class="form-control"
+									/>
+								</div>
+								<!-- <div class="form-group">
+									<h6 for="">Address</h6>
+									<select
+										required
+										v-model="form.address_type"
+										class="form-control custom-select"
+									>
+										<option value="">Select</option>
+										<option value="residential">Residential</option>
+										<option value="business">Business</option>
+									</select>
+								</div> -->
+							</div>
+
+							<div class="d-flex justify-content-center p-2">
+								<input type="checkbox" v-model="form.units" />
+								<label for="" class="ml-1 mr-3">Metric units</label>
+
+								<input type="checkbox" v-model="form.address_type" />
+								<label for="" class="ml-1">Residential</label>
+							</div>
+
+							<div
+								class="d-flex justify-content-center"
+								v-for="(item, index) in form.dimensions"
+								:key="item.id"
+							>
+								<!-- <div class="form-group" v-if="index == 0">
+									<h6>Unit</h6>
+									<select
+										v-model="form.units"
+										class="form-control custom-select"
+										aria-h6="Default select example"
+									>
+										<option value="LB_IN">Lb / Inch</option>
+										<option value="KG_CM">Kg / Cm</option>
+									</select>
+								</div> -->
+
+								<div
+									class="form-group"
+									:class="index != 0 ? 'offset-md-3' : ''"
+								>
+									<h6>Weight <small>lbs</small></h6>
+									<input
+										v-model="item.weight"
+										type="number"
+										class="form-control"
+										name="name"
+										:step="0.01"
+										:min="1"
+										required=""
+									/>
+								</div>
+
+								<div class="form-group">
+									<h6>Dimensions <small>(L x W x H) inch</small></h6>
+									<div class="d-flex">
+										<input
+											v-model="item.length"
+											type="number"
+											class="form-control"
+											name="name"
+											:step="0.01"
+											:min="1"
+											required=""
+										/>
+
+										<input
+											v-model="item.width"
+											type="number"
+											class="form-control"
+											name="name"
+											:step="0.01"
+											:min="1"
+											required=""
+										/>
+
+										<input
+											v-model="item.height"
+											type="number"
+											class="form-control"
+											name="name"
+											:step="0.01"
+											:min="1"
+											required=""
+										/>
 									</div>
-								</form>
+								</div>
+
+								<div v-show="index != 0">
+									<a
+										v-on:click="remove_dimension(index)"
+										class="btn btn-link float-right font-bold"
+									>
+										Remove
+									</a>
+								</div>
+							</div>
+
+							<div class="d-flex justify-content-center">
+								<button
+									class="btn btn-link mt-2 mb-2 font-bold"
+									v-on:click="add_dimension()"
+								>
+									+ ADD ANOTHER PACKAGE
+								</button>
+							</div>
+
+							<div class="d-flex justify-content-center">
+								<button
+									type="submit"
+									class="btn btn-primary"
+									:disabled="loading"
+								>
+									<span>
+										<span v-if="!loading">Get Shipping Rates</span>
+										<span v-else>Loading...</span>
+									</span>
+								</button>
+							</div>
+						</form>
+
+						<div class="row mt-5">
+							<div class="col">
+								<h3
+									class="text-5 text-center text-lg-5 text-xl-5 line-height-3 text-transform-none font-weight-semibold mb-4 mb-lg-5"
+								>
+									Via Trusted Shipping Partners
+								</h3>
+								<div class="row col-md-12">
+									<div class="col text-center">
+										<img
+											class="d-inline-block img-fluid"
+											src="/theme/img/demos/business-consulting-3/partner-02.png"
+											alt=""
+										/>
+										<p class="text-0 font-weight-medium text-center mt-2">
+											DHL Express
+										</p>
+									</div>
+									<div class="col text-center">
+										<img
+											class="d-inline-block img-fluid"
+											src="/theme/img/demos/business-consulting-3/partner-03.png"
+											alt=""
+										/>
+										<p class="text-0 font-weight-medium text-center mt-2">
+											FedEx International
+										</p>
+									</div>
+									<div class="col text-center">
+										<img
+											class="d-inline-block img-fluid"
+											src="/theme/img/demos/business-consulting-3/partner-04.png"
+											alt=""
+										/>
+										<p class="text-0 font-weight-medium text-center mt-2">
+											UPS International
+										</p>
+									</div>
+								</div>
+								<p class="font-weight-medium text-center mt-3">
+									* Service offerings may change depending on the destination
+									country. <br />
+									Not all carriers offer services to all countries
+								</p>
 							</div>
 						</div>
 					</div>
+				</div>
+				<div class="col-md-6">
+					<template v-if="shipping_rates.length == 0">
+						<div class="d-flex justify-content-center">
+							<a href="http://shippingxps.com">
+								<img
+									alt="shippingxps"
+									width="237"
+									height="55"
+									src="/theme/img/logo.png"
+								/>
+							</a>
+						</div>
 
-					<div class="col-md-12 mt-2">
-						<div class="card" v-for="rate in shipping_rates" :key="rate.id">
-							<div class="card-body">
-								<div class="row">
-									<div class="col-md-4">
-										<img
-											src="https://app.shippingxps.com/theme/img/demos/business-consulting-3/partner-03.png"
-											style="width: 100px"
-											v-if="rate.code == 'fedex'"
-										/>
-										<img
-											src="https://app.shippingxps.com/theme/img/demos/business-consulting-3/partner-02.png"
-											style="width: 100px"
-											v-if="rate.code == 'dhl'"
-										/>
-									</div>
-									<div class="col-md-4">
-										<h6 class="text-5-5 font-weight-medium mb-0">
-											{{ rate.name }}
-										</h6>
-									</div>
-									<div class="col-md-4">
-										<h6 class="text-5-5 font-weight-medium float-right">
-											<div
-												v-if="$page.props.auth.user.type == 'admin'"
-												class="mb-2"
-											>
-												${{ rate.price }}
-											</div>
-											<small v-if="$page.props.auth.user.type == 'admin'">
-												Final: ${{ rate.total }}
-											</small>
-											<span v-else>${{ rate.total }}</span>
-										</h6>
-									</div>
+						<div class="d-flex justify-content-center">
+							<h1
+								class="text-8 text-lg-8 text-xl-8 line-height-3 text-transform-none font-weight-semibold text-primary"
+							>
+								Worldwide Shipping from the USA
+							</h1>
+						</div>
+
+						<div class="d-flex justify-content-center" v-if="loading">
+							<h1
+								class="text-3 text-lg-3 text-xl-3 line-height-3 text-transform-none font-weight-semibold mt-5"
+							>
+								Please wait, we are fetching best rates for you.
+							</h1>
+						</div>
+					</template>
+
+					<div
+						class="card shadow"
+						v-for="rate in shipping_rates"
+						:key="rate.id"
+					>
+						<div class="card-body">
+							<div class="row">
+								<div class="col-md-4">
+									<img
+										src="https://app.shippingxps.com/theme/img/demos/business-consulting-3/partner-03.png"
+										style="width: 100px"
+										v-if="rate.code == 'fedex'"
+									/>
+									<img
+										src="https://app.shippingxps.com/theme/img/demos/business-consulting-3/partner-02.png"
+										style="width: 100px"
+										v-if="rate.code == 'dhl'"
+									/>
+								</div>
+								<div class="col-md-4">
+									<h6 class="text-lg">
+										{{ rate.name }}
+									</h6>
+								</div>
+								<div class="col-md-4">
+									<h6 class="text-lg float-right">
+										<div
+											v-if="$page.props.auth.user.type == 'admin'"
+											class="mb-2"
+										>
+											${{ rate.price }}
+										</div>
+										<small v-if="$page.props.auth.user.type == 'admin'">
+											Final: ${{ rate.total }}
+										</small>
+										<span v-else>${{ rate.total }}</span>
+									</h6>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</section>
+		</div>
 	</MainLayout>
-	<LoaderComponent v-if="loader"></LoaderComponent>
 </template>
 
 <script>
@@ -383,7 +369,7 @@
 		},
 		data() {
 			return {
-				loader: false,
+				loading: false,
 				shipping_rates: [],
 				form: this.$inertia.form({
 					ship_from: "",
@@ -394,8 +380,8 @@
 					ship_to_country_code: "",
 					ship_to_city: "",
 					customs_value: "",
-					address_type: "",
-					units: "LB_IN",
+					address_type: true,
+					units: false,
 					dimensions: [
 						{
 							length: "",
@@ -409,18 +395,18 @@
 		},
 		methods: {
 			submit() {
-				this.loader = true;
+				this.loading = true;
 				axios
 					.post(route("shipping-rates.index"), this.form)
 					.then((response) => {
 						this.shipping_rates = response.data.data;
-						this.loader = false;
+						this.loading = false;
 					})
 					.catch((error) => {
-						this.loader = false;
+						this.loading = false;
 					})
 					.finally(() => {
-						this.loader = false;
+						this.loading = false;
 					});
 			},
 			add_dimension() {
@@ -441,47 +427,3 @@
 		},
 	};
 </script>
-
-<style>
-	.center {
-		display: block;
-		margin-left: auto;
-		margin-right: auto;
-	}
-	.bg-grey-soft {
-		background: #fff8ee;
-	}
-	.bg-yellow {
-		background: #f1b523;
-	}
-	section.section {
-		background: #ffff;
-	}
-	.contact-form .form-select {
-		padding: 0.8rem 2.25rem 0.8rem 0.75rem;
-	}
-	.contact-form .form-heading h6 {
-		letter-spacing: 0.1px;
-	}
-	.contact-form .sizes-input .form-control {
-		background-color: #fff;
-		background-clip: initial;
-		border: none !important;
-		padding: 0.6rem 0.75rem;
-	}
-	.contact-form .sizes-input .form-select {
-		border: none !important;
-	}
-	.contact-form .dim-warning a:hover {
-		text-decoration: none;
-	}
-	.contact-form .dim-warning .fa {
-		color: #999999;
-	}
-	.page-header.page-header-modern.page-header-lg {
-		padding: 15px 0 !important;
-	}
-	.text-6 {
-		font-size: 1.3em !important;
-	}
-</style>

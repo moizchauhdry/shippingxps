@@ -29,18 +29,14 @@ class ShippingRatesController extends Controller
                 $ship_from_city = $warehouse->city;
             }
 
-            $units = explode('_', $request->units);
-            $weight_units = $units[0];
-            $dimension_units = $units[1];
-
-            $measurement_unit = 'imperial';
-            if ($weight_units == 'KG') {
+            if ($request->units == true) {
+                $weight_units = 'KG';
+                $dimension_units = 'CM';
                 $measurement_unit = 'metric';
-            }
-
-            $residential = false;
-            if ($request->address_type == 'residential') {
-                $residential = true;
+            } else {
+                $weight_units = 'LB';
+                $dimension_units = 'IN';
+                $measurement_unit = 'imperial';
             }
 
             $data = [
@@ -54,9 +50,12 @@ class ShippingRatesController extends Controller
                 'dimension_units' => $dimension_units,
                 'measurement_unit' => $measurement_unit,
                 'customs_value' => $request->customs_value,
-                'residential' => $residential,
+                'residential' => $request->address_type,
                 'dimensions' => $request->dimensions,
             ];
+
+
+            // dd($data);
 
             $fedex_rates = $this->fedex($data);
             $dhl_rates = $this->dhl($data);
