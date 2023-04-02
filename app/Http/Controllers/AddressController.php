@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Warehouse;
 use Illuminate\Http\Request;
-use \Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use App\Models\Address;
 use App\Models\Country;
+use GuzzleHttp\Client;
 
 class AddressController extends Controller
 {
@@ -52,28 +52,100 @@ class AddressController extends Controller
         $validated = $request->validate([
             'fullname' => 'required|string',
             'country_id' => 'required',
-            'state' => 'nullable|string',
+            'state' => 'required|string|min:2|max:2',
             'city' => 'required|string',
             'zip_code' => 'required|string',
             'phone' => 'required|string',
-            'address' => 'required|string',
+            'address' => 'required|string|max:35',
+            'address_2' => 'nullable|string|max:35',
+            'address_3' => 'nullable|string|max:35',
             'is_residential' => 'required|boolean',
         ]);
+
+
+        try {
+
+            $country = Country::find($request->country_id);
+            $country_code = $country->iso;
+
+            $client = new Client();
+
+            $result = $client->post('https://apis.fedex.com/oauth/token', [
+                'form_params' => [
+                    'grant_type' => 'client_credentials',
+                    'client_id' => 'l7ef7275cc94544aaabf802ef4308bb66a',
+                    'client_secret' => '48b51793-fd0d-426d-8bf0-3ecc62d9c876',
+                ]
+            ]);
+
+            $authorization = $result->getBody()->getContents();
+            $authorization = json_decode($authorization);
+
+            $headers = [
+                'X-locale' => 'en_US',
+                'Content-Type' => 'application/json',
+                'Authorization' => 'Bearer ' . $authorization->access_token
+            ];
+
+            $body = [
+                "inEffectAsOfTimestamp" => "2019-09-06",
+                "validateAddressControlParameters" => [
+                    "includeResolutionTokens" => true
+                ],
+                "addressesToValidate" => [
+                    [
+                        "address" => [
+                            "streetLines" => [
+                                $validated['address']
+                            ],
+                            "city" =>  $validated['city'],
+                            "stateOrProvinceCode" =>  $validated['state'],
+                            "postalCode" =>  $validated['zip_code'],
+                            "countryCode" => $country_code,
+                            "urbanizationCode" => "string",
+                            "addressVerificationId" => "string"
+                        ]
+                    ]
+                ]
+            ];
+
+            $api_request = $client->post('https://apis.fedex.com/address/v1/addresses/resolve', [
+                'headers' => $headers,
+                'body' => json_encode($body)
+            ]);
+
+            $response = $api_request->getBody()->getContents();
+            $response = json_decode($response);
+
+            $address_type = $response->output->resolvedAddresses[0]->classification;
+
+            if ($address_type == 'BUSINESS' && $request->is_residential == 1) {
+                return redirect()->back()->with('error', 'The address you have entered is business but you select residential.');
+            }
+
+            if ($address_type == 'RESIDENTIAL' && $request->is_residential == 0) {
+                return redirect()->back()->with('error', 'The address you entered is residential but you select business.');
+            }
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', 'The address you have entered is not valid.');
+        }
 
         $address = new Address();
         $address->user_id = Auth::user()->id;
         $address->fullname = $validated['fullname'];
         $address->country_id = $validated['country_id'];
+        $address->country_code = $country_code;
         $address->state = $validated['state'];
         $address->city = $validated['city'];
         $address->zip_code = $validated['zip_code'];
         $address->phone = $validated['phone'];
         $address->address = $validated['address'];
+        $address->address_2 = $validated['address_2'];
+        $address->address_3 = $validated['address_3'];
         $address->is_residential = $validated['is_residential'];
-
         $address->save();
 
-        return redirect()->back()->with('success', 'Address Created Successfully.');
+        return redirect()->back()->with('success', 'The address have been created successfully.');
     }
 
     /**
