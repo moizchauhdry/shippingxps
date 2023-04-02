@@ -132,6 +132,9 @@
 					pieces.push(piece);
 				});
 
+				var address_type =
+					this.packag.address.is_residential == 1 ? true : false;
+
 				let quote_params = {
 					ship_from: this.packag.warehouse_id,
 					ship_from_country_code: "US",
@@ -140,7 +143,7 @@
 					ship_to_country_code: this.packag.address.country.iso,
 					ship_to_city: this.packag.address.city,
 					customs_value: this.packag.shipping_total,
-					address_type: true,
+					address_type: address_type,
 					units: false,
 					dimensions: pieces,
 				};

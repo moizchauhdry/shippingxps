@@ -54,9 +54,6 @@ class ShippingRatesController extends Controller
                 'dimensions' => $request->dimensions,
             ];
 
-
-            // dd($data);
-
             $fedex_rates = $this->fedex($data);
             $dhl_rates = $this->dhl($data);
 
@@ -68,7 +65,6 @@ class ShippingRatesController extends Controller
                 'data' => $rates,
             ]);
         } catch (\Throwable $th) {
-            dd($th);
             return response()->json([
                 'status' => false,
                 'message' => 'error',
