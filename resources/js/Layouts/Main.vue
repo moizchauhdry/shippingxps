@@ -410,10 +410,10 @@
 			<!-- SIDEBAR -->
 
 			<div role="main" class="main-section">
+				<div class="d-flex justify-content-center">
+					<FlashMessages />
+				</div>
 				<div class="col-md-12">
-					<div class="row">
-						<FlashMessages />
-					</div>
 					<slot />
 				</div>
 			</div>

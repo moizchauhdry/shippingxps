@@ -71,7 +71,7 @@
 											<flash-messages class="mb-4" />
 
 											<div class="row">
-												<div class="form-group col-md-12">
+												<div class="form-group col-md-7">
 													<breeze-label for="name" value="Full Name *" />
 													<input
 														type="text"
@@ -81,12 +81,50 @@
 													/>
 												</div>
 
+												<div class="form-group col-md-5">
+													<breeze-label
+														for="Business/Residential"
+														value="Business/Residential *"
+													/>
+													<select
+														class="form-control"
+														v-model="
+															create_shipping_address_form.is_residential
+														"
+														required
+													>
+														<option value="" selected>Select</option>
+														<option value="0">Business</option>
+														<option value="1">Residential</option>
+													</select>
+												</div>
+
 												<div class="form-group col-md-12">
 													<breeze-label for="address" value="Address *" />
 													<input
 														type="text"
 														class="form-control"
 														v-model="create_shipping_address_form.address"
+														required
+													/>
+												</div>
+
+												<div class="form-group col-md-12">
+													<breeze-label for="address2" value="Address 2" />
+													<input
+														type="text"
+														class="form-control"
+														v-model="create_shipping_address_form.address_2"
+														required
+													/>
+												</div>
+
+												<div class="form-group col-md-12">
+													<breeze-label for="address3" value="Address 3" />
+													<input
+														type="text"
+														class="form-control"
+														v-model="create_shipping_address_form.address_3"
 														required
 													/>
 												</div>
@@ -111,6 +149,16 @@
 												</div>
 
 												<div class="form-group col-md-6">
+													<breeze-label for="zip_code" value="Zip Code *" />
+													<input
+														type="text"
+														class="form-control"
+														v-model="create_shipping_address_form.zip_code"
+														required
+													/>
+												</div>
+
+												<div class="form-group col-md-6">
 													<breeze-label for="country" value="Country *" />
 													<select
 														required
@@ -131,16 +179,6 @@
 												</div>
 
 												<div class="form-group col-md-6">
-													<breeze-label for="zip_code" value="Zip Code *" />
-													<input
-														type="text"
-														class="form-control"
-														v-model="create_shipping_address_form.zip_code"
-														required
-													/>
-												</div>
-
-												<div class="form-group col-md-6">
 													<breeze-label for="phone" value="Phone *" />
 													<input
 														type="text"
@@ -151,21 +189,13 @@
 												</div>
 
 												<div class="form-group col-md-6">
-													<breeze-label
-														for="Commercial/Residential"
-														value="Commercial/Residential *"
-													/>
-													<select
+													<breeze-label for="email" value="Email *" />
+													<input
+														type="email"
 														class="form-control"
-														v-model="
-															create_shipping_address_form.is_residential
-														"
+														v-model="create_shipping_address_form.email"
 														required
-													>
-														<option value="" selected>Select</option>
-														<option value="0">Commercial</option>
-														<option value="1">Residential</option>
-													</select>
+													/>
 												</div>
 											</div>
 
@@ -200,6 +230,7 @@
 	import BreezeAuthenticatedLayout from "@/Layouts/Authenticated";
 	import BreezeLabel from "@/Components/Label";
 	import BreezeValidationErrors from "@/Components/ValidationErrors";
+	import { Inertia } from "@inertiajs/inertia";
 
 	export default {
 		name: "Shipping Address Component",
@@ -223,13 +254,16 @@
 				}),
 				create_shipping_address_form: this.$inertia.form({
 					fullname: "",
-					country_id: "",
-					state: "",
-					city: "",
-					phone: "",
-					address: "",
-					zip_code: "",
 					is_residential: "",
+					address: "",
+					address_2: "",
+					address_3: "",
+					city: "",
+					state: "",
+					zip_code: "",
+					country_id: "",
+					phone: "",
+					email: "",
 				}),
 			};
 		},
@@ -238,9 +272,20 @@
 				this.address_form.post(this.route("packages.address.update"));
 			},
 			submitShippingAddress() {
-				this.create_shipping_address_form.post(this.route("address.store"));
-				this.create_shipping_address = false;
-				this.create_shipping_address_form.reset();
+				Inertia.post(
+					route("address.store"),
+					this.create_shipping_address_form,
+					{
+						onSuccess: (response) => {
+							console.log(response);
+							this.create_shipping_address = false;
+							this.create_shipping_address_form.reset();
+						},
+						onError: () => {
+							this.create_shipping_address = true;
+						},
+					}
+				);
 			},
 			cancelShippingAddress() {
 				this.create_shipping_address_form.reset();

@@ -56,6 +56,7 @@ class AddressController extends Controller
             'city' => 'required|string',
             'zip_code' => 'required|string',
             'phone' => 'required|string',
+            'email' => 'email|required|string',
             'address' => 'required|string|max:35',
             'address_2' => 'nullable|string|max:35',
             'address_3' => 'nullable|string|max:35',
@@ -139,6 +140,7 @@ class AddressController extends Controller
         $address->city = $validated['city'];
         $address->zip_code = $validated['zip_code'];
         $address->phone = $validated['phone'];
+        $address->email = $validated['email'];
         $address->address = $validated['address'];
         $address->address_2 = $validated['address_2'];
         $address->address_3 = $validated['address_3'];

@@ -15,6 +15,7 @@ class ChangeInAddressesTable extends Migration
     {
         Schema::table('addresses', function (Blueprint $table) {
             $table->string('country_code', 100)->nullable();
+            $table->string('email', 100)->nullable();
             $table->string('address_2', 100)->nullable();
             $table->string('address_3', 100)->nullable();
         });
@@ -30,6 +31,8 @@ class ChangeInAddressesTable extends Migration
         Schema::table('addresses', function (Blueprint $table) {
             $table->dropColumn('address_2');
             $table->dropColumn('address_3');
+            $table->dropColumn('country_code');
+            $table->dropColumn('email');
         });
     }
 }

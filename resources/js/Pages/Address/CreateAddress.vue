@@ -1,18 +1,18 @@
 <template>
 	<MainLayout>
 		<div class="container-fluid">
-			<h1
-				class="text-5 text-lg-5 text-xl-5 line-height-3 text-transform-none font-weight-semibold mb-4"
-			>
-				Shipping Address
-			</h1>
 			<div class="stock-subscription-form">
 				<form @submit.prevent="submit">
 					<div class="order-form">
-						<breeze-validation-errors class="mb-4" />
-						<!-- <flash-messages class="mb-4" /> -->
+						<div class="col-md-6 offset-md-3">
+							<h1
+								class="text-5 text-lg-5 text-xl-5 line-height-3 text-transform-none font-weight-semibold mb-4"
+							>
+								Shipping Address
+							</h1>
 
-						<div class="col-md-4">
+							<breeze-validation-errors class="mb-4" />
+
 							<div class="row">
 								<div class="form-group col-md-6">
 									<breeze-label for="fullname" value="Full Name *" />
@@ -136,15 +136,26 @@
 										required
 									/>
 								</div>
-							</div>
-						</div>
 
-						<div class="order-button">
-							<input
-								type="submit"
-								value="Create Address"
-								class="btn btn-danger"
-							/>
+								<div class="form-group col-md-6">
+									<breeze-label for="email" value="Email *" />
+									<input
+										type="email"
+										class="form-control"
+										placeholder="Phone"
+										v-model="form.email"
+										required
+									/>
+								</div>
+							</div>
+
+							<div class="order-button">
+								<input
+									type="submit"
+									value="Create Address"
+									class="btn btn-danger"
+								/>
+							</div>
 						</div>
 					</div>
 				</form>
@@ -174,6 +185,7 @@
 					state: "",
 					city: "",
 					phone: "",
+					email: "",
 					address: "",
 					address_2: "",
 					address_3: "",
