@@ -115,7 +115,6 @@
 														type="text"
 														class="form-control"
 														v-model="create_shipping_address_form.address_2"
-														required
 													/>
 												</div>
 
@@ -125,7 +124,6 @@
 														type="text"
 														class="form-control"
 														v-model="create_shipping_address_form.address_3"
-														required
 													/>
 												</div>
 

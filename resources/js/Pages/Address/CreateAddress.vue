@@ -8,7 +8,7 @@
 							<h1
 								class="text-5 text-lg-5 text-xl-5 line-height-3 text-transform-none font-weight-semibold mb-4"
 							>
-								Shipping Address
+								Create - Shipping Address
 							</h1>
 
 							<breeze-validation-errors class="mb-4" />
@@ -54,9 +54,8 @@
 									<input
 										type="text"
 										class="form-control"
-										placeholder="Address"
+										placeholder="Address 2"
 										v-model="form.address_2"
-										required
 									/>
 								</div>
 
@@ -65,9 +64,8 @@
 									<input
 										type="text"
 										class="form-control"
-										placeholder="Address"
+										placeholder="Address 3"
 										v-model="form.address_3"
-										required
 									/>
 								</div>
 
