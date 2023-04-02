@@ -16,7 +16,7 @@
 					<div class="col-md-6">
 						<div class="row">
 							<form @submit.prevent="submitPkgAddress">
-								<div class="form-group">
+								<div class="form-group col-md-6">
 									<select
 										name="address_book_id"
 										class="form-select text-uppercase"
