@@ -18,9 +18,14 @@
 					<div class="row">
 						<div class="col-md-3">
 							<template v-if="service_request_pending_count == 0">
-								<a class="btn btn-success" v-on:click="getShippingRates()"
-									>Get Shipping Rates</a
+								<button
+									class="btn btn-success"
+									v-on:click="getShippingRates()"
+									:disabled="loading"
 								>
+									<span v-if="!loading">Get Shipping Rates</span>
+									<span v-else>Loading ... Please wait.</span>
+								</button>
 							</template>
 							<template v-else>
 								<span class="text-uppercase badge badge-danger p-1">
@@ -70,12 +75,9 @@
 												<b>Note:</b> Selected service cannot be changed. So make
 												sure you choose correct service.
 											</p>
-											<p
-												class="text-white bg-danger p-1"
-												v-show="displayNoteShipping"
-											>
+											<p class="text-white bg-danger p-1" v-show="rates_error">
 												<b>Note:</b> Make sure your address is valid to get
-												Shipping Service
+												shipping rates.
 											</p>
 										</td>
 									</tr>
@@ -87,14 +89,10 @@
 			</div>
 		</div>
 	</div>
-
-	<loader-component v-if="loader"></loader-component>
 </template>
 
 <script>
-	import LoaderComponent from "@/Components/LoaderComponent.vue";
 	export default {
-		components: { LoaderComponent },
 		name: "Shipping Rate Component",
 		props: {
 			packag: Object,
@@ -103,7 +101,8 @@
 		},
 		data() {
 			return {
-				loader: false,
+				loading: false,
+				rates_error: false,
 				shipping_rates: [],
 				ship_service_form: this.$inertia.form({
 					package_id: this.packag.id,
@@ -118,7 +117,9 @@
 		},
 		methods: {
 			getShippingRates() {
-				this.loader = true;
+				this.loading = true;
+				this.rates_error = false;
+				this.shipping_rates = [];
 
 				let pieces = [];
 				this.packag.boxes.forEach(function (value, index) {
@@ -139,7 +140,8 @@
 					ship_to_country_code: this.packag.address.country.iso,
 					ship_to_city: this.packag.address.city,
 					customs_value: this.packag.shipping_total,
-					units: "LB_IN",
+					address_type: true,
+					units: false,
 					dimensions: pieces,
 				};
 
@@ -147,13 +149,14 @@
 					.post(route("shipping-rates.index"), quote_params)
 					.then((response) => {
 						this.shipping_rates = response.data.data;
-						this.loader = false;
+						this.loading = false;
 					})
 					.catch((error) => {
-						this.loader = false;
+						this.loading = false;
+						this.rates_error = true;
 					})
 					.finally(() => {
-						this.loader = false;
+						this.loading = false;
 					});
 			},
 			setShippingService(rate) {

@@ -10,10 +10,10 @@
 					</h1>
 
 					<h6 class="text-4 mb-4 mt-2">
-						To get shipping rates for any destination just use the postage
-						calculator below. We offer discounted rates on all shipping methods.
-						These rates are tens of percents better than official rates of
-						carriers.
+						To get shipping rates for any destination just use the shipping
+						calculator calculator below. We offer discounted rates on all
+						shipping methods. These rates are tens of percents better than
+						official rates of carriers.
 					</h6>
 				</div>
 				<div class="col-md-6">
@@ -105,23 +105,13 @@
 										class="form-control"
 									/>
 								</div>
-								<!-- <div class="form-group">
-									<h6 for="">Address</h6>
-									<select
-										required
-										v-model="form.address_type"
-										class="form-control custom-select"
-									>
-										<option value="">Select</option>
-										<option value="residential">Residential</option>
-										<option value="business">Business</option>
-									</select>
-								</div> -->
 							</div>
 
 							<div class="d-flex justify-content-center p-2">
 								<input type="checkbox" v-model="form.units" />
-								<label for="" class="ml-1 mr-3">Metric units</label>
+								<label for="" class="ml-1 mr-3"
+									>Metric <small>(kg/cm)</small></label
+								>
 
 								<input type="checkbox" v-model="form.address_type" />
 								<label for="" class="ml-1">Residential</label>
@@ -132,23 +122,10 @@
 								v-for="(item, index) in form.dimensions"
 								:key="item.id"
 							>
-								<!-- <div class="form-group" v-if="index == 0">
-									<h6>Unit</h6>
-									<select
-										v-model="form.units"
-										class="form-control custom-select"
-										aria-h6="Default select example"
-									>
-										<option value="LB_IN">Lb / Inch</option>
-										<option value="KG_CM">Kg / Cm</option>
-									</select>
-								</div> -->
-
-								<div
-									class="form-group"
-									:class="index != 0 ? 'offset-md-3' : ''"
-								>
-									<h6>Weight <small>lbs</small></h6>
+								<div class="form-group">
+									<h6>
+										Weight <small>{{ form.units ? "kg" : "lbs" }}</small>
+									</h6>
 									<input
 										v-model="item.weight"
 										type="number"
@@ -161,12 +138,15 @@
 								</div>
 
 								<div class="form-group">
-									<h6>Dimensions <small>(L x W x H) inch</small></h6>
+									<h6>
+										Dimensions
+										<small>(L x W x H) {{ form.units ? "cm" : "inch" }}</small>
+									</h6>
 									<div class="d-flex">
 										<input
 											v-model="item.length"
 											type="number"
-											class="form-control"
+											class="form-control dimension"
 											name="name"
 											:step="0.01"
 											:min="1"
@@ -176,7 +156,7 @@
 										<input
 											v-model="item.width"
 											type="number"
-											class="form-control"
+											class="form-control dimension"
 											name="name"
 											:step="0.01"
 											:min="1"
@@ -186,7 +166,7 @@
 										<input
 											v-model="item.height"
 											type="number"
-											class="form-control"
+											class="form-control dimension"
 											name="name"
 											:step="0.01"
 											:min="1"
@@ -195,12 +175,12 @@
 									</div>
 								</div>
 
-								<div v-show="index != 0">
+								<div class="form-group" v-show="index != 0">
 									<a
 										v-on:click="remove_dimension(index)"
 										class="btn btn-link float-right font-bold"
 									>
-										Remove
+										<i class="fas fa-times"></i>
 									</a>
 								</div>
 							</div>
@@ -210,7 +190,7 @@
 									class="btn btn-link mt-2 mb-2 font-bold"
 									v-on:click="add_dimension()"
 								>
-									+ ADD ANOTHER PACKAGE
+									<i class="fa fa-plus mr-1"></i>ADD ANOTHER PACKAGE
 								</button>
 							</div>
 
@@ -396,6 +376,7 @@
 		methods: {
 			submit() {
 				this.loading = true;
+				this.shipping_rates = [];
 				axios
 					.post(route("shipping-rates.index"), this.form)
 					.then((response) => {
@@ -427,3 +408,12 @@
 		},
 	};
 </script>
+
+<style>
+	.form-group {
+		margin-right: 1px !important;
+	}
+	.dimension {
+		margin-right: 1px !important;
+	}
+</style>
