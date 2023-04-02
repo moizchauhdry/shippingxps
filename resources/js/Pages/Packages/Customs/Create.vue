@@ -76,127 +76,113 @@
 												:key="item.id"
 												class="row"
 											>
-												<div class="col-md-3">
-													<div class="form-group">
-														<label for=""><b>Description *</b></label>
-														<input
-															v-model="item.description"
-															name="description"
-															id="description"
-															type="text"
-															class="form-control"
-															placeholder="Description"
-															required
-														/>
-													</div>
+												<div class="col-md-3 form-group">
+													<label for=""><b>Description *</b></label>
+													<input
+														v-model="item.description"
+														name="description"
+														id="description"
+														type="text"
+														class="form-control"
+														placeholder="Description"
+														required
+													/>
 												</div>
 
-												<div class="col-md-2">
-													<div class="form-group">
-														<label for=""><b>HS Code</b></label>
-														<input
-															v-model="item.hs_code"
-															name="hs_code"
-															id="hs_code"
-															type="text"
-															class="form-control"
-															placeholder="HS Code"
-														/>
-													</div>
+												<div class="col-md-2 form-group">
+													<label for=""><b>HS Code</b></label>
+													<input
+														v-model="item.hs_code"
+														name="hs_code"
+														id="hs_code"
+														type="text"
+														class="form-control"
+														placeholder="HS Code"
+													/>
 												</div>
 
-												<div class="col-md-1">
-													<div class="form-group">
-														<label for=""><b>Qty *</b></label>
-														<input
-															v-model="item.quantity"
-															@keyup="calculateShippingTotal"
-															v-on:change="calculateShippingTotal"
-															name="quantity"
-															min="1"
-															step="1"
-															id="quantity"
-															type="number"
-															class="form-control"
-															placeholder="Qty"
-															required
-														/>
-													</div>
+												<div class="col-md-1 form-group">
+													<label for=""><b>Qty *</b></label>
+													<input
+														v-model="item.quantity"
+														@keyup="calculateShippingTotal"
+														v-on:change="calculateShippingTotal"
+														name="quantity"
+														min="1"
+														step="1"
+														id="quantity"
+														type="number"
+														class="form-control"
+														placeholder="Qty"
+														required
+													/>
 												</div>
 
-												<div class="col-md-1">
-													<div class="form-group">
-														<label for=""><b>Price *</b></label>
-														<input
-															v-model="item.price"
-															@keyup="calculateShippingTotal"
-															v-on:change="calculateShippingTotal"
-															min="0"
-															type="number"
-															step="0.01"
-															class="form-control"
-															placeholder="Price"
-															required
-														/>
-													</div>
+												<div class="col-md-1 form-group">
+													<label for=""><b>Price *</b></label>
+													<input
+														v-model="item.price"
+														@keyup="calculateShippingTotal"
+														v-on:change="calculateShippingTotal"
+														min="0"
+														type="number"
+														step="0.01"
+														class="form-control"
+														placeholder="Price"
+														required
+													/>
 												</div>
 
-												<div class="col-md-2">
-													<div class="form-group">
-														<label for=""><b>Origin Country *</b></label>
-														<select
-															name="origin_country"
-															class="form-select"
-															v-model="item.origin_country"
-															required
+												<div class="col-md-2 form-group">
+													<label for=""><b>Origin Country *</b></label>
+													<select
+														name="origin_country"
+														class="form-control custom-select"
+														v-model="item.origin_country"
+														required
+													>
+														<option selected value="">Select</option>
+														<template
+															v-for="country in countries"
+															:key="country.id"
 														>
-															<option selected value="">Select</option>
-															<template
-																v-for="country in countries"
-																:key="country.id"
-															>
-																<option :value="country.id">
-																	{{ country.name }}
-																</option>
-															</template>
-														</select>
-													</div>
+															<option :value="country.id">
+																{{ country.name }}
+															</option>
+														</template>
+													</select>
 												</div>
 
-												<div class="col-md-2">
-													<div class="form-group">
-														<label for=""><b>Batteries *</b></label>
-														<select
-															name="batteries"
-															class="form-select"
-															v-model="item.batteries"
-															required
-														>
-															<option selected value="">Select</option>
-															<option value="0">No Battery</option>
-															<option value="1">
-																Simple Batteries (Shipped on on Fedex)
-															</option>
-															<option value="2">
-																Batteries Packaed with Equipment
-															</option>
-															<option value="3">
-																Batteries Contained in Equipment
-															</option>
-														</select>
-													</div>
+												<div class="col-md-2 form-group">
+													<label for=""><b>Batteries *</b></label>
+													<select
+														name="batteries"
+														class="form-control custom-select"
+														v-model="item.batteries"
+														required
+													>
+														<option selected value="">Select</option>
+														<option value="0">No Battery</option>
+														<option value="1">
+															Simple Batteries (Shipped on on Fedex)
+														</option>
+														<option value="2">
+															Batteries Packaed with Equipment
+														</option>
+														<option value="3">
+															Batteries Contained in Equipment
+														</option>
+													</select>
 												</div>
 
-												<div class="col-md-1" v-show="index != 0">
-													<div class="form-group">
-														<label for=""></label>
-														<a
-															v-on:click="removeItem(index)"
-															class="btn btn-primary"
-														>
-															<span>Delete</span>
-														</a>
-													</div>
+												<div class="col-md-1 form-group" v-show="index != 0">
+													<label for=""></label>
+													<button
+														v-on:click="removeItem(index)"
+														class="btn btn-link"
+													>
+														<i class="fas fa-times text-lg"></i>
+													</button>
 												</div>
 											</div>
 
@@ -205,13 +191,13 @@
 													class="col-md-1 offset-md-4"
 													style="padding-right: 0px"
 												>
-													<div class="form-group">
+													<div class="col-md form-group">
 														<span class="text-lg"><b>Total:</b></span>
 													</div>
 												</div>
 
 												<div class="col-md-2" style="padding-right: 0px">
-													<div class="form-group">
+													<div class="col-md form-group">
 														<input
 															v-model="form.shipping_total"
 															readonly
@@ -233,13 +219,13 @@
 														class="btn btn-primary"
 														style="float: right"
 													>
-														<span>Add Item </span>
+														<i class="fas fa-plus mr-1"></i> Add Item
 													</a>
 												</div>
 											</div>
 
 											<div class="row">
-												<div class="form-group">
+												<div class="col-md form-group">
 													<breeze-label value="Package Type" />
 													<label>
 														<input
@@ -284,20 +270,22 @@
 											</div>
 
 											<div class="row">
-												<label for="" class="font-bold"
-													>Special Instrcutions</label
-												>
-												<textarea
-													v-model="form.special_instructions"
-													id=""
-													rows="5"
-												></textarea>
+												<div class="col-md-12 form-group">
+													<label for="" class="font-bold"
+														>Special Instrcutions</label
+													>
+													<textarea
+														v-model="form.special_instructions"
+														class="form-control"
+														rows="5"
+													></textarea>
+												</div>
 											</div>
 										</div>
 									</fieldset>
 								</div>
 								<div class="row">
-									<div class="col-md-12 form-group">
+									<div class="col-md-12 col-md form-group">
 										<template v-if="packag.status == 'open'">
 											<button type="submit" class="btn btn-success float-right">
 												Save & Submit
@@ -413,17 +401,5 @@
 		mounted() {
 			this.addItem();
 		},
-		// computed: {
-		// 	shipping_total() {
-		// 		return this.form.package_items.reduce((acc, item) => {
-		// 			var res = acc + parseFloat(item.unit_price) * parseInt(item.quantity);
-		// 			if (res > 0) {
-		// 				return parseFloat(res).toFixed(2);
-		// 			} else {
-		// 				return "";
-		// 			}
-		// 		}, 0);
-		// 	},
-		// },
 	};
 </script>
