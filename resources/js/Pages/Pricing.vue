@@ -17,6 +17,12 @@
 			</div>
 			<div class="col-md-6">
 				<div class="card p-4 shadow">
+					<div class="d-flex justify-content-center mb-2">
+						<span class="font-weight-semibold" style="font-size: 14px">
+							Note: Please enter "00000" in the zip code field if your country
+							does not have a postal code.
+						</span>
+					</div>
 					<form @submit.prevent="submit">
 						<div class="d-flex justify-content-center">
 							<div class="form-group">
