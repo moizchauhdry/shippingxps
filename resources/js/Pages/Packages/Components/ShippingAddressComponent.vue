@@ -128,41 +128,12 @@
 												</div>
 
 												<div class="form-group col-md-6">
-													<breeze-label for="city" value="City *" />
-													<input
-														type="text"
-														class="form-control"
-														v-model="create_shipping_address_form.city"
-														required
-													/>
-												</div>
-
-												<div class="form-group col-md-6">
-													<breeze-label for="state" value="State" />
-													<input
-														type="text"
-														class="form-control"
-														v-model="create_shipping_address_form.state"
-													/>
-												</div>
-
-												<div class="form-group col-md-6">
-													<breeze-label for="zip_code" value="Zip Code *" />
-													<input
-														type="text"
-														class="form-control"
-														v-model="create_shipping_address_form.zip_code"
-														required
-													/>
-												</div>
-
-												<div class="form-group col-md-6">
 													<breeze-label for="country" value="Country *" />
 													<select
 														required
 														v-model="create_shipping_address_form.country_id"
 														class="form-control"
-														aria-label="Default select example"
+														v-on:change="country()"
 													>
 														<option value="" selected>Select</option>
 														<template
@@ -174,6 +145,42 @@
 															</option>
 														</template>
 													</select>
+												</div>
+
+												<div class="form-group col-md-6">
+													<breeze-label
+														for="state"
+														:value="
+															create_shipping_address_form.state_required
+																? 'State *'
+																: 'State (optional)'
+														"
+													/>
+													<input
+														type="text"
+														class="form-control"
+														v-model="create_shipping_address_form.state"
+													/>
+												</div>
+
+												<div class="form-group col-md-6">
+													<breeze-label for="city" value="City *" />
+													<input
+														type="text"
+														class="form-control"
+														v-model="create_shipping_address_form.city"
+														required
+													/>
+												</div>
+
+												<div class="form-group col-md-6">
+													<breeze-label for="zip_code" value="Zip Code *" />
+													<input
+														type="text"
+														class="form-control"
+														v-model="create_shipping_address_form.zip_code"
+														required
+													/>
 												</div>
 
 												<div class="form-group col-md-6">
@@ -262,6 +269,7 @@
 					country_id: "",
 					phone: "",
 					email: "",
+					state_required: false,
 				}),
 			};
 		},
@@ -288,6 +296,21 @@
 			cancelShippingAddress() {
 				this.create_shipping_address_form.reset();
 				this.create_shipping_address = false;
+			},
+			country() {
+				if (
+					this.create_shipping_address_form.country_id == 225 ||
+					this.create_shipping_address_form.country_id == 226 ||
+					this.create_shipping_address_form.country_id == 138 ||
+					this.create_shipping_address_form.country_id == 38
+				) {
+					this.create_shipping_address_form.state_required = true;
+				} else {
+					this.create_shipping_address_form.state_required = false;
+				}
+			},
+			mounted() {
+				this.country();
 			},
 		},
 	};
