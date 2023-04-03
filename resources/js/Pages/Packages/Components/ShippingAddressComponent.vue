@@ -299,7 +299,6 @@
 			},
 			country() {
 				if (
-					this.create_shipping_address_form.country_id == 225 ||
 					this.create_shipping_address_form.country_id == 226 ||
 					this.create_shipping_address_form.country_id == 138 ||
 					this.create_shipping_address_form.country_id == 38
