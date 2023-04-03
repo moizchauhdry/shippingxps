@@ -96,7 +96,7 @@
 										id="state"
 										type="text"
 										class="form-control"
-										placeholder="State"
+										placeholder="e.g NY,CA,DE"
 										v-model="form.state"
 									/>
 								</div>
