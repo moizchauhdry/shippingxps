@@ -1,6 +1,6 @@
 <template>
 	<MainLayout>
-		<div class="container-fluid">
+		<div class="container">
 			<div class="stock-subscription-form">
 				<form @submit.prevent="submit">
 					<div class="order-form">
@@ -50,7 +50,7 @@
 								</div>
 
 								<div class="form-group col-md-12">
-									<breeze-label for="" value="Address 2" />
+									<breeze-label for="" value="Address 2 (optional)" />
 									<input
 										type="text"
 										class="form-control"
@@ -60,12 +60,44 @@
 								</div>
 
 								<div class="form-group col-md-12">
-									<breeze-label for="address" value="Address 3" />
+									<breeze-label for="address" value="Address 3 (optional)" />
 									<input
 										type="text"
 										class="form-control"
 										placeholder="Address 3"
 										v-model="form.address_3"
+									/>
+								</div>
+
+								<div class="form-group col-md-6">
+									<breeze-label for="country" value="Country *" />
+									<select
+										required
+										v-model="form.country_id"
+										class="form-control"
+										v-on:change="country"
+									>
+										<option value="0">--Select Country--</option>
+										<template v-for="country in countries" :key="country">
+											<option :value="country.id">{{ country.name }}</option>
+										</template>
+									</select>
+								</div>
+
+								<div class="form-group col-md-6">
+									<breeze-label
+										for="state"
+										:value="
+											form.state_required ? 'State *' : 'State (optional)'
+										"
+									/>
+									<input
+										name="state"
+										id="state"
+										type="text"
+										class="form-control"
+										placeholder="State"
+										v-model="form.state"
 									/>
 								</div>
 
@@ -83,18 +115,6 @@
 								</div>
 
 								<div class="form-group col-md-6">
-									<breeze-label for="state" value="State/Province *" />
-									<input
-										name="state"
-										id="state"
-										type="text"
-										class="form-control"
-										placeholder="State"
-										v-model="form.state"
-									/>
-								</div>
-
-								<div class="form-group col-md-6">
 									<breeze-label for="zip_code" value="Zip Code *" />
 									<input
 										name="zip_code"
@@ -105,21 +125,6 @@
 										v-model="form.zip_code"
 										required
 									/>
-								</div>
-
-								<div class="form-group col-md-6">
-									<breeze-label for="country" value="Country *" />
-									<select
-										required
-										v-model="form.country_id"
-										class="form-control"
-										aria-label="Default select example"
-									>
-										<option value="0">--Select Country--</option>
-										<template v-for="country in countries" :key="country">
-											<option :value="country.id">{{ country.name }}</option>
-										</template>
-									</select>
 								</div>
 
 								<div class="form-group col-md-6">
@@ -189,6 +194,7 @@
 					address_3: "",
 					zip_code: "",
 					is_residential: "1",
+					state_required: false,
 				}),
 			};
 		},
@@ -199,6 +205,18 @@
 		methods: {
 			submit() {
 				this.form.post(this.route("address.store"));
+			},
+			country() {
+				if (
+					this.form.country_id == 225 ||
+					this.form.country_id == 226 ||
+					this.form.country_id == 138 ||
+					this.form.country_id == 38
+				) {
+					this.form.state_required = true;
+				} else {
+					this.form.state_required = false;
+				}
 			},
 		},
 	};

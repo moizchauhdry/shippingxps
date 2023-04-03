@@ -9,6 +9,7 @@ use Inertia\Inertia;
 use App\Models\Address;
 use App\Models\Country;
 use GuzzleHttp\Client;
+use Illuminate\Validation\Rule;
 
 class AddressController extends Controller
 {
@@ -52,7 +53,6 @@ class AddressController extends Controller
         $validated = $request->validate([
             'fullname' => 'required|string',
             'country_id' => 'required',
-            'state' => 'required|string|min:2|max:2',
             'city' => 'required|string',
             'zip_code' => 'required|string',
             'phone' => 'required|string',
@@ -64,71 +64,77 @@ class AddressController extends Controller
         ]);
 
 
-        try {
+        $country = Country::find($request->country_id);
+        $country_code = $country->iso;
 
-            $country = Country::find($request->country_id);
-            $country_code = $country->iso;
-
-            $client = new Client();
-
-            $result = $client->post('https://apis.fedex.com/oauth/token', [
-                'form_params' => [
-                    'grant_type' => 'client_credentials',
-                    'client_id' => 'l7ef7275cc94544aaabf802ef4308bb66a',
-                    'client_secret' => '48b51793-fd0d-426d-8bf0-3ecc62d9c876',
-                ]
+        if ($request->state_required == true) {
+            $validated += $request->validate([
+                'state' => 'required|min:2|max:2',
             ]);
 
-            $authorization = $result->getBody()->getContents();
-            $authorization = json_decode($authorization);
+            try {
 
-            $headers = [
-                'X-locale' => 'en_US',
-                'Content-Type' => 'application/json',
-                'Authorization' => 'Bearer ' . $authorization->access_token
-            ];
+                $client = new Client();
 
-            $body = [
-                "inEffectAsOfTimestamp" => "2019-09-06",
-                "validateAddressControlParameters" => [
-                    "includeResolutionTokens" => true
-                ],
-                "addressesToValidate" => [
-                    [
-                        "address" => [
-                            "streetLines" => [
-                                $validated['address']
-                            ],
-                            "city" =>  $validated['city'],
-                            "stateOrProvinceCode" =>  $validated['state'],
-                            "postalCode" =>  $validated['zip_code'],
-                            "countryCode" => $country_code,
-                            "urbanizationCode" => "string",
-                            "addressVerificationId" => "string"
+                $result = $client->post('https://apis.fedex.com/oauth/token', [
+                    'form_params' => [
+                        'grant_type' => 'client_credentials',
+                        'client_id' => 'l7ef7275cc94544aaabf802ef4308bb66a',
+                        'client_secret' => '48b51793-fd0d-426d-8bf0-3ecc62d9c876',
+                    ]
+                ]);
+
+                $authorization = $result->getBody()->getContents();
+                $authorization = json_decode($authorization);
+
+                $headers = [
+                    'X-locale' => 'en_US',
+                    'Content-Type' => 'application/json',
+                    'Authorization' => 'Bearer ' . $authorization->access_token
+                ];
+
+                $body = [
+                    "inEffectAsOfTimestamp" => "2019-09-06",
+                    "validateAddressControlParameters" => [
+                        "includeResolutionTokens" => true
+                    ],
+                    "addressesToValidate" => [
+                        [
+                            "address" => [
+                                "streetLines" => [
+                                    $validated['address']
+                                ],
+                                "city" =>  $validated['city'],
+                                "stateOrProvinceCode" =>  $validated['state'],
+                                "postalCode" =>  $validated['zip_code'],
+                                "countryCode" => $country_code,
+                                "urbanizationCode" => "string",
+                                "addressVerificationId" => "string"
+                            ]
                         ]
                     ]
-                ]
-            ];
+                ];
 
-            $api_request = $client->post('https://apis.fedex.com/address/v1/addresses/resolve', [
-                'headers' => $headers,
-                'body' => json_encode($body)
-            ]);
+                $api_request = $client->post('https://apis.fedex.com/address/v1/addresses/resolve', [
+                    'headers' => $headers,
+                    'body' => json_encode($body)
+                ]);
 
-            $response = $api_request->getBody()->getContents();
-            $response = json_decode($response);
+                $response = $api_request->getBody()->getContents();
+                $response = json_decode($response);
 
-            $address_type = $response->output->resolvedAddresses[0]->classification;
+                $address_type = $response->output->resolvedAddresses[0]->classification;
 
-            if ($address_type == 'BUSINESS' && $request->is_residential == 1) {
-                return redirect()->back()->with('error', 'The address you have entered is business but you select residential.');
+                if ($address_type == 'BUSINESS' && $request->is_residential == 1) {
+                    return redirect()->back()->with('error', 'The address you have entered is business but you select residential.');
+                }
+
+                if ($address_type == 'RESIDENTIAL' && $request->is_residential == 0) {
+                    return redirect()->back()->with('error', 'The address you entered is residential but you select business.');
+                }
+            } catch (\Throwable $th) {
+                return redirect()->back()->with('error', 'The address you have entered is not valid.');
             }
-
-            if ($address_type == 'RESIDENTIAL' && $request->is_residential == 0) {
-                return redirect()->back()->with('error', 'The address you entered is residential but you select business.');
-            }
-        } catch (\Throwable $th) {
-            return redirect()->back()->with('error', 'The address you have entered is not valid.');
         }
 
         $address = new Address();
@@ -136,7 +142,7 @@ class AddressController extends Controller
         $address->fullname = $validated['fullname'];
         $address->country_id = $validated['country_id'];
         $address->country_code = $country_code;
-        $address->state = $validated['state'];
+        $address->state = $request->state;
         $address->city = $validated['city'];
         $address->zip_code = $validated['zip_code'];
         $address->phone = $validated['phone'];
@@ -169,19 +175,7 @@ class AddressController extends Controller
      */
     public function edit($id)
     {
-        $model = Address::find($id);
-
-        $address = [
-            'id' => $model->id,
-            'fullname' => $model->fullname,
-            'country_id' => $model->country_id,
-            'state' => $model->state,
-            'city' => $model->city,
-            'zip_code' => $model->zip_code,
-            'phone' => $model->phone,
-            'address' => $model->address,
-            'is_residential' => $model->is_residential,
-        ];
+        $address = Address::find($id);
 
         $countries = Country::all(['id', 'nicename as name', 'iso'])->toArray();
 
@@ -200,7 +194,7 @@ class AddressController extends Controller
      */
     public function update(Request $request)
     {
-
+        // dd($request->all());
         $id = $request->input('id');
 
         $address = Address::find($id);
@@ -208,7 +202,6 @@ class AddressController extends Controller
         $validated = $request->validate([
             'fullname' => 'required|string',
             'country_id' => 'required',
-            'state' => 'required|string|min:2|max:2',
             'city' => 'required|string',
             'zip_code' => 'required|string',
             'phone' => 'required|string',
@@ -220,78 +213,82 @@ class AddressController extends Controller
         ]);
 
 
-        try {
+        $country = Country::find($request->country_id);
+        $country_code = $country->iso;
 
-            $country = Country::find($request->country_id);
-            $country_code = $country->iso;
-
-            $client = new Client();
-
-            $result = $client->post('https://apis.fedex.com/oauth/token', [
-                'form_params' => [
-                    'grant_type' => 'client_credentials',
-                    'client_id' => 'l7ef7275cc94544aaabf802ef4308bb66a',
-                    'client_secret' => '48b51793-fd0d-426d-8bf0-3ecc62d9c876',
-                ]
+        if ($request->state_required == true) {
+            $validated += $request->validate([
+                'state' => 'required|min:2|max:2',
             ]);
 
-            $authorization = $result->getBody()->getContents();
-            $authorization = json_decode($authorization);
+            try {
+                $client = new Client();
+                $result = $client->post('https://apis.fedex.com/oauth/token', [
+                    'form_params' => [
+                        'grant_type' => 'client_credentials',
+                        'client_id' => 'l7ef7275cc94544aaabf802ef4308bb66a',
+                        'client_secret' => '48b51793-fd0d-426d-8bf0-3ecc62d9c876',
+                    ]
+                ]);
 
-            $headers = [
-                'X-locale' => 'en_US',
-                'Content-Type' => 'application/json',
-                'Authorization' => 'Bearer ' . $authorization->access_token
-            ];
+                $authorization = $result->getBody()->getContents();
+                $authorization = json_decode($authorization);
 
-            $body = [
-                "inEffectAsOfTimestamp" => "2019-09-06",
-                "validateAddressControlParameters" => [
-                    "includeResolutionTokens" => true
-                ],
-                "addressesToValidate" => [
-                    [
-                        "address" => [
-                            "streetLines" => [
-                                $validated['address']
-                            ],
-                            "city" =>  $validated['city'],
-                            "stateOrProvinceCode" =>  $validated['state'],
-                            "postalCode" =>  $validated['zip_code'],
-                            "countryCode" => $country_code,
-                            "urbanizationCode" => "string",
-                            "addressVerificationId" => "string"
+                $headers = [
+                    'X-locale' => 'en_US',
+                    'Content-Type' => 'application/json',
+                    'Authorization' => 'Bearer ' . $authorization->access_token
+                ];
+
+                $body = [
+                    "inEffectAsOfTimestamp" => "2019-09-06",
+                    "validateAddressControlParameters" => [
+                        "includeResolutionTokens" => true
+                    ],
+                    "addressesToValidate" => [
+                        [
+                            "address" => [
+                                "streetLines" => [
+                                    $validated['address']
+                                ],
+                                "city" =>  $validated['city'],
+                                "stateOrProvinceCode" =>  $validated['state'],
+                                "postalCode" =>  $validated['zip_code'],
+                                "countryCode" => $country_code,
+                                "urbanizationCode" => "string",
+                                "addressVerificationId" => "string"
+                            ]
                         ]
                     ]
-                ]
-            ];
+                ];
 
-            $api_request = $client->post('https://apis.fedex.com/address/v1/addresses/resolve', [
-                'headers' => $headers,
-                'body' => json_encode($body)
-            ]);
+                $api_request = $client->post('https://apis.fedex.com/address/v1/addresses/resolve', [
+                    'headers' => $headers,
+                    'body' => json_encode($body)
+                ]);
 
-            $response = $api_request->getBody()->getContents();
-            $response = json_decode($response);
+                $response = $api_request->getBody()->getContents();
+                $response = json_decode($response);
 
-            $address_type = $response->output->resolvedAddresses[0]->classification;
+                $address_type = $response->output->resolvedAddresses[0]->classification;
 
-            if ($address_type == 'BUSINESS' && $request->is_residential == 1) {
-                return redirect()->back()->with('error', 'The address you have entered is business but you select residential.');
+                if ($address_type == 'BUSINESS' && $request->is_residential == 1) {
+                    return redirect()->back()->with('error', 'The address you have entered is business but you select residential.');
+                }
+
+                if ($address_type == 'RESIDENTIAL' && $request->is_residential == 0) {
+                    return redirect()->back()->with('error', 'The address you entered is residential but you select business.');
+                }
+            } catch (\Throwable $th) {
+                return redirect()->back()->with('error', 'The address you have entered is not valid.');
             }
-
-            if ($address_type == 'RESIDENTIAL' && $request->is_residential == 0) {
-                return redirect()->back()->with('error', 'The address you entered is residential but you select business.');
-            }
-        } catch (\Throwable $th) {
-            return redirect()->back()->with('error', 'The address you have entered is not valid.');
         }
 
         $address->user_id = Auth::user()->id;
         $address->fullname = $validated['fullname'];
         $address->country_id = $validated['country_id'];
         $address->country_code = $country_code;
-        $address->state = $validated['state'];
+        $address->state = $request->state;
         $address->city = $validated['city'];
         $address->zip_code = $validated['zip_code'];
         $address->phone = $validated['phone'];
@@ -303,7 +300,7 @@ class AddressController extends Controller
 
         $address->update();
 
-        return redirect()->back()->with('success', 'Address Updated!');
+        return redirect()->back()->with('success', 'The address have been updated successfully.');
     }
 
     /**
@@ -382,5 +379,23 @@ class AddressController extends Controller
         } else {
             return response()->json(['status' => false, 'address' => NULL]);
         }
+    }
+
+    public function country($id)
+    {
+        $country = Country::find($id);
+
+        if ($country) {
+            if (in_array($country->iso, ['US', 'MX', 'CA', 'GB'])) {
+                $state_required = true;
+            }
+        } else {
+            $state_required = false;
+        }
+
+        return response()->json([
+            'status' => true,
+            'state_required' => $state_required
+        ]);
     }
 }

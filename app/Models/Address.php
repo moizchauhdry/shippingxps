@@ -10,6 +10,7 @@ class Address extends Model
     use HasFactory;
 
     protected $appends = ['country_name'];
+    protected $guarded = [];
 
     public function country()
     {
