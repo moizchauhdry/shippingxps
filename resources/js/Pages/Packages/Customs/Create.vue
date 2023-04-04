@@ -9,6 +9,7 @@
 						>
 							Customs Declaration Form
 						</h2>
+
 						<template v-if="printable.includes(packag.status)">
 							<h4 class="text-center text-white bg-danger p-2 m-4">
 								<i class="fas fa-exclamation-circle mr-1"></i> Customs
@@ -20,9 +21,6 @@
 						<form @submit.prevent="submit" enctype="multipart/form-data">
 							<input type="hidden" name="packag_id" v-model="packag_id" />
 							<div class="packag-form">
-								<breeze-validation-errors class="mb-4" />
-								<flash-messages class="mb-4" />
-
 								<div class="row">
 									<div class="col-md-6" style="border: 1px solid #6b7280">
 										<h1><b>SHIPPED FROM :</b>&nbsp;{{ warehouse.name }}</h1>
@@ -70,6 +68,10 @@
 
 								<div class="row">
 									<fieldset class="mt-4 mb-2 border p-4">
+										<div class="colm">
+											<breeze-validation-errors class="mb-4 text-lg" />
+											<flash-messages class="mb-4" />
+										</div>
 										<div class="col-md-12">
 											<div
 												v-for="(item, index) in form.package_items"
@@ -85,7 +87,6 @@
 														type="text"
 														class="form-control"
 														placeholder="Description"
-														required
 													/>
 												</div>
 
@@ -114,7 +115,6 @@
 														type="number"
 														class="form-control"
 														placeholder="Qty"
-														required
 													/>
 												</div>
 
@@ -129,7 +129,6 @@
 														step="0.01"
 														class="form-control"
 														placeholder="Price"
-														required
 													/>
 												</div>
 
@@ -139,7 +138,6 @@
 														name="origin_country"
 														class="form-control custom-select"
 														v-model="item.origin_country"
-														required
 													>
 														<option selected value="">Select</option>
 														<template
@@ -154,12 +152,11 @@
 												</div>
 
 												<div class="col-md-2 form-group">
-													<label for=""><b>Batteries *</b></label>
+													<label for=""><b>Batteries</b></label>
 													<select
 														name="batteries"
 														class="form-control custom-select"
 														v-model="item.batteries"
-														required
 													>
 														<option selected value="">Select</option>
 														<option value="0">No Battery</option>
@@ -272,7 +269,7 @@
 											<div class="row">
 												<div class="col-md-12 form-group">
 													<label for="" class="font-bold"
-														>Special Instrcutions</label
+														>Special Instrcutions *</label
 													>
 													<textarea
 														v-model="form.special_instructions"
@@ -306,12 +303,14 @@
 	import MainLayout from "@/Layouts/Main";
 	import BreezeAuthenticatedLayout from "@/Layouts/Authenticated";
 	import BreezeLabel from "@/Components/Label";
+	import BreezeValidationErrors from "@/Components/ValidationErrors";
 
 	export default {
 		components: {
 			BreezeAuthenticatedLayout,
 			MainLayout,
 			BreezeLabel,
+			BreezeValidationErrors,
 		},
 		props: {
 			auth: Object,

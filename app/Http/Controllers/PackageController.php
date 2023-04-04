@@ -305,13 +305,26 @@ class PackageController extends Controller
 
     public function store(Request $request)
     {
+        // dd($request->all());
+
         $package = Package::with('order', 'packageItems')->where('id', $request->package_id)->first();
 
         $validated = $request->validate([
-            'package_items' => 'required|array',
+            'package_items.*.description' => 'required',
+            'package_items.*.quantity' => 'required',
+            'package_items.*.price' => 'required|gt:0|numeric',
+            'package_items.*.origin_country' => 'required',
+            'package_items.*.batteries' => 'nullable',
+            'package_items.*.hs_code' => 'nullable',
             'shipping_total' => 'required',
             'package_type' => 'required',
             'special_instructions' => 'nullable',
+        ], [
+            'package_items.*.description.required' => 'The package items description field is required.',
+            'package_items.*.quantity.required' => 'The package items quantity field is required.',
+            'package_items.*.price.required' => 'The package items price field is required.',
+            'package_items.*.price.gt' => 'The package items price must be greater than 0.',
+            'package_items.*.origin_country.required' => 'The package items origin country field is required.',
         ]);
 
         $package->update([
@@ -324,12 +337,12 @@ class PackageController extends Controller
         foreach ($request->package_items as $key => $pkg_item) {
             $order_item = new OrderItem();
             $order_item->package_id = $package->id;
-            $order_item->hs_code = $pkg_item['hs_code'];
+            $order_item->hs_code = $pkg_item['hs_code'] ?? null;
             $order_item->description = $pkg_item['description'];
             $order_item->quantity = $pkg_item['quantity'];
             $order_item->unit_price = $pkg_item['price'];
             $order_item->origin_country = $pkg_item['origin_country'];
-            $order_item->batteries = $pkg_item['batteries'];
+            $order_item->batteries = $pkg_item['batteries'] ?? null;
             $order_item->save();
         }
 
