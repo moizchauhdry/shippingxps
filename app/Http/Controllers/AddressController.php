@@ -13,26 +13,15 @@ use Illuminate\Validation\Rule;
 
 class AddressController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-
-        $addresses = Address::with('country')->where('user_id', Auth::user()->id)->get();
+        $addresses = Address::orderBy('id', 'desc')->with('country')->where('user_id', Auth::user()->id)->get();
 
         return Inertia::render('Address/AddressList', [
             'addresses' => $addresses
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         $countries = Country::all(['id', 'nicename as name', 'iso'])->toArray();
@@ -42,12 +31,6 @@ class AddressController extends Controller
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -61,6 +44,7 @@ class AddressController extends Controller
             'address_2' => 'nullable|string|max:35',
             'address_3' => 'nullable|string|max:35',
             'is_residential' => 'required|boolean',
+            'tax_no' => 'nullable|max:100',
         ]);
 
 
@@ -131,6 +115,10 @@ class AddressController extends Controller
 
                 if ($address_type == 'RESIDENTIAL' && $request->is_residential == 0) {
                     return redirect()->back()->with('error', 'The address you entered is residential but you select business.');
+                }
+
+                if ($address_type == 'UNKNOWN') {
+                    return redirect()->back()->with('error', 'The address you have entered is not valid.');
                 }
             } catch (\Throwable $th) {
                 return redirect()->back()->with('error', 'The address you have entered is not valid.');
@@ -151,28 +139,12 @@ class AddressController extends Controller
         $address->address_2 = $request->address_2;
         $address->address_3 =  $request->address_3;
         $address->is_residential = $validated['is_residential'];
+        $address->tax_no = $request->tax_no;
         $address->save();
 
         return redirect()->back()->with('success', 'The address have been created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
         $address = Address::find($id);
@@ -185,16 +157,8 @@ class AddressController extends Controller
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request)
     {
-        // dd($request->all());
         $id = $request->input('id');
 
         $address = Address::find($id);
@@ -210,6 +174,7 @@ class AddressController extends Controller
             'address_2' => 'nullable|string|max:35',
             'address_3' => 'nullable|string|max:35',
             'is_residential' => 'required|boolean',
+            'tax_no' => 'nullable',
         ]);
 
 
@@ -297,27 +262,17 @@ class AddressController extends Controller
         $address->address_2 = $request->address_2;
         $address->address_3 =  $request->address_3;
         $address->is_residential = $validated['is_residential'];
+        $address->tax_no = $request->tax_no;
 
         $address->update();
 
         return redirect()->back()->with('success', 'The address have been updated successfully.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
-
         Address::find($id)->delete();
-
         return back()->with('success', 'Address deleted!');
-
-        //return response()->json(['status' => TRUE]);
-
     }
 
     public function suite()
@@ -379,23 +334,5 @@ class AddressController extends Controller
         } else {
             return response()->json(['status' => false, 'address' => NULL]);
         }
-    }
-
-    public function country($id)
-    {
-        $country = Country::find($id);
-
-        if ($country) {
-            if (in_array($country->iso, ['US', 'MX', 'CA', 'GB'])) {
-                $state_required = true;
-            }
-        } else {
-            $state_required = false;
-        }
-
-        return response()->json([
-            'status' => true,
-            'state_required' => $state_required
-        ]);
     }
 }

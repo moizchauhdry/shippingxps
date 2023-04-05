@@ -159,6 +159,7 @@
 													<input
 														type="text"
 														class="form-control"
+														placeholder="e.g NY,CA,DE"
 														v-model="create_shipping_address_form.state"
 													/>
 												</div>
@@ -178,7 +179,6 @@
 													<input
 														type="text"
 														class="form-control"
-														placeholder="e.g NY,CA,DE"
 														v-model="create_shipping_address_form.zip_code"
 														required
 													/>

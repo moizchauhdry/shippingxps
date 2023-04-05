@@ -30,7 +30,14 @@
 										</tr>
 										<tr>
 											<td colspan="2">
-												{{ packag?.address?.address }}
+												<span>{{ packag?.address?.address }} <br /> </span>
+												<span v-if="packag.address.address_2">
+													{{ packag?.address?.address_2 }}
+													<br />
+												</span>
+												<span v-if="packag.address.address_3">
+													{{ packag?.address?.address_3 }} <br />
+												</span>
 											</td>
 										</tr>
 										<tr>

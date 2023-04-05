@@ -54,6 +54,16 @@
 											}}<br />
 											<b>Phone:</b>&nbsp;{{ packag.address.phone }}<br />
 											<b>Address:</b>&nbsp;{{ packag.address.address }}<br />
+											<span v-if="packag.address.address_2">
+												<b>Address 2:</b>&nbsp;
+												{{ packag.address.address_2 }}
+												<br />
+											</span>
+											<span v-if="packag.address.address_3">
+												<b>Address 3:</b>&nbsp;
+												{{ packag.address.address_3 }}
+												<br />
+											</span>
 											<b>City:</b>&nbsp;{{ packag.address.city }}<br />
 											<b>State:</b>&nbsp;{{ packag.address.state }}<br />
 											<b>Zip code:</b>&nbsp;{{ packag.address.zip_code }}<br />
@@ -223,7 +233,7 @@
 
 											<div class="row">
 												<div class="col-md form-group">
-													<breeze-label value="Package Type" />
+													<breeze-label value="Package Type *" />
 													<label>
 														<input
 															v-model="form.package_type"
@@ -269,7 +279,7 @@
 											<div class="row">
 												<div class="col-md-12 form-group">
 													<label for="" class="font-bold"
-														>Special Instrcutions *</label
+														>Special Instrcutions</label
 													>
 													<textarea
 														v-model="form.special_instructions"
@@ -287,6 +297,11 @@
 											<button type="submit" class="btn btn-success float-right">
 												Save & Submit
 											</button>
+											<inertia-link
+												:href="route('packages.show', packag.id)"
+												class="btn btn-danger"
+												>Cancel</inertia-link
+											>
 										</template>
 									</div>
 								</div>

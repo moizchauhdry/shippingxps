@@ -116,7 +116,7 @@
 									/>
 								</div>
 
-								<div class="form-group col-md-6">
+								<div class="form-group col-md-3">
 									<breeze-label for="zip_code" value="Zip Code *" />
 									<input
 										name="zip_code"
@@ -126,6 +126,18 @@
 										placeholder="Zip Code"
 										v-model="form.zip_code"
 										required
+									/>
+								</div>
+
+								<div class="form-group col-md-3">
+									<breeze-label for="tax_no" value="Tax ID" />
+									<input
+										name="tax_no"
+										id="tax_no"
+										type="text"
+										class="form-control"
+										placeholder="Tax/ VAT ID"
+										v-model="form.tax_no"
 									/>
 								</div>
 
@@ -197,6 +209,7 @@
 					address_2: this.address.address_2,
 					address_3: this.address.address_3,
 					is_residential: this.address.is_residential,
+					tax_no: this.address.tax_no,
 					state_required: false,
 				}),
 			};

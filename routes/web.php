@@ -93,7 +93,6 @@ Route::get('/address/{id}/edit', 'AddressController@edit')->name('address.edit')
 Route::put('/address', 'AddressController@update')->name('address.update')->middleware('auth');
 Route::delete('/address{id}', 'AddressController@destroy')->name('address.destroy')->middleware('auth');
 Route::get('/address/suite', 'AddressController@suite')->name('address.suite')->middleware('auth');
-Route::get('/address/country/{id}', 'AddressController@country')->name('address.country')->middleware('auth');
 
 Route::get('/warehouses', 'WarehouseController@index')->name('warehouses')->middleware('auth');
 Route::get('/warehouses/create', 'WarehouseController@create')->name('warehouses.create')->middleware('auth');
