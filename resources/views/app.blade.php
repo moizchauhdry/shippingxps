@@ -24,7 +24,7 @@
     <link rel="stylesheet" href="{{ asset('theme/css/theme.css') }}">
     <link rel="stylesheet" href="{{ asset('theme/css/theme-elements.css') }}">
     <link id="skinCSS" rel="stylesheet" href="{{ asset('theme/css/skins/skin-business-consulting-3.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/custom.css?v=1.0') }}">
 
     @env('production')
     <script src="https://www.google.com/recaptcha/api.js?render=6LcKxb0hAAAAALPcMiT1eLu03DnQfxaluzJhgD8F"></script>
