@@ -259,7 +259,7 @@
 					<div class="d-flex justify-content-center">
 						<a href="http://shippingxps.com">
 							<img
-								class="mt-4"
+								class="mt-5"
 								alt="shippingxps"
 								width="237"
 								height="55"
