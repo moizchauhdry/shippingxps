@@ -8,7 +8,7 @@
 				<inertia-link
 					:href="route('notifications.mark-all-read')"
 					class="float-right"
-					>Mark All Read</inertia-link
+					><i class="far fa-bookmark mr-1"></i>Mark all as read</inertia-link
 				>
 				<div
 					class="d-block"

@@ -41,9 +41,9 @@ class NotifyChangesByAdminToCustomer extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+            ->line('The introduction to the notification.')
+            ->action('Notification Action', url('/'))
+            ->line('Thank you for using our application!');
     }
 
     /**
@@ -57,7 +57,7 @@ class NotifyChangesByAdminToCustomer extends Notification
         $url = route("shop-for-me.edit", ["id" => $this->order->id]);
         return [
             'order_id' => $this->order->id,
-            'message' => 'Admin has updated your order, Please Review  and approve changes<a href="'.$url. '" style="color:#1b4eff">See Details</a> ',
+            'message' => 'Admin has updated your order, Please Review  and approve changes<a href="' . $url . '" style="color:#1b4eff"> See Details</a> ',
             'url' => $url
         ];
     }

@@ -30,10 +30,10 @@
 		<ul class="flex-md-row inline-flex navbar-nav px-3">
 			<inertia-link
 				:href="route('notifications')"
-				class="mb-2 me-2 inline-flex i+tems-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
+				class="notifications mb-2 mr-1 inline-flex i+tems-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
 			>
 				Notifications
-				<span class="badge badge-danger ml-1.5" v-if="notification_count > 0">{{
+				<span class="badge badge-danger ml-1" v-if="notification_count > 0">{{
 					notification_count
 				}}</span>
 			</inertia-link>
@@ -61,6 +61,13 @@
 					</span>
 				</template>
 				<template #content>
+					<breeze-dropdown-link :href="route('notifications')" as="button">
+						Notifications<span
+							class="badge badge-danger ml-1"
+							v-if="notification_count > 0"
+							>{{ notification_count }}</span
+						>
+					</breeze-dropdown-link>
 					<breeze-dropdown-link
 						v-if="$page.props.auth.user.type == 'customer'"
 						:href="route('profile')"
