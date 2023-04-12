@@ -64,6 +64,7 @@
 												{{ packag.address.address_3 }}
 												<br />
 											</span>
+											<b>Tax ID:</b>&nbsp;{{ packag.address.tax_no }}<br />
 											<b>City:</b>&nbsp;{{ packag.address.city }}<br />
 											<b>State:</b>&nbsp;{{ packag.address.state }}<br />
 											<b>Zip code:</b>&nbsp;{{ packag.address.zip_code }}<br />
