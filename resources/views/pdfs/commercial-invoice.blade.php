@@ -96,6 +96,9 @@
                 <strong>E-mail</strong> : {{ $user->email ?? ''}}<br>
                 <strong>Company / Address</strong> :<br>
                 {{ $address->address ?? ''}} <br>
+                {{ $address->address_2 ?? ''}} <br>
+                {{ $address->address_3 ?? ''}} <br>
+                <strong>Tax ID</strong> : {{ $address->tax_no ?? ''}} <br>
                 <strong>City</strong> : {{ $address->city ?? ''}} <br>
                 <strong>State/Province</strong> : {{ $address->state ?? ''}} <br>
                 <strong>Zip code</strong> : {{ $address->zip_code ?? ''}} <br> <br>
