@@ -75,108 +75,107 @@
             </td>
         </tr>
     </table>
+
     <br>
-    {{-- <strong>Charges</strong> --}}
+
+    @isset($package)
     <table class="border" style="width: 100%">
-        <tbody>
-            @isset($package)
-            <tr>
-                <td>
-                    Mail Fee
-                </td>
-
-                <td style="width: 100px">$5</td>
-            </tr>
-            <tr>
-                <td>
-                    Storage Fee
-                </td>
-
-                <td style="width: 100px">${{ $package->storage_fee }}</td>
-            </tr>
-            @foreach($package->serviceRequests as $item)
-            <tr>
-                <td>
-                    {{ $item->service->title }}
-                </td>
-
-                <td style="width: 100px">
-                    @if($item->service->id == 1)
-                    ${{ $item->service->price + $package->orders->count() * 1.5 }}
-                    @else
-                    ${{ $item->service->price }}
-                    @endif
-                </td>
-            </tr>
-            @endforeach
-            <tr>
-                <td>
-                    Shipping
-                </td>
-                <td style="width: 100px">${{ $package->shipping_charges }}</td>
-            </tr>
-            @endisset
-
-            @isset($order)
-            <tr>
-                <td>
-                    Order Items Total
-                </td>
-                <td style="width: 100px">$ {{ $order->sub_total }}</td>
-            </tr>
-            <tr>
-                <td>
-                    Service Charges
-                </td>
-                <td style="width: 100px">$ {{ $order->service_charges }}</td>
-            </tr>
-            <tr>
-                <td>
-                    Shipping From Shop
-                </td>
-                <td style="width: 100px">$ {{ $order->shipping_from_shop }}</td>
-            </tr>
-            <tr>
-                <td>
-                    Pickup Charges
-                </td>
-
-                <td style="width: 100px">$ {{ $order->pickup_charges ?? 0.00 }}</td>
-            </tr>
-
-            @endisset
-
-            @isset($additionalRequest)
-            <tr>
-                <td>
-                    Additional Charges For Request - {{ $additionalRequest->message ?? '- -' }}
-                </td>
-
-                <td style="width: 100px">$ {{ $additionalRequest->price }}</td>
-            </tr>
-            @endisset
-
-            @isset($insuranceRequest)
-            <tr>
-                <td>
-                    Charges For Insurance Request with Shipping
-                </td>
-
-                <td style="width: 100px">$ {{ $insuranceRequest->amount }}</td>
-            </tr>
-            @endisset
-
-            @isset($giftCard)
-            <tr>
-                <td>
-                    <span style="text-transform:uppercase">{{$giftCard->type}} Gift Card</span> x {{$giftCard->qty}}
-                </td>
-                <td style="width: 100px; padding:10px;">$ {{ $giftCard->amount }}</td>
-            </tr>
-            @endisset
-
-        </tbody>
+        @foreach($package->serviceRequests as $item)
+        <tr>
+            <td style="width:85%">{{ $item->service->title }}</td>
+            <td style="width:15%">
+                @if($item->service->id == 1)
+                ${{ $item->service->price + $package->orders->count() * 1.5 }}
+                @else
+                ${{ $item->service->price }}
+                @endif
+            </td>
+        </tr>
+        @endforeach
+        <tr>
+            <td style="width:85%">Mail Fee</td>
+            <td style="width:15%">$5</td>
+        </tr>
+        <tr>
+            <td style="width:85%">Storage Fee</td>
+            <td style="width:15%">${{ $package->storage_fee }}</td>
+        </tr>
+        <tr>
+            <td style="width:85%">Shipping Service - {{ $package->service_label }}</td>
+            <td style="width:15%">${{ $package->shipping_charges }}</td>
+        </tr>
     </table>
+    @endisset
+
+    @isset($order)
+    <table class="border" style="width: 100%">
+        <tr>
+            <td>
+                Order Items Total
+            </td>
+            <td style="width: 100px">${{ $order->sub_total }}</td>
+        </tr>
+        <tr>
+            <td>
+                Service Charges
+            </td>
+            <td style="width: 100px">${{ $order->service_charges }}</td>
+        </tr>
+        <tr>
+            <td>
+                Shipping From Shop
+            </td>
+            <td style="width: 100px">${{ $order->shipping_from_shop }}</td>
+        </tr>
+        <tr>
+            <td>
+                Pickup Charges
+            </td>
+
+            <td style="width: 100px">${{ $order->pickup_charges ?? 0.00 }}</td>
+        </tr>
+    </table>
+    @endisset
+
+
+    @isset($additionalRequest)
+    <table class="border" style="width: 100%">
+        <tr>
+            <td>
+                Additional Charges For Request - {{ $additionalRequest->message ?? '- -' }}
+            </td>
+
+            <td style="width: 100px">${{ $additionalRequest->price }}</td>
+        </tr>
+    </table>
+    @endisset
+
+
+    @isset($insuranceRequest)
+    <table class="border" style="width: 100%">
+        <tr>
+            <td>
+                Charges For Insurance Request with Shipping
+            </td>
+
+            <td style="width: 100px">${{ $insuranceRequest->amount }}</td>
+        </tr>
+    </table>
+    @endisset
+
+    @isset($giftCard)
+    <table class="border" style="width: 100%">
+        <tr>
+            <td>
+                <span style="text-transform:uppercase">{{$giftCard->type}} Gift Card</span> x {{$giftCard->qty}}
+            </td>
+            <td style="width: 100px; padding:10px;">${{ $giftCard->amount }}</td>
+        </tr>
+    </table>
+    @endisset
+
+    <br>
+
     <table style="width: 100%">
         <tr>
             <td></td>
@@ -187,7 +186,7 @@
             </td>
         </tr>
     </table>
-    <br>
+
     <br>
 
     <table class="border" style="width:100%; text-align:center">
@@ -205,9 +204,10 @@
             </td>
             <td>{{ date('d-m-Y',strtotime($payment->charged_at)) }}</td>
             <td>Paid</td>
-            <td>$ {{ $payment->charged_amount }}</td>
+            <td>${{ $payment->charged_amount }}</td>
         </tr>
     </table>
+
     <table style="position: absolute;width: 100%;bottom: 5px">
         <tr>
             <th colspan="3" style="text-align: center">
