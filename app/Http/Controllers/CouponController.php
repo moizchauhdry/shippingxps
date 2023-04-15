@@ -3,15 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Coupon;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class CouponController extends Controller
 {
-    //
-    public function index(){
+    public function index()
+    {
         $coupons = Coupon::all();
-        return Inertia::render('Coupons/Index',[
+        return Inertia::render('Coupons/Index', [
             'coupons' => $coupons,
         ]);
     }
@@ -23,19 +24,21 @@ class CouponController extends Controller
 
     public function store(Request $request)
     {
-//        dd($request->all());
-        $validate = $request->validate([
+        // dd($request->all());
+
+        $request->validate([
             'name' => 'required',
             'code' => 'required|unique:coupons',
             'discount' => 'required',
+            'expiry_date' => 'required|array',
         ]);
-
-        $code = \Str::random(6);
 
         $coupon = new Coupon();
         $coupon->name = $request->input('name');
         $coupon->discount = $request->input('discount');
-        $coupon->code = $request->has('code') ? $request->input('code') : $code;
+        $coupon->code = $request->input('code');
+        $coupon->starts_at = Carbon::parse($request->expiry_date[0])->format('Y-m-d');
+        $coupon->expires_at = Carbon::parse($request->expiry_date[1])->format('Y-m-d');
         $coupon->save();
 
         return redirect()->route('coupon.index')->with('success', 'Coupon Added!');
@@ -43,17 +46,14 @@ class CouponController extends Controller
 
     public function show($id)
     {
-
     }
 
     public function edit($id)
     {
-
     }
 
     public function update(Request $request)
     {
-
     }
 
     public function changeStatus(Request $request)
@@ -65,7 +65,7 @@ class CouponController extends Controller
         $coupon->status = $status;
         $coupon->save();
 
-        return response()->json(['status'=>'1','coupon'=>$coupon]);
+        return response()->json(['status' => '1', 'coupon' => $coupon]);
     }
 
     public function destroy(Request $request)
@@ -73,6 +73,6 @@ class CouponController extends Controller
         $id = $request->id;
         $coupon = Coupon::find($id);
         $coupon->delete();
-        return response()->json(['status'=>'1']);
+        return response()->json(['status' => '1']);
     }
 }
