@@ -98,8 +98,8 @@
                 {{ $address->address ?? ''}} <br>
                 {{ $address->address_2 ?? ''}} <br>
                 {{ $address->address_3 ?? ''}} <br>
-                @if ($address->tax_no)
-                <strong>Tax ID</strong> : {{ $address->tax_no ?? ''}} <br>
+                @if (isset($address->tax_no))
+                <strong>Tax ID</strong> : {{ isset($address->tax_no) ? $address->tax_no : ''}} <br>
                 @endif
                 <strong>City</strong> : {{ $address->city ?? ''}} <br>
                 <strong>State/Province</strong> : {{ $address->state ?? ''}} <br>
