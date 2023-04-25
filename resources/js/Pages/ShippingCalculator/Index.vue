@@ -132,7 +132,7 @@
 										class="form-control"
 										name="name"
 										:step="0.01"
-										:min="1"
+										:min="0"
 										required=""
 									/>
 								</div>

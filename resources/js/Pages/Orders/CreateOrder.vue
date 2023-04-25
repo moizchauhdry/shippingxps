@@ -97,6 +97,7 @@
 												id="package_weight"
 												type="number"
 												step="0.01"
+												min="0"
 												class="form-control"
 												placeholder="Package Weight"
 												required

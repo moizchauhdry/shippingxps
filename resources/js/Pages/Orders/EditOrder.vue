@@ -88,7 +88,7 @@
 												type="number"
 												class="form-control"
 												placeholder="Package Weight"
-												min="1"
+												min="0"
 												step="0.01"
 												required
 											/>
