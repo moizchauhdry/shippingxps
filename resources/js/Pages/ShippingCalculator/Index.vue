@@ -1,6 +1,6 @@
 <template>
 	<MainLayout>
-		<div class="container">
+		<div class="container mb-5">
 			<div class="row">
 				<div class="col-md-12">
 					<h1
@@ -303,6 +303,11 @@
 										src="https://app.shippingxps.com/theme/img/demos/business-consulting-3/partner-02.png"
 										style="width: 100px"
 										v-if="rate.code == 'dhl'"
+									/>
+									<img
+										src="https://app.shippingxps.com/theme/img/demos/business-consulting-3/partner-04.png"
+										style="width: 100px"
+										v-if="rate.code == 'ups'"
 									/>
 								</div>
 								<div class="col-md-4">

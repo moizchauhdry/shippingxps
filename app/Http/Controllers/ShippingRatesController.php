@@ -27,6 +27,7 @@ class ShippingRatesController extends Controller
                 $warehouse = Warehouse::find($request->ship_from);
                 $ship_from_postal_code = $warehouse->zip;
                 $ship_from_city = $warehouse->city;
+                $ship_from_state = $warehouse->state;
             }
 
             if ($request->units == true) {
@@ -43,6 +44,7 @@ class ShippingRatesController extends Controller
                 'ship_from_postal_code' => $ship_from_postal_code,
                 'ship_from_country_code' => $request->ship_from_country_code,
                 'ship_from_city' => $ship_from_city,
+                'ship_from_state' => $ship_from_state,
                 'ship_to_postal_code' => $ship_to_postal_code,
                 'ship_to_country_code' => $request->ship_to_country_code,
                 'ship_to_city' => $request->ship_to_city,
@@ -56,8 +58,9 @@ class ShippingRatesController extends Controller
 
             $fedex_rates = $this->fedex($data);
             $dhl_rates = $this->dhl($data);
+            $ups_rates = $this->ups($data);
 
-            $rates = array_merge($fedex_rates, $dhl_rates);
+            $rates = array_merge($fedex_rates, $dhl_rates, $ups_rates);
 
             return response()->json([
                 'status' => true,
@@ -271,5 +274,233 @@ class ShippingRatesController extends Controller
         } catch (\Throwable $th) {
             return [];
         }
+    }
+
+    public function ups($data)
+    {
+        try {
+            // Authorization
+            $curl = curl_init();
+
+            $payload = "grant_type=client_credentials";
+
+            curl_setopt_array($curl, [
+                CURLOPT_HTTPHEADER => [
+                    "Content-Type: application/x-www-form-urlencoded",
+                    "x-merchant-id: string",
+                    "Authorization: Basic " . base64_encode("gXAcE3M3RxNagMZFVdpjqJWNzsanoEozN9NvsJbyzWkkve5N:kshGQ5SwpG7utyqDtV3zHd1JtyqhTzczSSGq1nFByluEZHgkx1ywY1inudXA2JMH")
+                ],
+                CURLOPT_POSTFIELDS => $payload,
+                CURLOPT_URL => "https://wwwcie.ups.com/security/v1/oauth/token",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_CUSTOMREQUEST => "POST",
+            ]);
+
+            $authorization_response = curl_exec($curl);
+            $authorization_response = json_decode($authorization_response);
+            $access_token = $authorization_response->access_token;
+
+            $packages = [];
+            foreach ($data['dimensions'] as $key => $dimension) {
+                $packages[] =   [
+                    "PackagingType" => [
+                        "Code" => "02",
+                        "Description" => "Packaging"
+                    ],
+                    "Dimensions" => [
+                        "UnitOfMeasurement" => [
+                            "Code" => $data['dimension_units'],
+                        ],
+                        "Length" => (string) $dimension['length'],
+                        "Width" => (string) $dimension['width'],
+                        "Height" => (string) $dimension['height']
+                    ],
+                    "PackageWeight" => [
+                        "UnitOfMeasurement" => [
+                            "Code" => "LBS",
+                            "Description" => "Ounces"
+                        ],
+                        "Weight" => (string) $dimension['weight']
+                    ],
+                    "OversizeIndicator" => "X",
+                    "MinimumBillableWeightIndicator" => "X"
+                ];
+            }
+
+            // Package Rating 
+            $payload = array(
+                "RateRequest" => array(
+                    "Request" => array(
+                        "TransactionReference" => array(
+                            "CustomerContext" => "Verify Success response",
+                            "TransactionIdentifier" => "?"
+                        )
+                    ),
+                    "Shipment" => array(
+                        "Shipper" => array(
+                            "Name" => "Aman",
+                            "ShipperNumber" => "WY2291",
+                            "Address" => array(
+                                "City" => "Bear",
+                                "StateProvinceCode" => "DE",
+                                "PostalCode" => "19701",
+                                "CountryCode" => "US"
+                            )
+                        ),
+                        "ShipTo" => array(
+                            "Address" => array(
+                                "City" => $data['ship_to_city'],
+                                "StateProvinceCode" => "",
+                                "PostalCode" => $data['ship_to_postal_code'],
+                                "CountryCode" => $data['ship_to_country_code']
+                            )
+                        ),
+                        "ShipFrom" => array(
+                            "Name" => "ShippingXPS",
+                            "Address" => array(
+                                "City" => $data['ship_from_city'],
+                                "StateProvinceCode" => $data['ship_from_state'],
+                                "PostalCode" => $data['ship_from_postal_code'],
+                                "CountryCode" => $data['ship_from_country_code']
+                            )
+                        ),
+                        "PaymentDetails" => array(
+                            "ShipmentCharge" => array(
+                                "Type" => "01",
+                                "BillShipper" => array(
+                                    "AttentionName" => "Aman",
+                                    "Name" => "Aman",
+                                    "AccountNumber" => "WY2291",
+                                    "Address" => array(
+                                        "ResidentialAddressIndicator" => "Y",
+                                        "AddressLine" => "AdressLine",
+                                        "City" => "NEW YORK",
+                                        "StateProvinceCode" => "NY",
+                                        "PostalCode" => "21093",
+                                        "CountryCode" => "US"
+                                    )
+                                )
+                            )
+                        ),
+                        "ShipmentRatingOptions" => array(
+                            "TPFCNegotiatedRatesIndicator" => "Y",
+                            "NegotiatedRatesIndicator" => "Y"
+                        ),
+                        "NumOfPieces" => "10",
+                        "Package" => $packages
+                    )
+                )
+            );
+
+            curl_setopt_array($curl, [
+                CURLOPT_HTTPHEADER => [
+                    "Authorization: Bearer " . $access_token,
+                    "Content-Type: application/json",
+                    "transId: string",
+                    "transactionSrc: testing"
+                ],
+                CURLOPT_POSTFIELDS => json_encode($payload),
+                CURLOPT_URL => "https://onlinetools.ups.com/api/rating/v1/shop",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_CUSTOMREQUEST => "POST",
+            ]);
+
+            $rating_response = curl_exec($curl);
+            $rating_response = json_decode($rating_response);
+            $error = curl_error($curl);
+
+            $markup = SiteSetting::getByName('markup');
+            $rates = [];
+            foreach ($rating_response->RateResponse->RatedShipment as $key => $ups) {
+                $price = $ups->NegotiatedRateCharges->TotalCharge->MonetaryValue;
+                $markup_amount = $price * ((int)$markup / 100);
+                $total = $price + $markup_amount;
+                $total = number_format((float)$total, 2, '.', '');
+
+                $rates[] = [
+                    'code' => 'ups',
+                    'type' => $ups->Service->Code,
+                    'name' => $this->upsServiceCode($ups->Service->Code),
+                    'pkg_type' => 'YOUR_PACKAGING',
+                    'price' => $price,
+                    'markup' => $markup_amount,
+                    'total' => $total,
+                ];
+            }
+
+            curl_close($curl);
+
+            return $rates;
+        } catch (\Throwable $th) {
+            return [];
+        }
+    }
+
+    private function upsServiceCode($code)
+    {
+        switch ($code) {
+            case $code == '01':
+                $name = 'UPS Next Day Air';
+                break;
+
+            case $code == '02':
+                $name = 'UPS 2nd Day Air';
+                break;
+
+            case $code == '03':
+                $name = 'UPS Ground';
+                break;
+
+            case $code == '12':
+                $name = 'UPS 3 Day Select';
+                break;
+
+            case $code == '13':
+                $name = 'UPS Next Day Air Saver';
+                break;
+
+            case $code == '14':
+                $name = 'UPS UPS Next Day Air Early';
+                break;
+
+            case $code == '59':
+                $name = 'UPS 2nd Day Air A.M. Valid international values';
+                break;
+
+            case $code == '07':
+                $name = 'UPS Worldwide Express';
+                break;
+
+            case $code == '08':
+                $name = 'UPS Worldwide Expedited';
+                break;
+
+            case $code == '11':
+                $name = 'UPS Standard';
+                break;
+
+            case $code == '54':
+                $name = 'UPS Worldwide Express Plus';
+                break;
+
+            case $code == '65':
+                $name = 'UPS Worldwide Saver';
+                break;
+
+            case $code == '96':
+                $name = 'UPS UPS Worldwide Express Freight';
+                break;
+
+            case $code == '71':
+                $name = 'UPS UPS Worldwide Express Freight Midday Required for Rating and ignored for Shopping';
+                break;
+
+            default:
+                $name = 'UPS Default';
+                break;
+        }
+
+
+        return $name;
     }
 }
