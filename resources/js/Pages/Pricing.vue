@@ -299,6 +299,11 @@
 									style="width: 100px"
 									v-if="rate.code == 'dhl'"
 								/>
+								<img
+									src="https://app.shippingxps.com/theme/img/demos/business-consulting-3/partner-04.png"
+									style="width: 100px"
+									v-if="rate.code == 'ups'"
+								/>
 							</div>
 							<div class="col-md-4">
 								<h6 class="text-lg">
