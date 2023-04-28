@@ -1,6 +1,6 @@
 <template>
 	<MainLayout>
-		<div class="container">
+		<div class="container mb-5">
 			<div class="row">
 				<div class="col-md-12">
 					<notification-component v-bind="$props"></notification-component>
