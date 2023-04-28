@@ -41,9 +41,9 @@
 						</template>
 					</td>
 					<td>
-						<span v-bind:class="getLabelClass(pkg.status)">{{
-							pkg.status
-						}}</span>
+						<span v-bind:class="getLabelClass(pkg.status)">
+							{{ pkg.status }}
+						</span>
 						<br />
 						<span
 							class="badge badge-warning text-uppercase"
@@ -51,8 +51,13 @@
 								pkg.pkg_type == 'consolidation' || pkg.pkg_type == 'multipiece'
 							"
 						>
-							{{ pkg.pkg_type }}</span
-						>
+							{{ pkg.pkg_type }}
+						</span>
+						<span
+							class="badge badge-success text-uppercase"
+							v-if="pkg.payment_status == 'Paid'"
+							>Paid
+						</span>
 					</td>
 					<td>
 						<inertia-link
