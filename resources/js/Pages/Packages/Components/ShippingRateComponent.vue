@@ -57,6 +57,11 @@
 													style="width: 100px"
 													v-if="rate.code == 'dhl'"
 												/>
+												<img
+													src="https://app.shippingxps.com/theme/img/demos/business-consulting-3/partner-04.png"
+													style="width: 100px"
+													v-if="rate.code == 'ups'"
+												/>
 												{{ rate.name }}
 											</td>
 											<td>${{ rate.total }}</td>

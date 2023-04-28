@@ -579,8 +579,6 @@ class PaymentController extends Controller
         \Log::info('on saving record');
         $payment->invoice_url = 'invoices/pdf/' . $payment->invoice_id . '.pdf';
         $payment->save();
-
-        // event(new PaymentEventHandler($payment));
     }
 
     public function getPayments(Request $request)
@@ -624,6 +622,8 @@ class PaymentController extends Controller
         $payment = Payment::find($id);
 
         if ($payment != null) {
+            event(new PaymentEventHandler($payment));
+
             return Inertia::render('Payment/PaymentSuccess', [
                 'payment' => $payment,
             ]);
