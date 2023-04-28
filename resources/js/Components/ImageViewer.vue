@@ -32,7 +32,7 @@
 					</button>
 				</div>
 				<div class="modal-body">
-					<img src="" alt="" />
+					<img src="" alt="" style="width: 100%" />
 				</div>
 				<div class="modal-footer">
 					<button
