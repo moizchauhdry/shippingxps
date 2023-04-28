@@ -40,7 +40,7 @@
 										v-if="notification.read_at == null"
 										class="mark-as-read"
 									>
-										Mark as read
+										Mark as read&nbsp;
 									</div>
 									<div class="ms-3 date-section">
 										{{ notification.created_at }}

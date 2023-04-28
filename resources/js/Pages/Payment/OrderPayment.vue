@@ -60,177 +60,184 @@
 										<div class="col-12" v-if="status != undefined">
 											<p style="color: red">{{ status.message[0].text }}</p>
 										</div>
-										<div class="form-group col-12">
-											<breeze-label value="Card Number *" />
-											<input
-												v-model="form.card_no"
-												class="form-control"
-												type="number"
-												:maxlength="card_max"
-												pattern="[0-9]*"
-												name="card_no"
-												placeholder=""
-												required
-											/>
-										</div>
-										<div class="form-group col-4">
-											<breeze-label for="month" value="Expiry Month *" />
-											<select
-												v-model="form.month"
-												class="form-control"
-												name="month"
-												required
-											>
-												<option value="">Select</option>
-												<option v-for="n in 12" :value="n" :key="n">
-													{{ n }}
-												</option>
-											</select>
-										</div>
-										<div class="form-group col-4">
-											<breeze-label value="Expiry Year *" />
-											<select
-												v-model="form.year"
-												class="form-control"
-												name="year"
-												required
-											>
-												<option value="">Year</option>
-												<option :value="new Date().getFullYear()">
-													{{ new Date().getFullYear() }}
-												</option>
-												<option
-													v-for="n in 5"
-													:value="n + new Date().getFullYear()"
-													:key="n"
+
+										<!-- <h1 style="font-size: 18px"><b>Billing Address</b></h1> -->
+
+										<div class="row">
+											<div class="form-group col-12">
+												<breeze-label value="Card Number *" />
+												<input
+													v-model="form.card_no"
+													class="form-control"
+													type="number"
+													:maxlength="card_max"
+													pattern="[0-9]*"
+													name="card_no"
+													placeholder=""
+													required
+												/>
+											</div>
+											<div class="form-group col-4">
+												<breeze-label for="month" value="Expiry Month *" />
+												<select
+													v-model="form.month"
+													class="form-control"
+													name="month"
+													required
 												>
-													{{ n + new Date().getFullYear() }}
-												</option>
-											</select>
-										</div>
-										<div class="form-group col-4">
-											<breeze-label value="CVV *" />
-											<input
-												v-model="form.cvv"
-												class="form-control"
-												type="number"
-												:maxlength="3"
-												name="cvv"
-												placeholder="123"
-												required
-												pattern="[0-9]*"
-											/>
-										</div>
-
-										<h1 style="font-size: 18px"><b>Billing Address</b></h1>
-
-										<div class="form-group col-sm-12 col-md-6">
-											<breeze-label value="First Name*" />
-											<input
-												v-model="form.first_name"
-												class="form-control"
-												type="text"
-												maxlength="55"
-												name="first_name"
-												placeholder=""
-												required
-											/>
-										</div>
-										<div class="form-group col-sm-12 col-md-6">
-											<breeze-label value="Last Name*" />
-											<input
-												v-model="form.last_name"
-												class="form-control"
-												type="text"
-												maxlength="55"
-												name="last_name"
-												placeholder=""
-												required
-											/>
-										</div>
-										<div class="form-group col-12">
-											<breeze-label value="Address*" />
-											<input
-												v-model="form.address"
-												class="form-control"
-												type="text"
-												maxlength="55"
-												name="address"
-												placeholder=""
-												required
-											/>
-										</div>
-										<div class="form-group col-sm-12 col-md-6">
-											<breeze-label value="City*" />
-											<input
-												v-model="form.city"
-												class="form-control"
-												type="text"
-												maxlength="55"
-												name="city"
-												placeholder=""
-												required
-											/>
-										</div>
-										<div class="form-group col-sm-12 col-md-6">
-											<breeze-label value="State*" />
-											<input
-												v-model="form.state"
-												class="form-control"
-												type="text"
-												maxlength="55"
-												name="state"
-												placeholder=""
-												required
-											/>
-										</div>
-										<div class="form-group col-sm-12 col-md-6">
-											<breeze-label value="Country *" />
-											<input
-												v-model="form.country"
-												class="form-control"
-												type="text"
-												maxlength="55"
-												name="country"
-												placeholder=""
-												required
-											/>
-										</div>
-										<div class="form-group col-sm-12 col-md-6">
-											<breeze-label value="Postcode*" />
-											<input
-												v-model="form.zip"
-												class="form-control"
-												type="text"
-												maxlength="55"
-												name="zip"
-												placeholder=""
-												required
-											/>
+													<option value="">Select</option>
+													<option v-for="n in 12" :value="n" :key="n">
+														{{ n }}
+													</option>
+												</select>
+											</div>
+											<div class="form-group col-4">
+												<breeze-label value="Expiry Year *" />
+												<select
+													v-model="form.year"
+													class="form-control"
+													name="year"
+													required
+												>
+													<option value="">Year</option>
+													<option :value="new Date().getFullYear()">
+														{{ new Date().getFullYear() }}
+													</option>
+													<option
+														v-for="n in 5"
+														:value="n + new Date().getFullYear()"
+														:key="n"
+													>
+														{{ n + new Date().getFullYear() }}
+													</option>
+												</select>
+											</div>
+											<div class="form-group col-4">
+												<breeze-label value="CVV *" />
+												<input
+													v-model="form.cvv"
+													class="form-control"
+													type="number"
+													:maxlength="3"
+													name="cvv"
+													placeholder="123"
+													required
+													pattern="[0-9]*"
+												/>
+											</div>
 										</div>
 
-										<div class="form-group col-sm-12 col-md-6">
-											<breeze-label value="Mobile*" />
-											<input
-												v-model="form.phone_no"
-												class="form-control"
-												type="number"
-												maxlength="14"
-												name="phone_no"
-												placeholder=""
-												required
-											/>
-										</div>
-										<div class="form-group col-sm-12 col-md-6">
-											<breeze-label value="Email*" />
-											<input
-												v-model="form.email"
-												class="form-control"
-												type="email"
-												name="email"
-												placeholder=""
-												required
-											/>
+										<div class="row">
+											<div class="col-md-12">
+												<h1 class="text-lg"><b>Billing Address</b></h1>
+											</div>
+											<div class="form-group col-md-6">
+												<breeze-label value="First Name*" />
+												<input
+													v-model="form.first_name"
+													class="form-control"
+													type="text"
+													maxlength="55"
+													name="first_name"
+													placeholder=""
+													required
+												/>
+											</div>
+											<div class="form-group col-md-6">
+												<breeze-label value="Last Name*" />
+												<input
+													v-model="form.last_name"
+													class="form-control"
+													type="text"
+													maxlength="55"
+													name="last_name"
+													placeholder=""
+													required
+												/>
+											</div>
+											<div class="form-group col-12">
+												<breeze-label value="Address*" />
+												<input
+													v-model="form.address"
+													class="form-control"
+													type="text"
+													maxlength="55"
+													name="address"
+													placeholder=""
+													required
+												/>
+											</div>
+											<div class="form-group col-md-6">
+												<breeze-label value="City*" />
+												<input
+													v-model="form.city"
+													class="form-control"
+													type="text"
+													maxlength="55"
+													name="city"
+													placeholder=""
+													required
+												/>
+											</div>
+											<div class="form-group col-md-6">
+												<breeze-label value="State*" />
+												<input
+													v-model="form.state"
+													class="form-control"
+													type="text"
+													maxlength="55"
+													name="state"
+													placeholder=""
+													required
+												/>
+											</div>
+											<div class="form-group col-md-6">
+												<breeze-label value="Country *" />
+												<input
+													v-model="form.country"
+													class="form-control"
+													type="text"
+													maxlength="55"
+													name="country"
+													placeholder=""
+													required
+												/>
+											</div>
+											<div class="form-group col-md-6">
+												<breeze-label value="Postcode*" />
+												<input
+													v-model="form.zip"
+													class="form-control"
+													type="text"
+													maxlength="55"
+													name="zip"
+													placeholder=""
+													required
+												/>
+											</div>
+											<div class="form-group col-md-6">
+												<breeze-label value="Mobile*" />
+												<input
+													v-model="form.phone_no"
+													class="form-control"
+													type="number"
+													maxlength="14"
+													name="phone_no"
+													placeholder=""
+													required
+												/>
+											</div>
+											<div class="form-group col-md-6">
+												<breeze-label value="Email*" />
+												<input
+													v-model="form.email"
+													class="form-control"
+													type="email"
+													name="email"
+													placeholder=""
+													required
+												/>
+											</div>
 										</div>
 
 										<table class="table" cols="4">
@@ -334,6 +341,7 @@
 			rows="10"
 			class="hidden"
 		></textarea>
+
 		<div v-show="overlay === true" class="overlay">
 			<div class="overlay__inner">
 				<div class="overlay__content"><span class="spinner"></span></div>
