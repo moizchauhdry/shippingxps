@@ -1,14 +1,14 @@
 <template>
 	<MainLayout>
 		<div class="card p-4">
-			<form @submit.prevent="submitFormOnline" enctype="multipart/form-data">
+			<form @submit.prevent="submit" enctype="multipart/form-data">
 				<div class="row">
 					<div class="col-md-4 form-group">
 						<breeze-label for="warehouse_id" value="Warehouse" />
 						<select
 							name="warehouse_id"
 							class="form-control custom-select"
-							v-model="form_online.warehouse_id"
+							v-model="form.warehouse_id"
 							required
 							@change="changeWarehouse()"
 						>
@@ -25,7 +25,7 @@
 					<div class="col-md-4 form-group">
 						<breeze-label for="package_weight" value="Site Name" />
 						<input
-							v-model="form_online.site_name"
+							v-model="form.site_name"
 							name="site_name"
 							id="site_name"
 							type="text"
@@ -37,7 +37,7 @@
 					<div class="col-md-4 form-group">
 						<breeze-label for="package_length" value="Shop URL" />
 						<input
-							v-model="form_online.shop_url"
+							v-model="form.shop_url"
 							name="shop_url"
 							id="shop_url"
 							type="url"
@@ -49,7 +49,7 @@
 					<div class="col-md-4 form-group">
 						<breeze-label for="notes" value="Notes" />
 						<textarea
-							v-model="form_online.notes"
+							v-model="form.notes"
 							name="notes"
 							id="notes"
 							class="form-control"
@@ -71,7 +71,7 @@
 						</div>
 						<div class="col-md-6">
 							<a
-								v-on:click="addItemOnline"
+								v-on:click="addItem"
 								class="btn btn-primary"
 								style="float: right"
 							>
@@ -82,7 +82,7 @@
 
 					<div
 						class="d-flex"
-						v-for="(item, index) in form_online.items"
+						v-for="(item, index) in form.items"
 						:key="item.id"
 						:id="'order-' + index"
 						:data-id="index"
@@ -175,7 +175,7 @@
 							/>
 						</div>
 						<button
-							@click="removeItemOnline(index)"
+							@click="removeItem(index)"
 							class="btn btn-link"
 							:disabled="index == 0"
 						>
@@ -193,9 +193,9 @@
 						</div>
 						<div class="col-6 col-md-1 p-0">
 							<input
-								v-model="form_online.sub_total"
+								v-model="form.sub_total"
 								name="sub_total"
-								id="form_online.subtotal"
+								id="form.subtotal"
 								type="number"
 								class="form-control sub_total"
 								required
@@ -216,9 +216,9 @@
 						</div>
 						<div class="col-6 col-md-1 p-0">
 							<input
-								v-model="form_online.service_charges"
+								v-model="form.service_charges"
 								name="service_charges"
-								id="form_online-service_charges"
+								id="form-service_charges"
 								type="number"
 								class="form-control service_charges"
 								required
@@ -233,7 +233,7 @@
 
 						<div class="col-6 col-md-1 p-0">
 							<input
-								v-model="form_online.grand_total"
+								v-model="form.grand_total"
 								type="number"
 								class="form-control grand_total"
 								required
@@ -264,7 +264,7 @@
 		},
 		data() {
 			return {
-				form_online: this.$inertia.form({
+				form: this.$inertia.form({
 					form_type: "shopping",
 					warehouse_id: "",
 					site_name: "",
@@ -304,11 +304,11 @@
 			warehouses: Object,
 		},
 		methods: {
-			submitFormOnline() {
-				this.form_online.post(this.route("shop-for-me.store"));
+			submit() {
+				this.form.post(this.route("shop-for-me.store"));
 			},
-			addItemOnline() {
-				this.form_online.items.push({
+			addItem() {
+				this.form.items.push({
 					name: "",
 					option: "",
 					url: "",
@@ -318,42 +318,40 @@
 					sub_total: 0,
 				});
 			},
-			removeItemOnline(index) {
-				this.form_online.items.splice(index, 1);
+			removeItem(index) {
+				this.form.items.splice(index, 1);
 			},
 			changeWarehouse() {
 				this.$refs.price_online[0].click();
 			},
 			getGrandTotal() {
 				var sum = 0;
-				this.form_online.grand_total = 0;
-				this.form_online.items.forEach(function (n) {
+				this.form.grand_total = 0;
+				this.form.items.forEach(function (n) {
 					sum += parseFloat(n["sub_total"]);
 				});
-				this.form_online.sub_total = parseFloat(sum).toFixed(2);
+				this.form.sub_total = parseFloat(sum).toFixed(2);
 				var servivceCharges = sum * 0.05;
 				if (servivceCharges <= 5 && sum > 0) {
-					this.form_online.service_charges = parseFloat(5).toFixed(2);
+					this.form.service_charges = parseFloat(5).toFixed(2);
 				} else {
-					this.form_online.service_charges =
-						parseFloat(servivceCharges).toFixed(2);
+					this.form.service_charges = parseFloat(servivceCharges).toFixed(2);
 				}
-				var total =
-					parseFloat(sum) + parseFloat(this.form_online.service_charges);
+				var total = parseFloat(sum) + parseFloat(this.form.service_charges);
 
-				this.form_online.grand_total = parseFloat(total).toFixed(2);
+				this.form.grand_total = parseFloat(total).toFixed(2);
 			},
 			getLineTotal(index) {
 				var sale_tax = 0;
 				var line_total = 0;
 
 				for (var i = 0; i < this.warehouses.length; i++) {
-					if (this.warehouses[i]["id"] == this.form_online.warehouse_id) {
+					if (this.warehouses[i]["id"] == this.form.warehouse_id) {
 						sale_tax = this.warehouses[i]["sale_tax"];
 					}
 				}
 
-				const item = this.form_online.items[index];
+				const item = this.form.items[index];
 
 				var gross_total = item.price * (sale_tax / 100);
 				var net_total = (item.price_with_tax = (
