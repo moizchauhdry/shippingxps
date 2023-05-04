@@ -1,237 +1,228 @@
 <template>
 	<MainLayout>
-		<div class="card p-4 mb-5">
-			<breeze-validation-errors class="mb-4 text-lg" />
-
-			<form @submit.prevent="submit" enctype="multipart/form-data">
-				<div class="row">
-					<div class="col-md-4 form-group">
-						<breeze-label for="warehouse_id" value="Warehouse" />
-						<select
-							name="warehouse_id"
-							class="form-control custom-select"
-							v-model="form.warehouse_id"
-							@change="changeWarehouse()"
-						>
-							<option value="">--Select Warehouse-</option>
-							<option
-								v-for="warehouse in warehouses"
-								:value="warehouse.id"
-								:key="warehouse.id"
-							>
-								{{ warehouse.name }}
-							</option>
-						</select>
-					</div>
-					<div class="col-md-4 form-group">
-						<breeze-label for="package_weight" value="Site Name" />
-						<input
-							v-model="form.site_name"
-							name="site_name"
-							id="site_name"
-							type="text"
-							class="form-control"
-							placeholder="e.g Amazon, Alibaba etc."
-						/>
-					</div>
-					<div class="col-md-4 form-group">
-						<breeze-label for="" value="Shop URL" />
-						<input
-							v-model="form.shop_url"
-							name="shop_url"
-							id="shop_url"
-							type="url"
-							class="form-control"
-							placeholder="https://www.amazon.com"
-						/>
-					</div>
-					<div class="col-md-4 form-group">
-						<breeze-label for="notes" value="Notes" />
-						<textarea
-							v-model="form.notes"
-							name="notes"
-							id="notes"
-							class="form-control"
-							placeholder="Notes"
-							rows="5"
-						>
-						</textarea>
-					</div>
+		<form @submit.prevent="submit" enctype="multipart/form-data">
+			<div class="card mb-5">
+				<div class="card-header">
+					<span class="font-bold">Online Order</span>
 				</div>
-
-				<div class="col-md-12">
+				<div class="card-body">
+					<breeze-validation-errors class="mb-4 text-lg" />
 					<div class="row">
 						<div class="col-md-6">
-							<h2
-								class="font-semibold text-xl text-gray-800 leading-tight form-title"
-							>
-								Items List
-							</h2>
+							<div class="form-group">
+								<breeze-label for="warehouse_id" value="Warehouse" />
+								<select
+									name="warehouse_id"
+									class="form-control custom-select"
+									v-model="form.warehouse_id"
+									@change="changeWarehouse()"
+								>
+									<option value="">--Select Warehouse-</option>
+									<option
+										v-for="warehouse in warehouses"
+										:value="warehouse.id"
+										:key="warehouse.id"
+									>
+										{{ warehouse.name }}
+									</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<breeze-label for="package_weight" value="Site Name" />
+								<input
+									v-model="form.site_name"
+									class="form-control"
+									type="text"
+									placeholder="e.g Amazon, Alibaba etc."
+								/>
+							</div>
+							<div class="form-group">
+								<breeze-label for="" value="Shop URL" />
+								<input
+									v-model="form.shop_url"
+									type="url"
+									class="form-control"
+									placeholder="https://www.amazon.com"
+								/>
+							</div>
 						</div>
 						<div class="col-md-6">
-							<a
-								v-on:click="addItem"
-								class="btn btn-primary"
-								style="float: right"
-							>
-								<span>Add Item </span>
-							</a>
+							<div class="form-group">
+								<breeze-label for="notes" value="Notes" />
+								<textarea
+									v-model="form.notes"
+									name="notes"
+									id="notes"
+									class="form-control"
+									placeholder="Notes"
+									rows="7"
+								>
+								</textarea>
+							</div>
 						</div>
 					</div>
 
-					<div class="row" v-for="(item, index) in form.items">
-						<div class="form-group col-md-2">
-							<breeze-label for="" v-if="index == 0" value="Name" />
-							<input
-								v-model="item.name"
-								name="name"
-								id="name"
-								type="text"
-								class="form-control"
-								placeholder="Name"
-							/>
-						</div>
-						<div class="form-group col-md-4">
-							<breeze-label for="" v-if="index == 0" value="Description" />
-							<input
-								v-model="item.option"
-								type="text"
-								class="form-control"
-								placeholder="Description"
-							/>
-						</div>
-						<div class="form-group col-md-2">
-							<breeze-label for="" v-if="index == 0" value="URL" />
-							<input
-								v-model="item.url"
-								name="url"
-								id="url"
-								type="url"
-								class="form-control"
-								placeholder="URL"
-							/>
-						</div>
-						<div class="form-group col-md">
-							<breeze-label for="" v-if="index == 0" value="Price" />
-							<input
-								v-model="item.price"
-								@keyup="getLineTotal(index)"
-								@click="getLineTotal(index)"
-								ref="price_online"
-								type="number"
-								class="form-control"
-								placeholder="Price"
-								min="0"
-								step="0.01"
-							/>
-						</div>
-						<div class="form-group col-md">
-							<breeze-label for="" v-if="index == 0" value="Tax Price" />
-							<input
-								v-model="item.price_with_tax"
-								name="price_with_tax"
-								id="price_with_tax"
-								type="number"
-								class="form-control"
-								readonly
-							/>
-						</div>
-						<div class="form-group col-md">
-							<breeze-label for="" v-if="index == 0" value="Quantity" />
-							<input
-								v-model="item.qty"
-								@keyup="getLineTotal(index)"
-								type="number"
-								class="form-control"
-								min="1"
-							/>
-						</div>
-						<div class="form-group col-md">
-							<breeze-label for="" v-if="index == 0" value="Total" />
-							<input
-								v-model="item.sub_total"
-								name="sub_total"
-								id="sub_total"
-								type="number"
-								class="form-control sub_total"
-								placeholder="T.Price"
-								readonly
-							/>
-						</div>
-						<button
-							@click="removeItem(index)"
-							class="btn btn-link mb-2"
-							:disabled="index == 0"
-						>
-							<i class="fas fa-times"></i>
-						</button>
-					</div>
+					<button
+						type="button"
+						@click="addItem"
+						class="btn btn-success float-right mb-2"
+					>
+						<i class="fas fa-plus"></i> Add Item
+					</button>
 
-					<div class="row">
-						<div class="col-md-10">
-							<label for="" class="float-right font-bold">Subtotal</label>
-						</div>
-						<div class="col-md-2">
-							<input
-								v-model="form.sub_total"
-								name="sub_total"
-								id="form.subtotal"
-								type="number"
-								class="form-control sub_total"
-								readonly
-							/>
-						</div>
-					</div>
-
-					<div class="row mb-2 mt-2">
-						<div class="col-md-10">
-							<label class="float-right font-bold"> Shipping Charges </label>
-						</div>
-						<div class="col-md-2">
-							<input
-								v-model="form.shipping_from_shop"
-								type="number"
-								class="form-control"
-							/>
-						</div>
-					</div>
-
-					<div class="row">
-						<div class="col-md-10">
-							<label class="float-right font-bold"> Service Charges </label>
-						</div>
-						<div class="col-md-2">
-							<input
-								v-model="form.service_charges"
-								name="service_charges"
-								id="form-service_charges"
-								type="number"
-								class="form-control service_charges"
-								readonly
-							/>
-						</div>
-					</div>
-
-					<div class="row">
-						<div class="col-md-10">
-							<label for="" class="float-right font-bold">Grand Total</label>
-						</div>
-						<div class="col-md-2">
-							<input
-								v-model="form.grand_total"
-								type="number"
-								class="form-control"
-								readonly
-							/>
-						</div>
+					<div class="table-responsive">
+						<table class="table">
+							<thead>
+								<tr>
+									<th class="bg-primary text-white text-center" colspan="8">
+										Order Items
+									</th>
+								</tr>
+								<tr>
+									<th>Name</th>
+									<th>Description</th>
+									<th>URL</th>
+									<th>Price</th>
+									<th>Price - Tax</th>
+									<th>Quantity</th>
+									<th>Line Total</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+								<template v-for="(item, index) in form.items">
+									<tr>
+										<td>
+											<input
+												v-model="item.name"
+												type="text"
+												class="form-control"
+												placeholder="Name"
+											/>
+										</td>
+										<td>
+											<input
+												v-model="item.option"
+												type="text"
+												class="form-control"
+												placeholder="Description"
+											/>
+										</td>
+										<td>
+											<input
+												v-model="item.url"
+												type="url"
+												class="form-control"
+												placeholder="URL"
+											/>
+										</td>
+										<td>
+											<input
+												v-model="item.price"
+												@keyup="getLineTotal(index)"
+												@click="getLineTotal(index)"
+												ref="price_online"
+												type="number"
+												min="0"
+												step="0.01"
+												class="form-control"
+											/>
+										</td>
+										<td>
+											<input
+												v-model="item.price_with_tax"
+												type="number"
+												readonly
+												class="form-control"
+											/>
+										</td>
+										<td>
+											<input
+												v-model="item.qty"
+												@keyup="getLineTotal(index)"
+												type="number"
+												min="1"
+												class="form-control"
+											/>
+										</td>
+										<td>
+											<input
+												v-model="item.sub_total"
+												type="number"
+												readonly
+												class="form-control"
+											/>
+										</td>
+										<td>
+											<button
+												@click="removeItem(index)"
+												class="btn btn-link"
+												:disabled="index == 0"
+											>
+												<i class="fas fa-times"></i>
+											</button>
+										</td>
+									</tr>
+								</template>
+								<tr>
+									<td colspan="5"></td>
+									<th>Subtotal</th>
+									<td>
+										<input
+											v-model="form.sub_total"
+											type="number"
+											class="form-control"
+											readonly
+										/>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="5"></td>
+									<th>Shipping Charges</th>
+									<td>
+										<input
+											v-model="form.shipping_from_shop"
+											type="number"
+											class="form-control"
+											@keyup="getGrandTotal()"
+										/>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="5"></td>
+									<th>Service Charges</th>
+									<td>
+										<input
+											v-model="form.service_charges"
+											type="number"
+											class="form-control"
+											readonly
+										/>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="5"></td>
+									<th>Grand Total</th>
+									<td>
+										<input
+											v-model="form.grand_total"
+											type="number"
+											class="form-control"
+											readonly
+										/>
+									</td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
 				</div>
-
-				<div class="order-button">
-					<input type="submit" value="Finish Order" class="btn btn-danger" />
+				<div class="card-footer">
+					<div class="order-button">
+						<input type="submit" value="Finish Order" class="btn btn-danger" />
+					</div>
 				</div>
-			</form>
-		</div>
+			</div>
+		</form>
 	</MainLayout>
 </template>
 
@@ -260,7 +251,6 @@
 					sales_tax: "",
 					pickup_type: "",
 					pickup_date: "",
-					shipping_from_shop: "",
 					items: [
 						{
 							name: "",
@@ -313,19 +303,30 @@
 			},
 			getGrandTotal() {
 				var sum = 0;
+				var shipping_charges = 0;
 				this.form.grand_total = 0;
+
 				this.form.items.forEach(function (n) {
 					sum += parseFloat(n["sub_total"]);
 				});
+
 				this.form.sub_total = parseFloat(sum).toFixed(2);
+
+				if (this.form.shipping_from_shop > 0) {
+					shipping_charges = parseFloat(this.form.shipping_from_shop);
+				}
+
+				sum = sum + shipping_charges;
+
 				var servivceCharges = sum * 0.05;
+
 				if (servivceCharges <= 5 && sum > 0) {
 					this.form.service_charges = parseFloat(5).toFixed(2);
 				} else {
 					this.form.service_charges = parseFloat(servivceCharges).toFixed(2);
 				}
-				var total = parseFloat(sum) + parseFloat(this.form.service_charges);
 
+				var total = parseFloat(sum) + parseFloat(this.form.service_charges);
 				this.form.grand_total = parseFloat(total).toFixed(2);
 			},
 			getLineTotal(index) {
@@ -353,3 +354,10 @@
 		},
 	};
 </script>
+
+<style>
+	.table td,
+	.table th {
+		padding: 5px;
+	}
+</style>
