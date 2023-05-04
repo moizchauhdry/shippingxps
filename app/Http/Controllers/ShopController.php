@@ -96,24 +96,40 @@ class ShopController extends Controller
      */
     public function store(Request $request)
     {
-        //         dd($request->all());
+        // dd($request->all());
+
         $request->validate([
             'form_type' => 'required|in:shopping,pickup',
             'warehouse_id' => 'required',
             'notes' => 'nullable',
-            'items' => 'required',
             'site_name' => 'required_if:form_type,shopping',
             'shop_url' => 'required_if:form_type,shopping',
             'store_id' => 'required_if:form_type,pickup',
             'pickup_type' => 'required_if:form_type,pickup',
-            'pickup_date' => 'required_if:form_type,pickup'
+            'pickup_date' => 'required_if:form_type,pickup',
+            'shipping_from_shop' => 'required',
+            'items' => 'array|required',
+            'items.*.name' => 'required',
+            'items.*.option' => 'required',
+            'items.*.url' => 'required',
+            'items.*.price' => 'required|numeric',
+            'items.*.price_with_tax' => 'required|numeric',
+            'items.*.qty' => 'required|numeric',
+            'items.*.sub_total' => 'required|numeric',
+        ], [
+            'items.*.name.required' => 'The item name field is required.',
+            'items.*.option.required' => 'The item description field is required.',
+            'items.*.url.required' => 'The item URL field is required.',
+            'items.*.price.required' => 'The item price field is required.',
+            'items.*.price_with_tax.required' => 'The item price with tax field is required.',
+            'items.*.qty.required' => 'The item quantity field is required.',
+            'items.*.sub_total.required' => 'The item subtotal field is required.',
         ]);
 
         try {
             DB::beginTransaction();
 
             $order = new Order();
-
             $order->customer_id = auth()->user()->id;
             $order->warehouse_id = $request->warehouse_id;
             $order->package_id = 0;
@@ -125,8 +141,7 @@ class ShopController extends Controller
             $order->sub_total = $request->sub_total;
             $order->grand_total = $request->grand_total;
             $order->service_charges = $request->service_charges;
-            //$order->shipping_from_shop = $request->shipping_from_shop;
-            //$order->sales_tax = $request->sales_tax;
+            $order->shipping_from_shop = $request->shipping_from_shop;
 
             if ($request->form_type == 'shopping') {
                 $order->order_type = 'shopping';
@@ -140,23 +155,14 @@ class ShopController extends Controller
                 $order->store_id = $request->store_id;
                 $order->store_name = $request->store_name;
                 $order->pickup_type = $request->pickup_type;
-                //$order->shipping_xps_purchase = $request->shipping_xps;
                 $order->pickup_date = $request->pickup_date;
                 $order->pickup_charges = $request->pickup_charges;
             }
 
             $order->save();
 
-            /*$coupon = Coupon::where('code',$request->code)->first();
-            $customerCoupon = CustomerCoupon::create([
-                'customer_id' => Auth::user()->id,
-                'coupon_id' => $coupon->id,
-            ]);*/
-
             foreach ($request->items as $item) {
-
                 $order_item = new OrderItem();
-
                 $order_item->order_id = $order->id;
                 $order_item->name = $item['name'];
                 $order_item->description = $item['option'];
@@ -165,27 +171,21 @@ class ShopController extends Controller
                 $order_item->price_with_tax = $item['price_with_tax'];
                 $order_item->sub_total = $item['sub_total'];
                 $order_item->url = $item['url'];
-
                 $order_item->save();
             }
 
             $files = $request->file();
 
             if ($order->order_type == 'pickup') {
-
                 if (isset($files['image'])) {
-
                     $image_object = $files['image'];
-
                     $file_name = time() . '_' . $image_object->getClientOriginalName();
                     $image_object->storeAs('uploads', $file_name);
-
                     if ($_SERVER['HTTP_HOST'] == 'localhost:8000') {
                         File::move(storage_path('app/uploads/' . $file_name), public_path('/public/uploads/' . $file_name));
                     } else {
                         File::move(storage_path('app/uploads/' . $file_name), public_path('../public/uploads/' . $file_name));
                     }
-
                     $order_image = new OrderImage();
                     $order_image->image = $file_name;
                     $order_image->order_id = $order->id;
@@ -196,12 +196,9 @@ class ShopController extends Controller
             }
 
             DB::commit();
-
             event(new ShoppingCreatedEvent($order));
-
             return redirect('shop-for-me')->with('success', 'Order Added!');
         } catch (\Exception $e) {
-            // dd($e);
             DB::rollBack();
             return redirect()->back()->with('error', 'Something went wrong.');
         }

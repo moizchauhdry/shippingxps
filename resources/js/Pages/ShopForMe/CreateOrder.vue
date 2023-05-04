@@ -1,6 +1,8 @@
 <template>
 	<MainLayout>
-		<div class="card p-4">
+		<div class="card p-4 mb-5">
+			<breeze-validation-errors class="mb-4 text-lg" />
+
 			<form @submit.prevent="submit" enctype="multipart/form-data">
 				<div class="row">
 					<div class="col-md-4 form-group">
@@ -9,7 +11,6 @@
 							name="warehouse_id"
 							class="form-control custom-select"
 							v-model="form.warehouse_id"
-							required
 							@change="changeWarehouse()"
 						>
 							<option value="">--Select Warehouse-</option>
@@ -33,9 +34,8 @@
 							placeholder="e.g Amazon, Alibaba etc."
 						/>
 					</div>
-
 					<div class="col-md-4 form-group">
-						<breeze-label for="package_length" value="Shop URL" />
+						<breeze-label for="" value="Shop URL" />
 						<input
 							v-model="form.shop_url"
 							name="shop_url"
@@ -45,7 +45,6 @@
 							placeholder="https://www.amazon.com"
 						/>
 					</div>
-
 					<div class="col-md-4 form-group">
 						<breeze-label for="notes" value="Notes" />
 						<textarea
@@ -80,14 +79,8 @@
 						</div>
 					</div>
 
-					<div
-						class="d-flex"
-						v-for="(item, index) in form.items"
-						:key="item.id"
-						:id="'order-' + index"
-						:data-id="index"
-					>
-						<div class="form-group mr-1">
+					<div class="row" v-for="(item, index) in form.items">
+						<div class="form-group col-md-2">
 							<breeze-label for="" v-if="index == 0" value="Name" />
 							<input
 								v-model="item.name"
@@ -96,21 +89,18 @@
 								type="text"
 								class="form-control"
 								placeholder="Name"
-								required
 							/>
 						</div>
-						<div class="form-group mr-1">
+						<div class="form-group col-md-4">
 							<breeze-label for="" v-if="index == 0" value="Description" />
 							<input
 								v-model="item.option"
-								name="option"
-								id="option"
 								type="text"
 								class="form-control"
 								placeholder="Description"
 							/>
 						</div>
-						<div class="form-group mr-1">
+						<div class="form-group col-md-2">
 							<breeze-label for="" v-if="index == 0" value="URL" />
 							<input
 								v-model="item.url"
@@ -119,10 +109,9 @@
 								type="url"
 								class="form-control"
 								placeholder="URL"
-								required
 							/>
 						</div>
-						<div class="form-group mr-1">
+						<div class="form-group col-md">
 							<breeze-label for="" v-if="index == 0" value="Price" />
 							<input
 								v-model="item.price"
@@ -134,34 +123,30 @@
 								placeholder="Price"
 								min="0"
 								step="0.01"
-								required
 							/>
 						</div>
-						<div class="form-group mr-1">
-							<breeze-label for="" v-if="index == 0" value="Price with Tax" />
+						<div class="form-group col-md">
+							<breeze-label for="" v-if="index == 0" value="Tax Price" />
 							<input
 								v-model="item.price_with_tax"
 								name="price_with_tax"
 								id="price_with_tax"
 								type="number"
 								class="form-control"
-								required
 								readonly
 							/>
 						</div>
-						<div class="form-group mr-1">
+						<div class="form-group col-md">
 							<breeze-label for="" v-if="index == 0" value="Quantity" />
 							<input
 								v-model="item.qty"
 								@keyup="getLineTotal(index)"
 								type="number"
 								class="form-control"
-								placeholder="Quantity"
 								min="1"
-								required
 							/>
 						</div>
-						<div class="form-group mr-1">
+						<div class="form-group col-md">
 							<breeze-label for="" v-if="index == 0" value="Total" />
 							<input
 								v-model="item.sub_total"
@@ -170,13 +155,12 @@
 								type="number"
 								class="form-control sub_total"
 								placeholder="T.Price"
-								required
 								readonly
 							/>
 						</div>
 						<button
 							@click="removeItem(index)"
-							class="btn btn-link"
+							class="btn btn-link mb-2"
 							:disabled="index == 0"
 						>
 							<i class="fas fa-times"></i>
@@ -184,59 +168,59 @@
 					</div>
 
 					<div class="row">
-						<div class="col-6 col-md-2 offset-md-8">
-							<breeze-label
-								class="float-right"
-								for="form_pickup.subtotal"
-								value="Subtotal"
-							/>
+						<div class="col-md-10">
+							<label for="" class="float-right font-bold">Subtotal</label>
 						</div>
-						<div class="col-6 col-md-1 p-0">
+						<div class="col-md-2">
 							<input
 								v-model="form.sub_total"
 								name="sub_total"
 								id="form.subtotal"
 								type="number"
 								class="form-control sub_total"
-								required
 								readonly
 							/>
 						</div>
 					</div>
-					<div class="row">
-						<div class="col-6 col-md-2 offset-md-8">
-							<breeze-label
-								class="float-right"
-								for="form_pickup.subtotal"
-								value="Service Charges"
-							/>
-							<br /><small class="float-right"
-								>Minimum USD 5 or 5% of Subtotal</small
-							>
+
+					<div class="row mb-2 mt-2">
+						<div class="col-md-10">
+							<label class="float-right font-bold"> Shipping Charges </label>
 						</div>
-						<div class="col-6 col-md-1 p-0">
+						<div class="col-md-2">
+							<input
+								v-model="form.shipping_from_shop"
+								type="number"
+								class="form-control"
+							/>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-10">
+							<label class="float-right font-bold"> Service Charges </label>
+						</div>
+						<div class="col-md-2">
 							<input
 								v-model="form.service_charges"
 								name="service_charges"
 								id="form-service_charges"
 								type="number"
 								class="form-control service_charges"
-								required
 								readonly
 							/>
 						</div>
 					</div>
-					<div class="row">
-						<div class="col-6 col-md-1 offset-md-9">
-							<breeze-label for="grand_total" value="Grand Total" />
-						</div>
 
-						<div class="col-6 col-md-1 p-0">
+					<div class="row">
+						<div class="col-md-10">
+							<label for="" class="float-right font-bold">Grand Total</label>
+						</div>
+						<div class="col-md-2">
 							<input
 								v-model="form.grand_total"
 								type="number"
-								class="form-control grand_total"
-								required
+								class="form-control"
 								readonly
 							/>
 						</div>
@@ -255,12 +239,14 @@
 	import MainLayout from "@/Layouts/Main";
 	import BreezeAuthenticatedLayout from "@/Layouts/Authenticated";
 	import BreezeLabel from "@/Components/Label";
+	import BreezeValidationErrors from "@/Components/ValidationErrors";
 
 	export default {
 		components: {
 			BreezeAuthenticatedLayout,
 			MainLayout,
 			BreezeLabel,
+			BreezeValidationErrors,
 		},
 		data() {
 			return {
@@ -274,6 +260,7 @@
 					sales_tax: "",
 					pickup_type: "",
 					pickup_date: "",
+					shipping_from_shop: "",
 					items: [
 						{
 							name: "",

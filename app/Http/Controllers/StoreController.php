@@ -8,20 +8,22 @@ use App\Models\Warehouse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-class StoreController extends Controller {
+class StoreController extends Controller
+{
 
-    public function index() {
+    public function index()
+    {
 
         $stores = Store::with(['warehouse', 'country']);
 
         $search = '';
 
-        if(isset($_GET['search']) && !empty($_GET['search'])){
+        if (isset($_GET['search']) && !empty($_GET['search'])) {
 
             $search = $_GET['search'];
 
             $stores->where(
-                function($query) use ($search) {
+                function ($query) use ($search) {
 
                     return $query
                         ->orWhere('name', 'LIKE', "%$search%")
@@ -33,17 +35,18 @@ class StoreController extends Controller {
         }
 
         $stores = $stores->paginate(25);
-        return Inertia::render('Store/StoreList',[
+        return Inertia::render('Store/StoreList', [
             'search' => $search,
             'stores' => $stores
         ]);
     }
 
-    public function create() {
-        $countries = Country::all(['id','nicename as name'])->toArray();
+    public function create()
+    {
+        $countries = Country::all(['id', 'nicename as name'])->toArray();
         $warehouses = Warehouse::all('id', 'name');
 
-        return Inertia::render('Store/CreateStore',[
+        return Inertia::render('Store/CreateStore', [
             'countries' => $countries,
             'warehouses' => $warehouses
         ]);
@@ -55,7 +58,8 @@ class StoreController extends Controller {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $validated = $request->validate([
             'name' => 'required|string',
             'warehouse_id' => 'required',
@@ -80,7 +84,7 @@ class StoreController extends Controller {
 
         $store->save();
 
-        return redirect('store')->with('success','Store Created Successfully.');
+        return redirect('store')->with('success', 'Store Created Successfully.');
     }
 
     /**
@@ -89,17 +93,17 @@ class StoreController extends Controller {
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Store $store) {
+    public function edit(Store $store)
+    {
 
-        $countries = Country::all(['id','nicename as name'])->toArray();
-        $warehouses = Warehouse::all(['id','name'])->toArray();
+        $countries = Country::all(['id', 'nicename as name'])->toArray();
+        $warehouses = Warehouse::all(['id', 'name'])->toArray();
 
-        return Inertia::render('Store/EditStore',[
+        return Inertia::render('Store/EditStore', [
             'store' => $store,
             'warehouses' => $warehouses,
             'countries' => $countries
         ]);
-
     }
 
     /**
@@ -139,6 +143,5 @@ class StoreController extends Controller {
         $store->save();
 
         return redirect('store')->with('success', 'Store Updated Successfully!');
-
     }
 }
