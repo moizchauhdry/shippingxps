@@ -4,10 +4,17 @@
 			v-if="
 				form.updated_by_admin == '1' && $page.props.auth.user.type == 'customer'
 			"
-			class="alert alert-warning d-block"
+			class="alert alert-warning font-bold text-center"
 		>
 			Please be advised that ShippingXPS has made updates or changes to your
 			order. Kindly review and approve the changes as necessary. Thank you.
+		</div>
+
+		<div
+			class="alert alert-danger font-bold text-center"
+			v-if="order.status == 'rejected'"
+		>
+			This order has been rejected by ShippingXPS.
 		</div>
 
 		<!-- Order Section -->
@@ -249,10 +256,6 @@
 						</button>
 					</template>
 
-					<span class="font-bold" v-if="order.status == 'rejected'">
-						This order has been rejected by ShippingXPS.
-					</span>
-
 					<template
 						v-if="
 							$page.props.auth.user.type == 'admin' ||
@@ -286,7 +289,12 @@
 		</form>
 
 		<!-- Invoice Section -->
-		<div class="card mb-3" v-if="$page.props.auth.user.type == 'admin'">
+		<div
+			class="card mb-3"
+			v-if="
+				$page.props.auth.user.type == 'admin' && order.payment_status == 'Paid'
+			"
+		>
 			<div class="card-header font-bold">Invoice Section</div>
 			<div class="card-body">
 				<div class="row">
@@ -321,7 +329,7 @@
 					</div>
 				</div>
 
-				<div class="row" v-if="$page.props.auth.user.type == 'customer'">
+				<div class="row">
 					<div class="col-md-4 text-center form-group">
 						<img :src="imgURL(invoice_form.receipt_url)" alt="" />
 					</div>
