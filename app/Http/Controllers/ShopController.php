@@ -682,7 +682,7 @@ class ShopController extends Controller
             }
             $order->update([
                 'receipt_url' => $file_name,
-                'tracking_number_in' => $request->tracking_number_in,
+                // 'tracking_number_in' => $request->tracking_number_in,
             ]);
         }
 
