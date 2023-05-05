@@ -36,7 +36,6 @@
 								<th scope="col">Status</th>
 								<th scope="col">Site Name</th>
 								<th scope="col">Site URL</th>
-								<!-- <th scope="col">Shipping From Shop</th> -->
 								<th scope="col"></th>
 							</tr>
 						</thead>
@@ -58,6 +57,12 @@
 									<span v-bind:class="getLabelClass(order.status)">{{
 										order.status
 									}}</span>
+									<span
+										v-if="order.payment_status == 'Paid'"
+										class="label bg-success text-white font-bold ml-2"
+									>
+										{{ order.payment_status }}
+									</span>
 								</td>
 								<td>
 									<template v-if="order.site_name !== null">
@@ -87,13 +92,12 @@
 										</a>
 									</template>
 								</td>
-								<!-- <td>{{ order.shipping_from_shop }}</td> -->
 								<td style="min-width: 70px">
 									<inertia-link
 										class="btn btn-primary btn-xs mr-1 mb-1"
 										:href="route('shop-for-me.show', order.id)"
 									>
-										<span><i class="fa fa-eye"></i></span> View Detail
+										<span><i class="fa fa-list mr-1"></i></span>Detail
 									</inertia-link>
 
 									<template
@@ -177,25 +181,28 @@
 			getLabelClass(status) {
 				switch (status) {
 					case "pending":
-						return "label bg-warning";
+						return "label bg-warning text-white font-bold";
 						break;
 					case "arrived":
-						return "label bg-success";
+						return "label bg-primary text-white font-bold";
 						break;
 					case "labeled":
-						return "label bg-info";
+						return "label bg-info text-white font-bold";
 						break;
 					case "shipped":
-						return "label bg-warning";
+						return "label bg-warning text-white font-bold";
 						break;
 					case "delivered":
-						return "label bg-success";
+						return "label bg-success text-white font-bold";
 						break;
 					case "rejected":
-						return "label bg-danger";
+						return "label bg-danger text-white font-bold";
+						break;
+					case "approved":
+						return "label bg-success text-white font-bold";
 						break;
 					default:
-						return "label bg-primary";
+						return "label bg-warning text-white font-bold";
 				}
 			},
 			siuteNum(user_id) {
