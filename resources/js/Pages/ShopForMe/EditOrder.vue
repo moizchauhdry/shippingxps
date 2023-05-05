@@ -15,212 +15,214 @@
 			<div class="card mb-3">
 				<div class="card-header"><b>Online Order - Edit</b></div>
 				<div class="card-body">
-					<breeze-validation-errors class="mb-4 text-lg" />
-					<div class="row">
-						<div class="col-md-6">
-							<div class="form-group">
-								<breeze-label for="warehouse_id" value="Warehouse" />
-								<select
-									name="warehouse_id"
-									class="form-control custom-select"
-									v-model="form.warehouse_id"
-									disabled
-								>
-									<option
-										v-for="warehouse in warehouses"
-										:value="warehouse.id"
-										:key="warehouse.id"
+					<fieldset :disabled="order.status != 'pending'">
+						<breeze-validation-errors class="mb-4 text-lg" />
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<breeze-label for="warehouse_id" value="Warehouse" />
+									<select
+										name="warehouse_id"
+										class="form-control custom-select"
+										v-model="form.warehouse_id"
+										disabled
 									>
-										{{ warehouse.name }}
-									</option>
-								</select>
+										<option
+											v-for="warehouse in warehouses"
+											:value="warehouse.id"
+											:key="warehouse.id"
+										>
+											{{ warehouse.name }}
+										</option>
+									</select>
+								</div>
+								<div class="form-group">
+									<breeze-label for="package_weight" value="Site Name" />
+									<input
+										v-model="form.site_name"
+										name="site_name"
+										id="site_name"
+										type="text"
+										class="form-control"
+										placeholder="Site Name"
+									/>
+								</div>
+								<div class="form-group">
+									<breeze-label for="package_length" value="Shop URL" />
+									<input
+										v-model="form.shop_url"
+										name="shop_url"
+										id="shop_url"
+										type="url"
+										class="form-control"
+										placeholder="Shop URL"
+									/>
+								</div>
 							</div>
-							<div class="form-group">
-								<breeze-label for="package_weight" value="Site Name" />
-								<input
-									v-model="form.site_name"
-									name="site_name"
-									id="site_name"
-									type="text"
-									class="form-control"
-									placeholder="Site Name"
-								/>
-							</div>
-							<div class="form-group">
-								<breeze-label for="package_length" value="Shop URL" />
-								<input
-									v-model="form.shop_url"
-									name="shop_url"
-									id="shop_url"
-									type="url"
-									class="form-control"
-									placeholder="Shop URL"
-								/>
+							<div class="col-md-6">
+								<div class="form-group">
+									<breeze-label for="notes" value="Notes" />
+									<textarea v-model="form.notes" class="form-control" rows="7">
+									</textarea>
+								</div>
 							</div>
 						</div>
-						<div class="col-md-6">
-							<div class="form-group">
-								<breeze-label for="notes" value="Notes" />
-								<textarea v-model="form.notes" class="form-control" rows="7">
-								</textarea>
-							</div>
-						</div>
-					</div>
 
-					<button
-						type="button"
-						@click="addItem()"
-						class="btn btn-success float-right mb-2"
-					>
-						<i class="fas fa-plus"></i> Add Item
-					</button>
+						<button
+							type="button"
+							@click="addItem()"
+							class="btn btn-success float-right mb-2"
+						>
+							<i class="fas fa-plus"></i> Add Item
+						</button>
 
-					<div class="table-responsive">
-						<table class="table">
-							<thead>
-								<tr>
-									<th class="bg-primary text-white text-center" colspan="8">
-										Order Items
-									</th>
-								</tr>
-								<tr>
-									<th>Name</th>
-									<th>Description</th>
-									<th>URL</th>
-									<th>Price</th>
-									<th>Price - Tax</th>
-									<th>Quantity</th>
-									<th>Line Total</th>
-									<th></th>
-								</tr>
-							</thead>
-							<tbody>
-								<template v-for="(item, index) in form.items">
+						<div class="table-responsive">
+							<table class="table">
+								<thead>
 									<tr>
-										<td style="width: 15%">
-											<input
-												v-model="item.name"
-												type="text"
-												class="form-control"
-												placeholder="Name"
-											/>
-										</td>
-										<td style="width: 30%">
-											<input
-												v-model="item.option"
-												type="text"
-												class="form-control"
-												placeholder="Description"
-											/>
-										</td>
-										<td style="width: 20%">
-											<input
-												v-model="item.url"
-												type="url"
-												class="form-control"
-												placeholder="URL"
-											/>
-										</td>
+										<th class="bg-primary text-white text-center" colspan="8">
+											Order Items
+										</th>
+									</tr>
+									<tr>
+										<th>Name</th>
+										<th>Description</th>
+										<th>URL</th>
+										<th>Price</th>
+										<th>Price - Tax</th>
+										<th>Quantity</th>
+										<th>Line Total</th>
+										<th></th>
+									</tr>
+								</thead>
+								<tbody>
+									<template v-for="(item, index) in form.items">
+										<tr>
+											<td style="width: 15%">
+												<input
+													v-model="item.name"
+													type="text"
+													class="form-control"
+													placeholder="Name"
+												/>
+											</td>
+											<td style="width: 30%">
+												<input
+													v-model="item.option"
+													type="text"
+													class="form-control"
+													placeholder="Description"
+												/>
+											</td>
+											<td style="width: 20%">
+												<input
+													v-model="item.url"
+													type="url"
+													class="form-control"
+													placeholder="URL"
+												/>
+											</td>
+											<td>
+												<input
+													v-model="item.price"
+													@keyup="getLineTotal(index)"
+													@click="getLineTotal(index)"
+													ref="price"
+													type="number"
+													min="0"
+													step="0.01"
+													class="form-control"
+												/>
+											</td>
+											<td>
+												<input
+													v-model="item.price_with_tax"
+													type="number"
+													readonly
+													class="form-control"
+												/>
+											</td>
+											<td style="width: 2%">
+												<input
+													v-model="item.qty"
+													@keyup="getLineTotal(index)"
+													type="number"
+													min="1"
+													class="form-control"
+												/>
+											</td>
+											<td>
+												<input
+													v-model="item.sub_total"
+													type="number"
+													readonly
+													class="form-control"
+												/>
+											</td>
+											<td>
+												<button
+													type="button"
+													@click="removeItem(index)"
+													class="btn btn-link"
+													:disabled="index == 0"
+												>
+													<i class="fas fa-times"></i>
+												</button>
+											</td>
+										</tr>
+									</template>
+									<tr>
+										<td colspan="4"></td>
+										<th colspan="2">Subtotal</th>
 										<td>
 											<input
-												v-model="item.price"
-												@keyup="getLineTotal(index)"
-												@click="getLineTotal(index)"
-												ref="price"
+												v-model="form.sub_total"
 												type="number"
-												min="0"
-												step="0.01"
 												class="form-control"
-											/>
-										</td>
-										<td>
-											<input
-												v-model="item.price_with_tax"
-												type="number"
 												readonly
-												class="form-control"
 											/>
-										</td>
-										<td style="width: 2%">
-											<input
-												v-model="item.qty"
-												@keyup="getLineTotal(index)"
-												type="number"
-												min="1"
-												class="form-control"
-											/>
-										</td>
-										<td>
-											<input
-												v-model="item.sub_total"
-												type="number"
-												readonly
-												class="form-control"
-											/>
-										</td>
-										<td>
-											<button
-												type="button"
-												@click="removeItem(index)"
-												class="btn btn-link"
-												:disabled="index == 0"
-											>
-												<i class="fas fa-times"></i>
-											</button>
 										</td>
 									</tr>
-								</template>
-								<tr>
-									<td colspan="4"></td>
-									<th colspan="2">Subtotal</th>
-									<td>
-										<input
-											v-model="form.sub_total"
-											type="number"
-											class="form-control"
-											readonly
-										/>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="4"></td>
-									<th colspan="2">Shipping Charges</th>
-									<td>
-										<input
-											v-model="form.shipping_from_shop"
-											type="number"
-											class="form-control"
-											@keyup="getGrandTotal()"
-										/>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="4"></td>
-									<th colspan="2">Service Charges</th>
-									<td>
-										<input
-											v-model="form.service_charges"
-											type="number"
-											class="form-control"
-											readonly
-										/>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="4"></td>
-									<th colspan="2">Grand Total</th>
-									<td>
-										<input
-											v-model="form.grand_total"
-											type="number"
-											class="form-control"
-											readonly
-										/>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
+									<tr>
+										<td colspan="4"></td>
+										<th colspan="2">Shipping Charges</th>
+										<td>
+											<input
+												v-model="form.shipping_from_shop"
+												type="number"
+												class="form-control"
+												@keyup="getGrandTotal()"
+											/>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="4"></td>
+										<th colspan="2">Service Charges</th>
+										<td>
+											<input
+												v-model="form.service_charges"
+												type="number"
+												class="form-control"
+												readonly
+											/>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="4"></td>
+										<th colspan="2">Grand Total</th>
+										<td>
+											<input
+												v-model="form.grand_total"
+												type="number"
+												class="form-control"
+												readonly
+											/>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</fieldset>
 				</div>
 				<div class="card-footer">
 					<template
