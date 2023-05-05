@@ -23,6 +23,7 @@ class ShippingRatesController extends Controller
             if ($request->ship_from == 'other') {
                 $ship_from_postal_code = $request->ship_from_postal_code;
                 $ship_from_city = $request->ship_from_city;
+                $ship_from_state = NULL;
             } else {
                 $warehouse = Warehouse::find($request->ship_from);
                 $ship_from_postal_code = $warehouse->zip;
@@ -68,6 +69,7 @@ class ShippingRatesController extends Controller
                 'data' => $rates,
             ]);
         } catch (\Throwable $th) {
+            dd($th);
             return response()->json([
                 'status' => false,
                 'message' => 'error',
