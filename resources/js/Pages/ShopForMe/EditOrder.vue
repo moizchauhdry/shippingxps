@@ -295,7 +295,7 @@
 				$page.props.auth.user.type == 'admin' && order.payment_status == 'Paid'
 			"
 		>
-			<div class="card-header font-bold">Invoice Section</div>
+			<div class="card-header font-bold">Invoice & Tracking Number</div>
 			<div class="card-body">
 				<div class="row">
 					<div class="col-md-4 form-group">
@@ -318,7 +318,18 @@
 							{{ invoice_form.progress.percentage }}%
 						</progress>
 						<img :src="imgURL(invoice_form.receipt_url)" alt="" />
+					</div>
 
+					<div class="col-md-4 form-group">
+						<label for="receipt_url" class="font-bold">Tracking Number</label>
+						<input
+							v-model="invoice_form.tracking_number_in"
+							type="text"
+							class="form-control"
+						/>
+					</div>
+
+					<div class="col-md-12 form-group">
 						<button
 							@click="updateInvoice()"
 							type="button"
@@ -329,7 +340,7 @@
 					</div>
 				</div>
 
-				<div class="row">
+				<div class="row" v-if="order.receipt_url">
 					<div class="col-md-4 text-center form-group">
 						<a :href="imgURL(order.receipt_url)" class="m-1" download
 							><i class="fa fa-download mr-1"></i>Download</a
@@ -435,6 +446,7 @@
 				invoice_form: this.$inertia.form({
 					order_id: this.order.id,
 					receipt_url: this.order.receipt_url,
+					tracking_number_in: this.order.tracking_number_in,
 				}),
 				commentForm: this.$inertia.form({
 					message: "",

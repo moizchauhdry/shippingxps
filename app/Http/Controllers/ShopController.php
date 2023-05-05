@@ -682,9 +682,10 @@ class ShopController extends Controller
             }
             $order->update([
                 'receipt_url' => $file_name,
+                'tracking_number_in' => $request->tracking_number_in,
             ]);
         }
 
-        return redirect()->back()->with('success', 'Invoice Updated !');
+        return redirect()->back()->with('success', 'Invoice and Tracking Number have been update successfully!');
     }
 }
