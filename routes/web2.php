@@ -11,13 +11,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/{id}/edit', [\App\Http\Controllers\ShopController::class, 'edit'])->name('shop-for-me.edit');
         Route::get('/show/{id}', [\App\Http\Controllers\ShopController::class, 'show'])->name('shop-for-me.show');
         Route::get('/filter-stores/{id}', [\App\Http\Controllers\ShopController::class, 'filterStores'])->name('shop-for-me.filter-stores');
-
         Route::post('shop-for-me', [\App\Http\Controllers\ShopController::class, 'store'])->name('shop-for-me.store');
         Route::post('/update', [\App\Http\Controllers\ShopController::class, 'updateOrder'])->name('shop-for-me.update');
         Route::post('order/delete-image', [\App\Http\Controllers\OrderController::class, 'deleteImage'])->name('orders.removeImage');
         Route::delete('/{id}', [\App\Http\Controllers\ShopController::class, 'destroy'])->name('shop-for-me.delete');
         Route::any('/storeComment/{id}', [\App\Http\Controllers\ShopController::class, 'storeComment'])->name('shop-for-me.storeComment');
         Route::any('/changeStatus', [\App\Http\Controllers\ShopController::class, 'changeStatus'])->name('shop-for-me.changeStatus');
+        Route::post('/update-invoice', [\App\Http\Controllers\ShopController::class, 'updateInvoice'])->name('shop-for-me.update-invoice');
     });
 
     Route::any('notifications', [\App\Http\Controllers\HomeController::class, 'notifications'])->name('notifications');
