@@ -3,7 +3,7 @@
 		<form @submit.prevent="submit" enctype="multipart/form-data">
 			<div class="card mb-5">
 				<div class="card-header">
-					<span class="font-bold">Online Order</span>
+					<span class="font-bold">Online Order - Create</span>
 				</div>
 				<div class="card-body">
 					<breeze-validation-errors class="mb-4 text-lg" />
@@ -92,7 +92,7 @@
 							<tbody>
 								<template v-for="(item, index) in form.items">
 									<tr>
-										<td>
+										<td style="width: 15%">
 											<input
 												v-model="item.name"
 												type="text"
@@ -100,7 +100,7 @@
 												placeholder="Name"
 											/>
 										</td>
-										<td>
+										<td style="width: 30%">
 											<input
 												v-model="item.option"
 												type="text"
@@ -108,7 +108,7 @@
 												placeholder="Description"
 											/>
 										</td>
-										<td>
+										<td style="width: 20%">
 											<input
 												v-model="item.url"
 												type="url"
@@ -136,7 +136,7 @@
 												class="form-control"
 											/>
 										</td>
-										<td>
+										<td style="width: 2%">
 											<input
 												v-model="item.qty"
 												@keyup="getLineTotal(index)"
@@ -155,6 +155,7 @@
 										</td>
 										<td>
 											<button
+												type="button"
 												@click="removeItem(index)"
 												class="btn btn-link"
 												:disabled="index == 0"
@@ -165,8 +166,8 @@
 									</tr>
 								</template>
 								<tr>
-									<td colspan="5"></td>
-									<th>Subtotal</th>
+									<td colspan="4"></td>
+									<th colspan="2">Subtotal</th>
 									<td>
 										<input
 											v-model="form.sub_total"
@@ -177,8 +178,8 @@
 									</td>
 								</tr>
 								<tr>
-									<td colspan="5"></td>
-									<th>Shipping Charges</th>
+									<td colspan="4"></td>
+									<th colspan="2">Shipping Charges</th>
 									<td>
 										<input
 											v-model="form.shipping_from_shop"
@@ -189,8 +190,8 @@
 									</td>
 								</tr>
 								<tr>
-									<td colspan="5"></td>
-									<th>Service Charges</th>
+									<td colspan="4"></td>
+									<th colspan="2">Service Charges</th>
 									<td>
 										<input
 											v-model="form.service_charges"
@@ -201,8 +202,8 @@
 									</td>
 								</tr>
 								<tr>
-									<td colspan="5"></td>
-									<th>Grand Total</th>
+									<td colspan="4"></td>
+									<th colspan="2">Grand Total</th>
 									<td>
 										<input
 											v-model="form.grand_total"
@@ -218,7 +219,11 @@
 				</div>
 				<div class="card-footer">
 					<div class="order-button">
-						<input type="submit" value="Finish Order" class="btn btn-danger" />
+						<input
+							type="submit"
+							value="Create Order"
+							class="btn btn-danger float-right"
+						/>
 					</div>
 				</div>
 			</div>

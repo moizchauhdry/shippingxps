@@ -96,8 +96,6 @@ class ShopController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
-
         $request->validate([
             'form_type' => 'required|in:shopping,pickup',
             'warehouse_id' => 'required',
@@ -344,21 +342,36 @@ class ShopController extends Controller
     {
         $id = $request->input('id');
         $order = Order::findOrFail($id);
+
         $rules = [
             'form_type' => 'required|in:shopping,pickup',
             'warehouse_id' => 'required',
             'notes' => 'nullable',
-            'items' => 'required',
             'site_name' => 'required_if:form_type,shopping',
             'shop_url' => 'required_if:form_type,shopping',
             'store_id' => 'required_if:form_type,pickup',
-            // 'pickup_type' => 'required_if:form_type,pickup',
+            'pickup_type' => 'required_if:form_type,pickup',
             'pickup_date' => 'required_if:form_type,pickup',
-            'receipt_url' => 'required_if:is_complete_shopping,1'
+            'shipping_from_shop' => 'required',
+            'items' => 'array|required',
+            'items.*.name' => 'required',
+            'items.*.option' => 'required',
+            'items.*.url' => 'required',
+            'items.*.price' => 'required|numeric',
+            'items.*.price_with_tax' => 'required|numeric',
+            'items.*.qty' => 'required|numeric',
+            'items.*.sub_total' => 'required|numeric',
         ];
 
         $validator = Validator::make($request->all(), $rules, $message = [
-            'receipt_url.required_if' => 'image of an order is missing',
+            'receipt_url.required_if' => 'The image of an order is missing',
+            'items.*.name.required' => 'The item name field is required.',
+            'items.*.option.required' => 'The item description field is required.',
+            'items.*.url.required' => 'The item URL field is required.',
+            'items.*.price.required' => 'The item price field is required.',
+            'items.*.price_with_tax.required' => 'The item price with tax field is required.',
+            'items.*.qty.required' => 'The item quantity field is required.',
+            'items.*.sub_total.required' => 'The item subtotal field is required.',
         ]);
 
         if ($validator->fails()) {
