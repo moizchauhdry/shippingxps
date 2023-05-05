@@ -18,15 +18,14 @@ use App\Models\User;
 use App\Models\Warehouse;
 use App\Models\Package;
 use App\Notifications\ShopForMeNotification;
-use App\Notifications\ShoppingCreated;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
-use File;
-use Sabberworm\CSS\Settings;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\URL;
 
 class ShopController extends Controller
 {
@@ -615,7 +614,7 @@ class ShopController extends Controller
 
     public function storeComment(Request $request, $id)
     {
-        $user = \Auth::user();
+        $user = Auth::user();
         $shopForMe = Order::find($id);
         $validatedData = $request->validate([
             'message' => 'required',
@@ -627,10 +626,10 @@ class ShopController extends Controller
             'message' => $validatedData['message'],
         ]);
 
-        $url = \URL::route('shop-for-me.edit', $shopForMe->id);
+        $url = URL::route('shop-for-me.edit', $shopForMe->id);
         $auser = $user->type == 'admin' ? 'Admin' : 'User';
         $data = [
-            'url' => \URL::route('additional-request.edit', $shopForMe->id),
+            'url' => URL::route('additional-request.edit', $shopForMe->id),
             'message' => $auser . ' has commented on an shopping list. <a style="font-weight:600" href="' . $url . '">Click Here</a>',
         ];
         if ($user->type == 'admin') {
@@ -651,11 +650,6 @@ class ShopController extends Controller
     {
         $comments = OrderComment::where('order_id', $id)->get();
         return response()->json([
-            'order' => $order,
-            'warehouses' => $warehouses,
-            'stores' => $stores,
-            'salePrice' => (int)$price_with_tax - $price,
-            'additional_pickup_charges' => $additional_pickup_charges,
             'comments' => $comments
         ]);
     }
@@ -681,12 +675,16 @@ class ShopController extends Controller
             $image_object = $files['receipt_url'];
             $file_name = time() . '_' . $image_object->getClientOriginalName();
             $image_object->storeAs('uploads', $file_name);
-            File::move(storage_path('app/uploads/' . $file_name), public_path('../uploads/' . $file_name));
+            if ($_SERVER['HTTP_HOST'] == 'localhost:8000') {
+                File::move(storage_path('app/uploads/' . $file_name), public_path('/public/uploads/' . $file_name));
+            } else {
+                File::move(storage_path('app/uploads/' . $file_name), public_path('../public/uploads/' . $file_name));
+            }
             $order->update([
                 'receipt_url' => $file_name,
             ]);
         }
 
-        return redirect('shop-for-me')->with('success', 'Invoice Updated !');
+        return redirect()->back()->with('success', 'Invoice Updated !');
     }
 }
