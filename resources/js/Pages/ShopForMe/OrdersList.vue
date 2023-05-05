@@ -29,7 +29,7 @@
 					<table class="table table-striped table-bordered">
 						<thead class="text-center">
 							<tr>
-								<th scope="col">Sr. #</th>
+								<th scope="col">Order. #</th>
 								<th scope="col">Warehouse</th>
 								<th scope="col">Customer</th>
 								<th scope="col">Type</th>
