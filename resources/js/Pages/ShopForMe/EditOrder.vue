@@ -331,7 +331,9 @@
 
 				<div class="row">
 					<div class="col-md-4 text-center form-group">
-						<img :src="imgURL(invoice_form.receipt_url)" alt="" />
+						<a :href="imgURL(order.receipt_url)" class="m-1" download
+							><i class="fa fa-download mr-1"></i>Download</a
+						>
 					</div>
 				</div>
 			</div>
