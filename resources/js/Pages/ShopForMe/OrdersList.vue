@@ -34,8 +34,7 @@
 								<th scope="col">Customer</th>
 								<th scope="col">Type</th>
 								<th scope="col">Status</th>
-								<th scope="col">Site Name</th>
-								<th scope="col">Site URL</th>
+								<th scope="col">Site</th>
 								<th scope="col"></th>
 							</tr>
 						</thead>
@@ -54,41 +53,39 @@
 								</td>
 								<td class="capitalize">{{ order.order_origin }}</td>
 								<td class="capitalize">
-									<span v-bind:class="getLabelClass(order.status)">{{
-										order.status
-									}}</span>
+									<span v-bind:class="getLabelClass(order.status)">
+										{{ order.status }}
+									</span>
+									<br />
 									<span
 										v-if="order.payment_status == 'Paid'"
-										class="label bg-success text-white font-bold ml-2"
+										class="label badge badge-success text-white font-bold"
 									>
 										{{ order.payment_status }}
 									</span>
 								</td>
 								<td>
 									<template v-if="order.site_name !== null">
-										<span v-if="order.site_name.length < 30">{{
-											order.site_name
-										}}</span>
-										<span v-else
-											>Welcome,
-											{{ order.site_name.substring(0, 30) + "..." }}</span
-										>
+										<span v-if="order.site_name.length < 30">
+											{{ order.site_name }}
+										</span>
+										<span v-else>
+											{{ order.site_name.substring(0, 30) + "..." }}
+										</span>
 									</template>
-								</td>
-								<td>
+									<br />
 									<template v-if="order.site_url !== null">
 										<a
 											target="_blank"
 											class="link-primary"
 											:href="'//' + order.site_url"
 										>
-											<span v-if="order.site_url.length < 30">{{
-												order.site_url != null ? order.site_url : "- -"
-											}}</span>
-											<span v-else
-												>Welcome,
-												{{ order.site_url.substring(0, 30) + "..." }}</span
-											>
+											<span v-if="order.site_url.length < 30">
+												{{ order.site_url != null ? order.site_url : "- -" }}
+											</span>
+											<span v-else>
+												{{ order.site_url.substring(0, 30) + "..." }}
+											</span>
 										</a>
 									</template>
 								</td>
@@ -136,6 +133,9 @@
 					</table>
 				</div>
 			</div>
+			<div class="card-footer">
+				<pagination :links="orders.links"></pagination>
+			</div>
 		</div>
 	</MainLayout>
 </template>
@@ -147,11 +147,13 @@
 <script>
 	import MainLayout from "@/Layouts/Main";
 	import BreezeAuthenticatedLayout from "@/Layouts/Authenticated";
+	import Pagination from "@/Components/Pagination.vue";
 
 	export default {
 		components: {
 			BreezeAuthenticatedLayout,
 			MainLayout,
+			Pagination,
 		},
 		props: {
 			auth: Object,
@@ -181,28 +183,28 @@
 			getLabelClass(status) {
 				switch (status) {
 					case "pending":
-						return "label bg-warning text-white font-bold";
+						return "label badge badge-warning text-white font-bold";
 						break;
 					case "arrived":
-						return "label bg-primary text-white font-bold";
+						return "label badge badge-primary text-white font-bold";
 						break;
 					case "labeled":
-						return "label bg-info text-white font-bold";
+						return "label badge badge-info text-white font-bold";
 						break;
 					case "shipped":
-						return "label bg-warning text-white font-bold";
+						return "label badge badge-warning text-white font-bold";
 						break;
 					case "delivered":
-						return "label bg-success text-white font-bold";
+						return "label badge badge-success text-white font-bold";
 						break;
 					case "rejected":
-						return "label bg-danger text-white font-bold";
+						return "label badge badge-danger text-white font-bold";
 						break;
 					case "approved":
-						return "label bg-success text-white font-bold";
+						return "label badge badge-success text-white font-bold";
 						break;
 					default:
-						return "label bg-warning text-white font-bold";
+						return "label badge badge-warning text-white font-bold";
 				}
 			},
 			siuteNum(user_id) {

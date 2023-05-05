@@ -63,7 +63,7 @@ class ShopController extends Controller
 
         $orders->orderBy('orders.id', 'DESC');
 
-        $orders = $orders->paginate(25);
+        $orders = $orders->paginate(10);
 
         return Inertia::render('ShopForMe/OrdersList', [
             'search' => $search,
