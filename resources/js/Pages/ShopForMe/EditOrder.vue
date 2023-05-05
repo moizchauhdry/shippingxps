@@ -291,29 +291,39 @@
 			<div class="card-body">
 				<div class="row">
 					<div class="col-md-4 form-group">
-						<label for="receipt_url">Image </label
-						><small>(receipts,invoice,doc, etc.)</small>
+						<label for="receipt_url" class="font-bold"
+							>Receipts,invoice,docs etc.</label
+						>
 						<input
 							type="file"
 							class="form-control"
 							name="receipt_url"
 							id="receipt_url"
 							accept=".png,.jpg,.jpeg,.pdf,.docx,.xls,.xlsx"
-							@input="form.receipt_url = $event.target.files[0]"
+							@input="invoice_form.receipt_url = $event.target.files[0]"
 						/>
 						<progress
-							v-if="form.progress"
-							:value="form.progress.percentage"
+							v-if="invoice_form.progress"
+							:value="invoice_form.progress.percentage"
 							max="100"
 						>
-							{{ form.progress.percentage }}%
+							{{ invoice_form.progress.percentage }}%
 						</progress>
-						<img :src="imgURL(form.receipt_url)" alt="" />
+						<img :src="imgURL(invoice_form.receipt_url)" alt="" />
+
+						<button
+							@click="updateInvoice()"
+							type="button"
+							class="btn btn-primary"
+						>
+							Update Invoice
+						</button>
 					</div>
 				</div>
+
 				<div class="row" v-if="$page.props.auth.user.type == 'customer'">
 					<div class="col-md-4 text-center form-group">
-						<img :src="imgURL(form.receipt_url)" alt="" />
+						<img :src="imgURL(invoice_form.receipt_url)" alt="" />
 					</div>
 				</div>
 			</div>
@@ -412,6 +422,10 @@
 					receipt_url: this.order.receipt_url,
 					is_service_charges: this.order.is_service_charges,
 				}),
+				invoice_form: this.$inertia.form({
+					order_id: this.order.id,
+					receipt_url: this.order.receipt_url,
+				}),
 				commentForm: this.$inertia.form({
 					message: "",
 				}),
@@ -497,7 +511,6 @@
 				);
 				this.commentForm.reset();
 			},
-
 			getGrandTotal() {
 				var sum = 0;
 				var shipping_charges = 0;
@@ -547,6 +560,9 @@
 				item.sub_total = line_total.toFixed(2);
 
 				this.getGrandTotal();
+			},
+			updateInvoice() {
+				this.invoice_form.post(this.route("shop-for-me.update-invoice"));
 			},
 		},
 	};

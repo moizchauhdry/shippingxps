@@ -452,20 +452,6 @@ class ShopController extends Controller
                     $order->received_from = $order->store->name;
                 }
 
-                $files = $request->file();
-
-                if (isset($files['receipt_url'])) {
-                    $image_object = $files['receipt_url'];
-                    $file_name = time() . '_' . $image_object->getClientOriginalName();
-                    $image_object->storeAs('uploads', $file_name);
-                    if ($_SERVER['HTTP_HOST'] == 'localhost:8000') {
-                        File::move(storage_path('app/uploads/' . $file_name), public_path('/uploads/' . $file_name));
-                    } else {
-                        File::move(storage_path('app/uploads/' . $file_name), public_path('../uploads/' . $file_name));
-                    }
-                    $order->receipt_url = $file_name;
-                }
-
                 $order->package_id = $package->id;
                 $order->order_type = 'order';
                 $order->status = 'arrived';
@@ -684,5 +670,23 @@ class ShopController extends Controller
         $order->save();
 
         return $this->edit($id);
+    }
+
+    public function updateInvoice(Request $request)
+    {
+        $order = Order::find($request->order_id);
+
+        $files = $request->file();
+        if (isset($files['receipt_url'])) {
+            $image_object = $files['receipt_url'];
+            $file_name = time() . '_' . $image_object->getClientOriginalName();
+            $image_object->storeAs('uploads', $file_name);
+            File::move(storage_path('app/uploads/' . $file_name), public_path('../uploads/' . $file_name));
+            $order->update([
+                'receipt_url' => $file_name,
+            ]);
+        }
+
+        return redirect('shop-for-me')->with('success', 'Invoice Updated !');
     }
 }
