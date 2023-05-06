@@ -3,14 +3,8 @@
 namespace App\Listeners;
 
 use App\Events\OrderCreatedEvent;
-use App\Mail\UserGeneralMail;
-use App\Models\Order;
-use App\Models\User;
+use App\Mail\PackageMail;
 use App\Notifications\OrderCreatedNotification;
-use App\Notifications\SendUserNotification;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Notification;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Mail;
 
 class OrderCreatedListener
@@ -31,23 +25,26 @@ class OrderCreatedListener
      * @param  OrderCreated  $event
      * @return void
      */
-    public function handle(OrderCreatedEvent $event) {
-        $order = $event->order;        
+    public function handle(OrderCreatedEvent $event)
+    {
+        $order = $event->order;
         $user = $order->customer;
+
         if ($user) {
             $user->notify(new OrderCreatedNotification($order));
         }
 
         $data = [
-            'subject' => 'Order Item Created',
-            'name' => $user->name,
-            'description' => '<p> Order ID #"'.$event->order->id.'" created by admin </p>',
+            'subject' => 'Package Arrived - PKG #' . $order->package_id,
+            'user_name' => $user->name,
+            'package_id' => 'PKG #' . $order->package_id,
+            'warehouse' => $order->warehouse->name,
+            'dimensions' => $order->package_length . ' x ' . $order->package_width . ' x ' . $order->package_height . ' x ' . $order->dim_unit,
+            'weight' => $order->package_weight . ' ' . $order->weight_unit,
+            'tracking_number_in' => $order->tracking_number_in,
+            'order_images' => $order->images,
         ];
 
-        try{
-            Mail::to($user)->send(new UserGeneralMail($data));
-        }catch(\Throwable $e){
-            \Log::info($e);
-        }
+        Mail::to($user)->send(new PackageMail($data));
     }
 }

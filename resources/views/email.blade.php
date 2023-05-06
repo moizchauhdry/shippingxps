@@ -138,7 +138,12 @@
         .footer a {
             font-size: 12px
         }
+
+        .container {
+            padding: 20px !important
+        }
     </style>
+
     <style type="text/css" media="only screen and (max-width: 650px)">
         @media only screen and (max-width: 650px) {
             * {
@@ -164,6 +169,8 @@
             }
         }
     </style>
+
+    @yield('styles')
 </head>
 
 <body style="padding:0;margin:0;display:block;background:#fff;-webkit-text-size-adjust:none">
@@ -235,11 +242,10 @@
                                             <tbody style="margin: 0 auto">
                                                 <tr>
                                                     <td colspan="3" class="header center" width="100%">
-                                                        <p style="color: white;font-size:12px">©{{
-                                                            Carbon\Carbon::now()->year }} <a
-                                                                href="https://shippingxps.com/"
+                                                        <span style="color: white;font-size:12px">©{{
+                                                            Carbon\Carbon::now()->year }} <a href="https://shippingxps.com/"
                                                                 style="color:#fff">shippingxps.com</a> All Rights
-                                                            Reserved</p>
+                                                            Reserved</span>
                                                     </td>
                                                 </tr>
                                             </tbody>

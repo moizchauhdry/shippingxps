@@ -6,18 +6,14 @@ use App\Events\OrderCreatedEvent;
 use App\Events\OrderUpdatedEvent;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use \Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
-use GuzzleHttp\Client;
 use App\Models\Order;
-use App\Models\City;
 use App\Models\OrderItem;
 use App\Models\OrderImage;
 use App\Models\Package;
 use App\Models\PackageBox;
 use App\Models\User;
-use App\Models\SiteSetting;
 use App\Models\Warehouse;
 use Illuminate\Support\Facades\Auth;
 use File;
@@ -184,7 +180,11 @@ class OrderController extends Controller
                 }
             }
 
-            event(new OrderCreatedEvent($order));
+            try {
+                event(new OrderCreatedEvent($order));
+            } catch (\Throwable $th) {
+                throw $th;
+            }
 
             return redirect()->route('packages.index')->with('success', 'The package has been added successfully.');
         } catch (\Exception $e) {
