@@ -46,7 +46,15 @@
 								>
 									{{ invoice_form.progress.percentage }}%
 								</progress>
-								<img :src="imgURL(invoice_form.receipt_url)" alt="" />
+
+								<a
+									:href="imgURL(order.receipt_url)"
+									class="m-1"
+									download
+									v-if="order.receipt_url"
+								>
+									<i class="fa fa-print mr-1"></i>Download Invoice
+								</a>
 							</td>
 							<th>Tracking Number</th>
 							<td>
@@ -67,14 +75,6 @@
 							</td>
 						</tr>
 					</table>
-				</div>
-
-				<div class="row" v-if="order.receipt_url">
-					<div class="col-md-4 text-center form-group">
-						<a :href="imgURL(order.receipt_url)" class="m-1" download
-							><i class="fa fa-download mr-1"></i>Download</a
-						>
-					</div>
 				</div>
 			</div>
 		</div>
