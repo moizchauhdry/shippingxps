@@ -115,7 +115,7 @@
 											</td>
 											<td style="width: 30%">
 												<input
-													v-model="item.option"
+													v-model="item.description"
 													type="text"
 													class="form-control"
 													placeholder="Description"
@@ -131,7 +131,7 @@
 											</td>
 											<td>
 												<input
-													v-model="item.price"
+													v-model="item.unit_price"
 													@keyup="getLineTotal(index)"
 													@click="getLineTotal(index)"
 													ref="price"
@@ -151,7 +151,7 @@
 											</td>
 											<td style="width: 2%">
 												<input
-													v-model="item.qty"
+													v-model="item.quantity"
 													@keyup="getLineTotal(index)"
 													type="number"
 													min="1"
@@ -335,7 +335,7 @@
 							type="button"
 							class="btn btn-primary"
 						>
-							Update Invoice
+							Save & Update
 						</button>
 					</div>
 				</div>
@@ -508,9 +508,9 @@
 					name: "",
 					description: "",
 					url: "",
-					price: 0,
+					unit_price: 0,
 					price_with_tax: 0,
-					qty: 1,
+					quantity: 1,
 					sub_total: 0,
 				});
 			},
@@ -573,12 +573,12 @@
 
 				const item = this.form.items[index];
 
-				var gross_total = item.price * (sale_tax / 100);
+				var gross_total = item.unit_price * (sale_tax / 100);
 				var net_total = (item.price_with_tax = (
-					parseFloat(gross_total) + parseFloat(item.price)
+					parseFloat(gross_total) + parseFloat(item.unit_price)
 				).toFixed(2));
 
-				line_total = net_total * item.qty;
+				line_total = net_total * item.quantity;
 				item.sub_total = line_total.toFixed(2);
 
 				this.getGrandTotal();

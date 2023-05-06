@@ -231,95 +231,81 @@ class ShopController extends Controller
      */
     public function edit($id)
     {
-
-        $model = order::find($id);
-
-        if ($model == null) {
-            return back()->with('error', 'No Record Found');
-        }
-
+        $order = order::findOrFail($id);
         $additional_pickup_charges = SiteSetting::where('name', 'additional_pickup_charges')->first()->value;
 
         $items = [];
 
-        $price = $model->items->sum('unit_price');
-        $price_with_tax = $model->items->sum('price_with_tax');
+        $price = $order->items->sum('unit_price');
+        $price_with_tax = $order->items->sum('price_with_tax');
 
-        foreach ($model->items as $item) {
-            $items[] = [
-                'id' => $item->id,
-                'name' => $item->name,
-                'description' => $item->description,
-                'qty' => $item->quantity,
-                'price' => $item->unit_price,
-                'price_with_tax' => $item->price_with_tax,
-                'sub_total' => $item->sub_total,
-                'url' => $item->url
-            ];
-        }
+        // foreach ($order->items as $item) {
+        //     $items[] = [
+        //         'id' => $item->id,
+        //         'name' => $item->name,
+        //         'description' => $item->description,
+        //         'qty' => $item->quantity,
+        //         'price' => $item->unit_price,
+        //         'price_with_tax' => $item->price_with_tax,
+        //         'sub_total' => $item->sub_total,
+        //         'url' => $item->url
+        //     ];
+        // }
 
         $images = [];
-
-        foreach ($model->images as $image) {
+        foreach ($order->images as $image) {
             $images[] = [
                 'id' => $image->id,
                 'image' => $image->image,
             ];
         }
 
-
-        $order = [
-            'id' => $model->id,
-            'warehouse_id' => $model->warehouse_id,
-            'store_id' => $model->store_id,
-            'store_charges' => $model->store_charges,
-            'store_tax' => $model->store_tax,
-            'site_name' => $model->site_name,
-            'site_url' => $model->site_url,
-            'status' => $model->status,
-            'notes' => $model->notes,
-            'shipping_from_shop' => $model->shipping_from_shop,
-            'sales_tax' => $model->sales_tax,
-            'order_type' => $model->order_type,
-            'order_origin' => $model->order_origin,
-            'only_pickup' => $model->only_pickup,
-            'shipping_xps' => $model->shipping_xps_purchase,
-            'pickup_date' => $model->pickup_date,
-            'pickup_charges' => $model->pickup_charges,
-            'pickup_type' => $model->pickup_type,
-            'store_name' => $model->store_name,
-            'sub_total' => $model->sub_total,
-            'grand_total' => $model->grand_total,
-            'service_charges' => $model->service_charges,
-            'is_service_charges' => $model->is_service_charges,
-            'discount' => $model->discount,
-            'receipt_url' => $model->receipt_url,
-            'payment_status' => $model->payment_status,
-            'image' => '',
-            'items' => $items,
-            'images' => $images,
-        ];
+        // $order = [
+        //     'id' => $order->id,
+        //     'warehouse_id' => $order->warehouse_id,
+        //     'store_id' => $order->store_id,
+        //     'store_charges' => $order->store_charges,
+        //     'store_tax' => $order->store_tax,
+        //     'site_name' => $order->site_name,
+        //     'site_url' => $order->site_url,
+        //     'status' => $order->status,
+        //     'notes' => $order->notes,
+        //     'shipping_from_shop' => $order->shipping_from_shop,
+        //     'sales_tax' => $order->sales_tax,
+        //     'order_type' => $order->order_type,
+        //     'order_origin' => $order->order_origin,
+        //     'only_pickup' => $order->only_pickup,
+        //     'shipping_xps' => $order->shipping_xps_purchase,
+        //     'pickup_date' => $order->pickup_date,
+        //     'pickup_charges' => $order->pickup_charges,
+        //     'pickup_type' => $order->pickup_type,
+        //     'store_name' => $order->store_name,
+        //     'sub_total' => $order->sub_total,
+        //     'grand_total' => $order->grand_total,
+        //     'service_charges' => $order->service_charges,
+        //     'is_service_charges' => $order->is_service_charges,
+        //     'discount' => $order->discount,
+        //     'receipt_url' => $order->receipt_url,
+        //     'payment_status' => $order->payment_status,
+        //     'image' => '',
+        //     'items' => $items,
+        //     'images' => $images,
+        // ];
 
         if (Auth::user()->type != 'admin') {
-            $order['is_changed'] = $model->is_changed;
-            $order['updated_by_admin'] = $model->updated_by_admin;
-            $order['changes_approved'] = $model->changes_approved;
+            $order['is_changed'] = $order->is_changed;
+            $order['updated_by_admin'] = $order->updated_by_admin;
+            $order['changes_approved'] = $order->changes_approved;
         } else {
-            $order['changes_approved'] = $model->changes_approved;
+            $order['changes_approved'] = $order->changes_approved;
         }
 
         $warehouses = Warehouse::select(['id', 'name', 'sale_tax'])->get()->toArray();
         $stores = Store::select(['id', 'name'])->get()->toArray();
 
-        // echo '<pre>';
-        // print_r($order);
-        // exit;
 
-        if ($model->order_type == 'order') {
-            return redirect()->back()->with('error', 'You Have No Longer Access to that page.');
-        }
 
-        $comments = OrderComment::where('order_id', $order['id'])->with('user')->orderBy('id', 'desc')->get();
+        $comments = OrderComment::where('order_id', $order->id)->with('user')->orderBy('id', 'desc')->get();
 
         return Inertia::render('ShopForMe/EditOrder', [
             'order' => $order,
@@ -339,6 +325,8 @@ class ShopController extends Controller
      */
     public function updateOrder(Request $request)
     {
+        // dd($request->all());
+
         $id = $request->input('id');
         $order = Order::findOrFail($id);
 
@@ -354,11 +342,11 @@ class ShopController extends Controller
             'shipping_from_shop' => 'required',
             'items' => 'array|required',
             'items.*.name' => 'required',
-            'items.*.option' => 'required',
+            'items.*.description' => 'required',
             'items.*.url' => 'required',
-            'items.*.price' => 'required|numeric',
+            'items.*.unit_price' => 'required|numeric',
             'items.*.price_with_tax' => 'required|numeric',
-            'items.*.qty' => 'required|numeric',
+            'items.*.quantity' => 'required|numeric',
             'items.*.sub_total' => 'required|numeric',
         ];
 
@@ -378,6 +366,7 @@ class ShopController extends Controller
         }
 
         $isAdmin = (Auth::user()->type == 'admin') ? true : false;
+
         try {
             DB::beginTransaction();
 
@@ -412,12 +401,12 @@ class ShopController extends Controller
                 $order->pickup_date = $request->pickup_date;
                 $order->pickup_charges = $request->pickup_charges;
             }
+
             $order->sub_total = $request->sub_total;
             $order->grand_total = $request->grand_total;
             $order->service_charges = $request->service_charges;
             $order->is_service_charges = $request->is_service_charges;
             $order->discount = $request->discount;
-
 
             if ($request->is_complete_shopping == 1) {
 
@@ -463,43 +452,25 @@ class ShopController extends Controller
             $order->save();
 
             $checkChanges = $order->wasChanged();
-
             $orderItemChanges[] = [];
-
-            $items = $request->items;
-
-            foreach ($items as $item) {
-
-                $item_id = isset($item['id']) ? (int) $item['id'] : 0;
-
-                $order_item = OrderItem::find($item_id);
-                //update if existing, else creat new.
-
-                if (!is_object($order_item)) {
-                    $order_item = new OrderItem();
-                }
-
-                $order_item->order_id = $order->id;
-                $order_item->name = $item['name'];
-                $order_item->description = $item['description'];
-                $order_item->quantity = $item['qty'];
-                $order_item->url = $item['url'];
-                $order_item->unit_price = $item['price'];
-                $order_item->price_with_tax = $item['price_with_tax'];
-                $order_item->sub_total = $item['sub_total'];
-
-                $order_item->save();
-
+            OrderItem::where('order_id', $order->id)->delete();
+            foreach ($request->items as $item) {
+                $order_item = OrderItem::create([
+                    'order_id' => $order->id,
+                    'name' => $item['name'],
+                    'description' => $item['description'],
+                    'quantity' => $item['quantity'],
+                    'url' => $item['url'],
+                    'unit_price' => $item['unit_price'],
+                    'price_with_tax' => $item['price_with_tax'],
+                    'sub_total' => $item['sub_total'],
+                ]);
                 $orderItemChanges[] = $order_item->wasChanged();
             }
 
-
-
             if ($request->is_complete_shopping != 1 && $isAdmin) {
-
                 $order->updated_by_admin = true;
                 $order->changes_approved = false;
-
                 if ($checkChanges != null || $orderItemChanges != null) {
                     $order->is_changed = true;
                     $order->save();
@@ -512,13 +483,9 @@ class ShopController extends Controller
             }
 
             if ($request->form_type == 'pickup') {
-
                 $files = $request->file();
-
                 if (isset($files['image'])) {
-
                     $image_object = $files['image'];
-
                     $file_name = time() . '_' . $image_object->getClientOriginalName();
                     $image_object->storeAs('uploads', $file_name);
 
@@ -547,6 +514,7 @@ class ShopController extends Controller
                 return redirect('shop-for-me')->with('success', 'Order Updated !');
             }
         } catch (\Exception $e) {
+            dd($e);
             return redirect('shop-for-me')->with('error', 'Something went wrong: ' . $e->getMessage());
             DB::rollBack();
         }
@@ -668,6 +636,8 @@ class ShopController extends Controller
 
     public function updateInvoice(Request $request)
     {
+        // dd($request->all());
+
         $order = Order::find($request->order_id);
 
         $files = $request->file();
@@ -682,9 +652,12 @@ class ShopController extends Controller
             }
             $order->update([
                 'receipt_url' => $file_name,
-                // 'tracking_number_in' => $request->tracking_number_in,
             ]);
         }
+
+        $order->update([
+            'tracking_number_in' => $request->tracking_number_in,
+        ]);
 
         return redirect()->back()->with('success', 'Invoice and Tracking Number have been update successfully!');
     }
