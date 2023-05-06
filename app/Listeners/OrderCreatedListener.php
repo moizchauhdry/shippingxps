@@ -34,6 +34,11 @@ class OrderCreatedListener
             $user->notify(new OrderCreatedNotification($order));
         }
 
+        $images = [];
+        foreach ($order->images as $key => $image) {
+            $images[] = 'https://app.shippingxps.com/public/uploads/' . $image->image;
+        }
+
         $data = [
             'subject' => 'Package Arrived - PKG #' . $order->package_id,
             'user_name' => $user->name,
@@ -42,7 +47,7 @@ class OrderCreatedListener
             'dimensions' => $order->package_length . ' x ' . $order->package_width . ' x ' . $order->package_height . ' x ' . $order->dim_unit,
             'weight' => $order->package_weight . ' ' . $order->weight_unit,
             'tracking_number_in' => $order->tracking_number_in,
-            'images' => $order->images,
+            'images' => $images,
         ];
 
         Mail::to($user)->send(new PackageMail($data));

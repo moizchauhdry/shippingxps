@@ -22,7 +22,7 @@
     </p>
     <p>
         @foreach ($data['images'] as $image)
-        <img src="https://app.shippingxps.com/public/uploads/{{$image->image}}" alt="alpha" style="height:300px">
+        <img src="{{$image}}" alt="" style="height:300px">
         @endforeach
     </p>
 </div>
