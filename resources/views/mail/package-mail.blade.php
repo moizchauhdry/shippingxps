@@ -21,7 +21,7 @@
         <strong>Tracking Number:</strong> {{$data['tracking_number_in']}} <br>
     </p>
     <p>
-        @foreach ($images as $image)
+        @foreach ($data['images'] as $image)
         <img src="{{asset('/public/uploads/'.$image->image)}}" alt="" style="height:300px">
         @endforeach
     </p>
