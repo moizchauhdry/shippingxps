@@ -22,7 +22,7 @@
     </p>
     <p>
         @foreach ($data['images'] as $image)
-        <img src="{{$image}}" alt="image" style="height:200px">
+        <img src="{{$image}}" alt="image" style="height:200px; padding:10px">
         @endforeach
     </p>
 </div>
