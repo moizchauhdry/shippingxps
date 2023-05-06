@@ -3,7 +3,7 @@
 		<form @submit.prevent="submit" enctype="multipart/form-data">
 			<div class="card mb-5">
 				<div class="card-header">
-					<span class="font-bold">Online Order - Create</span>
+					<span class="font-bold">Online Order</span>
 				</div>
 				<div class="card-body">
 					<breeze-validation-errors class="mb-4 text-lg" />

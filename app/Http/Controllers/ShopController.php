@@ -514,7 +514,6 @@ class ShopController extends Controller
                 return redirect('shop-for-me')->with('success', 'Order Updated !');
             }
         } catch (\Exception $e) {
-            dd($e);
             return redirect('shop-for-me')->with('error', 'Something went wrong: ' . $e->getMessage());
             DB::rollBack();
         }
@@ -611,7 +610,7 @@ class ShopController extends Controller
         }
         $shopForMe = Order::find($id);
 
-        return $this->edit($shopForMe->id);
+        return redirect()->back();
     }
 
     public function loadComments($id)
@@ -631,7 +630,7 @@ class ShopController extends Controller
         $order->status = $status;
         $order->save();
 
-        return $this->edit($id);
+        return redirect()->back();
     }
 
     public function updateInvoice(Request $request)

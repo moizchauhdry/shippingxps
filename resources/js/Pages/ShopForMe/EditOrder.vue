@@ -82,7 +82,7 @@
 		<!-- Order Section -->
 		<form @submit.prevent="submit" enctype="multipart/form-data">
 			<div class="card mb-3">
-				<div class="card-header"><b>Online Order - Edit</b></div>
+				<div class="card-header"><b>Online Order</b></div>
 				<div class="card-body">
 					<fieldset :disabled="order.status != 'pending'">
 						<breeze-validation-errors class="mb-4 text-lg" />
