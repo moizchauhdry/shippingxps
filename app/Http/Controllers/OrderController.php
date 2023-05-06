@@ -16,7 +16,7 @@ use App\Models\PackageBox;
 use App\Models\User;
 use App\Models\Warehouse;
 use Illuminate\Support\Facades\Auth;
-use File;
+use Illuminate\Support\Facades\File;
 
 
 class OrderController extends Controller
@@ -153,21 +153,15 @@ class OrderController extends Controller
             $files = $request->file();
             if (isset($files['images'])) {
                 foreach ($files['images'] as $key => $file) {
-
                     $image_object = $file['image'];
-
-                    $file_name = time() . '_' . $image_object->getClientOriginalName();
+                    $file_name = time() . '_' . $order->package_id;
                     $image_object->storeAs('uploads', $file_name);
-
                     if ($_SERVER['HTTP_HOST'] == 'localhost:8000') {
                         File::move(storage_path('app/uploads/' . $file_name), public_path('/public/uploads/' . $file_name));
                     } else {
                         File::move(storage_path('app/uploads/' . $file_name), public_path('../public/uploads/' . $file_name));
                     }
-
                     $order_image = new OrderImage();
-
-                    //$order_image->image = 'default-image.png';
                     $order_image->image = $file_name;
                     $order_image->order_id = $order->id;
                     if ($key == 0) {
@@ -175,7 +169,6 @@ class OrderController extends Controller
                     } else {
                         $order_image->display = 0;
                     }
-
                     $order_image->save();
                 }
             }
@@ -289,15 +282,13 @@ class OrderController extends Controller
             if (isset($files['images'])) {
                 foreach ($files['images'] as $key => $file) {
                     $image_object = $file['image'];
-                    $file_name = time() . '_' . $image_object->getClientOriginalName();
+                    $file_name = time() . '_' . $order->package_id;
                     $image_object->storeAs('uploads', $file_name);
-
                     if ($_SERVER['HTTP_HOST'] == 'localhost:8000') {
                         File::move(storage_path('app/uploads/' . $file_name), public_path('/public/uploads/' . $file_name));
                     } else {
                         File::move(storage_path('app/uploads/' . $file_name), public_path('../public/uploads/' . $file_name));
                     }
-
                     $order_image = new OrderImage();
                     $order_image->image = $file_name;
                     $order_image->order_id = $order->id;
@@ -306,19 +297,11 @@ class OrderController extends Controller
                     } else {
                         $order_image->display = 0;
                     }
-
                     $order_image->save();
                 }
             }
 
             $package = Package::find($order->package_id);
-            // $package->weight_unit = $validated['weight_unit'];
-            // $package->dim_unit = $validated['dim_unit'];
-            // $package->package_weight = $validated['package_weight'];
-            // $package->package_length = $validated['package_length'];
-            // $package->package_width = $validated['package_width'];
-            // $package->package_height = $validated['package_height'];
-            // $package->save();
 
             PackageBox::updateOrCreate(['package_id' => $package->id], [
                 'package_id' => $package->id,

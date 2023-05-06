@@ -22,7 +22,6 @@
     </p>
     <p>
         @foreach ($data['images'] as $image)
-        {{$image}}
         <img src="{{$image}}" alt="image" style="height:200px">
         @endforeach
     </p>
