@@ -22,7 +22,8 @@
     </p>
     <p>
         @foreach ($data['images'] as $image)
-        <img src="{{$image}}" alt="" style="height:300px">
+        {{$image}}
+        <img src="{{$image}}" alt="image" style="height:200px">
         @endforeach
     </p>
 </div>
