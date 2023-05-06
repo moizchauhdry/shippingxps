@@ -42,7 +42,7 @@ class OrderCreatedListener
             'dimensions' => $order->package_length . ' x ' . $order->package_width . ' x ' . $order->package_height . ' x ' . $order->dim_unit,
             'weight' => $order->package_weight . ' ' . $order->weight_unit,
             'tracking_number_in' => $order->tracking_number_in,
-            'order_images' => $order->images,
+            'images' => $order->images,
         ];
 
         Mail::to($user)->send(new PackageMail($data));
