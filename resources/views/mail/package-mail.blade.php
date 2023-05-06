@@ -22,9 +22,9 @@
     </p>
     <p>
         @foreach ($data['images'] as $image)
-        {{$image}}
-        <img src="https://app.shippingxps.com/public/uploads/{{$image->image}}" alt="" style="height:300px">
-        <img src="https://app.shippingxps.com/public/uploads/1683378307_1683365863_1683315040_mr-2%20(2).png" alt=""
+        {{$image->image}}
+        <img src="https://app.shippingxps.com/public/uploads/{{$image->image}}" alt="alpha" style="height:300px">
+        <img src="https://app.shippingxps.com/public/uploads/1683378307_1683365863_1683315040_mr-2%20(2).png" alt="beta"
             style="height:300px">
         @endforeach
     </p>
