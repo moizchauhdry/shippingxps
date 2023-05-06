@@ -80,7 +80,7 @@
 			<div class="card-header font-bold">Order Items</div>
 			<div class="card-body">
 				<div class="row">
-					<div class="col-md-12">
+					<div class="table-responsive">
 						<table class="table table-striped table-bordered">
 							<thead>
 								<tr>
@@ -132,7 +132,11 @@
 									"
 								>
 									<th style="text-align: end">Sub Total</th>
-									<td>{{ order.sub_total }}</td>
+									<td>${{ order.sub_total }}</td>
+								</tr>
+								<tr>
+									<th style="text-align: end">Shipping Charges</th>
+									<td>${{ order.shipping_from_shop }}</td>
 								</tr>
 								<tr v-if="order.order_type == 'pickup'">
 									<th style="text-align: end">Pickup Charges</th>
@@ -148,7 +152,7 @@
 										Service Charges <br />
 										<small>minimum $5 or 5% of subtotal</small>
 									</th>
-									<td>{{ order.service_charges }}</td>
+									<td>${{ order.service_charges }}</td>
 								</tr>
 								<tr
 									v-if="
@@ -157,7 +161,7 @@
 									"
 								>
 									<th style="text-align: end">Shipping Charges</th>
-									<td>{{ order.shipping_charges }}</td>
+									<td>${{ order.shipping_charges }}</td>
 								</tr>
 								<tr
 									v-if="
@@ -170,7 +174,7 @@
 								</tr>
 								<tr>
 									<th style="text-align: end">Grand Total</th>
-									<td>{{ order.grand_total }}</td>
+									<td>${{ order.grand_total }}</td>
 								</tr>
 							</tbody>
 						</table>

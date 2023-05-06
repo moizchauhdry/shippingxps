@@ -17,6 +17,68 @@
 			This order has been rejected by ShippingXPS.
 		</div>
 
+		<!-- Invoice Section -->
+		<div
+			class="card mb-3"
+			v-if="
+				$page.props.auth.user.type == 'admin' && order.payment_status == 'Paid'
+			"
+		>
+			<div class="card-header font-bold">Invoice & Tracking Number</div>
+			<div class="card-body">
+				<div class="row">
+					<table class="table table-bordered table-striped">
+						<tr>
+							<th>Receipts,invoice,docs etc.</th>
+							<td>
+								<input
+									type="file"
+									class="form-control"
+									name="receipt_url"
+									id="receipt_url"
+									accept=".png,.jpg,.jpeg,.pdf,.docx,.xls,.xlsx"
+									@input="invoice_form.receipt_url = $event.target.files[0]"
+								/>
+								<progress
+									v-if="invoice_form.progress"
+									:value="invoice_form.progress.percentage"
+									max="100"
+								>
+									{{ invoice_form.progress.percentage }}%
+								</progress>
+								<img :src="imgURL(invoice_form.receipt_url)" alt="" />
+							</td>
+							<th>Tracking Number</th>
+							<td>
+								<input
+									v-model="invoice_form.tracking_number_in"
+									type="text"
+									class="form-control"
+								/>
+							</td>
+							<td>
+								<button
+									@click="updateInvoice()"
+									type="button"
+									class="btn btn-primary"
+								>
+									Update
+								</button>
+							</td>
+						</tr>
+					</table>
+				</div>
+
+				<div class="row" v-if="order.receipt_url">
+					<div class="col-md-4 text-center form-group">
+						<a :href="imgURL(order.receipt_url)" class="m-1" download
+							><i class="fa fa-download mr-1"></i>Download</a
+						>
+					</div>
+				</div>
+			</div>
+		</div>
+
 		<!-- Order Section -->
 		<form @submit.prevent="submit" enctype="multipart/form-data">
 			<div class="card mb-3">
@@ -287,68 +349,6 @@
 				</div>
 			</div>
 		</form>
-
-		<!-- Invoice Section -->
-		<div
-			class="card mb-3"
-			v-if="
-				$page.props.auth.user.type == 'admin' && order.payment_status == 'Paid'
-			"
-		>
-			<div class="card-header font-bold">Invoice & Tracking Number</div>
-			<div class="card-body">
-				<div class="row">
-					<div class="col-md-4 form-group">
-						<label for="receipt_url" class="font-bold"
-							>Receipts,invoice,docs etc.</label
-						>
-						<input
-							type="file"
-							class="form-control"
-							name="receipt_url"
-							id="receipt_url"
-							accept=".png,.jpg,.jpeg,.pdf,.docx,.xls,.xlsx"
-							@input="invoice_form.receipt_url = $event.target.files[0]"
-						/>
-						<progress
-							v-if="invoice_form.progress"
-							:value="invoice_form.progress.percentage"
-							max="100"
-						>
-							{{ invoice_form.progress.percentage }}%
-						</progress>
-						<img :src="imgURL(invoice_form.receipt_url)" alt="" />
-					</div>
-
-					<div class="col-md-4 form-group">
-						<label for="receipt_url" class="font-bold">Tracking Number</label>
-						<input
-							v-model="invoice_form.tracking_number_in"
-							type="text"
-							class="form-control"
-						/>
-					</div>
-
-					<div class="col-md-12 form-group">
-						<button
-							@click="updateInvoice()"
-							type="button"
-							class="btn btn-primary"
-						>
-							Save & Update
-						</button>
-					</div>
-				</div>
-
-				<div class="row" v-if="order.receipt_url">
-					<div class="col-md-4 text-center form-group">
-						<a :href="imgURL(order.receipt_url)" class="m-1" download
-							><i class="fa fa-download mr-1"></i>Download</a
-						>
-					</div>
-				</div>
-			</div>
-		</div>
 
 		<!-- Comments Section -->
 		<div class="card mb-3">
