@@ -305,8 +305,6 @@ class PackageController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request->all());
-
         $package = Package::with('order', 'packageItems')->where('id', $request->package_id)->first();
 
         $validated = $request->validate([
