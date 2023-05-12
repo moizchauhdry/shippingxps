@@ -92,6 +92,7 @@
 			</inertia-link>
 
 			<breeze-button
+				id="register_btn"
 				class="ml-4"
 				:class="{ 'opacity-25': form.processing }"
 				:disabled="form.processing"
