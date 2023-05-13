@@ -58,6 +58,6 @@ class User extends Authenticatable
 
     public function getNameWithSuiteNoAttribute()
     {
-        return $this->name.' '.$this->suite_no;
+        return $this->name . '-' . $this->suite_no;
     }
 }
