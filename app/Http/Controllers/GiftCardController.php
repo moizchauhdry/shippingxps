@@ -65,10 +65,18 @@ class GiftCardController extends Controller
             $customer = $gift_card->user;
             $customerDetailURL = '<a href="' . route('detail-customer', $customer->id) . '">' . $customer->name_with_suite_no . '</a>';
 
+            // $data = [
+            //     'url' => URL::route('gift-card.edit', $gift_card->id),
+            //     'message' => 'Customer <strong>' . $customerDetailURL . '</strong> has created an gift card request. <a href="' . $url . '">Click Here</a>',
+            // ];
+
+
             $data = [
                 'url' => URL::route('gift-card.edit', $gift_card->id),
-                'message' => 'Customer <strong>' . $customerDetailURL . '</strong> has created an gift card request. <a href="' . $url . '">Click Here</a>',
+                'message' => ' TEst. <a href="' . $url . '">Click Here</a>',
             ];
+
+
             $admins = User::where('type', 'admin')->get();
             foreach ($admins as $admin) {
                 $admin->notify(new GiftCardNotification($data));
