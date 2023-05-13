@@ -73,7 +73,7 @@ class GiftCardController extends Controller
 
             $data = [
                 'url' => URL::route('gift-card.edit', $gift_card->id),
-                'message' => ' TEst. <a href="' . $url . '">Click Here</a>',
+                'message' => 'Test Notification. <a href="' . $url . '">Click Here</a>',
             ];
 
 
