@@ -20,6 +20,10 @@ use Inertia\Inertia;
 |
 */
 
+Route::get('/register-success', function () {
+    return redirect()->route('dashboard');
+})->name('register-success');
+
 Route::get('/', function () {
     return redirect()->route('dashboard');
 })->name('homePage');
