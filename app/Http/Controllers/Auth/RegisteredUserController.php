@@ -72,7 +72,7 @@ class RegisteredUserController extends Controller
         Auth::login($user);
 
         // return redirect(RouteServiceProvider::HOME);
-        return redirect()->route('register-success');
+        return redirect()->route('dashboard-success');
     }
 
     public function update_experience(Request $request)

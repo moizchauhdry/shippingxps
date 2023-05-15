@@ -20,10 +20,6 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/register-success', function () {
-    return redirect()->route('dashboard');
-})->name('register-success');
-
 Route::get('/', function () {
     return redirect()->route('dashboard');
 })->name('homePage');
@@ -33,6 +29,7 @@ Route::get('/checkAuth-user', [\App\Http\Controllers\HomeController::class, 'che
 Route::get('/test-email', 'EmailController@index')->name('test-email');
 
 Route::any('/dashboard', 'HomeController@dashboard')->name('dashboard')->middleware(['auth', 'verified']);
+Route::any('/dashboard-success', 'HomeController@dashboard')->name('dashboard-success')->middleware(['auth', 'verified']);
 
 Route::get('/shipping-calculator', 'HomeController@pricing')->name('shipping-calculator');
 Route::get('/getServicesList', 'HomeController@getServicesList')->name('getServicesList');
