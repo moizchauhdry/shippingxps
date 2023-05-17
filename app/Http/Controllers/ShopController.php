@@ -587,14 +587,14 @@ class ShopController extends Controller
             'message' => 'required',
         ]);
 
-        OrderComment::create([
+        $order_comment = OrderComment::create([
             'order_id' => $id,
             'user_id' => $user->id,
             'message' => $validatedData['message'],
         ]);
 
         $url = URL::route('shop-for-me.edit', $shopForMe->id);
-        $auser = $user->type == 'admin' ? 'Admin' : 'User';
+        $auser = $user->type == 'admin' ? 'Admin' : $order_comment->user->name;
         $data = [
             'url' => URL::route('additional-request.edit', $shopForMe->id),
             'message' => $auser . ' has commented on an shopping list. <a style="font-weight:600" href="' . $url . '">Click Here</a>',
