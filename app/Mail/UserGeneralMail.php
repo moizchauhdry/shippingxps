@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class   UserGeneralMail extends Mailable
+class UserGeneralMail extends Mailable
 {
     use Queueable, SerializesModels;
     public $data;
@@ -29,14 +29,14 @@ class   UserGeneralMail extends Mailable
      */
     public function build()
     {
-        if(isset($this->data['attachment'])){
-            \Log::info('in-here');
-            return $this->subject($this->data['subject'])->view('mail.general-mail')->attach('public/'.$this->data['attachment'], [
-                'as' => 'orderPayment.pdf',
-                'mime' => 'application/pdf',
-            ]);
-        }else{
-            return $this->subject($this->data['subject'])->view('mail.general-mail');
-        }
+        // if (isset($this->data['attachment'])) {
+        //     return $this->subject($this->data['subject'])->view('mail.general-mail')
+        //         ->attach('public/' . $this->data['attachment'], [
+        //             'as' => 'orderPayment.pdf',
+        //             'mime' => 'application/pdf',
+        //         ]);
+        // } else {
+        return $this->subject($this->data['subject'])->view('mail.general-mail');
+        // }
     }
 }

@@ -26,7 +26,6 @@ class PaymentController extends Controller
 {
     public function index(Request $request)
     {
-        // dd($request->all());
         $payment_module = $request->payment_module;
 
         if (!in_array($payment_module, ['package', 'gift_card', 'order'])) {
@@ -622,7 +621,11 @@ class PaymentController extends Controller
         $payment = Payment::find($id);
 
         if ($payment != null) {
-            event(new PaymentEventHandler($payment));
+            try {
+                event(new PaymentEventHandler($payment));
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
 
             return Inertia::render('Payment/PaymentSuccess', [
                 'payment' => $payment,

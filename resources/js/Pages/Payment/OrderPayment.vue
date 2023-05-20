@@ -32,7 +32,7 @@
 										<select
 											v-on:change="selectAddress($event)"
 											name="shipping_address_id"
-											class="form-select"
+											class="form-control custom-select"
 											v-model="shipping_address_id"
 											required
 										>

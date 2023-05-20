@@ -17,6 +17,7 @@ use App\Models\Store;
 use App\Models\User;
 use App\Models\Warehouse;
 use App\Models\Package;
+use App\Notifications\OrderInvoiceNotification;
 use App\Notifications\ShopForMeNotification;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -25,6 +26,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\URL;
 
 class ShopController extends Controller
@@ -635,8 +637,6 @@ class ShopController extends Controller
 
     public function updateInvoice(Request $request)
     {
-        // dd($request->all());
-
         $order = Order::find($request->order_id);
 
         $files = $request->file();
@@ -657,6 +657,8 @@ class ShopController extends Controller
         $order->update([
             'tracking_number_in' => $request->tracking_number_in,
         ]);
+
+        Notification::send($order->customer, new OrderInvoiceNotification($order));
 
         return redirect()->back()->with('success', 'Invoice and Tracking Number have been update successfully!');
     }
