@@ -637,6 +637,8 @@ class ShopController extends Controller
 
     public function updateInvoice(Request $request)
     {
+        dd($request->all());
+
         $order = Order::find($request->order_id);
 
         $files = $request->file();
