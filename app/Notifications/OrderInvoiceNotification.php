@@ -62,7 +62,7 @@ class OrderInvoiceNotification extends Notification
      */
     public function toArray($notifiable)
     {
-        $url = '<a href="' . route('shop-for-me.show', $this->order->id) . '">Order Detail #' . $this->order->id . '</a>';
+        $url = '<a href="' . route('shop-for-me.show', $this->order->id) . '"> Order Detail #' . $this->order->id . '</a>';
 
         return [
             'order_id' => $this->order->id,
