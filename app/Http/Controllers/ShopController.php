@@ -661,7 +661,6 @@ class ShopController extends Controller
         try {
             Notification::send($order->customer, new OrderInvoiceNotification($order));
         } catch (\Throwable $th) {
-            dd($th);
             //throw $th;
         }
 
