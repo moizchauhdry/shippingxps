@@ -80,7 +80,7 @@
 								</tr>
 								<tr>
 									<th>Name</th>
-									<th>Description</th>
+									<th>Desc</th>
 									<th>URL</th>
 									<th>Price</th>
 									<th>Price - Tax</th>
@@ -92,27 +92,27 @@
 							<tbody>
 								<template v-for="(item, index) in form.items">
 									<tr>
-										<td style="width: 15%">
+										<td>
 											<input
 												v-model="item.name"
 												type="text"
-												class="form-control"
+												class="form-control item-name"
 												placeholder="Name"
 											/>
 										</td>
-										<td style="width: 30%">
+										<td>
 											<input
 												v-model="item.option"
 												type="text"
-												class="form-control"
+												class="form-control item-desc"
 												placeholder="Description"
 											/>
 										</td>
-										<td style="width: 20%">
+										<td class="item_url">
 											<input
 												v-model="item.url"
 												type="url"
-												class="form-control"
+												class="form-control item-url"
 												placeholder="URL"
 											/>
 										</td>
@@ -125,7 +125,7 @@
 												type="number"
 												min="0"
 												step="0.01"
-												class="form-control"
+												class="form-control item-price"
 											/>
 										</td>
 										<td>
@@ -133,16 +133,16 @@
 												v-model="item.price_with_tax"
 												type="number"
 												readonly
-												class="form-control"
+												class="form-control item-tax"
 											/>
 										</td>
-										<td style="width: 2%">
+										<td class="item_qty">
 											<input
 												v-model="item.qty"
 												@keyup="getLineTotal(index)"
 												type="number"
 												min="1"
-												class="form-control"
+												class="form-control item-qty"
 											/>
 										</td>
 										<td>
@@ -150,7 +150,7 @@
 												v-model="item.sub_total"
 												type="number"
 												readonly
-												class="form-control"
+												class="form-control item-subtotal"
 											/>
 										</td>
 										<td>
@@ -184,6 +184,7 @@
 										<input
 											v-model="form.shipping_from_shop"
 											type="number"
+											step="0.01"
 											class="form-control"
 											@keyup="getGrandTotal()"
 										/>
@@ -364,5 +365,33 @@
 	.table td,
 	.table th {
 		padding: 5px;
+	}
+
+	.item-name {
+		min-width: 15em;
+	}
+
+	.item-desc {
+		min-width: 25em;
+	}
+
+	.item-url {
+		min-width: 15em;
+	}
+
+	.item-price {
+		min-width: 6em;
+	}
+
+	.item-tax {
+		min-width: 6em;
+	}
+
+	.item-qty {
+		min-width: 5em;
+	}
+
+	.item-subtotal {
+		min-width: 6em;
 	}
 </style>
