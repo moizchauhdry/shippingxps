@@ -661,7 +661,7 @@ class ShopController extends Controller
         try {
             Notification::send($order->customer, new OrderInvoiceNotification($order));
         } catch (\Throwable $th) {
-            //throw $th;
+            throw $th;
         }
 
         return redirect()->back()->with('success', 'Invoice and Tracking Number have been update successfully!');
