@@ -44,6 +44,7 @@ class OrderInvoiceNotification extends Notification
      */
     public function toMail($notifiable)
     {
+        dd('s');
         $url = 'https://app.shippingxps.com/public/uploads/' . $this->order->receipt_url;
         $name = 'Dear ' . $this->order->user->name . ',';
 
