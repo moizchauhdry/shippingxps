@@ -658,7 +658,11 @@ class ShopController extends Controller
             'tracking_number_in' => $request->tracking_number_in,
         ]);
 
-        Notification::send($order->customer, new OrderInvoiceNotification($order));
+        try {
+            Notification::send($order->customer, new OrderInvoiceNotification($order));
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
 
         return redirect()->back()->with('success', 'Invoice and Tracking Number have been update successfully!');
     }
