@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\GiftCard;
 use App\Models\GiftCardComment;
 use App\Models\GiftCardFile;
+use App\Notifications\GiftCardApprovalNotification;
 use App\Notifications\GiftCardNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
@@ -157,6 +158,11 @@ class GiftCardController extends Controller
                     $gift_card->update(['admin_updated_at' => Carbon::now()]);
                     $gift_card->status == 'Accepted' ? $gift_card->update(['admin_approved_at' => Carbon::now()]) : $gift_card->update(['admin_approved_at' => NULL]);
                 }
+            }
+
+            if (isset($gift_card->getChanges()['status'])) {
+                $customer = User::find($gift_card->user_id);
+                $customer->notify(new GiftCardApprovalNotification($gift_card));
             }
 
             return redirect()->route('gift-card.index')->with('success', 'Successfully Modified');
