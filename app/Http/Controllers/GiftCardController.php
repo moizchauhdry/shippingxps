@@ -65,17 +65,10 @@ class GiftCardController extends Controller
             $customer = $gift_card->user;
             $customerDetailURL = '<a href="' . route('detail-customer', $customer->id) . '">' . $customer->name_with_suite_no . '</a>';
 
-            // $data = [
-            //     'url' => URL::route('gift-card.edit', $gift_card->id),
-            //     'message' => 'Customer <strong>' . $customerDetailURL . '</strong> has created an gift card request. <a href="' . $url . '">Click Here</a>',
-            // ];
-
-
             $data = [
                 'url' => URL::route('gift-card.edit', $gift_card->id),
                 'message' => $customerDetailURL . ' has created an gift card request. <a href="' . $url . '">Click Here</a>',
             ];
-
 
             $admins = User::where('type', 'admin')->get();
             foreach ($admins as $admin) {
@@ -94,7 +87,7 @@ class GiftCardController extends Controller
         $gift_card = GiftCard::with('files', 'user')->findOrFail($id);
 
         if ($request->isMethod('POST')) {
-            $validated_data = $request->validate([
+            $request->validate([
                 'title' => 'required|string|max:150',
                 'type' => 'required|string|in:PHYSICAL,ELECTRONIC',
                 'amount' => 'required|numeric',
@@ -150,7 +143,7 @@ class GiftCardController extends Controller
                 'message' => $auser . ' has modified an gift card request. <a href="' . $url . '">Click Here</a>',
             ];
 
-            if ($user->type == 'customer') {
+            if ($user->type == 'admin') {
                 $customer = User::find($gift_card->user_id);
                 $customer->notify(new GiftCardNotification($data));
             } else {
@@ -158,34 +151,12 @@ class GiftCardController extends Controller
                 foreach ($admins as $admin) {
                     $admin->notify(new GiftCardNotification($data));
                 }
+
                 $changes = $gift_card->getChanges();
                 if (isset($changes) && $changes != NULL) {
                     $gift_card->update(['admin_updated_at' => Carbon::now()]);
                     $gift_card->status == 'Accepted' ? $gift_card->update(['admin_approved_at' => Carbon::now()]) : $gift_card->update(['admin_approved_at' => NULL]);
                 }
-            }
-
-            if ($request->has('approve') && $request->approve == 1) {
-                $amount = $gift_card->amount * $gift_card->qty;
-                if ($amount <= 0) {
-                    return redirect()->back()->with('error', 'OPERRATION FAILED TO PERFORM, AMOUNT MUST BE GREATER THAN 0');
-                }
-
-                if ($amount > 5) {
-                    $percentage_amount =  $amount * 5 / 100;
-                    $final_amount = $amount + $percentage_amount;
-                } else {
-                    $final_amount =  $amount + 5;
-                }
-
-                if ($gift_card->type == 'PHYSICAL') {
-                    $final_amount = $final_amount + 25;
-                }
-
-                return redirect()->route('payment.index', [
-                    'payment_module' => 'gift_card',
-                    'payment_module_id' => $gift_card->id,
-                ]);
             }
 
             return redirect()->route('gift-card.index')->with('success', 'Successfully Modified');
