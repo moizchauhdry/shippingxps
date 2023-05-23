@@ -147,12 +147,6 @@ class GiftCardController extends Controller
             if ($user->type == 'admin') {
                 $customer = User::find($gift_card->user_id);
                 $customer->notify(new GiftCardNotification($data));
-
-                $changes = $gift_card->getChanges();
-                if (isset($changes) && $changes != NULL) {
-                    $gift_card->update(['admin_updated_at' => Carbon::now()]);
-                    $gift_card->status == 'Accepted' ? $gift_card->update(['admin_approved_at' => Carbon::now()]) : $gift_card->update(['admin_approved_at' => NULL]);
-                }
             } else {
                 $admins = User::where('type', 'admin')->get();
                 foreach ($admins as $admin) {
@@ -162,6 +156,9 @@ class GiftCardController extends Controller
 
 
             if (isset($gift_card->getChanges()['status'])) {
+                $gift_card->update(['admin_updated_at' => Carbon::now()]);
+                $gift_card->status == 'Accepted' ? $gift_card->update(['admin_approved_at' => Carbon::now()]) : $gift_card->update(['admin_approved_at' => NULL]);
+
                 $customer = User::find($gift_card->user_id);
                 $customer->notify(new GiftCardApprovalNotification($gift_card));
             }

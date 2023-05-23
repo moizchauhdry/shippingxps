@@ -51,7 +51,7 @@ class GiftCardApprovalNotification extends Notification
 
         return (new MailMessage)
             ->greeting($name)
-            ->subject('Gift Card Notification')
+            ->subject('Gift Card')
             ->line($msg)
             ->line('Gift Card: #' . $this->gift_card->id);
     }
