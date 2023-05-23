@@ -171,13 +171,13 @@
 
 							<section v-if="gift_card.payment_status == 'Paid'">
 								<div class="row">
-									<div class="col-md-6">
+									<div class="col-md-12">
 										<a
 											v-on:click="addImage"
 											class="btn btn-primary"
 											style="float: right"
 										>
-											<span>Add More Image </span>
+											<span>Add Image</span>
 										</a>
 									</div>
 								</div>
@@ -187,7 +187,7 @@
 									v-for="(image, index) in form.images"
 									:key="image.id"
 								>
-									<div class="col-md-2">
+									<div class="col-md-12">
 										<div class="form-group">
 											<input
 												type="file"
@@ -216,7 +216,10 @@
 							</section>
 						</section>
 
-						<div class="row" v-show="gift_card.payment_status == 'Paid'">
+						<div
+							class="row col-md-12"
+							v-show="gift_card.payment_status == 'Paid'"
+						>
 							<table class="table table-striped table-bordered table-sm mb-4">
 								<thead>
 									<tr class="bg-primary text-white">
@@ -283,7 +286,7 @@
 							<button
 								type="submit"
 								name="submit"
-								class="btn btn-primary"
+								class="btn btn-success"
 								v-if="
 									gift_card.admin_approved_at == null ||
 									$page.props.auth.user.type == 'admin'
