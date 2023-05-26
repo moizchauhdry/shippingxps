@@ -260,6 +260,7 @@
 												v-model="form.shipping_from_shop"
 												type="number"
 												class="form-control"
+												step="0.01"
 												@keyup="getGrandTotal()"
 											/>
 										</td>
