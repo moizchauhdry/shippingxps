@@ -116,7 +116,7 @@
 						>
 					</template>
 
-					<template v-if="!packag.service_code">
+					<template v-if="!packag.service_code && packag.status != 'open'">
 						<inertia-link
 							class="btn btn-primary btn-sm m-1"
 							:href="
@@ -126,7 +126,7 @@
 								})
 							"
 						>
-							<i class="fa fa-copy mr-1"></i>Customs Declaration Form - Edit
+							<i class="fa fa-edit mr-1"></i>Edit Customs Form
 						</inertia-link>
 					</template>
 				</div>
