@@ -115,6 +115,20 @@
 							<i class="fa fa-print mr-1"></i>Print Commercial Invoice</a
 						>
 					</template>
+
+					<template v-if="!packag.service_code">
+						<inertia-link
+							class="btn btn-primary btn-sm m-1"
+							:href="
+								route('packages.custom', {
+									package_id: packag.id,
+									mode: 'edit',
+								})
+							"
+						>
+							<i class="fa fa-copy mr-1"></i>Customs Declaration Form - Edit
+						</inertia-link>
+					</template>
 				</div>
 			</div>
 		</div>

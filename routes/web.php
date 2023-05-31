@@ -65,7 +65,7 @@ Route::post('/packages/service-handle', 'PackageController@serviceHandle')->name
 Route::post('/packages/ship-package', 'PackageController@shipPackage')->name('packages.ship-package')->middleware('auth');
 Route::post('/packages/consolidate-package', 'PackageController@consolidatePackage')->name('packages.consolidate')->middleware('auth');
 Route::post('/packages/set-shipping-service', 'PackageController@setShippingService')->name('packages.set-shipping-service')->middleware('auth');
-Route::get('/packages/custom/{package_id}', 'PackageController@custom')->name('packages.custom')->middleware('auth');
+Route::get('/packages/custom/{package_id}/{mode?}', 'PackageController@custom')->name('packages.custom')->middleware('auth');
 Route::get('/packages/commercial-invoice/{package_id}', 'PackageController@commercialInvoice')->name('packages.pdf')->middleware('auth');
 Route::post('/packages/destroy', 'PackageController@destroy')->name('packages.destroy')->middleware('auth');
 Route::any('/packages/consolidation', 'PackageController@consolidation')->name('packages.consolidation')->middleware('auth');

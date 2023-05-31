@@ -241,20 +241,28 @@ class PackageController extends Controller
         ]);
     }
 
-    public function custom($package_id)
+    public function custom($package_id, $mode = NULL)
     {
-        $user_id = Auth::user()->id;
         $packag = Package::with('orders', 'warehouse', 'customer', 'packageItems', 'address')->find($package_id);
+
+        if ($packag->service_code) {
+            abort(403);
+        }
+
+        $user_id = Auth::user()->id;
         $addresses = Address::where('user_id', $user_id)->get();
         $warehouse = $packag->warehouse;
+
+
 
         $package_items = [];
         foreach ($packag->packageItems as $pkg_item) {
             $package_items[] = [
                 'id' => $pkg_item->id,
+                'hs_code' => $pkg_item->hs_code,
                 'description' => $pkg_item->description,
                 'quantity' => $pkg_item->quantity,
-                'unit_price' => $pkg_item->unit_price,
+                'price' => $pkg_item->unit_price,
                 'origin_country' => $pkg_item->origin_country,
                 'batteries' => $pkg_item->batteries,
             ];
@@ -300,6 +308,7 @@ class PackageController extends Controller
             'warehouse' => $warehouse,
             'tracking_numbers' => $tracking_numbers,
             'package_date' => date('Y-m-d'),
+            'mode' => $mode,
         ]);
     }
 
@@ -332,6 +341,7 @@ class PackageController extends Controller
             'special_instructions' => $request->special_instructions,
         ]);
 
+        OrderItem::where('package_id', $package->id)->delete();
         foreach ($request->package_items as $key => $pkg_item) {
             $order_item = new OrderItem();
             $order_item->package_id = $package->id;

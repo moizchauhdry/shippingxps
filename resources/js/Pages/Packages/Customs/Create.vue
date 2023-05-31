@@ -7,16 +7,16 @@
 						<h2
 							class="font-bold text-xl text-gray-800 leading-tight form-title text-center mb-4"
 						>
-							Customs Declaration Form
+							Customs Declaration Form {{ mode == "edit" ? "- Edit" : "" }}
 						</h2>
 
-						<template v-if="printable.includes(packag.status)">
+						<!-- <template v-if="printable.includes(packag.status)">
 							<h4 class="text-center text-white bg-danger p-2 m-4">
 								<i class="fas fa-exclamation-circle mr-1"></i> Customs
 								declaration form already filled and package has been processed.
 								Changes will not be saved.
 							</h4>
-						</template>
+						</template> -->
 
 						<form @submit.prevent="submit" enctype="multipart/form-data">
 							<input type="hidden" name="packag_id" v-model="packag_id" />
@@ -294,16 +294,14 @@
 								</div>
 								<div class="row">
 									<div class="col-md-12 col-md form-group">
-										<template v-if="packag.status == 'open'">
-											<button type="submit" class="btn btn-success float-right">
-												Save & Submit
-											</button>
-											<inertia-link
-												:href="route('packages.show', packag.id)"
-												class="btn btn-danger"
-												>Cancel</inertia-link
-											>
-										</template>
+										<button type="submit" class="btn btn-success float-right">
+											Save & {{ mode == "edit" ? "Update" : "Submit" }}
+										</button>
+										<inertia-link
+											:href="route('packages.show', packag.id)"
+											class="btn btn-danger"
+											>Cancel</inertia-link
+										>
 									</div>
 								</div>
 							</div>
@@ -339,6 +337,7 @@
 			warehouse: Object,
 			tracking_numbers: Object,
 			package_date: String,
+			mode: String,
 		},
 		data() {
 			return {
@@ -356,12 +355,6 @@
 		},
 		methods: {
 			submit() {
-				if (this.printable.includes(this.packag.status)) {
-					alert(
-						"Customs declaration form already filled and package has been processed. Changes will not be saved."
-					);
-					return false;
-				}
 				this.form.post(this.route("package.store"));
 			},
 			addItem() {
@@ -393,10 +386,7 @@
 			selectAddress(event) {
 				var address = this.address_book[event.target.value];
 				this.current_address = address.full_address;
-				console.log("target value " + event.target.value);
-				console.log("old value " + this.form.address_book_id);
 				this.form.address_book_id = event.target.value;
-				console.log("new value " + this.form.address_book_id);
 			},
 			calculateShippingTotal() {
 				let final_amount = 0;
@@ -414,7 +404,9 @@
 			},
 		},
 		mounted() {
-			this.addItem();
+			if (this.mode != "edit") {
+				this.addItem();
+			}
 		},
 	};
 </script>
