@@ -171,6 +171,12 @@
 										<td>${{ mailout_fee }}</td>
 										<td></td>
 									</tr>
+									<tr v-if="eei_charges > 0">
+										<td>EEI Charges</td>
+										<td></td>
+										<td>${{ eei_charges }}</td>
+										<td></td>
+									</tr>
 									<tr v-if="storage_fee > 0">
 										<td>Storage Fee</td>
 										<td></td>
@@ -311,6 +317,7 @@
 			package_service_requests: Object,
 			total: Object,
 			mailout_fee: Number,
+			eei_charges: Number,
 		},
 		data() {
 			return {

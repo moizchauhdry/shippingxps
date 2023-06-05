@@ -95,6 +95,7 @@
 			images: Object,
 			order_charges: Object,
 			mailout_fee: Number,
+			eei_charges: Number,
 			shipping_services: Object,
 			package_service_requests: Object,
 			shipping_address: Object,

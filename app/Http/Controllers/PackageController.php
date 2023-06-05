@@ -196,6 +196,12 @@ class PackageController extends Controller
         $total = $subtotal + $packag->shipping_charges + (float) SiteSetting::getByName('mailout_fee') +
             $this->calculate_storage_fee($packag->id) + $packag->consolidation_fee;
 
+        $eei_charges = 0;
+        if ($total >= 2500 || (isset($packag->address->country) && in_array($packag->address->country->iso, ['CN', 'HK', 'RU', 'VE']))) {
+            $eei_charges = (float) SiteSetting::getByName('eei_charges');
+            $total = $total + $eei_charges;
+        }
+
         $shipping_address = Address::where('user_id', Auth::user()->id)->get();
 
         $packag->update(['grand_total' => $total]);
@@ -229,6 +235,7 @@ class PackageController extends Controller
             'images' => $images,
             'order_charges' => $order_charges,
             'mailout_fee' => (float) SiteSetting::getByName('mailout_fee'),
+            'eei_charges' => $eei_charges,
             'shipping_services' => Shipping::getShippingServices(),
             'package_service_requests' => $package_service_requests,
             'shipping_address' => $shipping_address,
