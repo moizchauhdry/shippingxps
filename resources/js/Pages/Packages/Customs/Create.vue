@@ -369,6 +369,7 @@
 			},
 			removeItem(index) {
 				this.form.package_items.splice(index, 1);
+				this.calculateShippingTotal();
 			},
 			storePhoto() {
 				if (this.$refs.photo) {

@@ -197,7 +197,7 @@ class PackageController extends Controller
             $this->calculate_storage_fee($packag->id) + $packag->consolidation_fee;
 
         $eei_charges = 0;
-        if ($total >= 2500 || (isset($packag->address->country) && in_array($packag->address->country->iso, ['CN', 'HK', 'RU', 'VE']))) {
+        if ($packag->shipping_total >= 2500 || (isset($packag->address->country) && in_array($packag->address->country->iso, ['CN', 'HK', 'RU', 'VE']))) {
             $eei_charges = (float) SiteSetting::getByName('eei_charges');
             $total = $total + $eei_charges;
         }
