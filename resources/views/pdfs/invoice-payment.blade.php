@@ -80,7 +80,7 @@
 
     @isset($package)
     <table class="border" style="width: 100%">
-        @foreach($package->serviceRequests as $item)
+        @foreach($service_requests as $item)
         <tr>
             <td style="width:85%">{{ $item->service->title }}</td>
             <td style="width:15%">

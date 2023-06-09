@@ -787,6 +787,7 @@ class PaymentController extends Controller
         $additionalRequest = null;
         $insurance = null;
         $giftCard = null;
+        $service_requests = [];
 
         $payment = Payment::findOrFail($id);
         $customer = $payment->customer;
@@ -796,6 +797,7 @@ class PaymentController extends Controller
 
         if (isset($payment->package_id)) {
             $package = $payment->package;
+            $service_requests = $package->serviceRequests->where('status', 'served');
         }
 
         if (isset($payment->order_id)) {
@@ -826,6 +828,7 @@ class PaymentController extends Controller
             'additionalRequest' => $additionalRequest,
             'insuranceRequest' => $insurance,
             'giftCard' => $giftCard,
+            'service_requests' => $service_requests,
         ]);
 
         $pdf = PDF::loadView('pdfs.invoice-payment');

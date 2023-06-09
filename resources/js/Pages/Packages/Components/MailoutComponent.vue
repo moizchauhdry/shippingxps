@@ -44,17 +44,15 @@
 											<td colspan="2">
 												{{ packag?.address?.city }},
 												{{ packag?.address?.state }},
-												{{ packag?.address?.zip_code }}
-											</td>
-										</tr>
-										<tr>
-											<td colspan="2">
+												{{ packag?.address?.zip_code }},
 												{{ packag?.address?.country_name }}
 											</td>
 										</tr>
 										<tr>
 											<td colspan="2">
-												Contact : {{ packag?.address?.phone }}
+												Contact : {{ packag?.address?.phone }} <br />
+												Email : {{ packag?.address?.email }} <br />
+												VAT ID : {{ packag?.address?.tax_no }} <br />
 											</td>
 										</tr>
 									</tbody>
