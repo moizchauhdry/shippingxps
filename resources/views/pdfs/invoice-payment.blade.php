@@ -94,7 +94,7 @@
         @endforeach
         <tr>
             <td style="width:85%">Mail Fee</td>
-            <td style="width:15%">$5</td>
+            <td style="width:15%">${{$mailout_fee}}</td>
         </tr>
         <tr>
             <td style="width:85%">Storage Fee</td>
