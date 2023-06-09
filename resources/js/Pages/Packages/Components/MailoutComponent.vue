@@ -276,14 +276,13 @@
 						</button>
 					</div>
 					<div class="modal-body">
-						<div class="row">
+						<div class="row col-md-12">
 							<breeze-validation-errors class="mb-4" />
 							<div class="form-group">
 								<input
 									type="text"
 									class="form-control"
 									v-model="charges_form.amount"
-									placeholder="Transaction ID"
 								/>
 							</div>
 						</div>

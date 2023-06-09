@@ -794,6 +794,7 @@ class PaymentController extends Controller
         $billing = json_decode($payment->billing_address) ?? [];
         $warehouse = Warehouse::first();
         $address = json_decode($payment->shipping_address) ?? Address::where('user_id', $customer->id)->first();
+        $mailout_fee = SiteSetting::where('id', 2)->first()->value;
 
         if (isset($payment->package_id)) {
             $package = $payment->package;
@@ -829,6 +830,7 @@ class PaymentController extends Controller
             'insuranceRequest' => $insurance,
             'giftCard' => $giftCard,
             'service_requests' => $service_requests,
+            'mailout_fee' => $mailout_fee,
         ]);
 
         $pdf = PDF::loadView('pdfs.invoice-payment');
