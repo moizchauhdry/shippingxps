@@ -153,7 +153,7 @@
 												<button
 													v-if="
 														$page.props.auth.user.type == 'admin' &&
-														packag.payment_status != 'paid'
+														packag.payment_status != 'Paid'
 													"
 													class="btn btn-link"
 													@click="editServiceCharges(package_service_request)"
@@ -189,7 +189,7 @@
 											<button
 												v-if="
 													$page.props.auth.user.type == 'admin' &&
-													packag.payment_status != 'paid'
+													packag.payment_status != 'Paid'
 												"
 												class="btn btn-link"
 												@click="
@@ -250,7 +250,7 @@
 
 	<div
 		v-if="
-			$page.props.auth.user.type == 'admin' && packag.payment_status != 'paid'
+			$page.props.auth.user.type == 'admin' && packag.payment_status != 'Paid'
 		"
 		class="modal fade"
 		id="charges_update_modal"
