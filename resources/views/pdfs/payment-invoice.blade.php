@@ -207,16 +207,13 @@
     <table style="width: 100%">
         <tr>
             <th colspan="2" style="text-align: right">
-                Subtotal :
-                ${{ format_number($payment->charged_amount + $payment->discount - $payment->paypal_fee)}}
-                <br>
                 @if ($payment->discount > 0)
                 Discount : ${{ format_number($payment->discount) }} <br>
                 @endif
                 @if ($payment->paypal_fee > 0)
                 Paypal Fee : ${{ format_number($payment->paypal_fee) }} <br>
                 @endif
-                Grand Total : ${{format_number($payment->charged_amount) }}
+                Total Amount: ${{format_number($payment->charged_amount) }}
             </th>
         </tr>
     </table>
