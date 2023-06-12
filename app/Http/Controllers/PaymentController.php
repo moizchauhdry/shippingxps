@@ -833,9 +833,9 @@ class PaymentController extends Controller
             'mailout_fee' => $mailout_fee,
         ]);
 
-        $pdf = PDF::loadView('pdfs.invoice-payment');
+        $pdf = PDF::loadView('pdfs.payment-invoice');
         $pdf->setPaper('A4', 'portrait');
-        return $pdf->stream('SHIPPING-XPS-INVOICE.pdf', array("Attachment" => false));
+        return $pdf->stream('payment-invoice.pdf', array("Attachment" => false));
     }
 
     public function add_payment(Request $request)
