@@ -102,7 +102,7 @@
                 @if($item->service->id == 1)
                 ${{ $item->service->price + $package->orders->count() * 1.5 }}
                 @else
-                ${{ $item->service->price }}
+                ${{ format_number($item->service->price) }}
                 @endif
             </td>
         </tr>
@@ -111,26 +111,26 @@
         @if ($package->consolidation_fee > 0)
         <tr>
             <td>Consolidation</td>
-            <td>${{ $package->consolidation_fee }}</td>
+            <td>${{ format_number($package->consolidation_fee) }}</td>
         </tr>
         @endif
 
         <tr>
             <td style="width:85%">Mail Fee</td>
-            <td style="width:15%">${{$mailout_fee}}</td>
+            <td style="width:15%">${{format_number($mailout_fee)}}</td>
         </tr>
 
         @if ($package->storage_fee > 0)
         <tr>
             <td style="width:85%">Storage Fee</td>
-            <td style="width:15%">${{ $package->storage_fee }}</td>
+            <td style="width:15%">${{ format_number($package->storage_fee) }}</td>
         </tr>
         @endif
 
         @if ($package->shipping_charges > 0)
         <tr>
             <td style="width:85%">Shipping Service - {{ $package->service_label }}</td>
-            <td style="width:15%">${{ $package->shipping_charges }}</td>
+            <td style="width:15%">${{ format_number($package->shipping_charges) }}</td>
         </tr>
         @endif
     </table>
@@ -142,26 +142,26 @@
             <td>
                 Order Items Total
             </td>
-            <td style="width: 100px">${{ $order->sub_total }}</td>
+            <td style="width: 100px">${{ format_number($order->sub_total) }}</td>
         </tr>
         <tr>
             <td>
                 Service Charges
             </td>
-            <td style="width: 100px">${{ $order->service_charges }}</td>
+            <td style="width: 100px">${{ format_number($order->service_charges) }}</td>
         </tr>
         <tr>
             <td>
                 Shipping From Shop
             </td>
-            <td style="width: 100px">${{ $order->shipping_from_shop }}</td>
+            <td style="width: 100px">${{ format_number($order->shipping_from_shop) }}</td>
         </tr>
         <tr>
             <td>
                 Pickup Charges
             </td>
 
-            <td style="width: 100px">${{ $order->pickup_charges ?? 0.00 }}</td>
+            <td style="width: 100px">${{ format_number($order->pickup_charges) ?? 0.00 }}</td>
         </tr>
     </table>
     @endisset
@@ -174,7 +174,7 @@
                 Additional Charges For Request - {{ $additionalRequest->message ?? '- -' }}
             </td>
 
-            <td style="width: 100px">${{ $additionalRequest->price }}</td>
+            <td style="width: 100px">${{ format_number($additionalRequest->price) }}</td>
         </tr>
     </table>
     @endisset
@@ -187,7 +187,7 @@
                 Charges For Insurance Request with Shipping
             </td>
 
-            <td style="width: 100px">${{ $insuranceRequest->amount }}</td>
+            <td style="width: 100px">${{ format_number($insuranceRequest->amount) }}</td>
         </tr>
     </table>
     @endisset
@@ -198,7 +198,7 @@
             <td>
                 <span style="text-transform:uppercase">{{$giftCard->type}} Gift Card</span> x {{$giftCard->qty}}
             </td>
-            <td style="width: 100px; padding:10px;">${{ $giftCard->amount }}</td>
+            <td style="width: 100px; padding:10px;">${{ format_number($giftCard->amount) }}</td>
         </tr>
     </table>
     @endisset
@@ -207,14 +207,16 @@
     <table style="width: 100%">
         <tr>
             <th colspan="2" style="text-align: right">
-                Subtotal : ${{ $payment->charged_amount + $payment->discount - $payment->paypal_fee}} <br>
+                Subtotal :
+                ${{ format_number($payment->charged_amount + $payment->discount - $payment->paypal_fee)}}
+                <br>
                 @if ($payment->discount > 0)
-                Discount : ${{ $payment->discount }} <br>
+                Discount : ${{ format_number($payment->discount) }} <br>
                 @endif
                 @if ($payment->paypal_fee > 0)
-                Paypal Fee : ${{ $payment->paypal_fee }} <br>
+                Paypal Fee : ${{ format_number($payment->paypal_fee) }} <br>
                 @endif
-                Grand Total : ${{ $payment->charged_amount }}
+                Grand Total : ${{format_number($payment->charged_amount) }}
             </th>
         </tr>
     </table>
@@ -235,7 +237,7 @@
             </td>
             <td>{{ date('d-m-Y',strtotime($payment->charged_at)) }}</td>
             <td>Paid</td>
-            <td>${{ $payment->charged_amount }}</td>
+            <td>${{ format_number($payment->charged_amount) }}</td>
         </tr>
     </table>
 </body>
