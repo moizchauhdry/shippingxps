@@ -25,7 +25,7 @@
             /* border-collapse: collapse; */
             padding: 0.3em;
             caption-side: bottom;
-            font-size: 9px;
+            font-size: 10px;
             text-wrap: inherit;
         }
 
@@ -114,7 +114,7 @@
             <td style="width:85%">Storage Fee</td>
             <td style="width:15%">${{ $package->storage_fee }}</td>
         </tr>
-        @if ($package->shipping_charges > 0)
+        @if ($package->service_label)
         <tr>
             <td style="width:85%">Shipping Service - {{ $package->service_label }}</td>
             <td style="width:15%">${{ $package->shipping_charges }}</td>
@@ -194,9 +194,9 @@
     <table style="width: 100%">
         <tr>
             <th colspan="2" style="text-align: right">
-                Sub Total : ${{ $payment->charged_amount + $payment->discount }} <br>
+                Subtotal : ${{ $payment->charged_amount + $payment->discount }} <br>
                 Discount : ${{ $payment->discount }} <br>
-                Grand Total : ${{ $payment->charged_amount }}
+                Total : ${{ $payment->charged_amount }}
             </th>
         </tr>
     </table>
