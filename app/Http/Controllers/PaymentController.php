@@ -383,6 +383,9 @@ class PaymentController extends Controller
 
         $payment->transaction_id = $request->transaction_id ?? $invoiceID;
         $payment->payment_type = 'PayPal';
+        $paypal_pecentage = SiteSetting::where('name', 'paypal_processing_percentage')->first()->value ?? 0;
+        $paypal_fee = ($amount * $paypal_pecentage / 100);
+        $payment->paypal_fee = $paypal_fee;
         $payment->charged_amount = $amount;
         $payment->discount = $discount;
         $payment->charged_at = Carbon::now()->format('Y-m-d H:i:s');

@@ -91,6 +91,7 @@
     </table>
 
     <br>
+    <span style="font-size:10px"><b>CHARGES:</b></span>
 
     @isset($package)
     <table class="border" style="width: 100%">
@@ -106,15 +107,27 @@
             </td>
         </tr>
         @endforeach
+
+        @if ($package->consolidation_fee > 0)
+        <tr>
+            <td>Consolidation</td>
+            <td>${{ $package->consolidation_fee }}</td>
+        </tr>
+        @endif
+
         <tr>
             <td style="width:85%">Mail Fee</td>
             <td style="width:15%">${{$mailout_fee}}</td>
         </tr>
+
+        @if ($package->storage_fee > 0)
         <tr>
             <td style="width:85%">Storage Fee</td>
             <td style="width:15%">${{ $package->storage_fee }}</td>
         </tr>
-        @if ($package->service_label)
+        @endif
+
+        @if ($package->shipping_charges > 0)
         <tr>
             <td style="width:85%">Shipping Service - {{ $package->service_label }}</td>
             <td style="width:15%">${{ $package->shipping_charges }}</td>
@@ -194,15 +207,20 @@
     <table style="width: 100%">
         <tr>
             <th colspan="2" style="text-align: right">
-                Subtotal : ${{ $payment->charged_amount + $payment->discount }} <br>
+                Subtotal : ${{ $payment->charged_amount + $payment->discount - $payment->paypal_fee}} <br>
+                @if ($payment->discount > 0)
                 Discount : ${{ $payment->discount }} <br>
-                Total : ${{ $payment->charged_amount }}
+                @endif
+                @if ($payment->paypal_fee > 0)
+                Paypal Fee : ${{ $payment->paypal_fee }} <br>
+                @endif
+                Grand Total : ${{ $payment->charged_amount }}
             </th>
         </tr>
     </table>
 
     <br>
-    <table class="border" style="width:100%; text-align:center">
+    <table class="border" style="width:100%;">
         <tr>
             <th>Payment</th>
             <th>Date</th>
