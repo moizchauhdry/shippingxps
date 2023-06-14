@@ -185,7 +185,7 @@
 										<td>Shipping Charges</td>
 										<td></td>
 										<td>
-											${{ formatNumber(shipping_charges) ?? 0 }}
+											${{ shipping_charges ?? 0 }}
 											<button
 												v-if="
 													$page.props.auth.user.type == 'admin' &&
