@@ -284,6 +284,13 @@ class PaymentController extends Controller
                     }
                 }
 
+
+                try {
+                    event(new PaymentEventHandler($payment));
+                } catch (\Throwable $th) {
+                    //throw $th;
+                }
+
                 return response()->json([
                     'status' => 1,
                     'message' => 'PAYMENT_SUCCESS',
@@ -449,9 +456,16 @@ class PaymentController extends Controller
             }
         }
 
+
+        try {
+            event(new PaymentEventHandler($payment));
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+
         return response()->json([
             'status' => 1,
-            'message' => 'Please Check card Expiry',
+            'message' => 'Paypal',
             'payment_id' => $payment->id,
         ]);
     }
@@ -496,13 +510,11 @@ class PaymentController extends Controller
     {
         try {
             $payment = Payment::find($id);
-            event(new PaymentEventHandler($payment));
 
             return Inertia::render('Payment/PaymentSuccess', [
                 'payment' => $payment,
             ]);
         } catch (\Throwable $th) {
-            dd($th);
             return redirect()->route('dashboard')->with('something went wrong');
         }
     }
