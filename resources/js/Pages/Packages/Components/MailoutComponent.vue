@@ -118,7 +118,7 @@
 													"$1.5 x " + packag.child_packages.length + " + $" + 5
 												}}
 											</td>
-											<td>${{ packag.consolidation_fee }}</td>
+											<td>${{ formatNumber(packag.consolidation_fee) }}</td>
 										</tr>
 									</template>
 									<template
@@ -149,7 +149,7 @@
 												</span>
 											</td>
 											<td>
-												${{ package_service_request.amount }}
+												${{ formatNumber(package_service_request.amount) }}
 												<button
 													v-if="
 														$page.props.auth.user.type == 'admin' &&
@@ -166,26 +166,26 @@
 									<tr>
 										<td>Mail Out Fee</td>
 										<td></td>
-										<td>${{ mailout_fee }}</td>
+										<td>${{ formatNumber(mailout_fee) }}</td>
 										<td></td>
 									</tr>
 									<tr v-if="eei_charges > 0">
 										<td>EEI Charges</td>
 										<td></td>
-										<td>${{ eei_charges }}</td>
+										<td>${{ formatNumber(eei_charges) }}</td>
 										<td></td>
 									</tr>
 									<tr v-if="packag.storage_fee > 0">
 										<td>Storage Fee</td>
 										<td></td>
-										<td>${{ packag.storage_fee }}</td>
+										<td>${{ formatNumber(packag.storage_fee) }}</td>
 										<td></td>
 									</tr>
 									<tr>
 										<td>Shipping Charges</td>
 										<td></td>
 										<td>
-											${{ packag.shipping_charges ?? 0 }}
+											${{ formatNumber(shipping_charges) ?? 0 }}
 											<button
 												v-if="
 													$page.props.auth.user.type == 'admin' &&
@@ -208,7 +208,9 @@
 										<td colspan="2" style="text-align: center">
 											<strong>Total</strong>
 										</td>
-										<td class="bg-dark text-white">${{ this.total }}</td>
+										<td class="bg-dark text-white">
+											${{ formatNumber(this.total) }}
+										</td>
 										<td></td>
 									</tr>
 									<tr>
@@ -333,6 +335,13 @@
 			};
 		},
 		methods: {
+			formatNumber(num) {
+				if (num > 0) {
+					return parseFloat(num).toFixed(2);
+				} else {
+					return 0;
+				}
+			},
 			checkout() {
 				this.$inertia.post(route("payment.index", this.form_checkout));
 			},
