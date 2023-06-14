@@ -42,25 +42,22 @@ class PackageController extends Controller
     private function calculate_storage_fee($id)
     {
         $package = Package::find($id);
-        $orders = $package->orders;
+        $boxes_weight = $package->boxes->sum('weight');
+        $fee = (float) SiteSetting::where('name', 'storage_fee')->first()->value;
 
-        $fee = SiteSetting::where('name', 'storage_fee')->first()->value;
+        $createdAt = Carbon::parse($package->created_at);
+        $now = Carbon::now();
+        $days_exceeded = $now->diffInDays($createdAt) - 75;
 
-        $storageFee = 0;
-        foreach ($orders as $item) {
-            if ($item->arrived_at != null) {
-                $lastDate = Carbon::make($item->arrived_at)->addDays(75);
-                $currentDate = Carbon::now();
-                if (strtotime($currentDate) > strtotime($lastDate)) {
-                    $daysDifference = $currentDate->diffInDays($lastDate);
-                    $storageFee += $daysDifference * $fee;
-                }
-            }
+        if ($days_exceeded > 0) {
+            $storage_fee = $fee * $boxes_weight * $days_exceeded;
+        } else {
+            $storage_fee = 0;
         }
 
-        $package->storage_fee = $storageFee;
-        $package->save();
-        return $storageFee;
+        $package->update([
+            'storage_fee' => (float) $storage_fee
+        ]);
     }
 
     public function index(Request $request)
@@ -103,6 +100,8 @@ class PackageController extends Controller
 
     public function show($id)
     {
+        $this->calculate_storage_fee($id);
+
         $packag = Package::with('orders', 'address', 'warehouse', 'customer', 'images', 'serviceRequests', 'child_packages', 'order', 'boxes')
             ->findOrFail($id);
 
@@ -194,7 +193,7 @@ class PackageController extends Controller
         }
 
         $total = $subtotal + $packag->shipping_charges + (float) SiteSetting::getByName('mailout_fee') +
-            $this->calculate_storage_fee($packag->id) + $packag->consolidation_fee;
+            $packag->storage_fee + $packag->consolidation_fee;
 
         $eei_charges = 0;
         if ($packag->shipping_total >= 2500 || (isset($packag->address->country) && in_array($packag->address->country->iso, ['CN', 'HK', 'RU', 'VE']))) {
@@ -612,31 +611,6 @@ class PackageController extends Controller
 
         // $item_id = $request->input('item_id');
         // OrderItem::find($item_id)->delete();
-    }
-
-    public function getStorageFee(Request $request)
-    {
-        $id = $request->package_id;
-        $package = Package::find($id);
-        $orders = $package->orders;
-
-        $fee = SiteSetting::where('name', 'storage_fee')->first()->value;
-
-        $storageFee = 0;
-        foreach ($orders as $item) {
-            if ($item->arrived_at != null) {
-                $lastDate = Carbon::make($item->arrived_at)->addDays(75);
-                $currentDate = Carbon::now();
-                if (strtotime($currentDate) > strtotime($lastDate)) {
-                    $daysDifference = $currentDate->diffInDays($lastDate);
-                    $storageFee += $daysDifference * $fee;
-                }
-            }
-        }
-
-        $package->storage_fee = $storageFee;
-        $package->save();
-        return $storageFee;
     }
 
     public function destroy(Request $request)

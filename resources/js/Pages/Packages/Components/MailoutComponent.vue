@@ -175,10 +175,10 @@
 										<td>${{ eei_charges }}</td>
 										<td></td>
 									</tr>
-									<tr v-if="storage_fee > 0">
+									<tr v-if="packag.storage_fee > 0">
 										<td>Storage Fee</td>
 										<td></td>
-										<td>${{ storage_fee }}</td>
+										<td>${{ packag.storage_fee }}</td>
 										<td></td>
 									</tr>
 									<tr>
