@@ -284,8 +284,6 @@ class PaymentController extends Controller
                     }
                 }
 
-                $this->buildInvoice($payment->id, $billing, $shipping);
-
                 return response()->json([
                     'status' => 1,
                     'message' => 'PAYMENT_SUCCESS',
@@ -451,136 +449,11 @@ class PaymentController extends Controller
             }
         }
 
-        $this->buildInvoice($payment->id, $billing, $shipping);
-
         return response()->json([
             'status' => 1,
             'message' => 'Please Check card Expiry',
             'payment_id' => $payment->id,
         ]);
-    }
-
-    public function buildInvoice($id, $billing = [], $shipping = [])
-    {
-        $payment = Payment::find($id);
-        $customer = $payment->customer;
-        $warehouse = Warehouse::first();
-        $address = Address::where('user_id', $customer->id)->first();
-
-        if (isset($shipping) && !empty($shipping)) {
-            $payment->shipping_address = json_encode($shipping);
-        }
-
-        if (isset($billing) && !empty($billing)) {
-            $payment->billing_address = json_encode($billing);
-        }
-
-        $payment->save();
-
-        if ($payment->package_id != null) {
-            \Log::info('On Package');
-            $package = $payment->package;
-
-            try {
-                $pushOrderService = new PackageController();
-                $pushOrderService->pushPackage($package->id);
-            } catch (\Throwable $exception) {
-                \Log::info($exception);
-            }
-            // return view('pdfs.payment-invoice',compact('payment','package','customer'));
-            $html = view('pdfs.invoice-payment', [
-                'payment' => $payment,
-                'package' => $package,
-                'customer' => $customer,
-                'address' => $address,
-                'warehouse' => $warehouse,
-                'billing' => $billing
-            ])->render();
-
-            // return $html;
-
-        }
-
-        if ($payment->order_id != null) {
-            $order = $payment->order;
-            // return view('pdfs.payment-invoice',compact('payment','order','customer'));
-
-            $html = view('pdfs.invoice-payment', [
-                'payment' => $payment,
-                'order' => $order,
-                'customer' => $customer,
-                'address' => $address,
-                'warehouse' => $warehouse,
-                'billing' => $billing
-            ])->render();
-        }
-
-        if ($payment->additional_request_id != null) {
-            $additional_request_id = $payment->additionalRequest;
-            // return view('pdfs.payment-invoice',compact('payment','order','customer'));
-
-            $html = view('pdfs.invoice-payment', [
-                'payment' => $payment,
-                'additionalRequest' => $additional_request_id,
-                'customer' => $customer,
-                'address' => $address,
-                'warehouse' => $warehouse,
-                'billing' => $billing
-            ])->render();
-        }
-
-        if ($payment->insurance_id != null) {
-            $insurance = $payment->insuranceRequest;
-            $warehouse = Warehouse::find($insurance->package->warehouse_id);
-            // return view('pdfs.payment-invoice',compact('payment','order','customer'));
-
-            $html = view('pdfs.invoice-payment', [
-                'payment' => $payment,
-                'insuranceRequest' => $insurance,
-                'customer' => $customer,
-                'address' => $address,
-                'warehouse' => $warehouse,
-                'billing' => $billing
-            ])->render();
-        }
-
-        if ($payment->gift_card_id != null) {
-            $gift_card = $payment->giftCard;
-
-            $html = view('pdfs.invoice-payment', [
-                'payment' => $payment,
-                'warehouse' => $warehouse,
-                'gift_card' => $gift_card,
-                'customer' => $customer,
-                'address' => $address,
-                'billing' => $billing
-            ])->render();
-        }
-
-        \Log::info('b4 writing');
-        try {
-            $mpdf = new \Mpdf\Mpdf();
-            $mpdf->WriteHTML($html);
-            $mpdf->SetHTMLFooter('<table style="position: absolute;width: 100%;bottom: 0px">
-                <tr>
-                    <th colspan="3" style="text-align: center">
-                        THANK YOU FOR YOUR BUSINESS
-                        <br><br>
-                    </th>   
-                </tr>
-                <tr>
-                    <th style="text-align: center;font-size: 12px;font-weight: normal">+1-657-210-1801</th>
-                    <th style="text-align: center;font-size: 12px;font-weight: normal">shippingxps.com</th>
-                    <th style="text-align: center;font-size: 12px;font-weight: normal">info@shippingxps.com</th>
-                </tr>
-            </table>');
-            $mpdf->Output('public/invoices/pdf/' . $payment->invoice_id . '.pdf', \Mpdf\Output\Destination::FILE);
-        } catch (\Throwable $e) {
-            \Log::info($e);
-        }
-        \Log::info('on saving record');
-        $payment->invoice_url = 'invoices/pdf/' . $payment->invoice_id . '.pdf';
-        $payment->save();
     }
 
     public function getPayments(Request $request)
@@ -621,20 +494,16 @@ class PaymentController extends Controller
     // PAYMENT SUCCESS PAGE FOR BOTH PAYPAL & AUTHORIZE 
     public function paymentSuccess($id)
     {
-        $payment = Payment::find($id);
-
-        if ($payment != null) {
-            try {
-                event(new PaymentEventHandler($payment));
-            } catch (\Throwable $th) {
-                //throw $th;
-            }
+        try {
+            $payment = Payment::find($id);
+            event(new PaymentEventHandler($payment));
 
             return Inertia::render('Payment/PaymentSuccess', [
                 'payment' => $payment,
             ]);
-        } else {
-            return redirect()->back();
+        } catch (\Throwable $th) {
+            dd($th);
+            return redirect()->route('dashboard')->with('something went wrong');
         }
     }
 

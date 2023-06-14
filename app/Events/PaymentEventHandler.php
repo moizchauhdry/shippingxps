@@ -22,7 +22,6 @@ class PaymentEventHandler
      */
     public function __construct($payment)
     {
-        //
         $this->payment = $payment;
     }
 

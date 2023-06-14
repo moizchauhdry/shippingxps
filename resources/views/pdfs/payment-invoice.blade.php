@@ -95,6 +95,8 @@
 
     @isset($package)
     <table class="border" style="width: 100%">
+
+        @if (isset($service_requests))
         @foreach($service_requests as $item)
         <tr>
             <td style="width:85%">{{ $item->service->title }}</td>
@@ -107,6 +109,7 @@
             </td>
         </tr>
         @endforeach
+        @endif
 
         @if ($package->consolidation_fee > 0)
         <tr>
