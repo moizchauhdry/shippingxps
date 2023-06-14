@@ -185,7 +185,7 @@
 										<td>Shipping Charges</td>
 										<td></td>
 										<td>
-											${{ shipping_charges ?? 0 }}
+											${{ packag.shipping_charges }}
 											<button
 												v-if="
 													$page.props.auth.user.type == 'admin' &&
