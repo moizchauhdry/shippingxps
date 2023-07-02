@@ -517,6 +517,7 @@
 			},
 			removeItem(index) {
 				this.form.items.splice(index, 1);
+				this.getGrandTotal();
 			},
 			wareHouseChangeOnline() {
 				this.$refs.price[0].click();

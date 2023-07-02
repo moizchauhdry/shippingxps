@@ -303,6 +303,7 @@
 			},
 			removeItem(index) {
 				this.form.items.splice(index, 1);
+				this.getGrandTotal();
 			},
 			changeWarehouse() {
 				this.$refs.price_online[0].click();
