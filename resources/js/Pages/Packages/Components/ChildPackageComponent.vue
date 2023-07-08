@@ -116,7 +116,7 @@
 						>
 					</template>
 
-					<template v-if="!packag.service_code && packag.status != 'open'">
+					<template v-if="!packag.service_code && packag.status != 'open' && packag.address_book_id !=0">
 						<inertia-link
 							class="btn btn-primary btn-sm m-1"
 							:href="
