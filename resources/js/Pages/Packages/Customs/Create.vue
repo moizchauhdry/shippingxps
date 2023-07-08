@@ -50,8 +50,7 @@
 									<div class="col-md-6" style="border: 1px solid #6b7280">
 										<h1><b>SHIPPED TO :</b></h1>
 										<div class="mb-2">
-											<b>Contact Name:</b>&nbsp;{{ packag.address.fullname
-											}}<br />
+											<b>Contact Name:</b>&nbsp;{{ packag?.address?.fullname}}<br />
 											<b>Phone:</b>&nbsp;{{ packag.address.phone }}<br />
 											<b>Address:</b>&nbsp;{{ packag.address.address }}<br />
 											<span v-if="packag.address.address_2">
