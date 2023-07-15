@@ -6,7 +6,7 @@ use App\Http\Controllers\PaymentController;
 
 Route::middleware('auth')->group(function () {
     Route::prefix('shop-for-me')->group(function () {
-        Route::get('', [\App\Http\Controllers\ShopController::class, 'index'])->name('shop-for-me.index');
+        Route::any('index', [\App\Http\Controllers\ShopController::class, 'index'])->name('shop-for-me.index');
         Route::get('/create', [\App\Http\Controllers\ShopController::class, 'create'])->name('shop-for-me.create');
         Route::get('/{id}/edit', [\App\Http\Controllers\ShopController::class, 'edit'])->name('shop-for-me.edit');
         Route::get('/show/{id}', [\App\Http\Controllers\ShopController::class, 'show'])->name('shop-for-me.show');

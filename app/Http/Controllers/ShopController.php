@@ -36,38 +36,45 @@ class ShopController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $orders = Order::with(['customer', 'warehouse'])->whereIn('order_type', ['shopping', 'pickup']);
+        $suite_number = intval($request->user_id) - 4000;
 
-        $search = '';
+        $query = Order::query()
+            ->select(
+                'orders.id as id',
+                'warehouses.name as warehouse_name',
+                'users.id as user_id',
+                'users.name as user_name',
+                'orders.order_type as order_type',
+                'orders.status as order_status',
+                'orders.payment_status',
+                'orders.site_name',
+                'orders.site_url',
+            )
+            ->join('users', 'orders.customer_id', '=', 'users.id')
+            ->join('warehouses', 'orders.warehouse_id', '=', 'warehouses.id')
+            ->where('orders.order_type', 'shopping')
+            ->when(auth()->user()->type === 'customer', function ($qry) {
+                $qry->where('orders.customer_id', auth()->user()->id);
+            })
+            ->when($request->order_id && !empty($request->order_id), function ($qry) use ($request) {
+                $qry->where('orders.id', $request->order_id);
+            })
+            ->when($request->order_status && !empty($request->order_status), function ($qry) use ($request) {
+                $qry->where('orders.status', $request->order_status);
+            })
+            ->when($request->payment_status && !empty($request->payment_status), function ($qry) use ($request) {
+                $qry->where('orders.payment_status', $request->payment_status);
+            })
+            ->when($request->user_id && !empty($request->user_id), function ($qry) use ($suite_number) {
+                $qry->where('orders.customer_id', $suite_number);
+            })
+            ->orderBy('orders.id', 'DESC');
 
-        if (isset($_GET['search']) && !empty($_GET['search'])) {
-
-            $search = $_GET['search'];
-            $suite_number = intval($search) - 4000;
-            $orders->join('users', 'orders.customer_id', '=', 'users.id');
-            $orders->where(
-                function ($query) use ($search, $suite_number) {
-                    return $query->where('users.id', $suite_number)
-                        ->orWhere('users.name', 'LIKE', "%$search%")
-                        ->orWhere('orders.site_name', 'LIKE', "%$search%")
-                        ->orWhere('orders.site_url', 'LIKE', "%$search%")
-                        ->orWhere('orders.shipping_from_shop', 'LIKE', "%$search%");
-                }
-            );
-        }
-
-        if (auth()->user()->type === 'customer') {
-            $orders->where('orders.customer_id', auth()->user()->id);
-        }
-
-        $orders->orderBy('orders.id', 'DESC');
-
-        $orders = $orders->paginate(10);
+        $orders = $query->paginate(10);
 
         return Inertia::render('ShopForMe/OrdersList', [
-            'search' => $search,
             'orders' => $orders
         ]);
     }

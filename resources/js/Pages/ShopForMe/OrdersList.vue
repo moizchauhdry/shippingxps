@@ -4,29 +4,50 @@
 			<div class="card-header"><b>Manage Shopping List</b></div>
 			<div class="card-body">
 				<div class="row mb-4">
-					<div class="col-md-6">
-						<form action="/shop-for-me" method="get">
-							<input
-								type="text"
-								name="search"
-								class="form-control"
-								placeholder="Search"
-							/>
+					<div class="col-md-12">
+						<form @submit.prevent="submit">
+							<div class="row">
+								<div class="form-group col-md-3">
+									<label for="">Order ID</label>
+									<input type="search" name="number" v-model="form.order_id" class="form-control"/>
+								</div>
+								<div class="form-group col-md-3">
+									<label for="">Suite Number</label>
+									<input type="search" name="number" v-model="form.user_id" class="form-control"/>
+								</div>
+								<div class="form-group col-md-3">
+									<label for="">Order Status</label>
+									<select class="form-control custom-select" v-model="form.order_status" >
+										<option value="" selected>All</option>
+										<option value="pending">Pending</option>
+										<option value="approved">Approved</option>
+									</select>
+								</div>
+								<div class="form-group col-md-3">
+									<label for="">Payment Status</label>
+									<select class="form-control custom-select" v-model="form.payment_status" >
+										<option value="" selected>All</option>
+										<option value="paid">Paid</option>
+										<option value="pending">Unpaid</option>
+									</select>
+								</div>
+								<div class="form-group col-md-4">
+									<button type="submit" class="btn btn-primary mr-1">Search</button>
+									<button type="button" class="btn btn-info" @click="clear()">Clear</button>
+								</div>
+							</div>
 						</form>
 					</div>
-					<div class="col-md-6">
+					<div class="col-md-12">
 						<template v-if="$page.props.auth.user.type == 'customer'">
-							<inertia-link
-								:href="route('shop-for-me.create')"
-								class="btn btn-success float-right"
-							>
-								<i class="fa fa-plus mr-1"></i>Add New Order</inertia-link
-							>
+							<inertia-link :href="route('shop-for-me.create')" class="btn btn-success float-right">
+								<i class="fa fa-plus mr-1"></i>Add Order</inertia-link>
 						</template>
 					</div>
+					
 				</div>
 				<div class="table-responsive">
-					<table class="table table-striped table-bordered">
+					<table class="table table-striped table-bordered table-sm">
 						<thead class="text-center">
 							<tr>
 								<th scope="col">Order. #</th>
@@ -41,93 +62,48 @@
 						<tbody class="text-center">
 							<tr v-for="order in orders.data" :key="order.id">
 								<td>{{ order.id }}</td>
-								<td>{{ order.warehouse.name }}</td>
-								<td v-if="order.customer">
-									<inertia-link
-										:href="route('detail-customer', order.customer.id)"
-										class="btn btn-link"
-									>
-										# {{ siuteNum(order.customer.id) }} -
-										{{ order.customer.name }}
+								<td>{{ order.warehouse_name }}</td>
+								<td>
+									<inertia-link :href="route('detail-customer', order.user_id)" class="btn btn-link">
+										# {{ siuteNum(order.user_id) }} - {{ order.user_name }}
 									</inertia-link>
 								</td>
-								<td class="capitalize">{{ order.order_origin }}</td>
+								<td class="capitalize">{{ order.order_type }}</td>
 								<td class="capitalize">
-									<span v-bind:class="getLabelClass(order.status)">
-										{{ order.status }}
+									<span v-bind:class="getLabelClass(order.order_status)" class="mr-1">
+										{{ order.order_status }}
 									</span>
-									<br />
-									<span
-										v-if="order.payment_status == 'Paid'"
-										class="label badge badge-success text-white font-bold"
-									>
+									<span v-if="order.payment_status == 'Paid'" class="label badge badge-success text-white font-bold">
 										{{ order.payment_status }}
 									</span>
 								</td>
 								<td>
-									<template v-if="order.site_name !== null">
-										<span v-if="order.site_name.length < 30">
+									<template v-if="order.site_url">
+										<a :href="order.site_url" target="_blank" class="link-primary">
 											{{ order.site_name }}
-										</span>
-										<span v-else>
-											{{ order.site_name.substring(0, 30) + "..." }}
-										</span>
-									</template>
-									<br />
-									<template v-if="order.site_url !== null">
-										<a
-											target="_blank"
-											class="link-primary"
-											:href="'//' + order.site_url"
-										>
-											<span v-if="order.site_url.length < 30">
-												{{ order.site_url != null ? order.site_url : "- -" }}
-											</span>
-											<span v-else>
-												{{ order.site_url.substring(0, 30) + "..." }}
-											</span>
 										</a>
 									</template>
 								</td>
 								<td style="min-width: 70px">
-									<inertia-link
-										class="btn btn-primary btn-xs mr-1 mb-1"
-										:href="route('shop-for-me.show', order.id)"
-									>
+									<inertia-link class="btn btn-primary btn-xs mr-1 mb-1" :href="route('shop-for-me.show', order.id)">
 										<span><i class="fa fa-list mr-1"></i></span>Detail
 									</inertia-link>
 
-									<template
-										v-if="
-											order.status == 'pending' ||
-											order.payment_status == 'Pending' ||
-											$page.props.auth.user.type == 'admin'
-										"
-									>
-										<inertia-link
-											class="btn btn-success btn-xs mr-1 mb-1"
-											:href="route('shop-for-me.edit', order.id)"
-										>
-											<span><i class="fa fa-pencil-alt"></i></span> Edit &
-											Continue
+									<template v-if="order.status == 'pending' || order.payment_status == 'Pending' || $page.props.auth.user.type == 'admin'">
+										<inertia-link class="btn btn-success btn-xs mr-1 mb-1" :href="route('shop-for-me.edit', order.id)">
+											<span><i class="fa fa-pencil-alt"></i></span> Edit & Continue
 										</inertia-link>
 									</template>
 
-									<template
-										v-if="
-											order.status == 'labeled' && order.order_type == 'package'
-										"
-									>
-										<a
-											target="_blank"
-											class="btn btn-info btn-xs mr-1 mb-1"
-											:href="route('packages.pdf', order.id)"
-											title="Invoice"
-										>
+									<template v-if="order.status == 'labeled' && order.order_type == 'package'">
+										<a :href="route('packages.pdf', order.id)" target="_blank" class="btn btn-info btn-xs mr-1 mb-1" title="Invoice">
 											<i class="fa fa-file"></i> Print Invoice
 										</a>
 									</template>
 								</td>
+							</tr>
+							<tr v-if="orders.data.length == 0">
+								<td colspan="7">No record found.</td>
 							</tr>
 						</tbody>
 					</table>
@@ -148,6 +124,8 @@
 	import MainLayout from "@/Layouts/Main";
 	import BreezeAuthenticatedLayout from "@/Layouts/Authenticated";
 	import Pagination from "@/Components/Pagination.vue";
+	import { useForm } from "@inertiajs/inertia-vue3";
+	import { Inertia } from "@inertiajs/inertia";
 
 	export default {
 		components: {
@@ -161,12 +139,11 @@
 		},
 		data() {
 			return {
-				form: this.$inertia.form({
-					search: "",
+				form: useForm({
+					order_id: "",
+					order_status: "",
+					payment_status: "",
 				}),
-				params: {
-					search: null,
-				},
 			};
 		},
 		watch: {
@@ -209,6 +186,20 @@
 			},
 			siuteNum(user_id) {
 				return 4000 + user_id;
+			},
+			submit() {
+				this.form.order_id = this.form.order_id;
+				this.form.user_id = this.form.user_id;
+				this.form.order_status = this.form.order_status;
+				this.form.payment_status = this.form.payment_status;
+				Inertia.post(route("shop-for-me.index"), this.form);
+			},
+			clear() {
+				this.form.order_id = "";
+				this.form.user_id = "";
+				this.form.order_status = "";
+				this.form.payment_status = "";
+				this.submit();
 			},
 		},
 	};

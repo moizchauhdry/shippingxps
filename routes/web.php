@@ -75,7 +75,6 @@ Route::post('/packages/multipiece/store', 'PackageController@storeMultipiece')->
 Route::post('/packages/address/update', 'PackageController@updateAddress')->name('packages.address.update')->middleware('auth');
 Route::post('/packages/charges/update', 'PackageController@updateCharges')->name('packages.charges.update')->middleware('auth');
 
-
 Route::get('/services/create', 'ServiceController@create')->name('services.create')->middleware('auth');
 Route::post('/services', 'ServiceController@store')->name('services.store')->middleware('auth');
 Route::get('/services', 'ServiceController@index')->name('services')->middleware('auth');
