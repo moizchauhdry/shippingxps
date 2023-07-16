@@ -212,6 +212,11 @@
 							<span>Packages</span>
 						</inertia-link>
 
+						<inertia-link class="nav-link" :href="route('custom-form.index')" v-if="$page.props.auth.user.type == 'admin'"
+							:class="{ active: route().current('custom-form.index') || route().current('custom-form.create')}"
+							:active="route().current('custom-form.index')"><i class="fas fa-print"></i><span>Custom Form</span>
+						</inertia-link>
+
 						<inertia-link
 							v-if="$page.props.auth.user.type != 'manager'"
 							class="nav-link"

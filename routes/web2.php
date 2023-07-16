@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CustomFormController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GiftCardController;
 use App\Http\Controllers\PaymentController;
@@ -96,4 +97,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('getShippingAddress/{id}', [\App\Http\Controllers\AddressController::class, 'getShippingAddress'])->name('getShippingAddress');
     Route::get('getMailingAddress', [\App\Http\Controllers\HomeController::class, 'getMailingAddress'])->name('getMailingAddress');
+
+    Route::get('custom-form/index', [CustomFormController::class, 'index'])->name('custom-form.index');
+    Route::get('custom-form/create', [CustomFormController::class, 'create'])->name('custom-form.create');
+    Route::post('custom-form/store', [CustomFormController::class, 'store'])->name('custom-form.store');
+    Route::get('custom-form/print/{id}', [CustomFormController::class, 'print'])->name('custom-form.print');
 });
