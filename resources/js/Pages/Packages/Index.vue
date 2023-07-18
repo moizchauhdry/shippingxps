@@ -1,77 +1,78 @@
 <template>
 	<MainLayout>
-		<div class="card mt-4">
+		<div class="card">
+			<div class="card-header">					
+				<b>Manage Packages</b>
+				<template v-if="open_pkgs_count >= 2">
+					<inertia-link
+						:href="route('packages.consolidation')"
+						class="btn btn-success float-right m-1"
+						v-if="$page.props.auth.user.type == 'customer'"
+					>
+						<i class="fa fa-plus mr-1"></i>Package
+						Consolidation</inertia-link
+					>
+
+					<inertia-link
+						:href="route('packages.multipiece')"
+						class="btn btn-primary float-right m-1"
+						v-if="$page.props.auth.user.type == 'customer'"
+					>
+						<i class="fa fa-plus mr-1"></i>Multipiece
+						Package</inertia-link
+					>
+				</template>
+
+				<inertia-link :href="route('orders.create')" class="btn btn-success float-right m-1" v-if="$page.props.auth.user.type == 'admin'">
+					<i class="fa fa-plus mr-1"></i>Add Package</inertia-link>
+			</div>
 			<div class="card-body">
 				<div class="row">
-					<h2
-						class="font-semibold text-xl text-gray-800 leading-tight form-title mb-4"
-					>
-						Manage Packages
-					</h2>
-				</div>
-				<div class="row">
-					<div class="col-md-6">
+					<div class="col-md-12">
 						<form @submit.prevent="submit">
 							<div class="row">
-								<div class="form-group col-md-6">
-									<input
-										type="number"
-										name="number"
-										v-model="form.pkg_id"
-										class="form-control"
-										placeholder="Search By Package #"
-									/>
+								<div class="form-group col-md-3">
+									<label for="">Package Number</label>
+									<input type="number" name="number" v-model="form.pkg_id" class="form-control"/>
 								</div>
-								<div class="form-group col-md-6">
-									<input
-										type="number"
-										name="number"
-										v-model="form.suit_no"
-										class="form-control"
-										placeholder="Search By Suit #"
-									/>
+								<div class="form-group col-md-3">
+									<label for="">Suit Number</label>
+									<input type="number" name="number" v-model="form.suit_no" class="form-control"/>
+								</div>
+								<div class="form-group col-md-3">
+									<label for="">Package Status</label>
+									<select class="form-control custom-select" v-model="form.pkg_status" >
+										<option value="" selected>All</option>
+										<option value="open">Open</option>
+										<option value="filled">Filled</option>
+										<option value="checkout">Checkout</option>
+										<option value="mailout">Mailout</option>
+									</select>
+								</div>
+								<div class="form-group col-md-3">
+									<label for="">Package Type</label>
+									<select class="form-control custom-select" v-model="form.pkg_type" >
+										<option value="" selected>All</option>
+										<option value="single">Single</option>
+										<option value="consolidation">Consolidation</option>
+										<option value="multipiece">Multipiece</option>
+										<option value="assigned">Assigned</option>
+									</select>
+								</div>
+								<div class="form-group col-md-3">
+									<label for="">Payment Status</label>
+									<select class="form-control custom-select" v-model="form.payment_status" >
+										<option value="" selected>All</option>
+										<option value="Paid">Paid</option>
+										<option value="Pending">Pending</option>
+									</select>
 								</div>
 								<div class="form-group col-md-4">
-									<button type="submit" class="btn btn-primary mr-1">
-										Search
-									</button>
-									<button type="button" class="btn btn-info" @click="clear()">
-										Clear
-									</button>
+									<button type="submit" class="btn btn-primary mr-1">Search</button>
+									<button type="button" class="btn btn-info" @click="clear()">Clear</button>
 								</div>
 							</div>
 						</form>
-					</div>
-					<div class="col-md-6">
-						<h2 class="font-semibold text-xl text-gray-800 leading-tight">
-							<template v-if="open_pkgs_count >= 2">
-								<inertia-link
-									:href="route('packages.consolidation')"
-									class="btn btn-success float-right m-1"
-									v-if="$page.props.auth.user.type == 'customer'"
-								>
-									<i class="fa fa-plus mr-1"></i>Package
-									Consolidation</inertia-link
-								>
-
-								<inertia-link
-									:href="route('packages.multipiece')"
-									class="btn btn-primary float-right m-1"
-									v-if="$page.props.auth.user.type == 'customer'"
-								>
-									<i class="fa fa-plus mr-1"></i>Multipiece
-									Package</inertia-link
-								>
-							</template>
-
-							<inertia-link
-								:href="route('orders.create')"
-								class="btn btn-success float-right m-1"
-								v-if="$page.props.auth.user.type == 'admin'"
-							>
-								<i class="fa fa-plus mr-1"></i>Add Package</inertia-link
-							>
-						</h2>
 					</div>
 				</div>
 
@@ -132,11 +133,17 @@
 				form: useForm({
 					pkg_id: "",
 					suit_no: "",
+					pkg_status: "",
+					pkg_type: "",
+					payment_status: "",
 				}),
 				pkg_form: {
 					status: this.filter.status,
 					pkg_id: "",
 					suit_no: "",
+					pkg_status: "",
+					pkg_type: "",
+					payment_status: "",
 					processing: false,
 				},
 			};
@@ -147,6 +154,9 @@
 				this.pkg_form.status = status;
 				this.pkg_form.pkg_id = this.form.pkg_id;
 				this.pkg_form.suit_no = this.form.suit_no;
+				this.pkg_form.pkg_status = this.form.pkg_status;
+				this.pkg_form.pkg_type = this.form.pkg_type;
+				this.pkg_form.payment_status = this.form.payment_status;
 				Inertia.post(route("packages.index"), this.pkg_form);
 			},
 			siuteNum(user_id) {

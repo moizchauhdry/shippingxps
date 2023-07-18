@@ -63,29 +63,54 @@ class PackageController extends Controller
     public function index(Request $request)
     {
         $status = $request->has('status') ? $request->status : 'packages';
+        $suit_no = intval($request->suit_no) - 4000;
 
-        $query = Package::with('customer', 'warehouse', 'child_packages');
+        $query = Package::with('customer', 'warehouse', 'child_packages')
+            ->when($status == 'rejected', function ($qry) {
+                $qry->where('status', 'rejected');
+            })
+            ->when(Auth::user()->type == 'customer', function ($qry) {
+                $qry->where('customer_id', Auth::user()->id);
+            })
+            ->when($request->pkg_id && !empty($request->pkg_id), function ($qry) use ($request) {
+                $qry->where('id', $request->pkg_id);
+            })
+            ->when($request->suit_no && !empty($request->suit_no), function ($qry) use ($suit_no) {
+                $qry->where('customer_id', $suit_no);
+            })
+            ->when($request->pkg_type && !empty($request->pkg_type), function ($qry) use ($request) {
+                $qry->where('pkg_type', $request->pkg_type);
+            })
+            ->when($request->pkg_status && !empty($request->pkg_status) && $request->pkg_status != 'mailout', function ($qry) use ($request) {
+                $qry->where('status', $request->pkg_status);
+            })
+            ->when($request->payment_status && !empty($request->payment_status), function ($qry) use ($request) {
+                $qry->where('payment_status', $request->payment_status);
+            })
+            ->when($request->pkg_status && $request->pkg_status == 'mailout', function ($qry) use ($request) {
+                $qry->whereNotNull('tracking_number_in');
+            });
 
-        if ($status == 'rejected') {
-            $query->where('status', 'rejected');
-        } else {
-            $query->where('status', '<>', 'rejected');
-        }
+        // if ($status == 'rejected') {
+        //     $query->where('status', 'rejected');
+        // } else {
+        //     $query->where('status', '<>', 'rejected');
+        // }
 
-        if (Auth::user()->type == 'customer') {
-            $query->where('customer_id', Auth::user()->id);
-        }
+        // if (Auth::user()->type == 'customer') {
+        //     $query->where('customer_id', Auth::user()->id);
+        // }
 
-        if (!empty($request->pkg_id)) {
-            $query->where('id', $request->pkg_id);
-        }
+        // if (!empty($request->pkg_id)) {
+        //     $query->where('id', $request->pkg_id);
+        // }
 
-        if (!empty($request->suit_no)) {
-            $suit_no = intval($request->suit_no) - 4000;
-            $query->where('customer_id', $suit_no);
-        }
+        // if (!empty($request->suit_no)) {
+        //     $suit_no = intval($request->suit_no) - 4000;
+        //     $query->where('customer_id', $suit_no);
+        // }
 
-        $packages = $query->orderBy('id', 'desc')->paginate(25);
+        $packages = $query->orderBy('id', 'desc')->paginate(10);
 
         $open_pkgs_count = Package::where('status', 'open')->where('pkg_type', 'single')->count();
 
