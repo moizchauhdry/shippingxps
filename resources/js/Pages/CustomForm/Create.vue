@@ -85,20 +85,26 @@
                                 </div>
                                 <div class="col-md-4">
                                     <h2>Package Information</h2>
-                                    <div class="form-group">
+                                    <!-- <div class="form-group">
                                         <input type="text" v-model="form.tracking_number" class="form-control" placeholder="Tracking Number">
-                                    </div>
+                                    </div> -->
                                     <div class="form-group">
                                         <input type="date" v-model="form.package_date" class="form-control" placeholder="Package Date">
                                     </div>
-                                    <div class="form-group">
+                                    <!-- <div class="form-group">
                                         <input type="text" v-model="form.package_no" class="form-control" placeholder="Package ID">
-                                    </div>
+                                    </div> -->
                                     <div class="form-group">
                                         <input type="text" v-model="form.sold_to" class="form-control" placeholder="Sold To">
                                     </div>
-                                    <div class="form-group">
-                                        <input type="text" v-model="form.package_type" class="form-control" placeholder="Package Type">
+                                   <div class="form-group">
+                                        <select class="form-control custom-select" v-model="form.package_type" >
+                                            <option value="" selected disabled>Package Type</option>
+                                            <option value="Commercial">Commercial</option>
+                                            <option value="Gift">Gift</option>
+                                            <option value="Sample">Sample</option>
+                                            <option value="Personal - Not for sale">Personal - Not for sale</option>
+                                        </select>
                                     </div>
                                     <div class="form-group">
                                         <input type="text" v-model="form.package_weight" class="form-control" placeholder="Package Weight">
@@ -284,12 +290,12 @@
 					ship_from_state: '',
 					ship_from_zipcode: '',
 					ship_from_country: '',
-					ship_from_incoterms: '',
-					tracking_number: '',
+					ship_from_incoterms: 'DDU/DAP',
+					// tracking_number: '',
 					package_date: '',
-					package_no: '',
+					// package_no: '',
 					package_type: '',
-					sold_to: '',
+					sold_to: 'Same as consignee',
 					ship_to_company: '',
 					ship_to_person: '',
 					ship_to_contact: '',
@@ -302,7 +308,6 @@
 					ship_to_state: '',
 					ship_to_zipcode: '',
 					ship_to_country: '',
-					package_type: '',
 					package_weight: '',
                     special_instructions: '',
                     shipping_total: '',

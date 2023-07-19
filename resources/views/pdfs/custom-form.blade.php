@@ -69,7 +69,7 @@
                 <h4>{{ strtoupper('Shipped From') }}:</h4><br>
                 <strong>Contact Name</strong> : {{ $record->ship_from_person}}<br>
                 <strong>EORI:</strong><br>
-                <strong>Telephone No.</strong> : {{ $record->ship_from_phone}}<br>
+                <strong>Telephone No.</strong> : {{ $record->ship_from_contact}}<br>
                 <strong>E-mail</strong> : {{ $record->ship_from_email}}<br>
                 <strong>Company / Address</strong> :<br>
                 {{ $record->ship_from_address}},{{ $record->ship_from_city }}, <br>
@@ -81,22 +81,22 @@
 
             </td>
             <td style="padding: 5px" width="50%">
-                <strong>Tracking Number</strong>:<br> {{ $record->tracking_number}}<br><br>
+                {{-- <strong>Tracking Number</strong>:<br> {{ $record->tracking_number}}<br><br> --}}
                 <strong>Date</strong> : {{ $record->package_date}}<br>
-                <strong>Package ID</strong>: {{ $record->package_no}} <br>
+                {{-- <strong>Package ID</strong>: {{ $record->package_no}} <br> --}}
             </td>
         </tr>
         <tr>
             <td style="padding: 5px" width="50%">
                 <h4>{{ strtoupper('Shipped To') }}:</h4><br>
                 <strong>Contact Name</strong> : {{$record->ship_to_person}}<br>
-                <strong>Telephone No.</strong> : {{ $record->ship_to_phone ?? ''}}<br>
-                <strong>E-mail</strong> : {{ $user->ship_to_email ?? ''}}<br>
+                <strong>Telephone No.</strong> : {{ $record->ship_to_contact ?? ''}}<br>
+                <strong>E-mail</strong> : {{ $record->ship_to_email ?? ''}}<br>
                 <strong>Company / Address</strong> :<br>
                 {{ $record->ship_to_address1 ?? ''}} <br>
                 {{ $record->ship_to_address2 ?? ''}} <br>
                 {{ $record->ship_to_address3 ?? ''}} <br>
-                <strong>Tax ID</strong> : {{$record->ship_to_tax_no}}
+                <strong>Tax ID</strong> : {{$record->ship_to_tax_no}} <br>
                 <strong>City</strong> : {{ $record->ship_to_city ?? ''}} <br>
                 <strong>State/Province</strong> : {{ $record->ship_to_state ?? ''}} <br>
                 <strong>Zip code</strong> : {{ $record->ship_to_zipcode ?? ''}} <br> <br>
@@ -189,11 +189,14 @@
 
         <tr>
             <td colspan="2" style="height:80px; padding: 10px;border-right:none">
-                <strong>Signature</strong>:<br> <b>{{ $record->contact_person }}</b>
+                <div><b>Signature:</b></div> <br>
+                <div style="font-size:10px;">
+                    <b>{{ $record->ship_from_person }}</b> ________________________________
+                </div>
             </td>
             <td colspan="7" style="height:80px;border-left:none;text-align: right">
-                <img style="height: 75px; width: auto;margin-right:10px"
-                    src="{{ asset('storage/'.$record->signature) }}" alt="">
+                {{-- <img style="height: 75px; width: auto;margin-right:10px"
+                    src="{{ asset('storage/'.$record->signature) }}" alt=""> --}}
             </td>
         </tr>
     </table>

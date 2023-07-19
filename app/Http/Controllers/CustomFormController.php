@@ -52,11 +52,11 @@ class CustomFormController extends Controller
             'ship_to_country' => 'required',
 
             'tracking_number' => 'nullable',
-            'package_date' => 'nullable|date',
+            'package_date' => 'required|date',
             'package_no' => 'nullable',
             'package_type' => 'nullable',
-            'package_weight' => 'nullable|numeric',
-            'sold_to' => 'nullable',
+            'package_weight' => 'required|numeric',
+            'sold_to' => 'required',
             'special_instructions' => 'nullable',
             'shipping_total' => 'required|numeric',
 
@@ -100,14 +100,14 @@ class CustomFormController extends Controller
             'ship_to_zipcode' => $request->ship_to_zipcode,
             'ship_to_country' => $request->ship_to_country,
 
-            'tracking_number' => $request->tracking_number,
+            // 'tracking_number' => $request->tracking_number,
             'package_date' => $request->package_date,
-            'package_no' => $request->package_no,
+            // 'package_no' => $request->package_no,
             'package_type' => $request->package_type,
             'package_weight' => $request->package_weight,
             'sold_to' => $request->sold_to,
             'special_instructions' => $request->special_instructions,
-            'shipping_total' => $request->package_weight,
+            'shipping_total' => $request->shipping_total,
         ];
 
         $custom = CustomForm::create($data);
