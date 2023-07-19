@@ -94,12 +94,23 @@
                 <strong>E-mail</strong> : {{ $record->ship_to_email ?? ''}}<br>
                 <strong>Company / Address</strong> :<br>
                 {{ $record->ship_to_address1 ?? ''}} <br>
+
+                @if ($record->ship_to_address2)
                 {{ $record->ship_to_address2 ?? ''}} <br>
+                @endif
+
+                @if ($record->ship_to_address3)
                 {{ $record->ship_to_address3 ?? ''}} <br>
+                @endif
+                <br>
                 <strong>Tax ID</strong> : {{$record->ship_to_tax_no}} <br>
                 <strong>City</strong> : {{ $record->ship_to_city ?? ''}} <br>
+                @if ($record->ship_to_state)
                 <strong>State/Province</strong> : {{ $record->ship_to_state ?? ''}} <br>
+                @endif
+                @if ($record->ship_to_zipcode)
                 <strong>Zip code</strong> : {{ $record->ship_to_zipcode ?? ''}} <br> <br>
+                @endif
                 <strong>Country</strong> : {{ $record->ship_to_country ?? '' }}
             </td>
 

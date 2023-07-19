@@ -48,7 +48,7 @@ class CustomFormController extends Controller
             'ship_to_tax_id' => 'nullable',
             'ship_to_city' => 'required',
             'ship_to_state' => 'nullable',
-            'ship_to_zipcode' => 'required',
+            'ship_to_zipcode' => 'nullable',
             'ship_to_country' => 'required',
 
             'tracking_number' => 'nullable',
