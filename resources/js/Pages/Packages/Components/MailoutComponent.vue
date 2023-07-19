@@ -50,9 +50,12 @@
 										</tr>
 										<tr>
 											<td colspan="2">
-												Contact : {{ packag?.address?.phone }} <br />
-												Email : {{ packag?.address?.email }} <br />
-												VAT ID : {{ packag?.address?.tax_no }} <br />
+												Contact: {{ packag?.address?.phone }} <br>
+												Email: {{ packag?.address?.email }} <br>
+												<template v-if="packag?.address?.tax_no">
+													VAT ID: {{ packag?.address?.tax_no }} <br>
+												</template>
+												Type: {{ packag?.address?.is_residential == 1 ? 'Residential' : 'Commercial' }} <br />
 											</td>
 										</tr>
 									</tbody>
