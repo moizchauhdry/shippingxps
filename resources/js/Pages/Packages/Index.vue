@@ -67,6 +67,10 @@
 										<option value="Pending">Pending</option>
 									</select>
 								</div>
+								<div class="col-md-3 form-group">
+									<label for="">Date Range</label>
+									<Datepicker v-model="date" range :format="format" :enableTimePicker="false"></Datepicker>
+								</div>
 								<div class="form-group col-md-4">
 									<button type="submit" class="btn btn-primary mr-1">Search</button>
 									<button type="button" class="btn btn-info" @click="clear()">Clear</button>
@@ -114,12 +118,15 @@
 	import { Inertia } from "@inertiajs/inertia";
 	import { useForm } from "@inertiajs/inertia-vue3";
 	import PackageListComponent from "./Components/PackageListComponent.vue";
-
+	import Datepicker from "vue3-date-time-picker";
+	import "vue3-date-time-picker/dist/main.css";
+	
 	export default {
 		components: {
 			BreezeAuthenticatedLayout,
 			MainLayout,
 			PackageListComponent,
+			Datepicker
 		},
 		props: {
 			auth: Object,
@@ -130,12 +137,14 @@
 		data() {
 			return {
 				active: "packages",
+				date: "",
 				form: useForm({
 					pkg_id: "",
 					suit_no: "",
 					pkg_status: "",
 					pkg_type: "",
 					payment_status: "",
+					date_range: "",
 				}),
 				pkg_form: {
 					status: this.filter.status,
@@ -144,6 +153,7 @@
 					pkg_status: "",
 					pkg_type: "",
 					payment_status: "",
+					date_range: "",
 					processing: false,
 				},
 			};
@@ -157,6 +167,7 @@
 				this.pkg_form.pkg_status = this.form.pkg_status;
 				this.pkg_form.pkg_type = this.form.pkg_type;
 				this.pkg_form.payment_status = this.form.payment_status;
+				this.pkg_form.date_range = this.form.date_range;
 				Inertia.post(route("packages.index"), this.pkg_form);
 			},
 			siuteNum(user_id) {
@@ -168,7 +179,25 @@
 			clear() {
 				this.form.pkg_id = "";
 				this.form.suit_no = "";
+				this.form.pkg_status = "";
+				this.form.pkg_type = "";
+				this.form.payment_status = "";
 				this.submit();
+			},
+
+			format() {
+				var start = new Date(this.date[0]);
+				var end = new Date(this.date[1]);
+				var startDay = start.getDate();
+				var startMonth = start.getMonth() + 1;
+				var startYear = start.getFullYear();
+				var endDay = end.getDate();
+				var endMonth = end.getMonth() + 1;
+				var endYear = end.getFullYear();
+
+				this.form.date_range = `${startYear}/${startMonth}/${startDay} - ${endYear}/${endMonth}/${endDay}`;
+				// this.getResults(route("payments.getPayments"));
+				return `${startDay}/${startMonth}/${startYear} - ${endDay}/${endMonth}/${endYear}`;
 			},
 		},
 		watch: {

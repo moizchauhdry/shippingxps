@@ -62,6 +62,8 @@ class PackageController extends Controller
 
     public function index(Request $request)
     {
+        // dd($request->all());
+
         $status = $request->has('status') ? $request->status : 'packages';
         $suit_no = intval($request->suit_no) - 4000;
 
@@ -89,29 +91,15 @@ class PackageController extends Controller
             })
             ->when($request->pkg_status && $request->pkg_status == 'mailout', function ($qry) use ($request) {
                 $qry->whereNotNull('tracking_number_in');
+            })
+            ->when($request->date_range && !empty($request->date_range), function ($qry) use ($request) {
+                $range = explode(' - ', $request->date_range);
+                $from = date("Y-m-d", strtotime($range[0]));
+                $to = date("Y-m-d", strtotime($range[1]));
+                $qry->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to);
             });
 
-        // if ($status == 'rejected') {
-        //     $query->where('status', 'rejected');
-        // } else {
-        //     $query->where('status', '<>', 'rejected');
-        // }
-
-        // if (Auth::user()->type == 'customer') {
-        //     $query->where('customer_id', Auth::user()->id);
-        // }
-
-        // if (!empty($request->pkg_id)) {
-        //     $query->where('id', $request->pkg_id);
-        // }
-
-        // if (!empty($request->suit_no)) {
-        //     $suit_no = intval($request->suit_no) - 4000;
-        //     $query->where('customer_id', $suit_no);
-        // }
-
         $packages = $query->orderBy('id', 'desc')->paginate(10);
-
         $open_pkgs_count = Package::where('status', 'open')->where('pkg_type', 'single')->count();
 
         return Inertia::render('Packages/Index', [
