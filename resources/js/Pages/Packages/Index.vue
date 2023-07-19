@@ -220,4 +220,19 @@
 		background-color: red !important;
 		color: white;
 	}
+
+	.dp__input {
+		background-color: var(--dp-background-color);
+		border-radius: 0px;
+		font-family: -apple-system,blinkmacsystemfont,"Segoe UI",roboto,oxygen,ubuntu,cantarell,"Open Sans","Helvetica Neue",sans-serif;
+		border: 1px solid var(--dp-border-color);
+		outline: none;
+		transition: border-color .2s cubic-bezier(0.645, 0.045, 0.355, 1);
+		width: 100%;
+		font-size: 1rem;
+		line-height: 1.5rem;
+		padding: 4px 33px;
+		color: var(--dp-text-color);
+		box-sizing: border-box;
+	}
 </style>
