@@ -182,6 +182,8 @@
 				this.form.pkg_status = "";
 				this.form.pkg_type = "";
 				this.form.payment_status = "";
+				this.form.date_range = "";
+				this.date = "";
 				this.submit();
 			},
 
