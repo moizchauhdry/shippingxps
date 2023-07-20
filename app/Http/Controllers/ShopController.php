@@ -203,7 +203,7 @@ class ShopController extends Controller
 
             DB::commit();
             event(new ShoppingCreatedEvent($order));
-            return redirect('shop-for-me')->with('success', 'Order Added!');
+            return redirect()->route('shop-for-me.index')->with('success', 'Order Added!');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Something went wrong.');
