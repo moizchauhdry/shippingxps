@@ -105,7 +105,7 @@
 			</tbody>
 		</table>
 	</div>
-	<pagination class="mt-6" :links="pkgs.links"></pagination>
+	<pagination class="mt-2 float-right" :links="pkgs.links"></pagination>
 </template>
 
 <script>

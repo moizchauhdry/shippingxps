@@ -62,8 +62,6 @@ class PackageController extends Controller
 
     public function index(Request $request)
     {
-        // dd($request->all());
-
         $status = $request->has('status') ? $request->status : 'packages';
         $suit_no = intval($request->suit_no) - 4000;
 
@@ -99,12 +97,15 @@ class PackageController extends Controller
                 $qry->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to);
             });
 
+        $packages_count = $query->count();
         $packages = $query->orderBy('id', 'desc')->paginate(10);
+
         $open_pkgs_count = Package::where('status', 'open')->where('pkg_type', 'single')->count();
 
         return Inertia::render('Packages/Index', [
             'pkgs' => $packages,
             'open_pkgs_count' => $open_pkgs_count,
+            'packages_count' => $packages_count,
             'filter' => [
                 'status' => $status
             ]

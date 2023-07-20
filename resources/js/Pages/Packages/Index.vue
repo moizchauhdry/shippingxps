@@ -6,7 +6,7 @@
 				<template v-if="open_pkgs_count >= 2">
 					<inertia-link
 						:href="route('packages.consolidation')"
-						class="btn btn-success float-right m-1"
+						class="btn btn-success float-right mr-1"
 						v-if="$page.props.auth.user.type == 'customer'"
 					>
 						<i class="fa fa-plus mr-1"></i>Package
@@ -15,7 +15,7 @@
 
 					<inertia-link
 						:href="route('packages.multipiece')"
-						class="btn btn-primary float-right m-1"
+						class="btn btn-primary float-right mr-1"
 						v-if="$page.props.auth.user.type == 'customer'"
 					>
 						<i class="fa fa-plus mr-1"></i>Multipiece
@@ -23,23 +23,23 @@
 					>
 				</template>
 
-				<inertia-link :href="route('orders.create')" class="btn btn-success float-right m-1" v-if="$page.props.auth.user.type == 'admin'">
+				<inertia-link :href="route('orders.create')" class="btn btn-success float-right mr-1" v-if="$page.props.auth.user.type == 'admin'">
 					<i class="fa fa-plus mr-1"></i>Add Package</inertia-link>
 			</div>
 			<div class="card-body">
 				<div class="row">
 					<div class="col-md-12">
 						<form @submit.prevent="submit">
-							<div class="row">
-								<div class="form-group col-md-3">
+							<div class="d-flex search">
+								<div class="form-group">
 									<label for="">Package Number</label>
 									<input type="number" name="number" v-model="form.pkg_id" class="form-control"/>
 								</div>
-								<div class="form-group col-md-3">
+								<div class="form-group">
 									<label for="">Suit Number</label>
 									<input type="number" name="number" v-model="form.suit_no" class="form-control"/>
 								</div>
-								<div class="form-group col-md-3">
+								<div class="form-group">
 									<label for="">Package Status</label>
 									<select class="form-control custom-select" v-model="form.pkg_status" >
 										<option value="" selected>All</option>
@@ -47,9 +47,10 @@
 										<option value="filled">Filled</option>
 										<option value="checkout">Checkout</option>
 										<option value="mailout">Mailout</option>
+										<option value="rejected">Rejected</option>
 									</select>
 								</div>
-								<div class="form-group col-md-3">
+								<div class="form-group">
 									<label for="">Package Type</label>
 									<select class="form-control custom-select" v-model="form.pkg_type" >
 										<option value="" selected>All</option>
@@ -59,7 +60,7 @@
 										<option value="assigned">Assigned</option>
 									</select>
 								</div>
-								<div class="form-group col-md-3">
+								<div class="form-group">
 									<label for="">Payment Status</label>
 									<select class="form-control custom-select" v-model="form.payment_status" >
 										<option value="" selected>All</option>
@@ -67,11 +68,13 @@
 										<option value="Pending">Pending</option>
 									</select>
 								</div>
-								<div class="col-md-3 form-group">
+								<div class="form-group">
 									<label for="">Date Range</label>
 									<Datepicker v-model="date" range :format="format" :enableTimePicker="false"></Datepicker>
 								</div>
-								<div class="form-group col-md-4">
+							</div>
+							<div class="row">
+								<div class="form-group col-md-12">
 									<button type="submit" class="btn btn-primary mr-1">Search</button>
 									<button type="button" class="btn btn-info" @click="clear()">Clear</button>
 								</div>
@@ -80,7 +83,7 @@
 					</div>
 				</div>
 
-				<div class="row my-4">
+				<!-- <div class="row mb-2">
 					<div class="col-md-6">
 						<button
 							type="button"
@@ -101,17 +104,15 @@
 							Rejected
 						</button>
 					</div>
-				</div>
+				</div> -->
+				
 				<package-list-component v-bind="$props"></package-list-component>
+				<span><b>Showing Records: {{ packages_count }}</b></span>
 			</div>
 		</div>
 	</MainLayout>
 </template>
-<style scoped>
-	.label {
-		padding: 5px;
-	}
-</style>
+
 <script>
 	import MainLayout from "@/Layouts/Main";
 	import BreezeAuthenticatedLayout from "@/Layouts/Authenticated";
@@ -132,6 +133,7 @@
 			auth: Object,
 			pkgs: Object,
 			open_pkgs_count: Object,
+			packages_count: Object,
 			filter: Object,
 		},
 		data() {
@@ -234,5 +236,13 @@
 		padding: 4px 33px;
 		color: var(--dp-text-color);
 		box-sizing: border-box;
+	}
+
+	.label {
+		padding: 5px;
+	}
+
+	.search .form-group {
+		margin-left:1px
 	}
 </style>
