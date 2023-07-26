@@ -520,10 +520,10 @@ class ShopController extends Controller
                     'payment_module_id' => $order->id,
                 ]);
             } else {
-                return redirect('shop-for-me')->with('success', 'Order Updated !');
+                return redirect()->route('shop-for-me.index')->with('success', 'Order Updated !');
             }
         } catch (\Exception $e) {
-            return redirect('shop-for-me')->with('error', 'Something went wrong: ' . $e->getMessage());
+            return redirect()->route('shop-for-me.index')->with('error', 'Something went wrong: ' . $e->getMessage());
             DB::rollBack();
         }
     }
