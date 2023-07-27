@@ -83,8 +83,8 @@ class PackageController extends Controller
             ->when($request->payment_status && !empty($request->payment_status), function ($qry) use ($request) {
                 $qry->where('payment_status', $request->payment_status);
             })
-            ->when($request->pkg_status && $request->pkg_status == 'mailout', function ($qry) use ($request) {
-                $qry->whereNotNull('tracking_number_in');
+            ->when($request->tracking_no && !empty($request->tracking_no), function ($qry) use ($request) {
+                $qry->where('tracking_number_in', $request->tracking_no);
             })
             ->when($request->date_range && !empty($request->date_range), function ($qry) use ($request) {
                 $range = explode(' - ', $request->date_range);
@@ -109,6 +109,7 @@ class PackageController extends Controller
                 'pkg_type' => $request->pkg_type ?? "",
                 'payment_status' => $request->payment_status ?? "",
                 'date_range' => $request->date_range ?? "",
+                'tracking_no' => $request->tracking_no ?? "",
             ]
         ]);
     }

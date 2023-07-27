@@ -5,6 +5,7 @@
 				<tr>
 					<th scope="col">SR #</th>
 					<th scope="col">Package</th>
+					<th>Tracking No.</th>
 					<th scope="col">Warehouse</th>
 					<th scope="col">Status</th>
 					<th scope="col">Customer</th>
@@ -18,16 +19,13 @@
 					<td style="width: 200px;">
 						<span class="badge badge-primary text-sm">PKG #{{ pkg.id }}</span> <br>
 
-						<template
-							v-for="child_pkg in pkg.child_packages"
-							:key="child_pkg.id"
-						>
-							<span
-								class="badge badge-info mr-1 mb-1"
-								v-if="child_pkg.id != pkg.id"
-								>PKG #{{ child_pkg.id }}</span
-							>
+						<template v-for="child_pkg in pkg.child_packages" :key="child_pkg.id">
+							<span class="badge badge-info mr-1 mb-1" v-if="child_pkg.id != pkg.id">PKG #{{ child_pkg.id }}</span>
 						</template>
+					</td>
+					<td>
+						<span v-if="pkg.pkg_type == 'single'">{{ pkg.tracking_number_in }}</span>
+						<span v-else>-</span>
 					</td>
 					<td>
 						{{ pkg?.warehouse?.name }}

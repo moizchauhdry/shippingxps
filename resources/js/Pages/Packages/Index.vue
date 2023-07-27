@@ -46,7 +46,7 @@
 										<option value="open">Open</option>
 										<option value="filled">Filled</option>
 										<option value="checkout">Checkout</option>
-										<option value="mailout">Mailout</option>
+										<option value="shipped">Shipped</option>
 										<option value="rejected">Rejected</option>
 									</select>
 								</div>
@@ -67,6 +67,10 @@
 										<option value="Paid">Paid</option>
 										<option value="Pending">Pending</option>
 									</select>
+								</div>
+								<div class="form-group">
+									<label for="">Tracking Number</label>
+									<input type="text" v-model="form.tracking_no" class="form-control"/>
 								</div>
 								<div class="form-group">
 									<label for="">Date Range</label>
@@ -122,6 +126,7 @@
 					pkg_status: this.filters.pkg_status,
 					pkg_type: this.filters.pkg_type,
 					payment_status: this.filters.payment_status,
+					tracking_no: this.filters.tracking_no,
 					date_range: this.filters.date_range,
 				},
 			};
