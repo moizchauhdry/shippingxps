@@ -62,13 +62,9 @@ class PackageController extends Controller
 
     public function index(Request $request)
     {
-        $status = $request->has('status') ? $request->status : 'packages';
         $suit_no = intval($request->suit_no) - 4000;
 
         $query = Package::with('customer', 'warehouse', 'child_packages')
-            ->when($status == 'rejected', function ($qry) {
-                $qry->where('status', 'rejected');
-            })
             ->when(Auth::user()->type == 'customer', function ($qry) {
                 $qry->where('customer_id', Auth::user()->id);
             })
@@ -98,7 +94,7 @@ class PackageController extends Controller
             });
 
         $packages_count = $query->count();
-        $packages = $query->orderBy('id', 'desc')->paginate(10);
+        $packages = $query->orderBy('id', 'desc')->paginate(10)->withQueryString();
 
         $open_pkgs_count = Package::where('status', 'open')->where('pkg_type', 'single')->count();
 
@@ -106,8 +102,13 @@ class PackageController extends Controller
             'pkgs' => $packages,
             'open_pkgs_count' => $open_pkgs_count,
             'packages_count' => $packages_count,
-            'filter' => [
-                'status' => $status
+            'filters' => [
+                'pkg_id' => $request->pkg_id ?? "",
+                'suit_no' => $request->suit_no ?? "",
+                'pkg_status' => $request->pkg_status ?? "",
+                'pkg_type' => $request->pkg_type ?? "",
+                'payment_status' => $request->payment_status ?? "",
+                'date_range' => $request->date_range ?? "",
             ]
         ]);
     }
