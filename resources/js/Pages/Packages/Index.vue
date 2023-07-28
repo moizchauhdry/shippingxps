@@ -1,6 +1,6 @@
 <template>
 	<MainLayout>
-		<div class="card">
+		<div class="card mb-5">
 			<div class="card-header">					
 				<b>Manage Packages</b>
 				<template v-if="open_pkgs_count >= 2">
@@ -88,7 +88,10 @@
 				</div>
 
 				<package-list-component v-bind="$props"></package-list-component>
-				<span><b>Showing Records: {{ packages_count }}</b></span>
+			</div>
+			<div class="card-footer">
+				<span class="float-left"><b>Showing Records: {{ packages_count }}</b></span>
+				<pagination :links="pkgs.links" class="float-right"></pagination>
 			</div>
 		</div>
 	</MainLayout>
@@ -101,13 +104,15 @@
 	import PackageListComponent from "./Components/PackageListComponent.vue";
 	import Datepicker from "vue3-date-time-picker";
 	import "vue3-date-time-picker/dist/main.css";
-	
+	import Pagination from "@/Components/Pagination.vue";
+
 	export default {
 		components: {
 			BreezeAuthenticatedLayout,
 			MainLayout,
 			PackageListComponent,
-			Datepicker
+			Datepicker,
+			Pagination
 		},
 		props: {
 			auth: Object,

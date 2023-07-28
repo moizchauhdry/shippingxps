@@ -4,8 +4,8 @@
 			<thead>
 				<tr>
 					<th scope="col">SR #</th>
-					<th scope="col">Package</th>
-					<th>Tracking No.</th>
+					<th scope="col">Package ID</th>
+					<th scope="col">Tracking Number</th>
 					<th scope="col">Warehouse</th>
 					<th scope="col">Status</th>
 					<th scope="col">Customer</th>
@@ -60,11 +60,8 @@
 						</span>
 					</td>
 					<td>
-						<inertia-link
-							:href="route('detail-customer', pkg?.customer?.id)"
-							class="btn btn-link"
-						>
-							# {{ siuteNum(pkg?.customer?.id) }} - {{ pkg?.customer?.name }}
+						<inertia-link :href="route('detail-customer', pkg?.customer?.id)" class="btn btn-link">
+							{{ pkg?.customer?.name }} - {{ siuteNum(pkg?.customer?.id) }}
 						</inertia-link>
 					</td>
 					<td>{{ pkg.created_at }}</td>
@@ -103,13 +100,10 @@
 			</tbody>
 		</table>
 	</div>
-	<pagination class="mt-2 float-right" :links="pkgs.links"></pagination>
 </template>
 
 <script>
-	import Pagination from "@/Components/Pagination.vue";
 	export default {
-		components: { Pagination },
 		name: "Packages List",
 		props: {
 			auth: Object,
