@@ -72,10 +72,16 @@ class ShopController extends Controller
             })
             ->orderBy('orders.id', 'DESC');
 
-        $orders = $query->paginate(10);
+        $orders = $query->paginate(10)->withQueryString();
 
         return Inertia::render('ShopForMe/OrdersList', [
-            'orders' => $orders
+            'orders' => $orders,
+            'filters' => [
+                'order_id' => $request->order_id ?? "",
+                'user_id' => $request->user_id ?? "",
+                'order_status' => $request->order_status ?? "",
+                'payment_status' => $request->payment_status ?? "",
+            ]
         ]);
     }
 

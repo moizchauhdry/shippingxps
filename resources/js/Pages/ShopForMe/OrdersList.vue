@@ -6,16 +6,16 @@
 				<div class="row mb-4">
 					<div class="col-md-12">
 						<form @submit.prevent="submit">
-							<div class="row">
-								<div class="form-group col-md-3">
+							<div class="d-flex search">
+								<div class="form-group">
 									<label for="">Order ID</label>
 									<input type="search" name="number" v-model="form.order_id" class="form-control"/>
 								</div>
-								<div class="form-group col-md-3">
+								<div class="form-group">
 									<label for="">Suite Number</label>
 									<input type="search" name="number" v-model="form.user_id" class="form-control"/>
 								</div>
-								<div class="form-group col-md-3">
+								<div class="form-group">
 									<label for="">Order Status</label>
 									<select class="form-control custom-select" v-model="form.order_status" >
 										<option value="" selected>All</option>
@@ -23,7 +23,7 @@
 										<option value="approved">Approved</option>
 									</select>
 								</div>
-								<div class="form-group col-md-3">
+								<div class="form-group">
 									<label for="">Payment Status</label>
 									<select class="form-control custom-select" v-model="form.payment_status" >
 										<option value="" selected>All</option>
@@ -31,7 +31,9 @@
 										<option value="pending">Unpaid</option>
 									</select>
 								</div>
-								<div class="form-group col-md-4">
+							</div>
+							<div class="row">
+								<div class="col-md-12">
 									<button type="submit" class="btn btn-primary mr-1">Search</button>
 									<button type="button" class="btn btn-info" @click="clear()">Clear</button>
 								</div>
@@ -55,7 +57,7 @@
 								<th scope="col">Customer</th>
 								<th scope="col">Type</th>
 								<th scope="col">Status</th>
-								<th scope="col">Site</th>
+								<th scope="col">Website</th>
 								<th scope="col"></th>
 							</tr>
 						</thead>
@@ -124,7 +126,6 @@
 	import MainLayout from "@/Layouts/Main";
 	import BreezeAuthenticatedLayout from "@/Layouts/Authenticated";
 	import Pagination from "@/Components/Pagination.vue";
-	import { useForm } from "@inertiajs/inertia-vue3";
 	import { Inertia } from "@inertiajs/inertia";
 
 	export default {
@@ -136,25 +137,17 @@
 		props: {
 			auth: Object,
 			orders: Object,
+			filters: Object,
 		},
 		data() {
 			return {
-				form: useForm({
-					order_id: "",
-					order_status: "",
-					payment_status: "",
-				}),
-			};
-		},
-		watch: {
-			params: {
-				handler() {
-					this.$inertia.get(this.route("shop-for-me"), this.params, {
-						replace: true,
-						preserveState: true,
-					});
+				form: {
+					order_id: this.filters.order_id,
+					user_id: this.filters.user_id,
+					order_status: this.filters.order_status,
+					payment_status: this.filters.payment_status,
 				},
-			},
+			};
 		},
 		methods: {
 			getLabelClass(status) {
@@ -188,11 +181,9 @@
 				return 4000 + user_id;
 			},
 			submit() {
-				this.form.order_id = this.form.order_id;
-				this.form.user_id = this.form.user_id;
-				this.form.order_status = this.form.order_status;
-				this.form.payment_status = this.form.payment_status;
-				Inertia.post(route("shop-for-me.index"), this.form);
+				const queryParams = new URLSearchParams(this.form);
+				const url = `${route("shop-for-me.index")}?${queryParams.toString()}`;
+				Inertia.visit(url, { preserveState: true });
 			},
 			clear() {
 				this.form.order_id = "";
@@ -204,3 +195,23 @@
 		},
 	};
 </script>
+
+<style>
+	.dp__input {
+		background-color: var(--dp-background-color);
+		border-radius: 0px;
+		font-family: -apple-system,blinkmacsystemfont,"Segoe UI",roboto,oxygen,ubuntu,cantarell,"Open Sans","Helvetica Neue",sans-serif;
+		border: 1px solid var(--dp-border-color);
+		outline: none;
+		transition: border-color .2s cubic-bezier(0.645, 0.045, 0.355, 1);
+		width: 100%;
+		font-size: 1rem;
+		line-height: 1.5rem;
+		padding: 4px 33px;
+		color: var(--dp-text-color);
+		box-sizing: border-box;
+	}
+	.search .form-group {
+		margin-left:1px
+	}
+</style>
