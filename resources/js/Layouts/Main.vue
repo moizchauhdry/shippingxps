@@ -426,6 +426,7 @@
 					<FlashMessages />
 				</div>
 				<div class="col-md-12">
+					<Announcement></Announcement>
 					<slot />
 				</div>
 			</div>
@@ -807,6 +808,7 @@
 	import BreezeResponsiveNavLink from "@/Components/ResponsiveNavLink";
 	import { cornsilk } from "color-name";
 	import packageLockJson from "../../../package-lock.json";
+	import Announcement from "@/Components/Announcement.vue";
 
 	export default {
 		// components: {
@@ -819,6 +821,7 @@
 			FlashMessages,
 			BreezeNavLink,
 			BreezeResponsiveNavLink,
+			Announcement
 		},
 		data() {
 			return {
