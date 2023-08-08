@@ -18,6 +18,9 @@ use App\Models\Country;
 use App\Models\Package;
 use App\Models\Warehouse;
 use App\Models\SiteSetting;
+use App\Models\User;
+use App\Notifications\AnnouncementNotification;
+use Illuminate\Support\Facades\Notification;
 
 class HomeController extends Controller
 {
@@ -1096,5 +1099,11 @@ class HomeController extends Controller
             'status' => true,
             'data' => $response['warehouses'],
         ]);
+    }
+
+    public function announcement()
+    {
+        $customers = User::orderBy('id', 'asc')->where('type', 'customer')->get();
+        Notification::send($customers, new AnnouncementNotification());
     }
 }

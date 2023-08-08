@@ -1,13 +1,11 @@
 <?php
 
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CustomerController;
-use App\Http\Controllers\PostController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ShippingCalculatorController;
 use App\Http\Controllers\ShippingRatesController;
 use Inertia\Inertia;
-
 
 /*
 |--------------------------------------------------------------------------
@@ -24,25 +22,20 @@ Route::get('/', function () {
     return redirect()->route('dashboard');
 })->name('homePage');
 
-Route::get('/checkAuth-user', [\App\Http\Controllers\HomeController::class, 'checkAuth']);
-
-Route::get('/test-email', 'EmailController@index')->name('test-email');
-
+Route::get('/checkAuth-user', [HomeController::class, 'checkAuth']);
 Route::any('/dashboard', 'HomeController@dashboard')->name('dashboard')->middleware(['auth', 'verified']);
 Route::any('/dashboard-success', 'HomeController@dashboard')->name('dashboard-success')->middleware(['auth', 'verified']);
-
 Route::get('/shipping-calculator', 'HomeController@pricing')->name('shipping-calculator');
 Route::get('/getServicesList', 'HomeController@getServicesList')->name('getServicesList');
-
 Route::get('/pricing', 'HomeController@pricingTable')->name('pricing');
-
 Route::get('/getListings', 'HomeController@getListings')->name('getListings');
 Route::get('/getQuotes', 'HomeController@getQuotes')->name('getQuotes');
 Route::get('/getQuote', 'HomeController@getQuote')->name('getQuote');
 Route::get('/getQuoteByOrders', 'HomeController@getQuoteByOrders')->name('getQuoteByOrders');
 Route::get('/test-order-xps', 'HomeController@putTestOrder')->name('putTestOrder');
-
 Route::get('/shopping', 'HomeController@shopping')->name('shopping')->middleware('auth');
+// Route::get('/test-email', 'EmailController@index')->name('test-email');
+Route::any('announcement', [HomeController::class, 'announcement'])->name('announcement');
 
 Route::any('/orders/index', 'OrderController@index')->name('orders')->middleware('auth');
 Route::get('/orders/create', 'OrderController@create')->name('orders.create')->middleware('auth');
