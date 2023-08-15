@@ -1,9 +1,8 @@
 <template>
 
-	<img style="width: 100px; height: auto" class="img-thumbnail" :src="packag.return_label_file"/>
+	<img style="width: 100px; height: auto" class="img-thumbnail" :src="imgURL(packag.return_label_file)"/>
 
-	<!-- <a :href="imgURL(packag.return_label_file)" class="m-1" download>{{ packag.return_label_file }}</a> -->
-
+	<a :href="packag.return_label_file" class="m-1" download>{{packag.return_label_file}}</a>
 
 	<button @click="open()">
 		<i class="fa fa-list mr-1"></i>Return To Sender
@@ -59,7 +58,7 @@
 		},
 		methods: {
 			imgURL(url) {
-				return "/public/uploads/" + url;
+				return "/" + url;
 			},
 			open() {
 				var modal = document.getElementById("return_to_sender");

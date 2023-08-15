@@ -999,7 +999,7 @@ class PackageController extends Controller
         $package  = Package::find($request->package_id);
 
         $file = $request->file('return_label_file');
-        $path = $file->store('public/uploads');
+        $path = $file->store('/public/uploads');
 
         $package->update([
             'return_label' => $request->return_label,
