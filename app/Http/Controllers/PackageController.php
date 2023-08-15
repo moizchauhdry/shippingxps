@@ -991,16 +991,10 @@ class PackageController extends Controller
     public function returnPackage(Request $request)
     {
         $package  = Package::find($request->package_id);
-
-        // $file = $request->file('return_label_file');
-        // $path = $file->store('/');
-
-
         $file = $request->file('return_label_file');
         $filename = time() . '_' . $package->id . '.png';
         $file->storeAs('uploads', $filename);
         File::move(storage_path('app/uploads/' . $filename), public_path('../public/uploads/' . $filename));
-
 
         $package->update([
             'return_label' => $request->return_label,

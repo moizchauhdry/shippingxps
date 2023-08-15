@@ -3,7 +3,7 @@
 		<div class="container mb-5">
 			<div class="row">
 				<div class="col-md-12">
-					<return-component v-bind="$props"></return-component>
+					<!-- <return-component v-bind="$props"></return-component> -->
 					<notification-component v-bind="$props"></notification-component>
 					<child-package-component v-bind="$props"></child-package-component>
 					<shipping-address-component v-bind="$props"></shipping-address-component>
