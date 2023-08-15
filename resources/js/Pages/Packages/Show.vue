@@ -3,11 +3,10 @@
 		<div class="container mb-5">
 			<div class="row">
 				<div class="col-md-12">
+					<return-component v-bind="$props"></return-component>
 					<notification-component v-bind="$props"></notification-component>
 					<child-package-component v-bind="$props"></child-package-component>
-					<shipping-address-component
-						v-bind="$props"
-					></shipping-address-component>
+					<shipping-address-component v-bind="$props"></shipping-address-component>
 					<package-box-component v-bind="$props"></package-box-component>
 					<shipping-rate-component v-bind="$props"></shipping-rate-component>
 					<consolidation-component v-bind="$props"></consolidation-component>
@@ -32,11 +31,11 @@
 </template>
 
 <script>
+	import $ from "jquery";
 	import MainLayout from "@/Layouts/Main";
 	import BreezeAuthenticatedLayout from "@/Layouts/Authenticated";
 	import BreezeLabel from "@/Components/Label";
 	import ImageViewer from "@/Components/ImageViewer";
-	import $ from "jquery";
 	import ConsolidationComponent from "./Components/ConsolidationComponent.vue";
 	import ChildPackageComponent from "./Components/ChildPackageComponent.vue";
 	import ShippingAddressComponent from "./Components/ShippingAddressComponent.vue";
@@ -49,6 +48,7 @@
 	import NotificationComponent from "./Components/NotificationComponent.vue";
 	import PaymentComponent from "./Components/PaymentComponent.vue";
 	import PackageDeleteComponent from "./Components/PackageDeleteComponent.vue";
+	import ReturnComponent from "./Components/ReturnComponent.vue";
 
 	export default {
 		components: {
@@ -68,6 +68,7 @@
 			NotificationComponent,
 			PaymentComponent,
 			PackageDeleteComponent,
+			ReturnComponent,
 		},
 		data() {
 			return {

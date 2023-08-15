@@ -991,4 +991,21 @@ class PackageController extends Controller
 
         return redirect()->back()->with('success', 'Charges Updated');
     }
+
+    public function returnPackage(Request $request)
+    {
+        // dd($request->all());
+
+        $package  = Package::find($request->package_id);
+
+        $file = $request->file('return_label_file');
+        $path = $file->store('public/uploads');
+
+        $package->update([
+            'return_label' => $request->return_label,
+            'return_label_file' => $path,
+        ]);
+
+        return redirect()->back()->with('success', 'SUCCESS!');
+    }
 }
