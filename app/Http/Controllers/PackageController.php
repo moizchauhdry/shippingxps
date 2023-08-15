@@ -4,12 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Events\CustomFormFilled;
 use App\Events\PackageConsolidated;
-use App\Events\PackageShipped;
 use App\Events\PackageShippingServiceSelected;
 use App\Events\ServiceRequestedEvent;
 use App\Events\ServiceRequestUpdatedEvent;
 use App\Models\Address;
-use App\Models\Payment;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use GuzzleHttp\Client;
@@ -28,9 +26,7 @@ use App\Notifications\CustomerPackageRequestNotification;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Notification;
-
-use function Couchbase\basicDecoderV1;
-
+use Illuminate\Support\Facades\File;
 
 class PackageController extends Controller
 {
@@ -996,12 +992,19 @@ class PackageController extends Controller
     {
         $package  = Package::find($request->package_id);
 
+        // $file = $request->file('return_label_file');
+        // $path = $file->store('/');
+
+
         $file = $request->file('return_label_file');
-        $path = $file->store('/');
+        $filename = time() . '_' . $package->id . '.png';
+        $file->storeAs('uploads', $filename);
+        File::move(storage_path('app/uploads/' . $filename), public_path('../public/uploads/' . $filename));
+
 
         $package->update([
             'return_label' => $request->return_label,
-            'return_label_file' => $path,
+            'return_label_file' => $filename,
         ]);
 
         return redirect()->back()->with('success', 'SUCCESS!');
