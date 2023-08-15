@@ -994,12 +994,10 @@ class PackageController extends Controller
 
     public function returnPackage(Request $request)
     {
-        // dd($request->all());
-
         $package  = Package::find($request->package_id);
 
         $file = $request->file('return_label_file');
-        $path = $file->store('/public/uploads');
+        $path = $file->store('/');
 
         $package->update([
             'return_label' => $request->return_label,

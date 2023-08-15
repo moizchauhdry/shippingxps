@@ -58,7 +58,7 @@
 		},
 		methods: {
 			imgURL(url) {
-				return "/" + url;
+				return "/public/uploads/" + url;
 			},
 			open() {
 				var modal = document.getElementById("return_to_sender");
