@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\File;
+use Illuminate\Validation\Rule;
 
 class PackageController extends Controller
 {
@@ -204,13 +205,18 @@ class PackageController extends Controller
             }
         }
 
-        $total = $subtotal + $packag->shipping_charges + (float) SiteSetting::getByName('mailout_fee') +
-            $packag->storage_fee + $packag->consolidation_fee;
+        $total = $subtotal + $packag->shipping_charges + (float) SiteSetting::getByName('mailout_fee') + $packag->storage_fee + $packag->consolidation_fee;
 
         $eei_charges = 0;
         if ($packag->shipping_total >= 2500 || (isset($packag->address->country) && in_array($packag->address->country->iso, ['CN', 'HK', 'RU', 'VE']))) {
             $eei_charges = (float) SiteSetting::getByName('eei_charges');
             $total = $total + $eei_charges;
+        }
+
+        $label_charges = 0;
+        if ($packag->return_label == 1) {
+            $label_charges = (float) SiteSetting::getByName('label_charges');
+            $total = $total + $label_charges;
         }
 
         $shipping_address = Address::where('user_id', Auth::user()->id)->get();
@@ -244,18 +250,19 @@ class PackageController extends Controller
             'services' => $services,
             'service_requests' => $service_requests,
             'images' => $images,
-            'order_charges' => $order_charges,
-            'mailout_fee' => (float) SiteSetting::getByName('mailout_fee'),
-            'eei_charges' => $eei_charges,
             'shipping_services' => Shipping::getShippingServices(),
             'package_service_requests' => $package_service_requests,
             'shipping_address' => $shipping_address,
-            'subtotal' => $subtotal,
-            'total' => $total,
             'package_boxes' => $package_boxes,
             'countries' => $countries,
             'service_requests_service_ids' => $service_requests_service_ids,
             'service_request_pending_count' => $service_request_pending_count,
+            'total' => $total,
+            'subtotal' => $subtotal,
+            'order_charges' => $order_charges,
+            'mailout_fee' => (float) SiteSetting::getByName('mailout_fee'),
+            'eei_charges' => $eei_charges,
+            'label_charges' => (float) $label_charges,
         ]);
     }
 
@@ -990,15 +997,23 @@ class PackageController extends Controller
 
     public function returnPackage(Request $request)
     {
+        $request->validate([
+            'return_label' => 'required',
+            'return_label_file' => Rule::requiredIf($request->return_label == 1),
+        ]);
+
         $package  = Package::find($request->package_id);
-        $file = $request->file('return_label_file');
-        $filename = time() . '_' . $package->id . '.png';
-        $file->storeAs('uploads', $filename);
-        File::move(storage_path('app/uploads/' . $filename), public_path('../public/uploads/' . $filename));
+
+        if ($request->return_label == 1) {
+            $file = $request->file('return_label_file');
+            $filename = time() . '_' . $package->id . '.png';
+            $file->storeAs('uploads', $filename);
+            File::move(storage_path('app/uploads/' . $filename), public_path('../public/uploads/' . $filename));
+        }
 
         $package->update([
             'return_label' => $request->return_label,
-            'return_label_file' => $filename,
+            'return_label_file' => $filename ?? NULL,
         ]);
 
         return redirect()->back()->with('success', 'SUCCESS!');

@@ -3,7 +3,7 @@
 		<div class="container mb-5">
 			<div class="row">
 				<div class="col-md-12">
-					<!-- <return-component v-bind="$props"></return-component> -->
+					<return-component v-bind="$props"></return-component>
 					<notification-component v-bind="$props"></notification-component>
 					<child-package-component v-bind="$props"></child-package-component>
 					<shipping-address-component v-bind="$props"></shipping-address-component>
@@ -94,17 +94,18 @@
 			services: Object,
 			service_requests: Object,
 			images: Object,
-			order_charges: Object,
-			mailout_fee: Number,
-			eei_charges: Number,
 			shipping_services: Object,
 			package_service_requests: Object,
 			shipping_address: Object,
-			total: Object,
 			package_boxes: Object,
 			countries: Object,
 			service_requests_service_ids: Object,
 			service_request_pending_count: Object,
+			total: Object,
+			order_charges: Object,
+			mailout_fee: Number,
+			eei_charges: Number,
+			label_charges: Number,
 		},
 		computed: {
 			siuteNum() {

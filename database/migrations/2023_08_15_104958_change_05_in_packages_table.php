@@ -14,7 +14,7 @@ class Change05InPackagesTable extends Migration
     public function up()
     {
         Schema::table('packages', function (Blueprint $table) {
-            $table->enum('return_label', ['yes', 'no'])->nullable()->default('no');
+            $table->boolean('return_label')->nullable()->default(false);
             $table->string('return_label_file', 255)->nullable();
         });
     }

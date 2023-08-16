@@ -178,6 +178,12 @@
 										<td>${{ formatNumber(eei_charges) }}</td>
 										<td></td>
 									</tr>
+									<tr>
+										<td>Label Charges</td>
+										<td></td>
+										<td>${{ formatNumber(label_charges) }}</td>
+										<td></td>
+									</tr>
 									<tr v-if="packag.storage_fee > 0">
 										<td>Storage Fee</td>
 										<td></td>
@@ -188,7 +194,7 @@
 										<td>Shipping Charges</td>
 										<td></td>
 										<td>
-											${{ packag.shipping_charges }}
+											${{ packag.shipping_charges ?? 0 }}
 											<button
 												v-if="
 													$page.props.auth.user.type == 'admin' &&
@@ -320,6 +326,7 @@
 			total: Object,
 			mailout_fee: Number,
 			eei_charges: Number,
+			label_charges: Number,
 		},
 		data() {
 			return {
