@@ -34,6 +34,9 @@
 							<div v-if="packag.return_package == 1 && $page.props.auth.user.type == 'customer'">
 								<span>The request for the package to be returned to the sender has been sent.</span>
 							</div>
+							<div v-if="packag.return_package == 1 && $page.props.auth.user.type == 'admin'">
+								<span>The customer has requested to return package to sender.</span>
+							</div>
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-dark" @click="close()" data-dismiss="modal">

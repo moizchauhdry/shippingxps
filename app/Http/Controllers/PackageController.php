@@ -23,6 +23,7 @@ use App\Models\SiteSetting;
 use App\Models\Shipping;
 use App\Models\Warehouse;
 use App\Notifications\CustomerPackageRequestNotification;
+use App\Notifications\ReturnPackageNotification;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Notification;
@@ -1016,6 +1017,9 @@ class PackageController extends Controller
             'return_label' => $request->return_label,
             'return_label_file' => $filename ?? NULL,
         ]);
+
+        $admins = User::whereIn('type', ['admin', 'manager'])->get();
+        Notification::send($admins, new ReturnPackageNotification($package));
 
         return redirect()->back()->with('success', 'SUCCESS!');
     }
