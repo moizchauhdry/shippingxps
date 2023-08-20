@@ -14,6 +14,7 @@ class Change05InPackagesTable extends Migration
     public function up()
     {
         Schema::table('packages', function (Blueprint $table) {
+            $table->boolean('return_package')->nullable()->default(false);
             $table->boolean('return_label')->nullable()->default(false);
             $table->string('return_label_file', 255)->nullable();
         });
@@ -27,6 +28,7 @@ class Change05InPackagesTable extends Migration
     public function down()
     {
         Schema::table('packages', function (Blueprint $table) {
+            $table->dropColumn('return_package');
             $table->dropColumn('return_label');
             $table->dropColumn('return_label_file');
         });

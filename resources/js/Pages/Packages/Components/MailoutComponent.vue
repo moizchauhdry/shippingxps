@@ -224,27 +224,11 @@
 									</tr>
 									<tr>
 										<template v-if="$page.props.auth.user.type == 'customer'">
-											<td
-												v-if="
-													packag.carrier_code != null &&
-													packag.payment_status != 'Paid'
-												"
-												colspan="4"
-											>
-												<button
-													type="button"
-													@click="checkout()"
-													class="btn btn-primary"
-												>
-													Checkout
-												</button>
+											<td v-if="(packag.carrier_code != null || packag.return_label == 1) && packag.payment_status != 'Paid'" colspan="4">
+												<button type="button" @click="checkout()" class="btn btn-primary">Checkout</button>
 											</td>
 											<td v-else colspan="4">
-												<button
-													v-if="packag.payment_status != 'Paid'"
-													type="button"
-													class="btn btn-primary disabled"
-												>
+												<button v-if="packag.payment_status != 'Paid'" type="button" class="btn btn-primary disabled">
 													Checkout
 												</button>
 											</td>

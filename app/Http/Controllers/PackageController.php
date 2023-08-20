@@ -1012,6 +1012,7 @@ class PackageController extends Controller
         }
 
         $package->update([
+            'return_package' => true,
             'return_label' => $request->return_label,
             'return_label_file' => $filename ?? NULL,
         ]);

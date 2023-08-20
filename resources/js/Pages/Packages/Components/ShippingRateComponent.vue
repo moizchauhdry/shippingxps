@@ -1,14 +1,10 @@
 <template>
-	<div
-		class="row"
-		v-if="
-			$page.props.auth.user.type == 'customer' &&
-			(packag.status == 'filled' ||
-				packag.status == 'consolidated' ||
-				packag.address_type == 'domestic') &&
-			packag.pkg_dim_status == 'done'
-		"
-	>
+	<div class="row" v-if="
+		$page.props.auth.user.type == 'customer' && 
+		(packag.status == 'filled' || packag.status == 'consolidated' || packag.address_type == 'domestic') && 
+		packag.pkg_dim_status == 'done' && 
+		packag.return_label == 0">
+		
 		<div class="col-md-12" v-if="packag.service_code == null">
 			<div class="card mt-2">
 				<div class="card-header">
