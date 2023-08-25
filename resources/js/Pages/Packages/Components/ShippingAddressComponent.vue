@@ -264,6 +264,7 @@
 					phone: "",
 					email: "",
 					state_required: false,
+					packages_address: true
 				}),
 			};
 		},

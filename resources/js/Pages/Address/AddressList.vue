@@ -12,7 +12,7 @@
 					style="float: right"
 					:href="route('address.create')"
 				>
-					<i class="fas fa-external-link-alt"></i><span>Add New</span>
+					<i class="fas fa-external-link-alt mr-1"></i><span>Add New</span>
 				</inertia-link>
 				<table class="table table-striped">
 					<thead>
@@ -39,11 +39,8 @@
 							<td>{{ address.phone }}</td>
 							<td>{{ address.address }}</td>
 							<td>
-								<inertia-link
-									class="nav-link"
-									:href="route('address.edit', address.id)"
-								>
-									<i class="fas fa-external-link-alt"></i><span>Edit</span>
+								<inertia-link class="nav-link" :href="route('address.edit', address.id)">
+									<i class="fas fa-external-link-alt mr-1"></i><span>Edit</span>
 								</inertia-link>
 
 								<!-- <inertia-link class="nav-link" :href="route('address.destroy', address.id)" method="delete">

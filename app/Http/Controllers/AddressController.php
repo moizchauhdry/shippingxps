@@ -34,17 +34,19 @@ class AddressController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'fullname' => 'required|string',
+            'fullname' => 'regex:/^[A-Za-z0-9\s]+$/|required',
+            'is_residential' => 'required|boolean',
             'country_id' => 'required',
-            'city' => 'required|string',
-            'zip_code' => 'required|string',
+            'city' => 'regex:/^[A-Za-z0-9\s]+$/|required|string',
+            'zip_code' => 'regex:/^[A-Za-z0-9\s]+$/|required|string',
             'phone' => 'required|string',
             'email' => 'email|required|string',
-            'address' => 'required|string|max:35',
+            'address' => 'regex:/^[A-Za-z0-9\s]+$/|required|string|max:35',
             'address_2' => 'nullable|string|max:35',
             'address_3' => 'nullable|string|max:35',
-            'is_residential' => 'required|boolean',
             'tax_no' => 'nullable|max:100',
+        ], [
+            'regex' => 'The :attribute must only contain letters (english) and numbers.'
         ]);
 
 
@@ -142,8 +144,12 @@ class AddressController extends Controller
         $address->tax_no = $request->tax_no;
         $address->save();
 
-        return redirect()->back()->with('success', 'The address have been created successfully.');
-    }
+       if ($request->packages_address == true) {
+            return redirect()->back()->with('success', 'The address have been created successfully.');
+       } else {
+            return redirect()->route('addresses')->with('success', 'The address have been created successfully.');
+       }
+    } 
 
     public function edit($id)
     {
@@ -160,21 +166,22 @@ class AddressController extends Controller
     public function update(Request $request)
     {
         $id = $request->input('id');
-
         $address = Address::find($id);
 
         $validated = $request->validate([
-            'fullname' => 'required|string',
+            'fullname' => 'regex:/^[A-Za-z0-9\s]+$/|required',
+            'is_residential' => 'required|boolean',
             'country_id' => 'required',
-            'city' => 'required|string',
-            'zip_code' => 'required|string',
+            'city' => 'regex:/^[A-Za-z0-9\s]+$/|required|string',
+            'zip_code' => 'regex:/^[A-Za-z0-9\s]+$/|required|string',
             'phone' => 'required|string',
             'email' => 'email|required|string',
-            'address' => 'required|string|max:35',
+            'address' => 'regex:/^[A-Za-z0-9\s]+$/|required|string|max:35',
             'address_2' => 'nullable|string|max:35',
             'address_3' => 'nullable|string|max:35',
-            'is_residential' => 'required|boolean',
-            'tax_no' => 'nullable',
+            'tax_no' => 'nullable|max:100',
+        ], [
+            'regex' => 'The :attribute must only contain letters (english) and numbers.'
         ]);
 
 
@@ -266,7 +273,7 @@ class AddressController extends Controller
 
         $address->update();
 
-        return redirect()->back()->with('success', 'The address have been updated successfully.');
+        return redirect()->route('addresses')->with('success', 'The address have been updated successfully.');
     }
 
     public function destroy($id)
