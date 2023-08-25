@@ -1,5 +1,5 @@
 <template>
-	<div class="row" v-if="$page.props.auth.user.type == 'customer' || packag.return_package == 1">
+	<div class="row" v-if="packag.pkg_type == 'single' && ($page.props.auth.user.type == 'customer' || packag.return_package == 1)">
 		<div class="col-md-12">
 			<button @click="open()" class="text-lg text-primary"><i class="fa fa-list mr-1"></i>Return Package</button>
 			<div class="modal fade" id="return_to_sender" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-backdrop="true">
