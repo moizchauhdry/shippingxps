@@ -28,8 +28,8 @@
 							</template>
 							<div class="form-group" v-if="packag.return_label == 1">
 								<label><b>Label File</b></label>
-								<a :href="fileUrl(packag.return_label_file)" class="form-control" target="_blank">
-									<i class="fas fa-print"></i> {{packag.return_label_file}}</a>
+								<a :href="fileUrl(packag.return_label_file)" class="form-control" download>
+									<i class="fas fa-download"></i> {{packag.return_label_file}}</a>
 							</div>
 							<div v-if="packag.return_package == 1 && $page.props.auth.user.type == 'customer'">
 								<span>The request for the package to be returned to the sender has been sent.</span>

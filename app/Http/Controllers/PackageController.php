@@ -1000,14 +1000,14 @@ class PackageController extends Controller
     {
         $request->validate([
             'return_label' => 'required',
-            'return_label_file' => Rule::requiredIf($request->return_label == 1),
+            'return_label_file' => [Rule::requiredIf($request->return_label == 1),'mimes:pdf'],
         ]);
 
         $package  = Package::find($request->package_id);
 
         if ($request->return_label == 1) {
             $file = $request->file('return_label_file');
-            $filename = time() . '_' . $package->id . '.png';
+            $filename = time() . '_' . $package->id . '.pdf';
             $file->storeAs('uploads', $filename);
             File::move(storage_path('app/uploads/' . $filename), public_path('../public/uploads/' . $filename));
         }
