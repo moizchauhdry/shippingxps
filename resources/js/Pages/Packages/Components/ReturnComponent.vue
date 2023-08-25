@@ -41,7 +41,7 @@
 						<div class="modal-footer">
 							<button type="button" class="btn btn-dark" @click="close()" data-dismiss="modal">
 								{{packag.return_package == 0 ? 'Cancel' : 'Close'}}</button>
-							<button type="button" class="btn btn-primary" @click="submit()" v-if="packag.return_package == 0">Submit</button>
+							<button type="button" class="btn btn-primary" @click="submit()" v-if="packag.return_package == 0 && packag.payment_status != 'Paid'">Submit</button>
 						</div>
 					</div>
 				</div>
