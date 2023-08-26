@@ -69,6 +69,14 @@
 									</select>
 								</div>
 								<div class="form-group">
+									<label for="">Auction Status</label>
+									<select class="form-control custom-select" v-model="form.auctioned" >
+										<option value="" selected>All</option>
+										<option value="1">Yes</option>
+										<option value="0">No</option>
+									</select>
+								</div>
+								<div class="form-group">
 									<label for="">Tracking Number</label>
 									<input type="text" v-model="form.tracking_no" class="form-control"/>
 								</div>
@@ -131,6 +139,7 @@
 					pkg_status: this.filters.pkg_status,
 					pkg_type: this.filters.pkg_type,
 					payment_status: this.filters.payment_status,
+					auctioned: this.filters.auctioned,
 					tracking_no: this.filters.tracking_no,
 					date_range: this.filters.date_range,
 				},

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuctionController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\HomeController;
@@ -167,3 +168,4 @@ Route::get('packages-to-dash/{id}', 'PackageController@pushPackage')->name('push
 
 Route::get('dashboard/shipping-calculator', [ShippingCalculatorController::class, 'index'])->name('dashboard.shipping-calculator.index');
 Route::any('shipping-rates', [ShippingRatesController::class, 'index'])->name('shipping-rates.index');
+Route::get('auctions', [AuctionController::class, 'index'])->name('auctions.index');

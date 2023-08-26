@@ -84,6 +84,9 @@ class PackageController extends Controller
             ->when($request->tracking_no && !empty($request->tracking_no), function ($qry) use ($request) {
                 $qry->where('tracking_number_in', $request->tracking_no);
             })
+            ->when($request->auctioned && !empty($request->auctioned), function ($qry) use ($request) {
+                $qry->where('auctioned', $request->auctioned);
+            })
             ->when($request->date_range && !empty($request->date_range), function ($qry) use ($request) {
                 $range = explode(' - ', $request->date_range);
                 $from = date("Y-m-d", strtotime($range[0]));
@@ -106,6 +109,7 @@ class PackageController extends Controller
                 'pkg_status' => $request->pkg_status ?? "",
                 'pkg_type' => $request->pkg_type ?? "",
                 'payment_status' => $request->payment_status ?? "",
+                'auctioned' => $request->auctioned ?? "",
                 'date_range' => $request->date_range ?? "",
                 'tracking_no' => $request->tracking_no ?? "",
             ]

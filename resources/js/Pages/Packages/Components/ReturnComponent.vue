@@ -55,7 +55,7 @@
 	import BreezeValidationErrors from "@/Components/ValidationErrors";
 
 	export default {
-		name: "Package Delete Component",
+		name: "Return Component",
 		props: {
 			packag: Object,
 		},

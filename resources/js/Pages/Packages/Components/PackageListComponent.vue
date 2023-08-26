@@ -41,23 +41,10 @@
 						</p> -->
 					</td>
 					<td>
-						<span v-bind:class="getLabelClass(pkg.status)" class="mr-1">
-							{{ pkg.status }}
-						</span>
-
-						<span
-							class="badge badge-warning text-uppercase mr-1"
-							v-if="
-								pkg.pkg_type == 'consolidation' || pkg.pkg_type == 'multipiece'
-							"
-						>
-							{{ pkg.pkg_type }}
-						</span>
-						<span
-							class="badge badge-success text-uppercase"
-							v-if="pkg.payment_status == 'Paid'"
-							>Paid
-						</span>
+						<span class="mr-1" :class="getLabelClass(pkg.status)" >{{ pkg.status }}</span>
+						<span class="badge badge-warning text-uppercase mr-1" v-if="pkg.pkg_type == 'consolidation' || pkg.pkg_type == 'multipiece'">{{ pkg.pkg_type }}</span>
+						<span class="badge badge-success text-uppercase mr-1" v-if="pkg.payment_status == 'Paid'">Paid</span>
+						<span class="badge badge-warning text-uppercase mr-1" v-if="pkg.auctioned == 1">Auctioned</span>
 					</td>
 					<td>
 						<inertia-link :href="route('detail-customer', pkg?.customer?.id)" class="btn btn-link">
@@ -84,11 +71,9 @@
 							</template>
 						</template>
 						<template v-else>
-							<span class="badge badge-danger"
-								>This package is assigned to PKG #{{
-									pkg.package_handler_id
-								}}</span
-							>
+							<inertia-link class="btn btn-link" :href="route('packages.show', pkg.package_handler_id)">
+								This package is assigned to PKG #{{pkg.package_handler_id}}
+							</inertia-link>
 						</template>
 					</td>
 				</tr>
