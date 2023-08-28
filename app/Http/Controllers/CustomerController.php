@@ -140,6 +140,7 @@ class CustomerController extends Controller
      */
     public function index(Request $request)
     {
+        // dd($request->all());
         $page = $request->has('page') ? $request->page : 10;
         $query = User::where('type', 'customer');
 
@@ -258,6 +259,6 @@ class CustomerController extends Controller
     {
         $lead = User::find($id);
         $lead->delete();
-        return redirect('customers')->with('success', 'Customer Deleted Successfully.');
+        return redirect('customers.index')->with('success', 'Customer Deleted Successfully.');
     }
 }

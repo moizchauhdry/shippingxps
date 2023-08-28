@@ -93,28 +93,27 @@ export default {
 	props: {
 		customers: Object,
 	},
-
-	// watch:{
-	//   params:{
-	//     handler(){
-	//       this.$inertia.get(this.route('customers'),this.params,{replace:true,preserveState:true});
-	//     }
-	//   }
-	// },
+	watch: {
+		params: {
+			handler() {
+				this.$inertia.get(this.route('customers.index'), this.params, { replace: true, preserveState: true });
+			}
+		}
+	},
 	methods: {
 		siuteNum(user_id) {
 			return 4000 + user_id;
 		},
-		destroy(id) {
-			if (confirm("Are you sure you want to delete this Customer?")) {
-				this.$inertia.delete(this.route("delete-customer", id));
-			}
-		},
+		// destroy(id) {
+		// 	if (confirm("Are you sure you want to delete this Customer?")) {
+		// 		this.$inertia.delete(this.route("delete-customer", id));
+		// 	}
+		// },
 		createOrderLink(id) {
 			return this.route("orders.create") + "?customer_id=" + id;
 		},
 		submit() {
-			this.form.post(route("customers"));
+			this.form.post(route("customers.index"));
 		},
 	},
 };
