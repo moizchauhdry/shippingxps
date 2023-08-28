@@ -93,7 +93,7 @@ class ShopController extends Controller
     public function create()
     {
         $additional_pickup_charges = SiteSetting::where('name', 'additional_pickup_charges')->first()->value;
-        $warehouses = Warehouse::all();
+        $warehouses = Warehouse::where('id',2)->get();
         $stores = Store::where('status', 1)->get();
         return Inertia::render('ShopForMe/CreateOrder', [
             'warehouses' => $warehouses,
@@ -254,19 +254,6 @@ class ShopController extends Controller
         $price = $order->items->sum('unit_price');
         $price_with_tax = $order->items->sum('price_with_tax');
 
-        // foreach ($order->items as $item) {
-        //     $items[] = [
-        //         'id' => $item->id,
-        //         'name' => $item->name,
-        //         'description' => $item->description,
-        //         'qty' => $item->quantity,
-        //         'price' => $item->unit_price,
-        //         'price_with_tax' => $item->price_with_tax,
-        //         'sub_total' => $item->sub_total,
-        //         'url' => $item->url
-        //     ];
-        // }
-
         $images = [];
         foreach ($order->images as $image) {
             $images[] = [
@@ -274,38 +261,6 @@ class ShopController extends Controller
                 'image' => $image->image,
             ];
         }
-
-        // $order = [
-        //     'id' => $order->id,
-        //     'warehouse_id' => $order->warehouse_id,
-        //     'store_id' => $order->store_id,
-        //     'store_charges' => $order->store_charges,
-        //     'store_tax' => $order->store_tax,
-        //     'site_name' => $order->site_name,
-        //     'site_url' => $order->site_url,
-        //     'status' => $order->status,
-        //     'notes' => $order->notes,
-        //     'shipping_from_shop' => $order->shipping_from_shop,
-        //     'sales_tax' => $order->sales_tax,
-        //     'order_type' => $order->order_type,
-        //     'order_origin' => $order->order_origin,
-        //     'only_pickup' => $order->only_pickup,
-        //     'shipping_xps' => $order->shipping_xps_purchase,
-        //     'pickup_date' => $order->pickup_date,
-        //     'pickup_charges' => $order->pickup_charges,
-        //     'pickup_type' => $order->pickup_type,
-        //     'store_name' => $order->store_name,
-        //     'sub_total' => $order->sub_total,
-        //     'grand_total' => $order->grand_total,
-        //     'service_charges' => $order->service_charges,
-        //     'is_service_charges' => $order->is_service_charges,
-        //     'discount' => $order->discount,
-        //     'receipt_url' => $order->receipt_url,
-        //     'payment_status' => $order->payment_status,
-        //     'image' => '',
-        //     'items' => $items,
-        //     'images' => $images,
-        // ];
 
         if (Auth::user()->type != 'admin') {
             $order['is_changed'] = $order->is_changed;

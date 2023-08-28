@@ -1093,7 +1093,7 @@ class HomeController extends Controller
 
     public function getMailingAddress()
     {
-        $response['warehouses'] = Warehouse::all();
+        $response['warehouses'] = Warehouse::where('id',2)->get();
 
         return \response()->json([
             'status' => true,

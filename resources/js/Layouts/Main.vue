@@ -153,7 +153,7 @@
 
 					<button class="accordion">Address</button>
 					<div class="accordion-content">
-						<inertia-link
+						<!-- <inertia-link
 							class="nav-link"
 							:href="route('address.suite')"
 							:class="{ active: route().current('address.suite') }"
@@ -161,7 +161,7 @@
 						>
 							<i class="fas fa-address-book"></i>
 							<span>Mailing Addresses</span>
-						</inertia-link>
+						</inertia-link> -->
 						<inertia-link
 							v-if="$page.props.auth.user.type != 'admin'"
 							class="nav-link"
