@@ -28,7 +28,7 @@
 							<tr v-for="card in gift_cards" :key="card.id">
 								<td>{{ card.id }}</td>
 								<td class="text-center">
-									<inertia-link :href="route('detail-customer', card.user.id)" class="btn btn-link">
+									<inertia-link :href="route('customers.show', card.user.id)" class="btn btn-link">
 									# {{ siuteNum(card.user.id) }} - {{ card.user.name }}
 									</inertia-link>
 								</td>

@@ -22,15 +22,6 @@ class User extends Authenticatable
         'suite_no',
         'name_with_suite_no'
     ];
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
-    // protected $hidden = [
-    //     'password',
-    //     'remember_token',
-    // ];
 
     /**
      * The attributes that should be cast to native types.

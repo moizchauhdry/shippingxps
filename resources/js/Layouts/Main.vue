@@ -138,14 +138,14 @@
 						<inertia-link
 							v-if="$page.props.auth.user.type != 'customer'"
 							class="nav-link"
-							:href="route('customers')"
+							:href="route('customers.index')"
 							:class="{
 								active:
-									route().current('customers') ||
-									route().current('edit-customer') ||
-									route().current('detail-customer'),
+									route().current('customers.index') ||
+									route().current('customers.edit') ||
+									route().current('customers.detail'),
 							}"
-							:active="route().current('customers')"
+							:active="route().current('customers.index')"
 						>
 							<i class="fas fa-users"></i><span>Manage Customers</span>
 						</inertia-link>

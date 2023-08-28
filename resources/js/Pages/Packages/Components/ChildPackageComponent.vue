@@ -24,7 +24,7 @@
 					<h3 class="float-left">Packages/Orders Included</h3>
 					<h3 class="float-right">
 						<inertia-link
-							:href="route('detail-customer', packag?.customer?.id)"
+							:href="route('customers.show', packag?.customer?.id)"
 							class="btn btn-link"
 						>
 							# {{ siuteNum(packag?.customer?.id) }} -

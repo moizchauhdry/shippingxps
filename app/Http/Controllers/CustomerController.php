@@ -157,6 +157,7 @@ class CustomerController extends Controller
                 'city' => $customer->city ?? '-',
                 'country' => $customer->country ?? '-',
                 'phone' => $customer->phone_no ?? '-',
+                'status' => $customer->status,
                 'created_at' => isset($customer->created_at) ? $customer->created_at->format('F d, Y') : NULL,
                 'updated_at' => isset($customer->created_at) ? $customer->updated_at->format('F d, Y') : NULL,
             ]);
@@ -234,9 +235,17 @@ class CustomerController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $data = [
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone_no' => $request->phone_no,
+            'status' => $request->status,
+        ];
+
         $user = User::findOrFail($id);
-        $user->update($request->all());
-        return redirect('customers')->with('success', 'The customer data have been updated successfully.');
+        $user->update($data);
+
+        return redirect()->route('customers.index')->with('success', 'The customer data have been updated successfully.');
     }
 
     /**

@@ -64,7 +64,7 @@ class GiftCardController extends Controller
 
             $url = URL::route('gift-card.edit', $gift_card->id);
             $customer = $gift_card->user;
-            $customerDetailURL = '<a href="' . route('detail-customer', $customer->id) . '">' . $customer->name_with_suite_no . '</a>';
+            $customerDetailURL = '<a href="' . route('customers.show', $customer->id) . '">' . $customer->name_with_suite_no . '</a>';
 
             $data = [
                 'url' => URL::route('gift-card.edit', $gift_card->id),
@@ -136,7 +136,7 @@ class GiftCardController extends Controller
 
             $url = URL::route('gift-card.edit', $gift_card->id);
             $customer = $gift_card->user;
-            $customerDetailURL = 'Customer <strong><a href="' . route('detail-customer', $customer->id) . '">' . $customer->name_with_suite_no . '</strong></a>';
+            $customerDetailURL = 'Customer <strong><a href="' . route('customers.show', $customer->id) . '">' . $customer->name_with_suite_no . '</strong></a>';
 
             $auser = $user->type == 'admin' ? 'Admin' : $customerDetailURL;
             $data = [
@@ -214,7 +214,7 @@ class GiftCardController extends Controller
 
         $url = URL::route('gift-card.edit', $gift_card->id);
         $customer = $gift_card->user;
-        $customerDetailURL = 'Customer <strong><a href="' . route('detail-customer', $customer->id) . '">' . $customer->name_with_suite_no . '</strong></a>';
+        $customerDetailURL = 'Customer <strong><a href="' . route('customers.show', $customer->id) . '">' . $customer->name_with_suite_no . '</strong></a>';
 
         $auser = $user->type == 'admin' ? 'Admin' : $customerDetailURL;
         $data = [

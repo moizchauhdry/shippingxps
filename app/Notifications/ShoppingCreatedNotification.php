@@ -58,7 +58,7 @@ class ShoppingCreatedNotification extends Notification
     {
         $url = route("shop-for-me.show", ["id" => $this->order->id]);
         $customer = $this->order->customer;
-        $customerDetailURL = '<a href="'.route('detail-customer',$customer->id).'">'.$customer->name_with_suite_no.'</a>' ?? '';
+        $customerDetailURL = '<a href="'.route('customers.show',$customer->id).'">'.$customer->name_with_suite_no.'</a>' ?? '';
 
         return [
             'order_id' => $this->order->id,

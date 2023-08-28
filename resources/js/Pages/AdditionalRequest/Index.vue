@@ -28,7 +28,7 @@
               <td>{{ request.id }}</td>
               <td>{{ request.package.package_no }}</td>
               <td>
-                <inertia-link :href="route('detail-customer', request.customer.id)" class="btn btn-link">
+                <inertia-link :href="route('customers.show', request.customer.id)" class="btn btn-link">
                   # {{ siuteNum(request.customer.id) }} - {{ request.customer.name }}
                 </inertia-link>
               </td>

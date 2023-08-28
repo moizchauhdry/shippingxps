@@ -20,7 +20,8 @@
 						<span class="badge badge-primary text-sm">PKG #{{ pkg.id }}</span> <br>
 
 						<template v-for="child_pkg in pkg.child_packages" :key="child_pkg.id">
-							<span class="badge badge-info mr-1 mb-1" v-if="child_pkg.id != pkg.id">PKG #{{ child_pkg.id }}</span>
+							<span class="badge badge-info mr-1 mb-1" v-if="child_pkg.id != pkg.id">PKG #{{ child_pkg.id
+							}}</span>
 						</template>
 					</td>
 					<td>
@@ -29,50 +30,33 @@
 					</td>
 					<td>
 						{{ pkg?.warehouse?.name }}
-						<!-- <p v-if="pkg.package_length > 0">
-							Dimentions : {{ pkg.package_length }} {{ pkg.dim_unit }} x
-							{{ pkg.package_width }} {{ pkg.dim_unit }} x
-							{{ pkg.package_height }}
-							{{ pkg.dim_unit }}
-						</p> -->
-						<!-- <p>
-							Shipped :
-							<strong>{{ pkg.status == "shipped" ? "Yes" : "No" }}</strong>
-						</p> -->
 					</td>
 					<td>
-						<span class="mr-1" :class="getLabelClass(pkg.status)" >{{ pkg.status }}</span>
-						<span class="badge badge-warning text-uppercase mr-1" v-if="pkg.pkg_type == 'consolidation' || pkg.pkg_type == 'multipiece'">{{ pkg.pkg_type }}</span>
-						<span class="badge badge-success text-uppercase mr-1" v-if="pkg.payment_status == 'Paid'">Paid</span>
+						<span class="mr-1" :class="getLabelClass(pkg.status)">{{ pkg.status }}</span>
+						<span class="badge badge-warning text-uppercase mr-1"
+							v-if="pkg.pkg_type == 'consolidation' || pkg.pkg_type == 'multipiece'">{{ pkg.pkg_type }}</span>
+						<span class="badge badge-success text-uppercase mr-1"
+							v-if="pkg.payment_status == 'Paid'">Paid</span>
 						<span class="badge badge-warning text-uppercase mr-1" v-if="pkg.auctioned == 1">Auctioned</span>
 					</td>
 					<td>
-						<inertia-link :href="route('detail-customer', pkg?.customer?.id)" class="btn btn-link">
+						<inertia-link :href="route('customers.show', pkg?.customer?.id)" class="btn btn-link">
 							{{ pkg?.customer?.name }} - {{ siuteNum(pkg?.customer?.id) }}
 						</inertia-link>
 					</td>
 					<td>{{ pkg.created_at }}</td>
 					<td>
 						<template v-if="pkg.pkg_type != 'assigned'">
-							<inertia-link
-								class="btn btn-info btn-sm m-1"
-								:href="route('packages.show', pkg.id)"
-							>
-								<i class="fa fa-list mr-1"></i>Detail</inertia-link
-							>
+							<inertia-link class="btn btn-info btn-sm m-1" :href="route('packages.show', pkg.id)">
+								<i class="fa fa-list mr-1"></i>Detail</inertia-link>
 							<template v-if="pkg.status != 'open'">
-								<a
-									class="btn btn-warning btn-sm m-1"
-									:href="route('packages.pdf', pkg.id)"
-									target="_blank"
-								>
-									<i class="fa fa-print mr-1"></i>Print</a
-								>
+								<a class="btn btn-warning btn-sm m-1" :href="route('packages.pdf', pkg.id)" target="_blank">
+									<i class="fa fa-print mr-1"></i>Print</a>
 							</template>
 						</template>
 						<template v-else>
 							<inertia-link class="btn btn-link" :href="route('packages.show', pkg.package_handler_id)">
-								This package is assigned to PKG #{{pkg.package_handler_id}}
+								This package is assigned to PKG #{{ pkg.package_handler_id }}
 							</inertia-link>
 						</template>
 					</td>
@@ -88,58 +72,58 @@
 </template>
 
 <script>
-	export default {
-		name: "Packages List",
-		props: {
-			auth: Object,
-			pkgs: Object,
-			filter: Object,
+export default {
+	name: "Packages List",
+	props: {
+		auth: Object,
+		pkgs: Object,
+		filter: Object,
+	},
+	data() {
+		return {
+			//
+		};
+	},
+	methods: {
+		getLabelClass(status) {
+			switch (status) {
+				case "pending":
+					return "text-uppercase badge badge-warning text-white";
+					break;
+				case "open":
+					return "text-uppercase badge badge-info text-white";
+					break;
+				case "filled":
+					return "text-uppercase badge badge-info text-white";
+					break;
+				case "open":
+					return "text-uppercase badge badge-success text-white";
+					break;
+				case "labeled":
+					return "text-uppercase badge badge-success text-white";
+					break;
+				case "shipped":
+					return "text-uppercase badge badge-primary p-1";
+					break;
+				case "delivered":
+					return "text-uppercase badge badge-success text-white";
+					break;
+				case "consolidation":
+					return "text-uppercase badge badge-danger text-white";
+					break;
+				case "served":
+					return "label bg-success";
+					break;
+				case "rejected":
+					return "label bg-danger";
+					break;
+				default:
+					return "text-uppercase badge badge-primary text-white";
+			}
 		},
-		data() {
-			return {
-				//
-			};
+		siuteNum(user_id) {
+			return 4000 + user_id;
 		},
-		methods: {
-			getLabelClass(status) {
-				switch (status) {
-					case "pending":
-						return "text-uppercase badge badge-warning text-white";
-						break;
-					case "open":
-						return "text-uppercase badge badge-info text-white";
-						break;
-					case "filled":
-						return "text-uppercase badge badge-info text-white";
-						break;
-					case "open":
-						return "text-uppercase badge badge-success text-white";
-						break;
-					case "labeled":
-						return "text-uppercase badge badge-success text-white";
-						break;
-					case "shipped":
-						return "text-uppercase badge badge-primary p-1";
-						break;
-					case "delivered":
-						return "text-uppercase badge badge-success text-white";
-						break;
-					case "consolidation":
-						return "text-uppercase badge badge-danger text-white";
-						break;
-					case "served":
-						return "label bg-success";
-						break;
-					case "rejected":
-						return "label bg-danger";
-						break;
-					default:
-						return "text-uppercase badge badge-primary text-white";
-				}
-			},
-			siuteNum(user_id) {
-				return 4000 + user_id;
-			},
-		},
-	};
+	},
+};
 </script>

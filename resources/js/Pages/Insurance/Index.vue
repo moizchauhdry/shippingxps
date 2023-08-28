@@ -26,7 +26,7 @@
             <tr v-for="insurance in insurances" :key="insurance.id">
               <td>{{ insurance.id }}</td>
               <td>
-                <inertia-link :href="route('detail-customer', insurance.customer.id)" class="btn btn-link">
+                <inertia-link :href="route('customers.show', insurance.customer.id)" class="btn btn-link">
                   # {{ siuteNum(insurance.customer.id) }} - {{ insurance.customer.name }}
                 </inertia-link>
               </td>

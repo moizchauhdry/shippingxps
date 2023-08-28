@@ -58,7 +58,7 @@ class PaymentNotification extends Notification
     public function toArray($notifiable)
     {
         $customer = $this->payment->customer;
-        $customerDetailURL = '<a href="' . route('detail-customer', $customer->id) . '">' . $customer->name_with_suite_no . '</a>' ?? '';
+        $customerDetailURL = '<a href="' . route('customers.show', $customer->id) . '">' . $customer->name_with_suite_no . '</a>' ?? '';
 
         if ($this->payment->package_id != null) {
 

@@ -59,7 +59,7 @@ class CustomerPackageRequestNotification extends Notification
     {
         $url = route("packages.show", ["id" => $this->package->id]);
         $customer = User::find($this->package->customer_id);
-        $customer_url = route("detail-customer", ["id" => $customer->id]);
+        $customer_url = route("customers.show", $customer->id);
 
         return [
             'package_id' => $this->package->id,

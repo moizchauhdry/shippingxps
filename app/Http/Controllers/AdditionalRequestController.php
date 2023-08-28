@@ -49,7 +49,7 @@ class AdditionalRequestController extends Controller
             ]);
             $url = \URL::route('additional-request.edit', $additionalRequest->id);
             $customer = $additionalRequest->customer;
-            $customerDetailURL = 'Customer <strong><a href="'.route('detail-customer',$customer->id).'">'.$customer->name_with_suite_no.'</strong></a>';
+            $customerDetailURL = 'Customer <strong><a href="'.route('customers.show',$customer->id).'">'.$customer->name_with_suite_no.'</strong></a>';
 
             $data = [
                 'url' => \URL::route('additional-request.edit', $additionalRequest->id),
@@ -111,7 +111,7 @@ class AdditionalRequestController extends Controller
 
             $url = \URL::route('additional-request.edit', $additionalRequest->id);
             $customer = $additionalRequest->customer;
-            $customerDetailURL = 'Customer <strong><a href="'.route('detail-customer',$customer->id).'">'.$customer->name_with_suite_no.'</strong></a>';
+            $customerDetailURL = 'Customer <strong><a href="'.route('customers.show',$customer->id).'">'.$customer->name_with_suite_no.'</strong></a>';
 
             $auser = $user->type == 'admin' ? 'Admin' : $customerDetailURL;
             $data = [
@@ -178,7 +178,7 @@ class AdditionalRequestController extends Controller
 
         $url = \URL::route('additional-request.edit', $additionalRequest->id);
         $customer = $additionalRequest->customer;
-        $customerDetailURL = 'Customer <strong><a href="'.route('detail-customer',$customer->id).'">'.$customer->name_with_suite_no.'</strong></a>';
+        $customerDetailURL = 'Customer <strong><a href="'.route('customers.show',$customer->id).'">'.$customer->name_with_suite_no.'</strong></a>';
 
         $auser = $user->type == 'admin' ? 'Admin' : $customerDetailURL;
         $data = [

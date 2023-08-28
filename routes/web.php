@@ -111,52 +111,25 @@ Route::get('/test', function () {
 
 require __DIR__ . '/auth.php';
 
-Route::get('/manage-users', [CustomerController::class, 'users'])
-    ->middleware(['auth', 'verified'])
-    ->name('manage-users');
-Route::get('/create-users', [CustomerController::class, 'createUser'])
-    ->middleware(['auth', 'verified'])
-    ->name('create-users');
-Route::post('/save-users', [CustomerController::class, 'saveUser'])
-    ->middleware(['auth', 'verified'])
-    ->name('save-users');
+Route::get('/manage-users', [CustomerController::class, 'users'])->middleware(['auth', 'verified'])->name('manage-users');
+Route::get('/create-users', [CustomerController::class, 'createUser'])->middleware(['auth', 'verified'])->name('create-users');
+Route::post('/save-users', [CustomerController::class, 'saveUser'])->middleware(['auth', 'verified'])->name('save-users');
+Route::get('/edit-users/{id}', [CustomerController::class, 'editUser'])->middleware(['auth', 'verified'])->name('edit-users');
+Route::post('/update-users', [CustomerController::class, 'updateUser'])->middleware(['auth', 'verified'])->name('update-users');
+Route::get('/show-pdf', [CustomerController::class, 'showPDF'])->name('show-pdf');
+Route::delete('/delete-users/{id}', [CustomerController::class, 'deleteUser'])->middleware(['auth', 'verified'])->name('delete-users');
 
-Route::get('/edit-users/{id}', [CustomerController::class, 'editUser'])
-    ->middleware(['auth', 'verified'])
-    ->name('edit-users');
-Route::post('/update-users', [CustomerController::class, 'updateUser'])
-    ->middleware(['auth', 'verified'])
-    ->name('update-users');
-
-Route::get('/show-pdf', [CustomerController::class, 'showPDF'])
-    ->name('show-pdf');
-
-Route::delete('/delete-users/{id}', [CustomerController::class, 'deleteUser'])
-    ->middleware(['auth', 'verified'])
-    ->name('delete-users');
-
-
-Route::any('/customers', [CustomerController::class, 'index'])
-    ->middleware(['auth', 'verified'])
-    ->name('customers');
-Route::get('/create-customer', [CustomerController::class, 'create'])
-    ->middleware(['auth', 'verified'])
-    ->name('create-customer');
-Route::post('/create-customer', [CustomerController::class, 'store'])
-    ->middleware(['auth', 'verified'])
-    ->name('create-customer');
-Route::get('/customer/{id}', [CustomerController::class, 'edit'])
-    ->middleware(['auth', 'verified'])
-    ->name('view-customer');
-Route::get('/customer/show/{id}', [CustomerController::class, 'show'])
-    ->middleware(['auth', 'verified'])
-    ->name('detail-customer');
-Route::put('/customer/{id}', [CustomerController::class, 'update'])
-    ->middleware(['auth', 'verified'])
-    ->name('edit-customer');
-Route::delete('/lead/{id}', [CustomerController::class, 'destroy'])
-    ->middleware(['auth', 'verified'])
-    ->name('delete-customer');
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::prefix('customer')->group(function () {
+        Route::any('/', [CustomerController::class, 'index'])->name('customers.index');
+        // Route::get('create', [CustomerController::class, 'create'])->name('customers.create');
+        // Route::post('store', [CustomerController::class, 'store'])->name('customers.store');
+        Route::get('edit/{id}', [CustomerController::class, 'edit'])->name('customers.edit');
+        Route::post('update/{id}', [CustomerController::class, 'update'])->name('customers.update');
+        Route::get('show/{id}', [CustomerController::class, 'show'])->name('customers.show');
+        // Route::delete('destroy/{id}', [CustomerController::class, 'destroy'])->name('customers.destroy');
+    });
+});
 
 Route::get('pages/list', 'CMSPageController@index')->middleware(['auth', 'verified'])->name('pages_list');
 Route::get('pages/edit/{id}', 'CMSPageController@edit')->middleware(['auth', 'verified'])->name('page_edit');

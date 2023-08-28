@@ -66,7 +66,7 @@
 								<td>{{ order.id }}</td>
 								<td>{{ order.warehouse_name }}</td>
 								<td>
-									<inertia-link :href="route('detail-customer', order.user_id)" class="btn btn-link">
+									<inertia-link :href="route('customers.show', order.user_id)" class="btn btn-link">
 										{{ order.user_name }} - {{ siuteNum(order.user_id) }}
 									</inertia-link>
 								</td>
