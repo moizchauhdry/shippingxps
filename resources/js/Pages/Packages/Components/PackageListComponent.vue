@@ -24,13 +24,13 @@
 						</template>
 					</td>
 					<td>
-						<span v-if="pkg.tracking_number_in && pkg.carrier_code" class="font-bold text-primary underline">
-							<a :href="'https://www.fedex.com/apps/fedextrack/?action=track&amp;trackingnumber=' + pkg.tracking_number_in"
-								target="_blank" v-if="pkg.carrier_code == 'fedex'">{{ pkg.tracking_number_in }}</a>
-							<a :href="'http://www.dhl.com/en/express/tracking.html?brand=DHL&amp;AWB=' + pkg.tracking_number_in"
-								target="_blank" v-if="pkg.carrier_code == 'dhl'">{{ pkg.tracking_number_in }}</a>
-							<a :href="'https://www.ups.com/track?loc=en_US&tracknum=' + pkg.tracking_number_in + '&requester=WT%2Ftrackdetails'"
-								target="_blank" v-if="pkg.carrier_code == 'ups'">{{ pkg.tracking_number_in }}</a>
+						<span v-if="pkg.tracking_number_out && pkg.carrier_code" class="font-bold text-primary underline">
+							<a :href="'https://www.fedex.com/apps/fedextrack/?action=track&amp;trackingnumber=' + pkg.tracking_number_out"
+								target="_blank" v-if="pkg.carrier_code == 'fedex'">{{ pkg.tracking_number_out }}</a>
+							<a :href="'http://www.dhl.com/en/express/tracking.html?brand=DHL&amp;AWB=' + pkg.tracking_number_out"
+								target="_blank" v-if="pkg.carrier_code == 'dhl'">{{ pkg.tracking_number_out }}</a>
+							<a :href="'https://www.ups.com/track?loc=en_US&tracknum=' + pkg.tracking_number_out + '&requester=WT%2Ftrackdetails'"
+								target="_blank" v-if="pkg.carrier_code == 'ups'">{{ pkg.tracking_number_out }}</a>
 						</span>
 						<span v-else>-</span>
 					</td>
