@@ -80,8 +80,8 @@
 
 						<inertia-link v-if="$page.props.auth.user.type != 'customer'" class="nav-link"
 							:href="route('customers.index')" :class="{
-								active: route().current('customers.index') || route().current('customers.edit') || route().current('customers.detail')
-							}" :active="route().current('customers.index')">
+								active:route().current('customers.index') || route().current('customers.edit') || route().current('customers.detail')}" 
+								:active="route().current('customers.index')">
 							<i class="fas fa-users"></i><span>Manage Customers</span>
 						</inertia-link>
 					</div>
@@ -288,108 +288,6 @@
 		</div>
 	</div>
 </template>
-
-<script>
-// import BreezeAuthenticatedLayout from '@/Layouts/Authenticated'
-import BreezeApplicationLogo from "@/Components/ApplicationLogo";
-import BreezeDropdown from "@/Components/Dropdown";
-import BreezeDropdownLink from "@/Components/DropdownLink";
-import BreezeNavLink from "@/Components/NavLink";
-import FlashMessages from "@/Components/FlashMessages";
-import BreezeResponsiveNavLink from "@/Components/ResponsiveNavLink";
-import { cornsilk } from "color-name";
-import packageLockJson from "../../../package-lock.json";
-import Announcement from "@/Components/Announcement.vue";
-
-export default {
-	// components: {
-	//     BreezeAuthenticatedLayout,
-	// },
-	components: {
-		BreezeApplicationLogo,
-		BreezeDropdown,
-		BreezeDropdownLink,
-		FlashMessages,
-		BreezeNavLink,
-		BreezeResponsiveNavLink,
-		Announcement
-	},
-	data() {
-		return {
-			usertype: this.$auth,
-			main_sidebar: 0,
-			version: packageLockJson.version,
-		};
-	},
-	props: {
-		auth: Object,
-		errors: Object,
-		notification_count: String,
-	},
-
-	mounted() {
-		this.initTawkTo();
-		this.sidebar();
-	},
-	created() {
-		//
-	},
-	destroyed() {
-		//
-	},
-	methods: {
-		initTawkTo() {
-			axios.get("/checkAuth-user").then(({ data }) => {
-				if (data.init) {
-					var Tawk_API = Tawk_API || {},
-						Tawk_LoadStart = new Date();
-					(function () {
-						var s1 = document.createElement("script"),
-							s0 = document.getElementsByTagName("script")[0];
-						s1.async = true;
-						s1.src =
-							"https://embed.tawk.to/617e40def7c0440a5920c3c5/1fjaiqq44";
-						s1.charset = "UTF-8";
-						s1.setAttribute("crossorigin", "*");
-						s0.parentNode.insertBefore(s1, s0);
-					})();
-				}
-			});
-		},
-		toggleSideBar() {
-			if (window.innerWidth < 1300) {
-				if (this.main_sidebar == 0) {
-					this.main_sidebar = 1;
-				} else {
-					this.main_sidebar = 0;
-				}
-			}
-		},
-		sidebar() {
-			if (window.innerWidth > 1300) {
-				this.main_sidebar = 1;
-			} else {
-				this.main_sidebar = 0;
-			}
-		},
-		collapseToggle(event) {
-			console.log(event);
-			if (event.target.classList.contains("is-open")) {
-				event.target.classList.remove("is-open");
-			} else {
-				event.target.classList.add("is-open");
-			}
-			var content = event.target.nextElementSibling;
-			if (content.style.maxHeight) {
-				content.style.maxHeight = null;
-			} else {
-				content.style.maxHeight = content.scrollHeight + "px";
-			}
-		},
-	},
-};
-</script>
-
 
 <style scoped>
 .table {
@@ -750,9 +648,112 @@ button.accordion.is-open {
 	/*overflow: hidden;*/
 	/*transition: max-height 0.5s ease-in-out;*/
 }
+</style>
 
+<style>
 .form-control {
 	border-color: #ced4da !important;
 	color: #495057 !important;
 }
 </style>
+
+<script>
+// import BreezeAuthenticatedLayout from '@/Layouts/Authenticated'
+import BreezeApplicationLogo from "@/Components/ApplicationLogo";
+import BreezeDropdown from "@/Components/Dropdown";
+import BreezeDropdownLink from "@/Components/DropdownLink";
+import BreezeNavLink from "@/Components/NavLink";
+import FlashMessages from "@/Components/FlashMessages";
+import BreezeResponsiveNavLink from "@/Components/ResponsiveNavLink";
+import { cornsilk } from "color-name";
+import packageLockJson from "../../../package-lock.json";
+import Announcement from "@/Components/Announcement.vue";
+
+export default {
+	// components: {
+	//     BreezeAuthenticatedLayout,
+	// },
+	components: {
+		BreezeApplicationLogo,
+		BreezeDropdown,
+		BreezeDropdownLink,
+		FlashMessages,
+		BreezeNavLink,
+		BreezeResponsiveNavLink,
+		Announcement
+	},
+	data() {
+		return {
+			usertype: this.$auth,
+			main_sidebar: 0,
+			version: packageLockJson.version,
+		};
+	},
+	props: {
+		auth: Object,
+		errors: Object,
+		notification_count: String,
+	},
+
+	mounted() {
+		this.initTawkTo();
+		this.sidebar();
+	},
+	created() {
+		//
+	},
+	destroyed() {
+		//
+	},
+	methods: {
+		initTawkTo() {
+			axios.get("/checkAuth-user").then(({ data }) => {
+				if (data.init) {
+					var Tawk_API = Tawk_API || {},
+						Tawk_LoadStart = new Date();
+					(function () {
+						var s1 = document.createElement("script"),
+							s0 = document.getElementsByTagName("script")[0];
+						s1.async = true;
+						s1.src =
+							"https://embed.tawk.to/617e40def7c0440a5920c3c5/1fjaiqq44";
+						s1.charset = "UTF-8";
+						s1.setAttribute("crossorigin", "*");
+						s0.parentNode.insertBefore(s1, s0);
+					})();
+				}
+			});
+		},
+		toggleSideBar() {
+			if (window.innerWidth < 1300) {
+				if (this.main_sidebar == 0) {
+					this.main_sidebar = 1;
+				} else {
+					this.main_sidebar = 0;
+				}
+			}
+		},
+		sidebar() {
+			if (window.innerWidth > 1300) {
+				this.main_sidebar = 1;
+			} else {
+				this.main_sidebar = 0;
+			}
+		},
+		collapseToggle(event) {
+			console.log(event);
+			if (event.target.classList.contains("is-open")) {
+				event.target.classList.remove("is-open");
+			} else {
+				event.target.classList.add("is-open");
+			}
+			var content = event.target.nextElementSibling;
+			if (content.style.maxHeight) {
+				content.style.maxHeight = null;
+			} else {
+				content.style.maxHeight = content.scrollHeight + "px";
+			}
+		},
+	},
+};
+</script>

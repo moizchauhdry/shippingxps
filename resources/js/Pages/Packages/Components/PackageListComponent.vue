@@ -18,14 +18,21 @@
 					<td>{{ ++index }}</td>
 					<td style="width: 200px;">
 						<span class="badge badge-primary text-sm">PKG #{{ pkg.id }}</span> <br>
-
 						<template v-for="child_pkg in pkg.child_packages" :key="child_pkg.id">
-							<span class="badge badge-info mr-1 mb-1" v-if="child_pkg.id != pkg.id">PKG #{{ child_pkg.id
-							}}</span>
+							<span class="badge badge-info mr-1 mb-1" v-if="child_pkg.id != pkg.id">
+								PKG #{{ child_pkg.id }}</span>
 						</template>
 					</td>
 					<td>
-						<span v-if="pkg.pkg_type == 'single'">{{ pkg.tracking_number_in }}</span>
+						<span v-if="pkg.pkg_type == 'single'">
+							<a :href="'https://www.fedex.com/apps/fedextrack/?action=track&amp;trackingnumber=' + pkg.tracking_number_in"
+								target="_blank" v-if="pkg.carrier_code == 'fedex'">{{ pkg.tracking_number_in }}</a>
+							<a :href="'http://www.dhl.com/en/express/tracking.html?brand=DHL&amp;AWB=' + pkg.tracking_number_in"
+								target="_blank" v-if="pkg.carrier_code == 'dhl'">{{ pkg.tracking_number_in }}</a>
+							<a :href="'https://www.ups.com/track?loc=en_US&tracknum=' + pkg.tracking_number_in + '&requester=WT%2Ftrackdetails'"
+								target="_blank" v-if="pkg.carrier_code == 'ups'">{{ pkg.tracking_number_in }}</a>
+							<span v-else>-</span>
+						</span>
 						<span v-else>-</span>
 					</td>
 					<td>
