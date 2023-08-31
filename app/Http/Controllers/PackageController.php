@@ -62,7 +62,7 @@ class PackageController extends Controller
     {
         $suit_no = intval($request->suit_no) - 4000;
 
-        $query = Package::with('customer', 'warehouse', 'child_packages')
+        $query = Package::with('customer', 'warehouse', 'child_packages','boxes')
             ->when(Auth::user()->type == 'customer', function ($qry) {
                 $qry->where('customer_id', Auth::user()->id);
             })
@@ -81,9 +81,9 @@ class PackageController extends Controller
             ->when($request->payment_status && !empty($request->payment_status), function ($qry) use ($request) {
                 $qry->where('payment_status', $request->payment_status);
             })
-            ->when($request->tracking_no && !empty($request->tracking_no), function ($qry) use ($request) {
-                $qry->where('tracking_number_in', $request->tracking_no);
-            })
+            // ->when($request->tracking_no && !empty($request->tracking_no), function ($qry) use ($request) {
+            //     $qry->where('tracking_number_out', $request->tracking_no);
+            // })
             ->when($request->auctioned && !empty($request->auctioned), function ($qry) use ($request) {
                 $qry->where('auctioned', $request->auctioned);
             })

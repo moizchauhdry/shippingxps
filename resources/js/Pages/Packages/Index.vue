@@ -46,7 +46,7 @@
 										<option value="open">Open</option>
 										<option value="filled">Filled</option>
 										<option value="checkout">Checkout</option>
-										<option value="shipped">Shipped</option>
+										<!-- <option value="shipped">Shipped</option> -->
 										<option value="rejected">Rejected</option>
 									</select>
 								</div>
