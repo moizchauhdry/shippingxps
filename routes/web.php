@@ -6,6 +6,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ShippingCalculatorController;
 use App\Http\Controllers\ShippingRatesController;
+use App\Http\Controllers\StripeController;
 use Inertia\Inertia;
 
 /*
@@ -142,3 +143,7 @@ Route::get('packages-to-dash/{id}', 'PackageController@pushPackage')->name('push
 Route::get('dashboard/shipping-calculator', [ShippingCalculatorController::class, 'index'])->name('dashboard.shipping-calculator.index');
 Route::any('shipping-rates', [ShippingRatesController::class, 'index'])->name('shipping-rates.index');
 Route::get('auctions', [AuctionController::class, 'index'])->name('auctions.index');
+
+Route::get('stripe', [StripeController::class, 'index'])->name('stripe.index');
+Route::post('create', [StripeController::class, 'create'])->name('stripe.create');
+
