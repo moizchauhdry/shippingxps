@@ -366,6 +366,7 @@ class PackageController extends Controller
 
         $package->update([
             'status' => 'filled',
+            'custom_form_status' => true,
             'shipping_total' => $validated['shipping_total'],
             'package_type' => $validated['package_type'],
             'special_instructions' => $request->special_instructions,
@@ -827,7 +828,7 @@ class PackageController extends Controller
     {
         $query = Package::with('customer', 'warehouse')
             ->where('warehouse_id', $request->warehouse_id)
-            ->where('status', 'open')
+            ->where('payment_status', 'Pending')
             ->where('pkg_type', 'single');
 
         if (Auth::user()->type == 'customer') {
