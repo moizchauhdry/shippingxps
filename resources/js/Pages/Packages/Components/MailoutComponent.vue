@@ -55,7 +55,8 @@
 												<template v-if="packag?.address?.tax_no">
 													VAT ID: {{ packag?.address?.tax_no }} <br>
 												</template>
-												Type: {{ packag?.address?.is_residential == 1 ? 'Residential' : 'Commercial' }} <br />
+												Type: {{ packag?.address?.is_residential == 1 ? 'Residential' : 'Commercial'
+												}} <br />
 											</td>
 										</tr>
 									</tbody>
@@ -108,12 +109,9 @@
 									</tr>
 								</thead>
 								<tbody>
-									<template
-										v-if="
-											packag.pkg_type == 'consolidation' &&
-											packag.pkg_dim_status == 'done'
-										"
-									>
+									<template v-if="packag.pkg_type == 'consolidation' &&
+										packag.pkg_dim_status == 'done'
+										">
 										<tr>
 											<td>Consolidation</td>
 											<td>
@@ -124,26 +122,19 @@
 											<td>${{ formatNumber(packag.consolidation_fee) }}</td>
 										</tr>
 									</template>
-									<template
-										v-for="package_service_request in package_service_requests"
-										:key="package_service_request.id"
-									>
+									<template v-for="package_service_request in package_service_requests"
+										:key="package_service_request.id">
 										<tr>
 											<td colspan="2">
 												<span>
 													{{ package_service_request.name }}
 													<br />
-													<small
-														v-if="package_service_request.child_package_id"
-													>
-														<inertia-link
-															:href="
-																route(
-																	'packages.show',
-																	package_service_request.child_package_id
-																)
-															"
-														>
+													<small v-if="package_service_request.child_package_id">
+														<inertia-link :href="route(
+															'packages.show',
+															package_service_request.child_package_id
+														)
+															">
 															PKG #{{
 																package_service_request.child_package_id
 															}}
@@ -153,14 +144,9 @@
 											</td>
 											<td>
 												${{ formatNumber(package_service_request.amount) }}
-												<button
-													v-if="
-														$page.props.auth.user.type == 'admin' &&
-														packag.payment_status != 'Paid'
-													"
-													class="btn btn-link"
-													@click="editServiceCharges(package_service_request)"
-												>
+												<button v-if="$page.props.auth.user.type == 'admin' &&
+													packag.payment_status != 'Paid'
+													" class="btn btn-link" @click="editServiceCharges(package_service_request)">
 													<i class="fa fa-edit"></i>
 												</button>
 											</td>
@@ -190,28 +176,31 @@
 										<td>${{ formatNumber(packag.storage_fee) }}</td>
 										<td></td>
 									</tr>
+									<tr v-if="packag.discount > 0">
+										<td>Discount</td>
+										<td></td>
+										<td>${{ formatNumber(packag.discount) }}</td>
+										<td></td>
+									</tr>
 									<tr>
 										<td>Shipping Charges</td>
 										<td></td>
 										<td>
 											${{ packag.shipping_charges ?? 0 }}
-											<button
-												v-if="
-													$page.props.auth.user.type == 'admin' &&
-													packag.payment_status != 'Paid'
-												"
-												class="btn btn-link"
-												@click="
-													editCharges(
-														packag.shipping_charges,
-														'shipping_charges'
-													)
-												"
-											>
+											<button class="btn btn-link"
+												v-if="$page.props.auth.user.type == 'admin' && packag.payment_status != 'Paid'"
+												@click="editCharges(packag.shipping_charges, 'shipping_charges')">
 												<i class="fa fa-edit"></i>
 											</button>
 										</td>
 										<td></td>
+									</tr>
+									<tr>
+										<td></td>
+										<td colspan="2">
+											<button type="button" class="btn btn-link float-right" data-toggle="modal"
+												data-target="#coupon_modal" @click="couponModal()"><b>Apply Coupon</b></button>
+										</td>
 									</tr>
 									<tr>
 										<td colspan="2" style="text-align: center">
@@ -224,11 +213,14 @@
 									</tr>
 									<tr>
 										<template v-if="$page.props.auth.user.type == 'customer'">
-											<td v-if="(packag.carrier_code != null || packag.return_label == 1) && packag.payment_status != 'Paid'" colspan="4">
-												<button type="button" @click="checkout()" class="btn btn-primary">Checkout</button>
+											<td v-if="(packag.carrier_code != null || packag.return_label == 1) && packag.payment_status != 'Paid'"
+												colspan="4">
+												<button type="button" @click="checkout()"
+													class="btn btn-primary">Checkout</button>
 											</td>
 											<td v-else colspan="4">
-												<button v-if="packag.payment_status != 'Paid'" type="button" class="btn btn-primary disabled">
+												<button v-if="packag.payment_status != 'Paid'" type="button"
+													class="btn btn-primary disabled">
 													Checkout
 												</button>
 											</td>
@@ -243,16 +235,9 @@
 		</div>
 	</div>
 
-	<div
-		v-if="
-			$page.props.auth.user.type == 'admin' && packag.payment_status != 'Paid'
-		"
-		class="modal fade"
-		id="charges_update_modal"
-		tabindex="-1"
-		aria-labelledby="charges_update_label"
-		aria-hidden="true"
-	>
+	<div v-if="$page.props.auth.user.type == 'admin' && packag.payment_status != 'Paid'
+		" class="modal fade" id="charges_update_modal" tabindex="-1" aria-labelledby="charges_update_label"
+		aria-hidden="true">
 		<div class="modal-dialog border">
 			<form @submit.prevent="updateServiceCharges">
 				<div class="modal-content">
@@ -260,13 +245,8 @@
 						<h5 class="modal-title" id="charges_update_label">
 							Charges Update
 						</h5>
-						<button
-							type="button"
-							class="close"
-							data-dismiss="modal"
-							aria-label="Close"
-							v-on:click="closeServiceCharges"
-						>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"
+							v-on:click="close">
 							<span aria-hidden="true">&times;</span>
 						</button>
 					</div>
@@ -274,21 +254,13 @@
 						<div class="row col-md-12">
 							<breeze-validation-errors class="mb-4" />
 							<div class="form-group">
-								<input
-									type="text"
-									class="form-control"
-									v-model="charges_form.amount"
-								/>
+								<input type="text" class="form-control" v-model="charges_form.amount" />
 							</div>
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button
-							type="button"
-							class="btn btn-secondary"
-							data-dismiss="modal"
-							v-on:click="closeServiceCharges"
-						>
+						<button type="button" class="btn btn-secondary" data-dismiss="modal"
+							v-on:click="close">
 							Close
 						</button>
 						<button type="submit" class="btn btn-success">Update</button>
@@ -297,75 +269,119 @@
 			</form>
 		</div>
 	</div>
+
+	<div v-if="$page.props.auth.user.type == 'customer' && packag.payment_status != 'Paid'" class="modal fade"
+		id="coupon_modal" tabindex="-1" aria-labelledby="charges_update_label" aria-hidden="true">
+		<div class="modal-dialog border">
+			<form @submit.prevent="applyCoupon">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="charges_update_label">
+							Apply Coupon
+						</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"
+							v-on:click="close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="row col-md-12">
+							<breeze-validation-errors class="mb-4" />
+							<div class="form-group">
+								<input type="text" class="form-control" v-model="coupon_form.code" />
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal"
+							v-on:click="close">
+							Close
+						</button>
+						<button type="submit" class="btn btn-success">Apply</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
 </template>
 
 <script>
-	import $ from "jquery";
+import $ from "jquery";
 
-	export default {
-		name: "Mailout Component",
-		props: {
-			packag: Object,
-			package_service_requests: Object,
-			total: Object,
-			mailout_fee: Number,
-			eei_charges: Number,
-			label_charges: Number,
+export default {
+	name: "Mailout Component",
+	props: {
+		packag: Object,
+		package_service_requests: Object,
+		total: Object,
+		mailout_fee: Number,
+		eei_charges: Number,
+		label_charges: Number,
+	},
+	data() {
+		return {
+			edit_mode: false,
+			form_checkout: this.$inertia.form({
+				package_id: this.packag.id,
+				payment_module: "package",
+			}),
+			tracking_edit: false,
+			charges_form: this.$inertia.form({
+				package_id: "",
+				id: "",
+				amount: "",
+				type: "",
+			}),
+			coupon_form: this.$inertia.form({
+				code: ""
+			}),
+		};
+	},
+	methods: {
+		formatNumber(num) {
+			return parseFloat(num).toFixed(2);
 		},
-		data() {
-			return {
-				edit_mode: false,
-				form_checkout: this.$inertia.form({
-					package_id: this.packag.id,
-					payment_module: "package",
-				}),
-				tracking_edit: false,
-				charges_form: this.$inertia.form({
-					package_id: "",
-					id: "",
-					amount: "",
-					type: "",
-				}),
-			};
+		checkout() {
+			this.$inertia.post(route("payment.index", this.form_checkout));
 		},
-		methods: {
-			formatNumber(num) {
-				if (num > 0) {
-					return parseFloat(num).toFixed(2);
-				} else {
-					return 0;
-				}
-			},
-			checkout() {
-				this.$inertia.post(route("payment.index", this.form_checkout));
-			},
 
-			editCharges(amount, type) {
-				this.edit_mode = true;
-				this.charges_form.package_id = this.packag.id;
-				this.charges_form.amount = amount;
-				this.charges_form.type = type;
-				var modal = document.getElementById("charges_update_modal");
-				modal.classList.add("show");
-				$("#charges_update_modal").show();
-			},
-			editServiceCharges(package_service_request) {
-				this.edit_mode = true;
-				this.charges_form.id = package_service_request.id;
-				this.charges_form.amount = package_service_request.amount;
-				this.charges_form.type = "service_request";
-				var modal = document.getElementById("charges_update_modal");
-				modal.classList.add("show");
-				$("#charges_update_modal").show();
-			},
-			updateServiceCharges() {
-				this.charges_form.post(this.route("packages.charges.update"));
-				this.closeServiceCharges();
-			},
-			closeServiceCharges() {
-				var modal = document.getElementById("charges_update_modal");
-				modal.style.display = "none";
-			},
+		editCharges(amount, type) {
+			this.edit_mode = true;
+			this.charges_form.package_id = this.packag.id;
+			this.charges_form.amount = amount;
+			this.charges_form.type = type;
+			var modal = document.getElementById("charges_update_modal");
+			modal.classList.add("show");
+			$("#charges_update_modal").show();
 		},
-	};
+		editServiceCharges(package_service_request) {
+			this.edit_mode = true;
+			this.charges_form.id = package_service_request.id;
+			this.charges_form.amount = package_service_request.amount;
+			this.charges_form.type = "service_request";
+			var modal = document.getElementById("charges_update_modal");
+			modal.classList.add("show");
+			$("#charges_update_modal").show();
+		},
+		updateServiceCharges() {
+			this.charges_form.post(this.route("packages.charges.update"));
+			this.close();
+		},
+		close() {
+			var modal = document.getElementById("charges_update_modal");
+			var modal = document.getElementById("coupon_modal");
+			modal.style.display = "none";
+		},
+		applyCoupon() {
+			this.coupon_form.package_id = this.packag.id;
+			this.$inertia.post(route("packages.coupon", this.coupon_form));
+			this.close();
+		},
+		couponModal() {
+			var modal = document.getElementById("coupon_modal");
+			modal.classList.add("show");
+			$("#coupon_modal").show();
+		},
+	},
+};
 </script>

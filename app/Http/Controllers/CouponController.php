@@ -11,7 +11,7 @@ class CouponController extends Controller
 {
     public function index()
     {
-        $coupons = Coupon::all();
+        $coupons = Coupon::orderBy('id','desc')->get();
         return Inertia::render('Coupons/Index', [
             'coupons' => $coupons,
         ]);
