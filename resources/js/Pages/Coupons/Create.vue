@@ -17,7 +17,7 @@
 									</div>
 									<div class="col-md-3 form-group">
 										<breeze-label for="discount" value="Discount Amount" />
-										<input v-model="form.discount" name="discount" id="discount" type="number"
+										<input v-model="form.discount" name="discount" id="discount" type="number" step="0.01"
 											class="form-control" required />
 									</div>
 									<div class="col-md-3 form-group">
@@ -25,10 +25,10 @@
 										<input v-model="form.code" name="code" @input="preventSpace($event)" id="code"
 											type="text" class="form-control" required />
 									</div>
-									<div class="col-md-4 form-group">
+									<!-- <div class="col-md-4 form-group">
 										<breeze-label for="" value="Expiry Date" />
 										<Datepicker v-model="form.expiry_date" range></Datepicker>
-									</div>
+									</div> -->
 									<div class="col-12">
 										<button class="btn btn-primary float-right" type="submit" v-on:submit="submit">
 											Submit

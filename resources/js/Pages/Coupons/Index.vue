@@ -16,8 +16,8 @@
               <th>Name</th>
               <th>Code</th>
               <th>Discount Amount</th>
-              <th>Expired Date</th>
-              <th>Action</th>
+              <!-- <th>Expired Date</th> -->
+              <th>Status</th>
             </tr>
           </thead>
           <tbody>
@@ -26,11 +26,10 @@
               <td>{{ coupon.name }}</td>
               <td>{{ coupon.code }}</td>
               <td>${{ coupon.discount }}</td>
-              <td>{{ coupon.expires_at }}</td>
+              <!-- <td>{{ coupon.expires_at }}</td> -->
               <td>
-                <a class="btn btn-danger" v-if="coupon.status == 1"
-                  v-on:click="changeStatus(coupon.id, 0, $event)">Deactivate</a>
-                <a class="btn btn-success" v-else v-on:click="changeStatus(coupon.id, 1, $event)">Activate</a>
+                <input type="checkbox" @click="changeStatus(coupon)" :checked="coupon.status == 1" class="mr-1">
+                <label for=""><b>{{ coupon.status == 1 ? 'Active' : "Inactive" }}</b></label>
               </td>
             </tr>
           </tbody>
@@ -57,25 +56,20 @@ export default {
   props: {
     coupons: Object
   },
+  data() {
+    return {
+      coupon_form: this.$inertia.form({
+        id: "",
+        status: "",
+      }),
+    };
+  },
   methods: {
-    changeStatus(id, status, event) {
-      axios.post(this.route('coupon.changeStatus'), {
-        id: id,
-        status: status,
-      }).then(function (response) {
-        console.log(response.data.coupon.status);
-        let status = response.data.coupon.status;
-        if (status === 1) {
-          event.target.classList.remove('btn-success');
-          event.target.classList.add('btn-danger');
-        } else {
-          event.target.classList.add('btn-success');
-          event.target.classList.remove('btn-danger');
-        }
-
-      }).catch(function (error) {
-        console.log(error);
-      });
+    changeStatus(coupon) {
+      coupon.status = coupon.status === 1 ? 0 : 1;
+      this.coupon_form.id = coupon.id;
+      this.coupon_form.status = coupon.status;
+      this.coupon_form.post(this.route("coupon.changeStatus"));
     }
   }
 
