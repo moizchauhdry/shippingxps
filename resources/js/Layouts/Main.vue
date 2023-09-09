@@ -218,6 +218,12 @@
 							<i class="fas fa-calculator"></i>
 							<span>Shipping Calculator</span>
 						</inertia-link>
+						<inertia-link class="nav-link" :href="route('auctions.listing')" :class="{
+							active: route().current('auctions.listing'),
+						}" :active="route().current('auctions.listing')">
+							<i class="fas fa-note"></i>
+							<span>Auctions</span>
+						</inertia-link>
 					</div>
 
 					<button v-if="$page.props.auth.user.type == 'admin' ||

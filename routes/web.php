@@ -96,6 +96,16 @@ Route::get('/warehouses/{id}/edit', 'WarehouseController@edit')->name('warehouse
 Route::post('/warehouses', 'WarehouseController@update')->name('warehouses.update')->middleware('auth');
 Route::delete('/warehouses{id}', 'WarehouseController@destroy')->name('warehouses.destroy')->middleware('auth');
 
+Route::group(['prefix' => 'auctions-a','middleware' => 'auth','as' => 'auctions.'],function (){
+   Route::get('listing',[AuctionController::class,'listing'])->name('listing');
+   Route::get('create',[AuctionController::class,'create'])->name('create');
+   Route::post('store',[AuctionController::class,'store'])->name('store');
+   Route::get('show/{id}',[AuctionController::class,'show'])->name('show');
+   Route::get('edit/{id}',[AuctionController::class,'edit'])->name('edit');
+   Route::post('update/{id}',[AuctionController::class,'update'])->name('update');
+   Route::post('delete-image',[AuctionController::class,'deleteImage'])->name('delete-image');
+});
+
 Route::get('/settings', 'SettingsController@index')->name('settings')->middleware('auth');
 Route::post('/settings', 'SettingsController@update')->name('settings.update')->middleware('auth');
 
