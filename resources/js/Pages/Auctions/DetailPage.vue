@@ -1,0 +1,106 @@
+<template>
+    <MainLayout>
+        <div>
+			<section>
+				<div class="container">
+					<div class="card">
+                        <div class="card-header"><strong>Product Detail -{{ auction.name }}</strong></div>
+                        <div class="card-body">
+                            <table class="table table-borderd">
+                                <tr>
+                                    <th>Name</th>
+                                    <td>{{ auction.name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Category</th>
+                                    <td>{{ auction.category_name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Weight</th>
+                                    <td>{{ auction.weight + ' ' + auction.weight_unit }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Dimensions</th>
+                                    <td>{{ auction.length + ' X ' + auction.width + ' X ' + auction.height + ' ' + auction.dimension_unit }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Starting Price</th>
+                                    <td>{{ auction.starting_price }}</td>
+                                </tr>
+
+                                <tr>
+                                    <th>Ending At</th>
+                                    <td>{{ auction.ending_at }}</td>
+                                </tr>
+
+                                <tr>
+                                    <th>Images</th>
+                                    <td>
+                                        <div class="row">
+											<div
+												v-for="(image, index) in auction_images"
+												:key="image.id"
+												class="col-md-2"
+											>
+												<div>
+													<img
+														style="width: 100px; height: auto"
+														class="img-thumbnail"
+														:src="imgURL(image.image)"
+														@click="viewImage($event)"
+													/>
+												</div>
+											</div>
+										</div>
+                                    </td>
+                                </tr>
+                     </table>
+                        </div>
+                    </div>
+				</div>
+			</section>
+		</div>
+    </MainLayout>
+</template>
+
+<script>
+	import MainLayout from "@/Layouts/Main";
+	import BreezeAuthenticatedLayout from "@/Layouts/Authenticated";
+	import BreezeLabel from "@/Components/Label";
+	import BreezeValidationErrors from "@/Components/ValidationErrors";
+
+
+	export default {
+		components: {
+			BreezeAuthenticatedLayout,
+			MainLayout,
+			BreezeLabel,
+			BreezeValidationErrors,
+		},
+		data() {
+			
+		},
+		props: {
+			auth: Object,
+			auction: Object,
+			auction_images: Object,
+		},
+		methods: {
+			imgURL(url) {
+				return "/uploads/" + url;
+			},
+			viewImage(event) {
+				console.log(event.target.src);
+				var modal = document.getElementById("imageViewer");
+				var imageSRC = document.querySelector("#imageViewer img");
+				imageSRC.src = event.target.src;
+				modal.classList.add("show");
+				$("#imageViewer").show();
+			}
+		},
+	};
+</script>
+
+<style scoped>
+
+</style>

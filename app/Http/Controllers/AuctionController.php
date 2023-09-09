@@ -22,11 +22,38 @@ class AuctionController extends Controller
         ]);   
     }
 
-    public function listing()
+    public function listing(Request $request)
     {
-        $auctions = Auction::paginate(10);
+        
+
+        $query = Auction::when($request->status && !empty($request->status), function ($qry) use ($request) {
+                if($request->status == 1){
+                    $qry->where('status', 1);
+                }else{
+                    $qry->where('status', 0);
+                }
+            })
+            ->when($request->auction_category_id && !empty($request->auction_category_id), function ($qry) use ($request) {
+                $qry->where('auction_category_id', $request->auction_category_id);
+            })
+            ->when($request->date_range && !empty($request->date_range), function ($qry) use ($request) {
+                $range = explode(' - ', $request->date_range);
+                $from = date("Y-m-d", strtotime($range[0]));
+                $to = date("Y-m-d", strtotime($range[1]));
+                $qry->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to);
+            });
+
+        $auctions = $query->orderBy('id', 'desc')->paginate(10)->withQueryString();
+
+        $categories = AuctionCategory::all();
         return Inertia::render('Auctions/Listing',[
-            'auctions' => $auctions
+            'auctions' => $auctions,
+            'categories' => $categories,
+            'filters' => [
+                'status' => $request->status ?? "",
+                'auction_category_id' => $request->auction_category_id ?? "",
+                'date_range' => $request->date_range ?? "",
+            ]
         ]);
     }
 
@@ -53,7 +80,8 @@ class AuctionController extends Controller
             'package_width' => 'required|numeric|gt:0',
             'package_height' => 'required|numeric|gt:0',
             "starting_price" => 'required|numeric|gt:0',
-            "ending_at" => 'required'
+            "ending_at" => 'required',
+            "images" => 'required|array'
         ]);
 
 
@@ -74,6 +102,7 @@ class AuctionController extends Controller
         $files = $request->images;
             if (isset($files)) {
                 foreach ($files as $key => $file) {
+                    
                     $image_object = $file['image'];
                     $file_name = time() . '_' . $auction->id.'.'.$file['image']->getClientOriginalExtension();
                     $image_object->storeAs('uploads', $file_name);
@@ -97,6 +126,17 @@ class AuctionController extends Controller
             return redirect()->route('auctions.listing')->with('success', 'The auction has been added successfully.');
         
         
+    }
+
+    public function show($id)
+    {
+        $auction = Auction::with('category')->find($id);
+        $auctionImages = AuctionImage::where('auction_id',$id)->get();
+        return Inertia::render('Auctions/DetailPage', [
+            'auction' => $auction,
+            'auction_images' => $auctionImages,
+        ]);
+
     }
 
     public function edit($id)
@@ -149,23 +189,25 @@ class AuctionController extends Controller
         $files = $request->images;
             if (isset($files)) {
                 foreach ($files as $key => $file) {
-                    $image_object = $file['image'];
-                    $file_name = time() . '_' . $auction->id.'.'.$file['image']->getClientOriginalExtension();
-                    $image_object->storeAs('uploads', $file_name);
-                    if ($_SERVER['HTTP_HOST'] == 'localhost:8000') {
-                        File::move(storage_path('app/uploads/' . $file_name), public_path('/public/uploads/' . $file_name));
-                    } else {
-                        File::move(storage_path('app/uploads/' . $file_name), public_path('../public/uploads/' . $file_name));
-                    }
-                    $auction_image = new AuctionImage();
-                    $auction_image->image = $file_name;
-                    $auction_image->auction_id = $auction->id;
-                    if ($key == 0) {
-                        $auction_image->featured = 1;
-                    } else {
-                        $auction_image->featured = 0;
-                    }
-                    $auction_image->save();
+                    if($file['image'] != null){
+                        $image_object = $file['image'];
+                        $file_name = time() . '_' . $auction->id.'.'.$file['image']->getClientOriginalExtension();
+                        $image_object->storeAs('uploads', $file_name);
+                        if ($_SERVER['HTTP_HOST'] == 'localhost:8000') {
+                            File::move(storage_path('app/uploads/' . $file_name), public_path('/public/uploads/' . $file_name));
+                        } else {
+                            File::move(storage_path('app/uploads/' . $file_name), public_path('../public/uploads/' . $file_name));
+                        }
+                        $auction_image = new AuctionImage();
+                        $auction_image->image = $file_name;
+                        $auction_image->auction_id = $auction->id;
+                        if ($key == 0) {
+                            $auction_image->featured = 1;
+                        } else {
+                            $auction_image->featured = 0;
+                        }
+                        $auction_image->save();
+                    }                    
                 }
             }
 

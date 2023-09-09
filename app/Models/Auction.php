@@ -11,7 +11,7 @@ class Auction extends Model
 
     protected $guarded = [];
 
-    protected $appends = ['main_image'];
+    protected $appends = ['main_image','category_name'];
 
     /**
      * Get all of the images for the Auction
@@ -24,9 +24,20 @@ class Auction extends Model
         return $this->hasMany(AuctionImage::class);
     }
 
+    public function category()
+    {
+        return $this->belongsTo(AuctionCategory::class);
+    }
+
     public function getMainImageAttribute(){
         
         return $this->images()->where('featured',1)->first()->image ?? '';
+
+    }
+
+    public function getCategoryNameAttribute(){
+        
+        return $this->category->name ?? '';
 
     }
 }

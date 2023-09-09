@@ -29,57 +29,30 @@
       <div class="card-body">
         <div class="row">
           <div class="col-md-12">
-<!--            <form @submit.prevent="submit">
+           <form @submit.prevent="submit">
               <div class="d-flex search">
                 <div class="form-group">
-                  <label for="">Package Number</label>
-                  <input type="number" name="number" v-model="form.pkg_id" class="form-control"/>
-                </div>
-                <div class="form-group">
-                  <label for="">Suit Number</label>
-                  <input type="number" name="number" v-model="form.suit_no" class="form-control"/>
-                </div>
-                <div class="form-group">
-                  <label for="">Package Status</label>
-                  <select class="form-control custom-select" v-model="form.pkg_status" >
+                  <label for="">Category</label>
+                  <select class="form-control custom-select" v-model="form.auction_category_id" >
                     <option value="" selected>All</option>
-                    <option value="open">Open</option>
-                    <option value="filled">Filled</option>
-                    <option value="checkout">Checkout</option>
-                    &lt;!&ndash; <option value="shipped">Shipped</option> &ndash;&gt;
-                    <option value="rejected">Rejected</option>
+                    <option
+													v-for="category in categories"
+													:value="category.id"
+													:key="category.id"
+												>
+													{{ category.name }}
+												</option>
                   </select>
                 </div>
                 <div class="form-group">
-                  <label for="">Package Type</label>
-                  <select class="form-control custom-select" v-model="form.pkg_type" >
+                  <label for="">Status</label>
+                  <select class="form-control custom-select" v-model="form.status" >
                     <option value="" selected>All</option>
-                    <option value="single">Single</option>
-                    <option value="consolidation">Consolidation</option>
-                    <option value="multipiece">Multipiece</option>
-                    <option value="assigned">Assigned</option>
+                    <option value="1">Active</option>
+                    <option value="2">Inactive</option>
                   </select>
                 </div>
-                <div class="form-group">
-                  <label for="">Payment Status</label>
-                  <select class="form-control custom-select" v-model="form.payment_status" >
-                    <option value="" selected>All</option>
-                    <option value="Paid">Paid</option>
-                    <option value="Pending">Pending</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label for="">Auction Status</label>
-                  <select class="form-control custom-select" v-model="form.auctioned" >
-                    <option value="" selected>All</option>
-                    <option value="1">Yes</option>
-                    <option value="0">No</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label for="">Tracking Number</label>
-                  <input type="text" v-model="form.tracking_no" class="form-control"/>
-                </div>
+                
                 <div class="form-group">
                   <label for="">Date Range</label>
                   <Datepicker v-model="date" range :format="format" :enableTimePicker="false"></Datepicker>
@@ -91,7 +64,7 @@
                   <button type="button" class="btn btn-info" @click="clear()">Clear</button>
                 </div>
               </div>
-            </form>-->
+            </form>
           </div>
         </div>
 
@@ -156,28 +129,48 @@ export default {
   props: {
     auth: Object,
     auctions: Object,
-    // filters: Object,
+    categories: Object,
+    filters: Object,
   },
   data() {
     return {
       active: "auctions",
       date: "",
-      // form: {
-      //   pkg_id: this.filters.pkg_id,
-      //   suit_no: this.filters.suit_no,
-      //   pkg_status: this.filters.pkg_status,
-      //   pkg_type: this.filters.pkg_type,
-      //   payment_status: this.filters.payment_status,
-      //   auctioned: this.filters.auctioned,
-      //   tracking_no: this.filters.tracking_no,
-      //   date_range: this.filters.date_range,
-      // },
+      form: {
+        status: this.filters.status,
+        auction_category_id: this.filters.auction_category_id,
+        date_range: this.filters.date_range,
+      },
     };
   },
   methods: {
     imgURL(url) {
 				return "/uploads/" + url;
 			},
+      submit() {
+      const queryParams = new URLSearchParams(this.form);
+      const url = `${route("auctions.listing")}?${queryParams.toString()}`;
+      Inertia.visit(url, { preserveState: true });
+    },
+    format() {
+      var start = new Date(this.date[0]);
+      var end = new Date(this.date[1]);
+      var startDay = start.getDate();
+      var startMonth = start.getMonth() + 1;
+      var startYear = start.getFullYear();
+      var endDay = end.getDate();
+      var endMonth = end.getMonth() + 1;
+      var endYear = end.getFullYear();
+
+      this.form.date_range = `${startYear}/${startMonth}/${startDay} - ${endYear}/${endMonth}/${endDay}`;
+      return `${startDay}/${startMonth}/${startYear} - ${endDay}/${endMonth}/${endYear}`;
+    },
+    clear() {
+      this.form.status = "";
+      this.form.auction_category_id = "";
+      this.form.date_range = "";
+      this.submit();
+    },
     /*submit() {
       const queryParams = new URLSearchParams(this.form);
       const url = `${route("packages.index")}?${queryParams.toString()}`;
