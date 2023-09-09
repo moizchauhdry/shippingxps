@@ -70,6 +70,7 @@ Route::post('/packages/address/update', 'PackageController@updateAddress')->name
 Route::post('/packages/charges/update', 'PackageController@updateCharges')->name('packages.charges.update')->middleware('auth');
 Route::post('/packages/return-package', 'PackageController@returnPackage')->name('packages.return-package')->middleware('auth');
 Route::post('/packages/coupon', 'PackageController@coupon')->name('packages.coupon')->middleware('auth');
+Route::post('/packages/coupon/remove', 'PackageController@removeCoupon')->name('packages.coupon.remove')->middleware('auth');
 
 Route::get('/services/create', 'ServiceController@create')->name('services.create')->middleware('auth');
 Route::post('/services', 'ServiceController@store')->name('services.store')->middleware('auth');
