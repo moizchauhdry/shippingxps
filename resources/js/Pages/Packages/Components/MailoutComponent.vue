@@ -180,9 +180,10 @@
 										<td>Discount</td>
 										<td></td>
 										<td colspan="2">
+											
 											${{ formatNumber(packag.discount) }}
 
-											<template v-if="packag.payment_status != 'Paid'">
+											<template v-if="packag.payment_status != 'Paid' && $page.props.auth.user.type == 'customer'">
 												<button class="btn btn-link" @click="removeCoupon()"
 													v-if="packag.coupon">Remove</button>
 												<button v-else type="button" class="btn btn-link float-right"
@@ -367,9 +368,10 @@ export default {
 			this.close();
 		},
 		close() {
-			var modal = document.getElementById("charges_update_modal");
-			var modal = document.getElementById("coupon_modal");
-			modal.style.display = "none";
+			var modal1 = document.getElementById("charges_update_modal");
+			var modal2 = document.getElementById("coupon_modal");
+			modal1.style.display = "none";
+			modal2.style.display = "none";
 		},
 		applyCoupon() {
 			this.coupon_form.package_id = this.packag.id;
