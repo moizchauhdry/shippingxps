@@ -180,10 +180,11 @@
 										<td>Discount</td>
 										<td></td>
 										<td colspan="2">
-											
+
 											${{ formatNumber(packag.discount) }}
 
-											<template v-if="packag.payment_status != 'Paid' && $page.props.auth.user.type == 'customer'">
+											<template
+												v-if="packag.payment_status != 'Paid' && $page.props.auth.user.type == 'customer'">
 												<button class="btn btn-link" @click="removeCoupon()"
 													v-if="packag.coupon">Remove</button>
 												<button v-else type="button" class="btn btn-link float-right"
@@ -249,7 +250,7 @@
 						<h5 class="modal-title" id="charges_update_label">
 							Charges Update
 						</h5>
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close" v-on:click="close">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="closeServiceChargesModal">
 							<span aria-hidden="true">&times;</span>
 						</button>
 					</div>
@@ -262,7 +263,7 @@
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary" data-dismiss="modal" v-on:click="close">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal" @click="closeServiceChargesModal">
 							Close
 						</button>
 						<button type="submit" class="btn btn-success">Update</button>
@@ -281,7 +282,7 @@
 						<h5 class="modal-title" id="charges_update_label">
 							Apply Coupon
 						</h5>
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close" v-on:click="close">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="closeCouponModal">
 							<span aria-hidden="true">&times;</span>
 						</button>
 					</div>
@@ -294,7 +295,7 @@
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary" data-dismiss="modal" v-on:click="close">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal" @click="closeCouponModal">
 							Close
 						</button>
 						<button type="submit" class="btn btn-success">Apply</button>
@@ -367,11 +368,11 @@ export default {
 			this.charges_form.post(this.route("packages.charges.update"));
 			this.close();
 		},
-		close() {
-			var modal1 = document.getElementById("charges_update_modal");
-			var modal2 = document.getElementById("coupon_modal");
-			modal1.style.display = "none";
-			modal2.style.display = "none";
+		closeServiceChargesModal() {
+			document.getElementById("charges_update_modal").style.display = "none";
+		},
+		closeCouponModal() {
+			document.getElementById("coupon_modal").style.display = "none";
 		},
 		applyCoupon() {
 			this.coupon_form.package_id = this.packag.id;
