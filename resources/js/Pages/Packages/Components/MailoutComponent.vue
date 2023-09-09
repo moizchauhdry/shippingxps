@@ -345,7 +345,6 @@ export default {
 		checkout() {
 			this.$inertia.post(route("payment.index", this.form_checkout));
 		},
-
 		editCharges(amount, type) {
 			this.edit_mode = true;
 			this.charges_form.package_id = this.packag.id;
@@ -366,7 +365,7 @@ export default {
 		},
 		updateServiceCharges() {
 			this.charges_form.post(this.route("packages.charges.update"));
-			this.close();
+			this.closeServiceChargesModal();
 		},
 		closeServiceChargesModal() {
 			document.getElementById("charges_update_modal").style.display = "none";
@@ -377,7 +376,7 @@ export default {
 		applyCoupon() {
 			this.coupon_form.package_id = this.packag.id;
 			this.$inertia.post(route("packages.coupon", this.coupon_form));
-			this.close();
+			this.closeCouponModal();
 		},
 		couponModal() {
 			var modal = document.getElementById("coupon_modal");
