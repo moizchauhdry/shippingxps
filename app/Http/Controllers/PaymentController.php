@@ -41,8 +41,12 @@ class PaymentController extends Controller
                 ->where('payment_status', 'Pending')
                 ->where('id', $request->package_id)
                 ->where('customer_id', $user->id)
-                ->where('grand_total', '>', 0)
+                // ->where('grand_total', '>', 0)
                 ->firstOrFail();
+
+            if ($package->grand_total <= 0) {
+                abort(403, 'The amount is less then 0');
+            }
 
             $amount = $package->grand_total;
             $payment_module_id = $package->id;

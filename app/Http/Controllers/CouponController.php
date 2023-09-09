@@ -11,7 +11,7 @@ class CouponController extends Controller
 {
     public function index()
     {
-        $coupons = Coupon::all();
+        $coupons = Coupon::orderBy('id', 'desc')->get();
         return Inertia::render('Coupons/Index', [
             'coupons' => $coupons,
         ]);
@@ -27,37 +27,26 @@ class CouponController extends Controller
         // dd($request->all());
 
         $request->validate([
-            'name' => 'required',
-            'code' => 'required|unique:coupons',
-            'discount' => 'required',
-            'expiry_date' => 'required|array',
+            'name' => 'required|min:3',
+            'code' => 'required|unique:coupons|min:3',
+            'discount' => 'required|numeric',
+            // 'expiry_date' => 'required|array',
         ]);
 
         $coupon = new Coupon();
         $coupon->name = $request->input('name');
         $coupon->discount = $request->input('discount');
         $coupon->code = $request->input('code');
-        $coupon->starts_at = Carbon::parse($request->expiry_date[0])->format('Y-m-d');
-        $coupon->expires_at = Carbon::parse($request->expiry_date[1])->format('Y-m-d');
+        // $coupon->starts_at = Carbon::parse($request->expiry_date[0])->format('Y-m-d');
+        // $coupon->expires_at = Carbon::parse($request->expiry_date[1])->format('Y-m-d');
         $coupon->save();
 
         return redirect()->route('coupon.index')->with('success', 'Coupon Added!');
     }
 
-    public function show($id)
-    {
-    }
-
-    public function edit($id)
-    {
-    }
-
-    public function update(Request $request)
-    {
-    }
-
     public function changeStatus(Request $request)
     {
+        // dd($request->all());
         $id = $request->id;
         $status = $request->status;
 
@@ -65,7 +54,7 @@ class CouponController extends Controller
         $coupon->status = $status;
         $coupon->save();
 
-        return response()->json(['status' => '1', 'coupon' => $coupon]);
+        return redirect()->back();
     }
 
     public function destroy(Request $request)

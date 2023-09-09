@@ -14,6 +14,8 @@ use GuzzleHttp\Client;
 use App\Models\Order;
 use App\Models\Package;
 use App\Models\Country;
+use App\Models\Coupon;
+use App\Models\CouponPackage;
 use App\Models\OrderItem;
 use App\Models\PackageBox;
 use App\Models\Service;
@@ -62,7 +64,7 @@ class PackageController extends Controller
     {
         $suit_no = intval($request->suit_no) - 4000;
 
-        $query = Package::with('customer', 'warehouse', 'child_packages','boxes')
+        $query = Package::with('customer', 'warehouse', 'child_packages', 'boxes')
             ->when(Auth::user()->type == 'customer', function ($qry) {
                 $qry->where('customer_id', Auth::user()->id);
             })
@@ -210,8 +212,8 @@ class PackageController extends Controller
             }
         }
 
-        $total = $subtotal + $packag->shipping_charges + (float) SiteSetting::getByName('mailout_fee') + $packag->storage_fee + $packag->consolidation_fee;
-
+        $total = $subtotal + $packag->shipping_charges + (float) SiteSetting::getByName('mailout_fee') + $packag->storage_fee + $packag->consolidation_fee - $packag->discount;
+        
         $eei_charges = 0;
         if ($packag->shipping_total >= 2500 || (isset($packag->address->country) && in_array($packag->address->country->iso, ['CN', 'HK', 'RU', 'VE']))) {
             $eei_charges = (float) SiteSetting::getByName('eei_charges');
@@ -366,6 +368,7 @@ class PackageController extends Controller
 
         $package->update([
             'status' => 'filled',
+            'custom_form_status' => true,
             'shipping_total' => $validated['shipping_total'],
             'package_type' => $validated['package_type'],
             'special_instructions' => $request->special_instructions,
@@ -827,7 +830,7 @@ class PackageController extends Controller
     {
         $query = Package::with('customer', 'warehouse')
             ->where('warehouse_id', $request->warehouse_id)
-            ->where('status', 'open')
+            ->where('payment_status', 'Pending')
             ->where('pkg_type', 'single');
 
         if (Auth::user()->type == 'customer') {
@@ -1004,7 +1007,7 @@ class PackageController extends Controller
     {
         $request->validate([
             'return_label' => 'required',
-            'return_label_file' => [Rule::requiredIf($request->return_label == 1),'mimes:pdf'],
+            'return_label_file' => [Rule::requiredIf($request->return_label == 1), 'mimes:pdf'],
         ]);
 
         $package  = Package::find($request->package_id);
@@ -1026,5 +1029,33 @@ class PackageController extends Controller
         Notification::send($admins, new ReturnPackageNotification($package));
 
         return redirect()->back()->with('success', 'SUCCESS!');
+    }
+
+    public function coupon(Request $request)
+    {
+        // dd($request->all());
+        $coupon_package = CouponPackage::where('package_id', $request->package_id)->first();
+
+        if ($coupon_package) {
+            return redirect()->back()->with('error', 'The coupon is already applied!');
+        }
+
+        $coupon = Coupon::where('code', $request->code)->first();
+
+        if (!$coupon) {
+            return redirect()->back()->with('error', 'The coupon is invalid or expired!');
+        }
+
+        $package = Package::find($request->package_id);
+        $package->update([
+            'discount' => $coupon->discount
+        ]);
+
+        CouponPackage::create([
+            'package_id' => $package->id,
+            'coupon_id' => $coupon->id,
+        ]);
+
+        return redirect()->back()->with('success', 'The coupon applied successfully!');
     }
 }

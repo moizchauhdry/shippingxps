@@ -1,5 +1,5 @@
 <template>
-	<div class="col-md-12" v-if="$page.props.auth.user.type == 'customer' && !packag.service_code && packag.return_label == 0">
+	<div class="col-md-12" v-if="$page.props.auth.user.type == 'customer' && !packag.service_code && packag.return_label == 0 && packag.payment_status == 'Pending'">
 		<div class="card mt-2">
 			<div class="card-header">
 				<h3 class="text-uppercase">Shipping Address</h3>
@@ -29,18 +29,6 @@
 									</select>
 								</div>
 							</form>
-						</div>
-						<div class="row">
-							<div>
-								<template v-if="packag.address_type == 'international'">
-									<inertia-link
-										class="btn btn-primary btn-sm m-1"
-										:href="route('packages.custom', packag.id)"
-									>
-										<i class="fa fa-copy mr-1"></i>Customs Declaration Form
-									</inertia-link>
-								</template>
-							</div>
 						</div>
 					</div>
 					<div class="col-md-6">
