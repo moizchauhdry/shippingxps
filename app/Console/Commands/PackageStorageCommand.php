@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Package;
 use App\Models\User;
+use App\Notifications\PackageDestroyNotification;
 use App\Notifications\PackageStorageNotification;
 use Illuminate\Console\Command;
 
@@ -40,14 +41,22 @@ class PackageStorageCommand extends Command
      */
     public function handle()
     {
-        $package = Package::with('customer')->orderBy('created_at', 'asc')->where('storage_days_exceeded', '>', 0)->where('auctioned', 0)->get();
+        $packages = Package::with('customer')->orderBy('created_at', 'asc')->get();
 
-        foreach ($package as $key => $package) {
-            if ($package->storage_days_exceeded > 0) {
-                $user = User::where('email', $package->customer->email)->first();
-                $notification = new PackageStorageNotification($package);
-                $user->notify($notification);
-            }
+        foreach ($packages as $key => $package) {
+            calulate_storage($package);
+        }
+
+        foreach ($packages->where('storage_days', '>', 75)->where('storage_days', '<', 81) as $key => $package) {
+            $user = User::where('email', $package->customer->email)->first();
+            $notification = new PackageStorageNotification($package);
+            $user->notify($notification);
+        }
+
+        foreach ($packages->where('storage_days', 81) as $key => $package) {
+            $user = User::where('email', $package->customer->email)->first();
+            $notification = new PackageDestroyNotification($package);
+            $user->notify($notification);
         }
 
         dd('Success.');

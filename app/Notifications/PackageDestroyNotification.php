@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class PackageStorageNotification extends Notification
+class PackageDestroyNotification extends Notification
 {
     use Queueable;
     public $package;
@@ -43,9 +43,7 @@ class PackageStorageNotification extends Notification
     {
         return (new MailMessage)
             ->greeting('Dear ' . $this->package->customer->name . ',')
-            ->line('The package PKG #' . $this->package->id . ' has exceeded 75 days, and you have been charged for it.')
-            ->line('Total Days: ' . $this->package->storage_days . ' | ' . 'Days Exceeded: ' . $this->package->storage_days_exceeded . ' | ' . 'Storage Charges: $' . $this->package->storage_fee)
-            ->line('Note: The storage fee is added when a package exceeds 75 days, and after 80 days, the package is terminated or destroyed.');
+            ->line('The package PKG #' . $this->package->id . ' has exceeded 80 days, so it has been destroyed.');
     }
 
     /**
@@ -59,7 +57,7 @@ class PackageStorageNotification extends Notification
         $url = route("packages.show", ["id" => $this->package->id]);
 
         return [
-            'message' => '<a href="' . $url . '">The package <b> PKG #' . $this->package->id . '</b> has exceeded 75 days, and you have been charged for it.</a>',
+            'message' => '<a href="' . $url . '">The package <b> PKG #' . $this->package->id . '</b> has exceeded 80 days, so it has been destroyed.</a>',
             'url' => $url
         ];
     }
