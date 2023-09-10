@@ -40,9 +40,5 @@ function calulate_storage($package)
         'storage_days_exceeded' => (float) $storage_days_exceeded,
     ]);
 
-    if ($storage_days > 80) {
-        $package->update(['auctioned' => 1]);
-    }
-
     return true;
 }

@@ -53,10 +53,11 @@ class PackageStorageCommand extends Command
             $user->notify($notification);
         }
 
-        foreach ($packages->where('storage_days', 81) as $key => $package) {
+        foreach ($packages->where('storage_days', '>', 80)->where('auctioned', 0) as $key => $package) {
             $user = User::where('email', $package->customer->email)->first();
             $notification = new PackageDestroyNotification($package);
             $user->notify($notification);
+            $package->update(['auctioned' => 1]);
         }
 
         dd('Success.');
