@@ -41,6 +41,8 @@ class PackageController extends Controller
 
     private function calculate_storage_fee($id)
     {
+        $storage_days_exceeded = 0;
+
         $package = Package::find($id);
         $boxes_weight = $package->boxes->sum('weight');
         $fee = (float) SiteSetting::where('name', 'storage_fee')->first()->value;
@@ -48,6 +50,7 @@ class PackageController extends Controller
         $createdAt = Carbon::parse($package->created_at);
         $now = Carbon::now();
         $days_exceeded = $now->diffInDays($createdAt) - 75;
+        $storage_days = $now->diffInDays($createdAt);
 
         if ($days_exceeded > 0) {
             $storage_fee = $fee * $boxes_weight * $days_exceeded;
@@ -55,8 +58,14 @@ class PackageController extends Controller
             $storage_fee = 0;
         }
 
+        if ($days_exceeded > 0) {
+            $storage_days_exceeded = $days_exceeded;
+        }
+
         $package->update([
-            'storage_fee' => (float) $storage_fee
+            'storage_fee' => (float) $storage_fee,
+            'storage_days' => (float) $storage_days,
+            'storage_days_exceeded' => (float) $storage_days_exceeded,
         ]);
     }
 
@@ -124,6 +133,10 @@ class PackageController extends Controller
 
         $packag = Package::with('orders', 'address', 'warehouse', 'customer', 'images', 'serviceRequests', 'child_packages', 'order', 'boxes', 'coupon')
             ->findOrFail($id);
+
+        if ($packag->storage_days > 80) {
+            abort(403, 'The package exceeded 80 days, so it has been destroyed');
+        }
 
         $child_package_orders = [];
         foreach ($packag->child_packages as $key => $child_package) {
@@ -1063,7 +1076,7 @@ class PackageController extends Controller
         CouponPackage::where('package_id', $request->package_id)->delete();
         $package = Package::find($request->package_id);
         $package->update([
-            'discount' => 0 
+            'discount' => 0
         ]);
 
         return redirect()->back()->with('success', 'The coupon remove successfully!');
