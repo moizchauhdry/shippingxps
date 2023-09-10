@@ -67,6 +67,10 @@ class PackageController extends Controller
             'storage_days' => (float) $storage_days,
             'storage_days_exceeded' => (float) $storage_days_exceeded,
         ]);
+
+        if ($storage_days > 80) {
+            $package->update(['auctioned', 1]);
+        }
     }
 
     public function index(Request $request)
