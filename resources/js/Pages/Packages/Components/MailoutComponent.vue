@@ -176,11 +176,23 @@
 										<td>${{ formatNumber(packag.storage_fee) }}</td>
 										<td></td>
 									</tr>
-									<tr v-if="packag.discount > 0">
+									<tr>
 										<td>Discount</td>
 										<td></td>
-										<td>${{ formatNumber(packag.discount) }}</td>
-										<td></td>
+										<td colspan="2">
+
+											${{ formatNumber(packag.discount) }}
+
+											<template
+												v-if="packag.payment_status != 'Paid' && $page.props.auth.user.type == 'customer'">
+												<button class="btn btn-link" @click="removeCoupon()"
+													v-if="packag.coupon">Remove</button>
+												<button v-else type="button" class="btn btn-link float-right"
+													data-toggle="modal" data-target="#coupon_modal"
+													@click="couponModal()"><b>Apply
+														Coupon</b></button>
+											</template>
+										</td>
 									</tr>
 									<tr>
 										<td>Shipping Charges</td>
@@ -194,13 +206,6 @@
 											</button>
 										</td>
 										<td></td>
-									</tr>
-									<tr>
-										<td></td>
-										<td colspan="2">
-											<button type="button" class="btn btn-link float-right" data-toggle="modal"
-												data-target="#coupon_modal" @click="couponModal()"><b>Apply Coupon</b></button>
-										</td>
 									</tr>
 									<tr>
 										<td colspan="2" style="text-align: center">
@@ -245,8 +250,7 @@
 						<h5 class="modal-title" id="charges_update_label">
 							Charges Update
 						</h5>
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close"
-							v-on:click="close">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="closeServiceChargesModal">
 							<span aria-hidden="true">&times;</span>
 						</button>
 					</div>
@@ -259,8 +263,7 @@
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary" data-dismiss="modal"
-							v-on:click="close">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal" @click="closeServiceChargesModal">
 							Close
 						</button>
 						<button type="submit" class="btn btn-success">Update</button>
@@ -279,8 +282,7 @@
 						<h5 class="modal-title" id="charges_update_label">
 							Apply Coupon
 						</h5>
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close"
-							v-on:click="close">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="closeCouponModal">
 							<span aria-hidden="true">&times;</span>
 						</button>
 					</div>
@@ -293,8 +295,7 @@
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary" data-dismiss="modal"
-							v-on:click="close">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal" @click="closeCouponModal">
 							Close
 						</button>
 						<button type="submit" class="btn btn-success">Apply</button>
@@ -344,7 +345,6 @@ export default {
 		checkout() {
 			this.$inertia.post(route("payment.index", this.form_checkout));
 		},
-
 		editCharges(amount, type) {
 			this.edit_mode = true;
 			this.charges_form.package_id = this.packag.id;
@@ -365,22 +365,27 @@ export default {
 		},
 		updateServiceCharges() {
 			this.charges_form.post(this.route("packages.charges.update"));
-			this.close();
+			this.closeServiceChargesModal();
 		},
-		close() {
-			var modal = document.getElementById("charges_update_modal");
-			var modal = document.getElementById("coupon_modal");
-			modal.style.display = "none";
+		closeServiceChargesModal() {
+			document.getElementById("charges_update_modal").style.display = "none";
+		},
+		closeCouponModal() {
+			document.getElementById("coupon_modal").style.display = "none";
 		},
 		applyCoupon() {
 			this.coupon_form.package_id = this.packag.id;
 			this.$inertia.post(route("packages.coupon", this.coupon_form));
-			this.close();
+			this.closeCouponModal();
 		},
 		couponModal() {
 			var modal = document.getElementById("coupon_modal");
 			modal.classList.add("show");
 			$("#coupon_modal").show();
+		},
+		removeCoupon() {
+			this.coupon_form.package_id = this.packag.id;
+			this.$inertia.post(route("packages.coupon.remove", this.coupon_form));
 		},
 	},
 };

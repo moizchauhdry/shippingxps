@@ -41,23 +41,39 @@ class PackageController extends Controller
 
     private function calculate_storage_fee($id)
     {
+        // $storage_days_exceeded = 0;
+
+        // $package = Package::find($id);
+        // $boxes_weight = $package->boxes->sum('weight');
+        // $fee = (float) SiteSetting::where('name', 'storage_fee')->first()->value;
+
+        // $createdAt = Carbon::parse($package->created_at);
+        // $now = Carbon::now();
+        // $days_exceeded = $now->diffInDays($createdAt) - 75;
+        // $storage_days = $now->diffInDays($createdAt);
+
+        // if ($days_exceeded > 0) {
+        //     $storage_fee = $fee * $boxes_weight * $days_exceeded;
+        // } else {
+        //     $storage_fee = 0;
+        // }
+
+        // if ($days_exceeded > 0) {
+        //     $storage_days_exceeded = $days_exceeded;
+        // }
+
+        // $package->update([
+        //     'storage_fee' => (float) $storage_fee,
+        //     'storage_days' => (float) $storage_days,
+        //     'storage_days_exceeded' => (float) $storage_days_exceeded,
+        // ]);
+
+        // if ($storage_days > 80) {
+        //     $package->update(['auctioned' => 1]);
+        // }
+
         $package = Package::find($id);
-        $boxes_weight = $package->boxes->sum('weight');
-        $fee = (float) SiteSetting::where('name', 'storage_fee')->first()->value;
-
-        $createdAt = Carbon::parse($package->created_at);
-        $now = Carbon::now();
-        $days_exceeded = $now->diffInDays($createdAt) - 75;
-
-        if ($days_exceeded > 0) {
-            $storage_fee = $fee * $boxes_weight * $days_exceeded;
-        } else {
-            $storage_fee = 0;
-        }
-
-        $package->update([
-            'storage_fee' => (float) $storage_fee
-        ]);
+        calulate_storage($package);
     }
 
     public function index(Request $request)
@@ -122,8 +138,12 @@ class PackageController extends Controller
     {
         $this->calculate_storage_fee($id);
 
-        $packag = Package::with('orders', 'address', 'warehouse', 'customer', 'images', 'serviceRequests', 'child_packages', 'order', 'boxes')
+        $packag = Package::with('orders', 'address', 'warehouse', 'customer', 'images', 'serviceRequests', 'child_packages', 'order', 'boxes', 'coupon')
             ->findOrFail($id);
+
+        if ($packag->storage_days > 80) {
+            abort(403, 'The package exceeded 80 days, so it has been destroyed');
+        }
 
         $child_package_orders = [];
         foreach ($packag->child_packages as $key => $child_package) {
@@ -213,7 +233,7 @@ class PackageController extends Controller
         }
 
         $total = $subtotal + $packag->shipping_charges + (float) SiteSetting::getByName('mailout_fee') + $packag->storage_fee + $packag->consolidation_fee - $packag->discount;
-        
+
         $eei_charges = 0;
         if ($packag->shipping_total >= 2500 || (isset($packag->address->country) && in_array($packag->address->country->iso, ['CN', 'HK', 'RU', 'VE']))) {
             $eei_charges = (float) SiteSetting::getByName('eei_charges');
@@ -1033,14 +1053,13 @@ class PackageController extends Controller
 
     public function coupon(Request $request)
     {
-        // dd($request->all());
         $coupon_package = CouponPackage::where('package_id', $request->package_id)->first();
 
         if ($coupon_package) {
             return redirect()->back()->with('error', 'The coupon is already applied!');
         }
 
-        $coupon = Coupon::where('code', $request->code)->first();
+        $coupon = Coupon::where('code', $request->code)->where('status', 1)->first();
 
         if (!$coupon) {
             return redirect()->back()->with('error', 'The coupon is invalid or expired!');
@@ -1057,5 +1076,16 @@ class PackageController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'The coupon applied successfully!');
+    }
+
+    public function removeCoupon(Request $request)
+    {
+        CouponPackage::where('package_id', $request->package_id)->delete();
+        $package = Package::find($request->package_id);
+        $package->update([
+            'discount' => 0
+        ]);
+
+        return redirect()->back()->with('success', 'The coupon remove successfully!');
     }
 }

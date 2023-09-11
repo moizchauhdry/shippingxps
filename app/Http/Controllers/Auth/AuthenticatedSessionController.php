@@ -33,14 +33,18 @@ class AuthenticatedSessionController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(LoginRequest $request)
-    {        
-        $user = User::where('email',$request->email)->first();
+    {
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            abort(403, 'The email you have entered is invalid');
+        }
+
         if ($user->status == 1) {
             $request->authenticate();
             $request->session()->regenerate();
             return redirect()->intended(RouteServiceProvider::HOME);
         } else {
-            abort(403,'The account is suspended.');
+            abort(403, 'The account is suspended');
         }
     }
 

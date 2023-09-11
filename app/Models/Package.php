@@ -102,4 +102,9 @@ class Package extends Model
     {
         return $this->hasMany(Package::class, 'package_handler_id', 'id');
     }
+
+    public function coupon()
+    {
+        return $this->hasOne(CouponPackage::class, 'package_id', 'id');
+    }
 }
