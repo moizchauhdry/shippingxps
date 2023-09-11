@@ -59,7 +59,7 @@
 										<div class="col-md-8 form-group">
 											<breeze-label
 												for="name"
-												value="Name "
+												value="Name*"
 											/>
 											<input
 												v-model="form.name"
@@ -73,7 +73,7 @@
 										</div>
 
 										<div class="col-md-4 form-group">
-											<breeze-label for="auction_category_id" value="Category" />
+											<breeze-label for="auction_category_id" value="Category*" />
 											<select
 												name="auction_category_id"
 												class="form-control"
@@ -94,7 +94,7 @@
                                         <div class="col-md-12 form-group">
 											<breeze-label
 												for="description"
-												value="Description "
+												value="Description *"
 											/>
 											<textarea
 												v-model="form.description"
@@ -108,14 +108,14 @@
 										</div>
 
 										<div class="col-md-2 form-group">
-											<breeze-label for="warehouse_id" value="Weight Unit" />
+											<breeze-label for="warehouse_id" value="Weight Unit*" />
 											<select class="form-control" required :disabled="1">
 												<option value="lb">Lb</option>
 											</select>
 										</div>
 
 										<div class="col-md-2 form-group">
-											<breeze-label for="dim_unit" value="Dimention Unit" />
+											<breeze-label for="dim_unit" value="Dimention Unit*" />
 											<select class="form-control" :disabled="1">
 												<option value="in">Inch</option>
 											</select>
@@ -124,7 +124,7 @@
 										<div class="col-md-2 form-group">
 											<breeze-label
 												for="package_weight"
-												value="Package Weight"
+												value="Package Weight*"
 											/>
 											<input
 												v-model="form.package_weight"
@@ -142,7 +142,7 @@
 										<div class="col-md-2 form-group">
 											<breeze-label
 												for="package_length"
-												value="Package Length"
+												value="Package Length*"
 											/>
 											<input
 												v-model="form.package_length"
@@ -158,7 +158,7 @@
 										<div class="col-md-2 form-group">
 											<breeze-label
 												for="package_height"
-												value="Package Height"
+												value="Package Height*"
 											/>
 											<input
 												v-model="form.package_height"
@@ -174,7 +174,7 @@
 										<div class="col-md-2 form-group">
 											<breeze-label
 												for="package_weight"
-												value="Package Width"
+												value="Package Width*"
 											/>
 											<input
 												v-model="form.package_width"
@@ -190,7 +190,7 @@
                                         <div class="col-md-6 form-group">
 											<breeze-label
 												for="starting_price"
-												value="Starting Price"
+												value="Starting Price*"
 											/>
 											<input
 												v-model="form.starting_price"
@@ -207,7 +207,7 @@
                                         <div class="col-md-6 form-group">
 											<breeze-label
 												for="ending_at"
-												value="Ending At"
+												value="Ending At*"
 											/>
 											<Datepicker v-model="date"  :format="format" :enableTimePicker="false"></Datepicker>
 										</div>
@@ -222,7 +222,7 @@
 								<fieldset class="border p-3 mt-2 mb-2">
 									<div class="row">
 										<div class="col-md-12">
-											<label class="d-block mb-2">Feature Image</label>
+											<label class="d-block mb-2">Feature Image*</label>
 											<input
 															type="file"
 															@input="form.thumbnail = $event.target.files[0]"
