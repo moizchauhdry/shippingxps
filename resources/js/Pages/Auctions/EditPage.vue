@@ -222,8 +222,25 @@
 								<fieldset class="border p-3 mt-2 mb-2">
 									<div class="row">
 										<div class="col-md-12">
+											<label class="d-block mb-2">Feature Image</label>
+											<input
+															type="file"
+															@input="form.thumbnail = $event.target.files[0]"
+														/>
+														<div>
+													<img
+														style="width: 100px; height: auto"
+														class="img-thumbnail"
+														:src="'/'+auction.thumbnail"
+														@click="viewImage($event)"
+													/>
+												</div>
+										</div>
+										<div class="col-md-12">
 											<div class="row">
+												
 												<div class="col-md-4">
+													<label class="d-block mb-2 mt-5">Gallery Images</label>
 													<a
 														v-on:click="addImage"
 														class="btn btn-primary"
@@ -239,6 +256,7 @@
 												:key="image.id"
 												class="row"
 											>
+
 												<div class="col-md-3 form-group">
 													<div>
 														<input
@@ -351,6 +369,7 @@
 					package_height:  this.auction.height,
 					starting_price:  this.auction.starting_price,
 					ending_at:  this.auction.ending_at,
+					thumbnail:  null,
 					images: [
 						{
 							image: "",
@@ -400,13 +419,13 @@
 						axios
 							.post(this.route("auctions.delete-image"), { id: id })
 							.then(({ data }) => {
-								this.order.images.splice(index, 1);
+								this.auction_images.splice(index, 1);
 							});
 					}
 				}
 			},
 			imgURL(url) {
-				return "/uploads/" + url;
+				return "/" + url;
 			},
 			viewImage(event) {
 				console.log(event.target.src);

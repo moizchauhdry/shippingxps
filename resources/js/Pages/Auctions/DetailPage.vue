@@ -28,9 +28,21 @@
                                     <td>{{ auction.starting_price }}</td>
                                 </tr>
 
+								
+
                                 <tr>
                                     <th>Ending At</th>
-                                    <td>{{ auction.ending_at }}</td>
+                                    <td>{{ formatDate(auction.ending_at)}}</td>
+                                </tr>
+
+								<tr>
+                                    <th>Feature Image</th>
+                                    <td>													<img
+														style="width: 100px; height: auto"
+														class="img-thumbnail"
+														:src="'/'+auction.thumbnail"
+														@click="viewImage($event)"
+													/></td>
                                 </tr>
 
                                 <tr>
@@ -87,7 +99,7 @@
 		},
 		methods: {
 			imgURL(url) {
-				return "/uploads/" + url;
+				return "/" + url;
 			},
 			viewImage(event) {
 				console.log(event.target.src);
@@ -96,7 +108,14 @@
 				imageSRC.src = event.target.src;
 				modal.classList.add("show");
 				$("#imageViewer").show();
-			}
+			},
+			formatDate(dateTime) {
+				const today = new Date(dateTime);
+				const formattedDate = today.toLocaleString("en-GB", {
+					dateStyle: "short",
+				});
+				return formattedDate;
+			},
 		},
 	};
 </script>

@@ -80,8 +80,8 @@ class AuctionController extends Controller
             'package_width' => 'required|numeric|gt:0',
             'package_height' => 'required|numeric|gt:0',
             "starting_price" => 'required|numeric|gt:0',
-            "ending_at" => 'required',
-            //"thumbnail" => 'required|mimes:png,svg.bmp,jpg,jpeg',
+            "ending_at" => 'required|date',
+            "thumbnail" => 'required|mimes:png,svg.bmp,jpg,jpeg',
             "images" => 'required|array'
         ]);
 
@@ -101,45 +101,33 @@ class AuctionController extends Controller
         ]);
 
 
-        // try{
-        //     if($request->has('thumbnail')){
-        //         $thumbnail = $request->file('thumbnail');
-        //         $file_name = time() . '_' . $auction->id.'.'.$thumbnail->getClientOriginalExtension();
-        //         if ($_SERVER['HTTP_HOST'] == 'localhost:8000') {
-        //             $thumbnail->move(public_path('/public/uploads/'.$file_name));
-        //         } else {
-        //             $thumbnail->move(public_path('../public/uploads/'.$file_name));
-        //         }
-        //         $auction->thumbnail = $file_name;
-        //         $auction->save();
-        //     }
-        // }catch(\Throwable $e){
-        //     \Log::info($e);
-        // }
+        try{
+            if($request->has('thumbnail')){
+                $thumbnail = $request->file('thumbnail');
+                $imgURL = $this->uploadFilePublic($thumbnail,'uploads');
+                $auction->thumbnail = $imgURL;
+                $auction->save();
+            }
+        }catch(\Throwable $e){
+            \Log::info($e);
+        }
 
-        $files = $request->images;
+        
+        try{
+            $files = $request->images;
             if (isset($files)) {
                 foreach ($files as $key => $file) {
-                    
-                    $image_object = $file['image'];
-                    $file_name = time() . '_' . $auction->id.'.'.$file['image']->getClientOriginalExtension();
-                    $image_object->storeAs('uploads', $file_name);
-                    if ($_SERVER['HTTP_HOST'] == 'localhost:8000') {
-                        File::move(storage_path('app/uploads/' . $file_name), public_path('/public/uploads/' . $file_name));
-                    } else {
-                        File::move(storage_path('app/uploads/' . $file_name), public_path('../public/uploads/' . $file_name));
-                    }
+                    $imgURL = $this->uploadFilePublic($file['image'],'uploads');
                     $auction_image = new AuctionImage();
-                    $auction_image->image = $file_name;
+                    $auction_image->image = $imgURL;
                     $auction_image->auction_id = $auction->id;
-                    if ($key == 0) {
-                        $auction_image->featured = 1;
-                    } else {
-                        $auction_image->featured = 0;
-                    }
                     $auction_image->save();
                 }
             }
+        }catch(\Throwable $e){
+            \Log::info($e);
+        }
+        
 
             return redirect()->route('auctions.listing')->with('success', 'The auction has been added successfully.');
         
@@ -186,7 +174,8 @@ class AuctionController extends Controller
             'package_width' => 'required|numeric|gt:0',
             'package_height' => 'required|numeric|gt:0',
             "starting_price" => 'required|numeric|gt:0',
-            "ending_at" => 'required'
+            "thumbnail" => 'nullable|mimes:png,svg.bmp,jpg,jpeg',
+            "ending_at" => 'required|date'
         ]);
 
 
@@ -204,32 +193,35 @@ class AuctionController extends Controller
             "ending_at" => $request->ending_at,
         ]);
 
-        $files = $request->images;
+        try{
+            if($request->has('thumbnail')){
+                $thumbnail = $request->file('thumbnail');
+                $imgURL = $this->uploadFilePublic($thumbnail,'uploads');
+                $auction->thumbnail = $imgURL;
+                $auction->save();
+            }
+        }catch(\Throwable $e){
+            \Log::info($e);
+        }
+
+
+        try{
+            $files = $request->images;
             if (isset($files)) {
                 foreach ($files as $key => $file) {
-                    if($file['image'] != null){
-                        $image_object = $file['image'];
-                        $file_name = time() . '_' . $auction->id.'.'.$file['image']->getClientOriginalExtension();
-                        $image_object->storeAs('uploads', $file_name);
-                        if ($_SERVER['HTTP_HOST'] == 'localhost:8000') {
-                            File::move(storage_path('app/uploads/' . $file_name), public_path('/public/uploads/' . $file_name));
-                        } else {
-                            File::move(storage_path('app/uploads/' . $file_name), public_path('../public/uploads/' . $file_name));
-                        }
-                        $auction_image = new AuctionImage();
-                        $auction_image->image = $file_name;
-                        $auction_image->auction_id = $auction->id;
-                        if ($key == 0) {
-                            $auction_image->featured = 1;
-                        } else {
-                            $auction_image->featured = 0;
-                        }
-                        $auction_image->save();
-                    }                    
+                    $imgURL = $this->uploadFilePublic($file['image'],'uploads');
+                    $auction_image = new AuctionImage();
+                    $auction_image->image = $imgURL;
+                    $auction_image->auction_id = $auction->id;
+                    $auction_image->save();
                 }
             }
+        }catch(\Throwable $e){
+            \Log::info($e);
+        }
+        
 
-            return redirect()->route('auctions.listing')->with('success', 'The auction has been updated successfully.');
+        return redirect()->route('auctions.listing')->with('success', 'The auction has been updated successfully.');
         
         
     }
@@ -237,10 +229,28 @@ class AuctionController extends Controller
     public function deleteImage(Request $request)
     {
         $image_id = $request->input('id');
-        AuctionImage::find($image_id)->delete();
+        AuctionImage::where('id',$image_id)->delete();
 
         return response()->json([
             'status' => 1
         ]);
+    }
+
+    public function uploadFilePublic($file, $directory, $imageUrl = null)
+    {
+        if (!File::exists($directory)) {
+            File::makeDirectory($directory , 0775, true, true);
+        }
+        if (!File::exists($directory.'/thumb')) {
+            File::makeDirectory($directory.'/thumb', 0775, true, true);
+        }
+        if ($imageUrl != null && File::exists($imageUrl)) {
+            File::delete($imageUrl);
+        }
+        $filename = random_int(100000, 999999) . '_' . $file->getClientOriginalName();
+        $file->move(public_path($directory), $filename);
+        $imageUrl = $directory . '/' . $filename;
+
+        return $imageUrl;
     }
 }

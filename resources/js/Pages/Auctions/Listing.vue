@@ -145,7 +145,7 @@ export default {
   },
   methods: {
     imgURL(url) {
-				return "/uploads/" + url;
+				return '/'+url;
 			},
       submit() {
       const queryParams = new URLSearchParams(this.form);
@@ -187,7 +187,6 @@ export default {
       const today = new Date(dateTime);
       const formattedDate = today.toLocaleString("en-GB", {
         dateStyle: "short",
-        timeStyle: "short",
       });
       return formattedDate;
     },
