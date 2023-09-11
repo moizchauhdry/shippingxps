@@ -221,7 +221,7 @@
 						<inertia-link class="nav-link" :href="route('auctions.listing')" :class="{
 							active: route().current('auctions.listing'),
 						}" :active="route().current('auctions.listing')">
-							<i class="fas fa-note"></i>
+							<i class="fas fa-gavel"></i>
 							<span>Auctions</span>
 						</inertia-link>
 					</div>

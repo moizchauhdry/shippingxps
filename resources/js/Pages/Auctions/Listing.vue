@@ -74,7 +74,6 @@
             <tr>
               <th scope="col">SR #</th>
               <th scope="col">Name</th>
-              <th scope="col">Description</th>
               <th scope="col">ٰImage</th>
               <th scope="col">Ending At</th>
               <th scope="col">Status</th>
@@ -85,10 +84,11 @@
             <tr v-for="(auction, index) in auctions.data" :key="auction.id">
               <td>{{ ++index }}</td>
               <td>{{ auction.name }}</td>
-              <td>{{ auction.description }}</td>
-              <td> <img style="width: 150px;height:auto" :src="imgURL(auction.main_image)"></td>
-              <td>{{ auction.ending_at }}</td>
-              <td>{{ auction.status }}</td>
+              <td> <img style="width: 150px;height:auto" :src="imgURL(auction.thumbnail)"></td>
+              <td>{{ formatDate(auction.ending_at) }}</td>
+              <td>
+                <span class="mr-1" :class="getLabelClass(auction.status)">{{ auction.status == 1 ? 'Active' : 'Inactive' }}</span>
+              </td>
               <td>
                         <inertia-link class="btn btn-primary btn-sm m-1" :href="route('auctions.edit', auction.id)"><i class="fa fa-pencil-alt mr-1"></i>Edit</inertia-link>
                         <inertia-link class="btn btn-info btn-sm m-1" :href="route('auctions.show', auction.id)"><i class="fa fa-list mr-1"></i>Detail</inertia-link>
@@ -170,6 +170,26 @@ export default {
       this.form.auction_category_id = "";
       this.form.date_range = "";
       this.submit();
+    },
+    getLabelClass(status) {
+			switch (status) {
+				case "0":
+					return "text-uppercase badge badge-danger text-white";
+					break;
+				case "1":
+					return "text-uppercase badge badge-success text-white";
+					break;
+				default:
+					return "text-uppercase badge badge-primary text-white";
+			}
+		},
+    formatDate(dateTime) {
+      const today = new Date(dateTime);
+      const formattedDate = today.toLocaleString("en-GB", {
+        dateStyle: "short",
+        timeStyle: "short",
+      });
+      return formattedDate;
     },
     /*submit() {
       const queryParams = new URLSearchParams(this.form);

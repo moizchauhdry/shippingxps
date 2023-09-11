@@ -222,8 +222,16 @@
 								<fieldset class="border p-3 mt-2 mb-2">
 									<div class="row">
 										<div class="col-md-12">
+											<label class="d-block mb-2">Feature Image</label>
+											<input
+															type="file"
+															@input="form.thumbnail = $event.target.files[0]"
+														/>
+										</div>
+										<div class="col-md-12">
 											<div class="row">
 												<div class="col-md-4">
+													<label class="d-block mb-2 mt-5">Gallery Images</label>
 													<a
 														v-on:click="addImage"
 														class="btn btn-primary"
@@ -233,7 +241,6 @@
 													</a>
 												</div>
 											</div>
-
 											<div
 												v-for="(image, index) in form.images"
 												:key="image.id"
@@ -319,6 +326,7 @@
 					package_height: "",
 					starting_price: 0,
 					ending_at: 0,
+					thumbnail: null,
 					images: [
 						{
 							image: "",

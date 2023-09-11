@@ -81,6 +81,7 @@ class AuctionController extends Controller
             'package_height' => 'required|numeric|gt:0',
             "starting_price" => 'required|numeric|gt:0',
             "ending_at" => 'required',
+            //"thumbnail" => 'required|mimes:png,svg.bmp,jpg,jpeg',
             "images" => 'required|array'
         ]);
 
@@ -98,6 +99,23 @@ class AuctionController extends Controller
             "starting_price" => $request->starting_price,
             "ending_at" => $request->ending_at,
         ]);
+
+
+        // try{
+        //     if($request->has('thumbnail')){
+        //         $thumbnail = $request->file('thumbnail');
+        //         $file_name = time() . '_' . $auction->id.'.'.$thumbnail->getClientOriginalExtension();
+        //         if ($_SERVER['HTTP_HOST'] == 'localhost:8000') {
+        //             $thumbnail->move(public_path('/public/uploads/'.$file_name));
+        //         } else {
+        //             $thumbnail->move(public_path('../public/uploads/'.$file_name));
+        //         }
+        //         $auction->thumbnail = $file_name;
+        //         $auction->save();
+        //     }
+        // }catch(\Throwable $e){
+        //     \Log::info($e);
+        // }
 
         $files = $request->images;
             if (isset($files)) {
