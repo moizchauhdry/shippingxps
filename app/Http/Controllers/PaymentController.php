@@ -380,7 +380,6 @@ class PaymentController extends Controller
         $amount = doubleval($request->amount);
         $discount = (float)number_format($discount, 2);
         $lastPayment = Payment::latest()->first();
-        dd($lastPayment);
         $invoiceID = sprintf("%05d", ++$lastPayment->id);
         $payment = new Payment();
         $payment->customer_id = $user->id;
