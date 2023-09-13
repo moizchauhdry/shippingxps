@@ -82,7 +82,7 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::prefix('payment')->group(function () {
-        Route::any('/setup', [\App\Http\Controllers\PaymentController::class, 'index'])->name('payment.index');
+        Route::any('setup', [\App\Http\Controllers\PaymentController::class, 'index'])->name('payment.index');
         Route::post('pay', [\App\Http\Controllers\PaymentController::class,  'pay'])->name('payment.pay');
         Route::any('paypal/init', [\App\Http\Controllers\PaymentController::class,  'payPalInit'])->name('payment.payPalInit');
         Route::any('payPalSuccess', [\App\Http\Controllers\PaymentController::class,  'payPalSuccess'])->name('payment.payPalSuccess');
