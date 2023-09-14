@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['auth'])->group(function () {
     Route::prefix('packages')->group(function () {
         Route::any('index', 'PackageController@index')->name('packages.index');
-        Route::get('getStorageFee', 'PackageController@getStorageFee')->name('getStorageFee');
+        // Route::get('getStorageFee', 'PackageController@getStorageFee')->name('getStorageFee');
         Route::post('service-request', 'PackageController@serviceRequest')->name('packages.service-request');
         Route::post('service-handle', 'PackageController@serviceHandle')->name('packages.service-handle');
         Route::post('ship-package', 'PackageController@shipPackage')->name('packages.ship-package');
