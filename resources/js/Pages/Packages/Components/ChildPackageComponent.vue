@@ -91,7 +91,7 @@
 						v-if="packag.payment_status == 'Pending' && packag.address_book_id != 0 && packag.address_type == 'international'">
 
 						<inertia-link class="btn btn-primary btn-sm m-1" v-if="packag.custom_form_status == 1"
-							:href="route('packages.custom', { package_id: packag.id, mode: 'edit' })">
+							:href="route('packages.custom', { id: packag.id, mode: 'edit' })">
 							<i class="fa fa-edit mr-1"></i>Custom Form
 						</inertia-link>
 
