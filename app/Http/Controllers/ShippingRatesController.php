@@ -290,7 +290,8 @@ class ShippingRatesController extends Controller
                 CURLOPT_HTTPHEADER => [
                     "Content-Type: application/x-www-form-urlencoded",
                     "x-merchant-id: string",
-                    "Authorization: Basic " . base64_encode("gXAcE3M3RxNagMZFVdpjqJWNzsanoEozN9NvsJbyzWkkve5N:kshGQ5SwpG7utyqDtV3zHd1JtyqhTzczSSGq1nFByluEZHgkx1ywY1inudXA2JMH")
+                    // "Authorization: Basic " . base64_encode("gXAcE3M3RxNagMZFVdpjqJWNzsanoEozN9NvsJbyzWkkve5N:kshGQ5SwpG7utyqDtV3zHd1JtyqhTzczSSGq1nFByluEZHgkx1ywY1inudXA2JMH")
+                    "Authorization: Basic " . base64_encode("rkdfbUA5bskZhKkbV7Nhk7tB0Y2wZYMpeiXEIf3W9r92wGBG:X9Gitfsn0A3p00aFPmg3gmE7xV1QRnIOIxygI1ouI6kHueJnHMfDCrwgWpB5na3y")
                 ],
                 CURLOPT_POSTFIELDS => $payload,
                 CURLOPT_URL => "https://wwwcie.ups.com/security/v1/oauth/token",
