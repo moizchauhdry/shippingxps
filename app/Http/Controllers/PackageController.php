@@ -303,15 +303,9 @@ class PackageController extends Controller
                 $qry->where('customer_id', Auth::user()->id);
             })->findOrFail($id);
 
-        if ($packag->service_code) {
-            abort(403);
-        }
-
         $user_id = Auth::user()->id;
         $addresses = Address::where('user_id', $user_id)->get();
         $warehouse = $packag->warehouse;
-
-
 
         $package_items = [];
         foreach ($packag->packageItems as $pkg_item) {
