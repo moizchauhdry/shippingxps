@@ -145,7 +145,7 @@ class PackageController extends Controller
             ->findOrFail($id);
 
         if ($packag->storage_days > 80) {
-            abort(403, 'The package exceeded 80 days, so it has been destroyed');
+            abort(403, 'The package has exceeded 80 days, so it has been terminated and has become the property of ShippingXPS.');
         }
 
         $child_package_orders = [];

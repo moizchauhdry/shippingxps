@@ -10,7 +10,7 @@
             Storage Charges: ${{ packag.storage_fee }} <br>
             <h6 class="mt-3">
                 Note: The storage fee is added when a package exceeds 75 days, and after 80 days, the package is terminated
-                or destroyed.
+                and becomes the property of ShippingXPS.
             </h6>
         </div>
     </div>
