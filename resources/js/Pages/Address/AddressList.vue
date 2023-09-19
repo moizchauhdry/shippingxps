@@ -7,7 +7,7 @@
 				</inertia-link>
 			</div>
 			<div class="card-body">
-				
+
 				<table class="table table-striped">
 					<thead>
 						<tr>
@@ -23,7 +23,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr v-for="(address,index) in addresses" :key="address.id">
+						<tr v-for="(address, index) in addresses" :key="address.id">
 							<td scope="col">{{ ++index }}</td>
 							<td>{{ address.fullname }}</td>
 							<td>{{ address.country.nicename }}</td>
@@ -36,10 +36,6 @@
 								<inertia-link class="nav-link" :href="route('address.edit', address.id)">
 									<i class="fas fa-external-link-alt mr-1"></i><span>Edit</span>
 								</inertia-link>
-
-								<!-- <inertia-link class="nav-link" :href="route('address.destroy', address.id)" method="delete">
-                                    <i class="fas fa-external-link-alt"></i><span>Delete</span>
-                                </inertia-link> -->
 							</td>
 						</tr>
 					</tbody>
