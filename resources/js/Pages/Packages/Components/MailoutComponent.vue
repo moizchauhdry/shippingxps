@@ -217,7 +217,7 @@
 										<td></td>
 									</tr>
 									<tr>
-										<template v-if="$page.props.auth.user.type == 'customer'">
+										<!-- <template v-if="$page.props.auth.user.type == 'customer'">
 											<td v-if="(packag.carrier_code != null || packag.return_label == 1) && packag.payment_status != 'Paid'"
 												colspan="4">
 												<button type="button" @click="checkout()"
@@ -229,7 +229,20 @@
 													Checkout
 												</button>
 											</td>
+										</template> -->
+
+										<template
+											v-if="$page.props.auth.user.type == 'customer' && packag.payment_status != 'Paid'">
+											<td>
+												<button type="button" @click="checkout()"
+													class="btn btn-primary">Checkout</button>
+
+												<span v-for="cm in checkout_message" :key="cm.id" class="badge badge-danger">
+													{{ cm }}
+												</span>
+											</td>
 										</template>
+
 									</tr>
 								</tbody>
 							</table>
@@ -250,7 +263,8 @@
 						<h5 class="modal-title" id="charges_update_label">
 							Charges Update
 						</h5>
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="closeServiceChargesModal">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"
+							@click="closeServiceChargesModal">
 							<span aria-hidden="true">&times;</span>
 						</button>
 					</div>
@@ -263,7 +277,8 @@
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary" data-dismiss="modal" @click="closeServiceChargesModal">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal"
+							@click="closeServiceChargesModal">
 							Close
 						</button>
 						<button type="submit" class="btn btn-success">Update</button>
@@ -282,7 +297,8 @@
 						<h5 class="modal-title" id="charges_update_label">
 							Apply Coupon
 						</h5>
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="closeCouponModal">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"
+							@click="closeCouponModal">
 							<span aria-hidden="true">&times;</span>
 						</button>
 					</div>
@@ -336,6 +352,7 @@ export default {
 			coupon_form: this.$inertia.form({
 				code: ""
 			}),
+			checkout_message: []
 		};
 	},
 	methods: {
@@ -343,7 +360,24 @@ export default {
 			return parseFloat(num).toFixed(2);
 		},
 		checkout() {
-			this.$inertia.post(route("payment.index", this.form_checkout));
+
+			this.checkout_message = [];
+
+			if (!this.packag.address_book_id && this.packag.return_label == 0) {
+				this.checkout_message.push('The address is required');
+			}
+
+			if (this.packag.address_type == 'international' && this.packag.custom_form_status == 0) {
+				this.checkout_message.push('The custom form required');
+			}
+
+			if (this.packag.carrier_code == null && this.packag.return_label == 0) {
+				this.checkout_message.push('The shipping rate required');
+			}
+
+			if (this.checkout_message.length === 0) {
+				this.$inertia.post(route("payment.index"), this.form_checkout);
+			}
 		},
 		editCharges(amount, type) {
 			this.edit_mode = true;
