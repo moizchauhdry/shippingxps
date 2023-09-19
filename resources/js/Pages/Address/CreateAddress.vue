@@ -26,12 +26,12 @@
 								</div>
 
 								<div class="form-group col-md-12">
-									<breeze-label for="" value="Address 2 (optional)" />
+									<breeze-label for="" value="Address 2" />
 									<input type="text" class="form-control" placeholder="Address 2" v-model="form.address_2"/>
 								</div>
 
 								<div class="form-group col-md-12">
-									<breeze-label for="address" value="Address 3 (optional)" />
+									<breeze-label for="address" value="Address 3" />
 									<input type="text" class="form-control" placeholder="Address 3" v-model="form.address_3"/>
 								</div>
 
@@ -46,7 +46,7 @@
 								</div>
 
 								<div class="form-group col-md-6">
-									<breeze-label for="state" :value="form.state_required ? 'State *' : 'State (optional)'"/>
+									<breeze-label for="state" :value="form.state_required ? 'State *' : 'State'"/>
 									<input name="state" id="state" type="text" class="form-control" placeholder="e.g NY,CA,DE" v-model="form.state"/>
 								</div>
 
