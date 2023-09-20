@@ -139,10 +139,13 @@ class PackageController extends Controller
         $this->calculate_storage_fee($id);
 
         $packag = Package::with('orders', 'address', 'warehouse', 'customer', 'images', 'serviceRequests', 'child_packages', 'order', 'boxes', 'coupon')
+            ->when(Auth::user()->type == 'customer', function ($qry) {
+                $qry->where('customer_id', Auth::user()->id);
+            })
             ->findOrFail($id);
 
         if ($packag->storage_days > 80) {
-            abort(403, 'The package exceeded 80 days, so it has been destroyed');
+            abort(403, 'The package has exceeded 80 days, so it has been terminated and has become the property of ShippingXPS.');
         }
 
         $child_package_orders = [];
@@ -293,19 +296,16 @@ class PackageController extends Controller
         ]);
     }
 
-    public function custom($package_id, $mode = NULL)
+    public function custom($id, $mode = NULL)
     {
-        $packag = Package::with('orders', 'warehouse', 'customer', 'packageItems', 'address')->find($package_id);
-
-        if ($packag->service_code) {
-            abort(403);
-        }
+        $packag = Package::with('orders', 'warehouse', 'customer', 'packageItems', 'address')
+            ->when(Auth::user()->type == 'customer', function ($qry) {
+                $qry->where('customer_id', Auth::user()->id);
+            })->findOrFail($id);
 
         $user_id = Auth::user()->id;
         $addresses = Address::where('user_id', $user_id)->get();
         $warehouse = $packag->warehouse;
-
-
 
         $package_items = [];
         foreach ($packag->packageItems as $pkg_item) {
@@ -520,9 +520,13 @@ class PackageController extends Controller
         return redirect('packages')->with('success', 'Package  Updated !');
     }
 
-    public function commercialInvoice($package_id)
+    public function commercialInvoice($id)
     {
-        $package = Package::with(['packageItems', 'warehouse.country'])->find($package_id);
+        $package = Package::with(['packageItems', 'warehouse.country'])
+            ->when(Auth::user()->type == 'customer', function ($qry) {
+                $qry->where('customer_id', Auth::user()->id);
+            })->findOrFail($id);
+
         $warehouse = $package->warehouse;
         $user = User::find($package->customer_id);
         $address = Address::find($package->address_book_id);

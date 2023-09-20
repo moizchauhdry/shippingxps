@@ -116,7 +116,7 @@ export default {
 		},
 	},
 	mounted() {
-		this.getStorageFee();
+		// this.getStorageFee();
 	},
 	methods: {
 		formatNumber(num) {
@@ -193,17 +193,17 @@ export default {
 		makePackageUrl(order_id) {
 			return route("package.create") + "?order_id=" + order_id;
 		},
-		getStorageFee() {
-			axios
-				.get(this.route("getStorageFee"), {
-					params: {
-						package_id: this.packag.id,
-					},
-				})
-				.then((response) => {
-					this.storage_fee = response.data;
-				});
-		},
+		// getStorageFee() {
+		// 	axios
+		// 		.get(this.route("getStorageFee"), {
+		// 			params: {
+		// 				package_id: this.packag.id,
+		// 			},
+		// 		})
+		// 		.then((response) => {
+		// 			this.storage_fee = response.data;
+		// 		});
+		// },
 	},
 };
 </script>

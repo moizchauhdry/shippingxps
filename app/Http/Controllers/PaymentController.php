@@ -570,7 +570,11 @@ class PaymentController extends Controller
 
     public function generateReport($paymentID)
     {
-        $payment = Payment::where('id', $paymentID)->with(['customer', 'package', 'order'])->first();
+        $payment = Payment::where('id', $paymentID)
+            ->with(['customer', 'package', 'order'])
+            ->when(Auth::user()->type == 'customer', function ($qry) {
+                $qry->where('customer_id', Auth::user()->id);
+            })->firstOrFail();
 
 
         $html = view('pdfs.report', [
@@ -677,7 +681,10 @@ class PaymentController extends Controller
         $giftCard = null;
         $service_requests = [];
 
-        $payment = Payment::findOrFail($id);
+        $payment = Payment::when(Auth::user()->type == 'customer', function ($qry) {
+            $qry->where('customer_id', Auth::user()->id);
+        })->findOrFail($id);
+        
         $customer = $payment->customer;
         $billing = json_decode($payment->billing_address) ?? [];
         $warehouse = Warehouse::first();

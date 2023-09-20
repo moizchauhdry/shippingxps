@@ -144,12 +144,12 @@ class AddressController extends Controller
         $address->tax_no = $request->tax_no;
         $address->save();
 
-       if ($request->packages_address == true) {
+        if ($request->packages_address == true) {
             return redirect()->back()->with('success', 'The address have been created successfully.');
-       } else {
+        } else {
             return redirect()->route('addresses')->with('success', 'The address have been created successfully.');
-       }
-    } 
+        }
+    }
 
     public function edit($id)
     {
@@ -273,7 +273,11 @@ class AddressController extends Controller
 
         $address->update();
 
-        return redirect()->route('addresses')->with('success', 'The address have been updated successfully.');
+        if ($request->packages_address == true) {
+            return redirect()->back()->with('success', 'The address have been created successfully.');
+        } else {
+            return redirect()->route('addresses')->with('success', 'The address have been created successfully.');
+        }
     }
 
     public function destroy($id)
