@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Auction extends Model
 {
@@ -11,7 +13,7 @@ class Auction extends Model
 
     protected $guarded = [];
 
-    protected $appends = ['main_image','category_name'];
+    protected $appends = ['main_image','category_name','latest_bid'];
 
     /**
      * Get all of the images for the Auction
@@ -35,9 +37,22 @@ class Auction extends Model
 
     }
 
+    public function bids(): HasMany
+    {
+        return $this->hasMany(AuctionBid::class,'auction_id')->orderByDesc('amount');
+    }
+
     public function getCategoryNameAttribute(){
         
         return $this->category->name ?? '';
-
     }
+
+    public function getLatestBidAttribute()
+    {
+        return $this->bids()->orderByDesc('amount')->first();
+    }
+
+
+
+
 }

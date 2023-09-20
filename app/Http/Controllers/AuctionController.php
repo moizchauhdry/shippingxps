@@ -3,38 +3,105 @@
 namespace App\Http\Controllers;
 
 use App\Models\Auction;
+use App\Models\AuctionBid;
 use App\Models\AuctionImage;
 use App\Models\AuctionCategory;
 use App\Models\Package;
 use App\Models\User;
 use App\Models\Warehouse;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use File;
 
 class AuctionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $packages = Package::paginate(10);
-        return Inertia::render('Auctions/Index',[
-            'packages' => $packages
-        ]);   
+
+        $category = AuctionCategory::all();
+
+        $query = Auction::query();
+
+        $query->when($request->category && !empty($request->category), function ($qry) use ($request) {
+            $qry->where('auction_category_id', $request->category);
+        })
+            ->when($request->filter && !empty($request->filter), function ($qry) use ($request) {
+                if ($request->filter == 'new') {
+                    $qry->orderBy('created_at','desc');
+                }elseif($request->filter == 'old'){
+                    $qry->orderBy('created_at','asc');
+                }elseif($request->filter == 'lth'){
+                    $qry->orderBy('starting_price','asc');
+                }elseif($request->filter == 'htl'){
+                    $qry->orderBy('starting_price','desc');
+                }else{
+                    $qry->orderBy('starting_price','desc');
+                }
+
+            });
+
+        $auctions = $query->paginate(10)->withQueryString();
+
+        return Inertia::render('Auctions/Index', [
+            'auctions' => $auctions,
+            'categories' => $category,
+            'serverTime' => Carbon::now()->format('Y-m-d H:i:s'),
+        ]);
+    }
+
+    public function detail($id)
+    {
+        $auction = Auction::with('category')->find($id);
+        $auctionImages = AuctionImage::where('auction_id', $id)->get();
+        return Inertia::render('Auctions/ShowPage', [
+            'auction' => $auction,
+            'auction_images' => $auctionImages,
+            'serverTime' => Carbon::now()->format('Y-m-d H:i:s'),
+        ]);
+    }
+
+    public function bid(Request $request)
+    {
+        $auction = Auction::find($request->id);
+
+        if ($auction == null) {
+            return response()->json(['status' => '0', 'message' => 'No auction found']);
+        }
+
+        $user = Auth::user();
+
+        $bid = new AuctionBid();
+
+        $bid->bidder_id = $user->id;
+        $bid->auction_id = $auction->id;
+        $bid->amount = $request->amount;
+        $bid->save();
+
+        return response()->json(['status' => '1', 'message' => 'Successfully bidded on product']);
     }
 
     public function listing(Request $request)
     {
-        
+
 
         $query = Auction::when($request->status && !empty($request->status), function ($qry) use ($request) {
-                if($request->status == 1){
-                    $qry->where('status', 1);
-                }else{
-                    $qry->where('status', 0);
-                }
-            })
+            if ($request->status == 1) {
+                $qry->where('status', 1);
+            } else {
+                $qry->where('status', 0);
+            }
+        })
             ->when($request->auction_category_id && !empty($request->auction_category_id), function ($qry) use ($request) {
                 $qry->where('auction_category_id', $request->auction_category_id);
+            })
+            ->when($request->type && !empty($request->type), function ($qry) use ($request) {
+                if ($request->type == 'all') {
+
+                } elseif ($request->type == 'bid') {
+                    $qry->whereHas('bids');
+                }
             })
             ->when($request->date_range && !empty($request->date_range), function ($qry) use ($request) {
                 $range = explode(' - ', $request->date_range);
@@ -45,8 +112,17 @@ class AuctionController extends Controller
 
         $auctions = $query->orderBy('id', 'desc')->paginate(10)->withQueryString();
 
+        if (Auth::user()->type == 'customer') {
+            $customer = Auth::user();
+            $auctions = $query->whereHas('bids', function ($q) use ($customer) {
+                $q->where('bidder_id', $customer->id);
+            })->orderBy('id', 'desc')->paginate(10)->withQueryString();
+        } else {
+            $auctions = $query->orderBy('id', 'desc')->paginate(10)->withQueryString();
+        }
+
         $categories = AuctionCategory::all();
-        return Inertia::render('Auctions/Listing',[
+        return Inertia::render('Auctions/Listing', [
             'auctions' => $auctions,
             'categories' => $categories,
             'filters' => [
@@ -101,43 +177,49 @@ class AuctionController extends Controller
         ]);
 
 
-        try{
-            if($request->has('thumbnail')){
+        try {
+            if ($request->has('thumbnail')) {
                 $thumbnail = $request->file('thumbnail');
-                $imgURL = $this->uploadFilePublic($thumbnail,'uploads');
+                $imgURL = $this->uploadFilePublic($thumbnail, 'uploads');
                 $auction->thumbnail = $imgURL;
                 $auction->save();
             }
-        }catch(\Throwable $e){
+        } catch (\Throwable $e) {
             \Log::info($e);
         }
 
-        
-        try{
+
+        try {
             $files = $request->images;
             if (isset($files)) {
                 foreach ($files as $key => $file) {
-                    $imgURL = $this->uploadFilePublic($file['image'],'uploads');
+                    $imgURL = $this->uploadFilePublic($file['image'], 'uploads');
                     $auction_image = new AuctionImage();
                     $auction_image->image = $imgURL;
                     $auction_image->auction_id = $auction->id;
                     $auction_image->save();
                 }
             }
-        }catch(\Throwable $e){
+        } catch (\Throwable $e) {
             \Log::info($e);
         }
-        
 
-            return redirect()->route('auctions.listing')->with('success', 'The auction has been added successfully.');
-        
-        
+
+        return redirect()->route('auctions.listing')->with('success', 'The auction has been added successfully.');
+
+
     }
 
     public function show($id)
     {
-        $auction = Auction::with('category')->find($id);
-        $auctionImages = AuctionImage::where('auction_id',$id)->get();
+        $user = Auth::user();
+
+        $auction = Auction::with(['category', 'bids' => function ($q) use ($user) {
+            if ($user->type == 'customer') {
+                $q->where('bidder_id', $user->id);
+            }
+        }])->find($id);
+        $auctionImages = AuctionImage::where('auction_id', $id)->get();
         return Inertia::render('Auctions/DetailPage', [
             'auction' => $auction,
             'auction_images' => $auctionImages,
@@ -149,7 +231,7 @@ class AuctionController extends Controller
     {
         $auction = Auction::find($id);
         $categories = AuctionCategory::all();
-        $auctionImages = AuctionImage::where('auction_id',$id)->get();
+        $auctionImages = AuctionImage::where('auction_id', $id)->get();
         return Inertia::render('Auctions/EditPage', [
             'auction' => $auction,
             'auction_images' => $auctionImages,
@@ -158,7 +240,7 @@ class AuctionController extends Controller
 
     }
 
-    public function update(Request $request,$id)
+    public function update(Request $request, $id)
     {
 
 
@@ -193,43 +275,43 @@ class AuctionController extends Controller
             "ending_at" => $request->ending_at,
         ]);
 
-        try{
-            if($request->has('thumbnail')){
+        try {
+            if ($request->has('thumbnail')) {
                 $thumbnail = $request->file('thumbnail');
-                $imgURL = $this->uploadFilePublic($thumbnail,'uploads');
+                $imgURL = $this->uploadFilePublic($thumbnail, 'uploads');
                 $auction->thumbnail = $imgURL;
                 $auction->save();
             }
-        }catch(\Throwable $e){
+        } catch (\Throwable $e) {
             \Log::info($e);
         }
 
 
-        try{
+        try {
             $files = $request->images;
             if (isset($files)) {
                 foreach ($files as $key => $file) {
-                    $imgURL = $this->uploadFilePublic($file['image'],'uploads');
+                    $imgURL = $this->uploadFilePublic($file['image'], 'uploads');
                     $auction_image = new AuctionImage();
                     $auction_image->image = $imgURL;
                     $auction_image->auction_id = $auction->id;
                     $auction_image->save();
                 }
             }
-        }catch(\Throwable $e){
+        } catch (\Throwable $e) {
             \Log::info($e);
         }
-        
+
 
         return redirect()->route('auctions.listing')->with('success', 'The auction has been updated successfully.');
-        
-        
+
+
     }
 
     public function deleteImage(Request $request)
     {
         $image_id = $request->input('id');
-        AuctionImage::where('id',$image_id)->delete();
+        AuctionImage::where('id', $image_id)->delete();
 
         return response()->json([
             'status' => 1
@@ -239,10 +321,10 @@ class AuctionController extends Controller
     public function uploadFilePublic($file, $directory, $imageUrl = null)
     {
         if (!File::exists($directory)) {
-            File::makeDirectory($directory , 0775, true, true);
+            File::makeDirectory($directory, 0775, true, true);
         }
-        if (!File::exists($directory.'/thumb')) {
-            File::makeDirectory($directory.'/thumb', 0775, true, true);
+        if (!File::exists($directory . '/thumb')) {
+            File::makeDirectory($directory . '/thumb', 0775, true, true);
         }
         if ($imageUrl != null && File::exists($imageUrl)) {
             File::delete($imageUrl);

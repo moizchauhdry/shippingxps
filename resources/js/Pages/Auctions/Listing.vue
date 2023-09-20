@@ -52,6 +52,15 @@
                     <option value="2">Inactive</option>
                   </select>
                 </div>
+
+                <div class="form-group">
+                  <label for="">Product Type</label>
+                  <select class="form-control custom-select" v-model="form.type" >
+                    <option value="all" selected>All</option>
+                    <option value="bid">Bid</option>
+                    <option value="bought">Bought</option>
+                  </select>
+                </div>
                 
                 <div class="form-group">
                   <label for="">Date Range</label>
@@ -90,7 +99,7 @@
                 <span class="mr-1" :class="getLabelClass(auction.status)">{{ auction.status == 1 ? 'Active' : 'Inactive' }}</span>
               </td>
               <td>
-                        <inertia-link class="btn btn-primary btn-sm m-1" :href="route('auctions.edit', auction.id)"><i class="fa fa-pencil-alt mr-1"></i>Edit</inertia-link>
+                        <inertia-link v-if="$page.props.auth.user.type != 'customer'" class="btn btn-primary btn-sm m-1" :href="route('auctions.edit', auction.id)"><i class="fa fa-pencil-alt mr-1"></i>Edit</inertia-link>
                         <inertia-link class="btn btn-info btn-sm m-1" :href="route('auctions.show', auction.id)"><i class="fa fa-list mr-1"></i>Detail</inertia-link>
                     </td>
             </tr>
@@ -140,6 +149,7 @@ export default {
         status: this.filters.status,
         auction_category_id: this.filters.auction_category_id,
         date_range: this.filters.date_range,
+        type: this.filters.type,
       },
     };
   },
@@ -166,7 +176,7 @@ export default {
       return `${startDay}/${startMonth}/${startYear} - ${endDay}/${endMonth}/${endYear}`;
     },
     clear() {
-      this.form.status = "";
+      this.form.status = "all";
       this.form.auction_category_id = "";
       this.form.date_range = "";
       this.submit();
