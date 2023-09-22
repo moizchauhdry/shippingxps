@@ -1019,6 +1019,7 @@ class HomeController extends Controller
     public function notifications(Request $request)
     {
 
+        $data = [];
         $currentPage = $request->current_page ?? 1;
         $take = 50 * $currentPage;
 
