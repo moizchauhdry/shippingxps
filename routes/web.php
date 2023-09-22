@@ -133,3 +133,5 @@ Route::any('shipping-rates', [ShippingRatesController::class, 'index'])->name('s
 Route::get('auctions', [AuctionController::class, 'index'])->name('auctions.index');
 Route::get('auctions/{id}', [AuctionController::class, 'detail'])->name('auctions.detail');
 Route::post('bid-auction', [AuctionController::class, 'bid'])->name('auctions.bid');
+
+// Route::get('decode-pdf', [HomeController::class, 'decodePdf']);
