@@ -42,9 +42,9 @@ class AuctionController extends Controller
 
             });
 
-        $auctions = $query->paginate(10)->withQueryString();
+        $auctions = $query->paginate(12)->withQueryString();
 
-        return Inertia::render('Auctions/Index', [
+        return Inertia::render('Frontend/Auctions', [
             'auctions' => $auctions,
             'categories' => $category,
             'serverTime' => Carbon::now()->format('Y-m-d H:i:s'),
@@ -55,7 +55,7 @@ class AuctionController extends Controller
     {
         $auction = Auction::with('category')->find($id);
         $auctionImages = AuctionImage::where('auction_id', $id)->get();
-        return Inertia::render('Auctions/ShowPage', [
+        return Inertia::render('Frontend/AuctionDetail', [
             'auction' => $auction,
             'auction_images' => $auctionImages,
             'serverTime' => Carbon::now()->format('Y-m-d H:i:s'),
@@ -71,6 +71,14 @@ class AuctionController extends Controller
         }
 
         $user = Auth::user();
+
+        if($auction->latest_bid != null && $auction->latest_bid->amount >= $request->amount){
+            return response()->json(['status' => '0', 'message' => 'Bid amount should be greater than current Bid']);
+        }
+
+        if($auction->latest_bid != null && $auction->latest_bid->bidder_id == $user->id){
+            return response()->json(['status' => '0', 'message' => 'You cannot bid in a row']);
+        }
 
         $bid = new AuctionBid();
 

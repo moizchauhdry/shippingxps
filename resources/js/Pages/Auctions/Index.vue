@@ -22,7 +22,7 @@
                 <option value="new">Filter : Newest</option>
                 <option value="old">Filter : Oldest</option>
                 <option value="htl">Filter : High to Low</option>
-                <option value="lth">Filter : Low to Hight</option>
+                <option value="lth">Filter : Low to High</option>
               </select>
             </div>
           </div>
