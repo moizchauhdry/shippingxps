@@ -45,7 +45,7 @@ border: 1px solid #000;
     color: #cf5c13 !important;
   }
   .header {
-    background-color: #cf5c13;
+    background-color: transparent;
     border-radius: 5%;
   }
   .login-btn{

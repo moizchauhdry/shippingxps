@@ -204,12 +204,30 @@
 												required
 											/>
 										</div>
+
+                    <div class="col-md-6 form-group">
+                      <breeze-label
+                          for="buy_price"
+                          value="Buy Price"
+                      />
+                      <input
+                          v-model="form.buy_price"
+                          name="buy_price"
+                          id="buy_price"
+                          type="number"
+                          min="0"
+                          step="0.01"
+                          class="form-control"
+                          placeholder="Buy Price"
+
+                      />
+                    </div>
                                         <div class="col-md-6 form-group">
 											<breeze-label
 												for="ending_at"
 												value="Ending At*"
 											/>
-											<Datepicker v-model="date"  :format="format" :enableTimePicker="false"></Datepicker>
+											<Datepicker v-model="date"  :format="format" :enableTimePicker="true"></Datepicker>
 										</div>
 									</div>
 								</fieldset>
@@ -325,6 +343,7 @@
 					package_width: "",
 					package_height: "",
 					starting_price: 0,
+					buy_price: null,
 					ending_at: 0,
 					thumbnail: null,
 					images: [

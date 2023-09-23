@@ -204,6 +204,24 @@
 												required
 											/>
 										</div>
+
+                    <div class="col-md-6 form-group">
+                      <breeze-label
+                          for="buy_price"
+                          value="Buy Price"
+                      />
+                      <input
+                          v-model="form.buy_price"
+                          name="buy_price"
+                          id="buy_price"
+                          type="number"
+                          min="0"
+                          step="0.01"
+                          class="form-control"
+                          placeholder="Buy Price"
+
+                      />
+                    </div>
                                         <div class="col-md-6 form-group">
 											<breeze-label
 												for="ending_at"
@@ -368,6 +386,7 @@
 					package_width:  this.auction.width,
 					package_height:  this.auction.height,
 					starting_price:  this.auction.starting_price,
+					buy_price:  this.auction.buy_price,
 					ending_at:  this.auction.ending_at,
 					thumbnail:  null,
 					images: [
