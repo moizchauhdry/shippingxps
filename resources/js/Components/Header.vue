@@ -30,7 +30,7 @@
 									<nav class="collapse">
 										<ul class="nav nav-pills" id="mainNav">
 											<li>
-												<inertia-link class="nav-link dropdown-toggle" href="#">Auctions</inertia-link>
+												<inertia-link class="nav-link dropdown-toggle" href="/auctions">Auctions</inertia-link>
 											</li>
 											<li v-if="$page.props.auth.user" class="nav-link">
 												<a class="nav-link" href="/dashboard">Dashboard</a>
