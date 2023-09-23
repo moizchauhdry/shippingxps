@@ -27,7 +27,11 @@
                 </tr>
                 <tr>
                   <th>Starting Price</th>
-                  <td>{{ auction.starting_price }}</td>
+                  <td>${{ auction.starting_price }}</td>
+                </tr>
+                <tr>
+                  <th>Buying Price</th>
+                  <td>${{ auction.buy_price }}</td>
                 </tr>
                 <tr>
                   <th>Ending At</th>

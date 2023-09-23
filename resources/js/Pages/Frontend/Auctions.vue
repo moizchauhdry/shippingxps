@@ -156,13 +156,33 @@ export default {
       this.form.category = id
       this.submit();
     },
+    formatDate(dateTime) {
+      const today = new Date(dateTime);
+
+      let date = today.getDate();
+      let month = today.getMonth() + 1;
+      let year = today.getFullYear();
+      let hour = today.getHours();
+      let minute = today.getMinutes();
+      let seconds = today.getSeconds();
+
+      return `${date}-${month}-${year} ${hour}:${minute}:${seconds}`;
+    },
+    formatDateOnly(dateTime) {
+      const today = new Date(dateTime);
+      let date = today.getDate();
+      let month = today.getMonth() + 1;
+      let year = today.getFullYear();
+
+      return `${date}-${month}-${year}`;
+    },
     getRemainingTime(timestamp) {
       console.log(this.serverTime)
       // Calculate the difference between the timestamp and the current time.
 
-      let endDate = new Date(timestamp)
+      let endDate = new Date(timestamp + ' EST')
 
-      const now = new Date(this.serverTime);
+      const now = new Date();
       const delta = endDate - now;
 
       // Convert the difference to seconds.
@@ -174,12 +194,21 @@ export default {
       const minutes = Math.floor(((seconds % 86400) % 3600) / 60);
       const secondsRemaining = ((seconds % 86400) % 3600) % 60;
 
-      if(days > 0){
-        return `${days}D ${hours}h ${minutes}m`;
-      }else{
-        return `${hours}h ${minutes}m ${parseInt(secondsRemaining)}s`;
+
+      if(days <= 0 && hours <= 0 && minutes <= 0 && secondsRemaining <= 0 ){
+        // const url = `${route("auctions.index")}`;
+        // Inertia.visit(url, { preserveState: true });
       }
 
+      let nextInterval = 1000;
+      if(days > 0){
+        return  `${days}D ${hours}h ${minutes}m`;
+        nextInterval = 60000
+
+      }else{
+        return  `${hours}h ${minutes}m ${parseInt(secondsRemaining)}s`;
+
+      }
 
     }
 

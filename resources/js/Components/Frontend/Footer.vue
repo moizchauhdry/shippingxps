@@ -1,6 +1,6 @@
 <template>
   <!-- FOOTER SECTION  -->
-  <div class="container-fluid bg-light p-5">
+  <div class="container-fluid bg-light p-5 mt-5">
     <div class="container">
       <div class="row ">
         <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 ">

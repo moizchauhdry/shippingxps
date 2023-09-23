@@ -42,7 +42,7 @@ class AuctionController extends Controller
 
             });
 
-        $auctions = $query->paginate(12)->withQueryString();
+        $auctions = $query->where('ending_at','>=',Carbon::now())->paginate(12)->withQueryString();
 
         return Inertia::render('Frontend/Auctions', [
             'auctions' => $auctions,
@@ -53,7 +53,7 @@ class AuctionController extends Controller
 
     public function detail($id)
     {
-        $auction = Auction::with('category')->find($id);
+        $auction = Auction::with('category','bids')->find($id);
         $auctionImages = AuctionImage::where('auction_id', $id)->get();
         return Inertia::render('Frontend/AuctionDetail', [
             'auction' => $auction,
@@ -137,6 +137,7 @@ class AuctionController extends Controller
                 'status' => $request->status ?? "",
                 'auction_category_id' => $request->auction_category_id ?? "",
                 'date_range' => $request->date_range ?? "",
+                'type' => $request->type ?? "",
             ]
         ]);
     }
@@ -164,6 +165,7 @@ class AuctionController extends Controller
             'package_width' => 'required|numeric|gt:0',
             'package_height' => 'required|numeric|gt:0',
             "starting_price" => 'required|numeric|gt:0',
+            "buy_price" => 'nullable|numeric|gt:0',
             "ending_at" => 'required|date',
             "thumbnail" => 'required|mimes:png,svg.bmp,jpg,jpeg',
             "images" => 'required|array'
@@ -181,6 +183,7 @@ class AuctionController extends Controller
             "width" => $request->package_width,
             "height" => $request->package_height,
             "starting_price" => $request->starting_price,
+            "buy_price" => $request->buy_price,
             "ending_at" => $request->ending_at,
         ]);
 
@@ -264,6 +267,7 @@ class AuctionController extends Controller
             'package_width' => 'required|numeric|gt:0',
             'package_height' => 'required|numeric|gt:0',
             "starting_price" => 'required|numeric|gt:0',
+            "buy_price" => 'nullable|numeric|gt:0',
             "thumbnail" => 'nullable|mimes:png,svg.bmp,jpg,jpeg',
             "ending_at" => 'required|date'
         ]);
@@ -280,6 +284,7 @@ class AuctionController extends Controller
             "width" => $request->package_width,
             "height" => $request->package_height,
             "starting_price" => $request->starting_price,
+            "buy_price" => $request->buy_price,
             "ending_at" => $request->ending_at,
         ]);
 

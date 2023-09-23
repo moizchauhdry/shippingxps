@@ -23,7 +23,7 @@
           >
         </template>-->
 
-        <inertia-link :href="route('auctions.create')" class="btn btn-success float-right mr-1">
+        <inertia-link v-if="$page.props.auth.user.type != 'customer'" :href="route('auctions.create')" class="btn btn-success float-right mr-1">
           <i class="fa fa-plus mr-1"></i>Add Product</inertia-link>
       </div>
       <div class="card-body">
@@ -56,7 +56,7 @@
                 <div class="form-group">
                   <label for="">Product Type</label>
                   <select class="form-control custom-select" v-model="form.type" >
-                    <option value="all" selected>All</option>
+                    <option value="" selected>All</option>
                     <option value="bid">Bid</option>
                     <option value="bought">Bought</option>
                   </select>
@@ -176,7 +176,8 @@ export default {
       return `${startDay}/${startMonth}/${startYear} - ${endDay}/${endMonth}/${endYear}`;
     },
     clear() {
-      this.form.status = "all";
+      this.form.status = "";
+      this.form.type = "";
       this.form.auction_category_id = "";
       this.form.date_range = "";
       this.submit();
