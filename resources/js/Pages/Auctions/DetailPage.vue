@@ -19,12 +19,12 @@
                   <th>Weight</th>
                   <td>{{ auction.weight + ' ' + auction.weight_unit }}</td>
                 </tr>
-                <tr>
+<!--                <tr>
                   <th>Dimensions</th>
                   <td>{{ auction.length + ' X ' + auction.width + ' X ' + auction.height + ' ' + auction.dimension_unit
                     }}
                   </td>
-                </tr>
+                </tr>-->
                 <tr>
                   <th>Starting Price</th>
                   <td>${{ auction.starting_price }}</td>

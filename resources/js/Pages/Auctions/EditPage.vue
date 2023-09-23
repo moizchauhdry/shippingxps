@@ -114,12 +114,12 @@
 											</select>
 										</div>
 
-										<div class="col-md-2 form-group">
+<!--										<div class="col-md-2 form-group">
 											<breeze-label for="dim_unit" value="Dimention Unit*" />
 											<select class="form-control" :disabled="1">
 												<option value="in">Inch</option>
 											</select>
-										</div>
+										</div>-->
 
 										<div class="col-md-2 form-group">
 											<breeze-label
@@ -139,7 +139,7 @@
 											/>
 										</div>
 
-										<div class="col-md-2 form-group">
+<!--										<div class="col-md-2 form-group">
 											<breeze-label
 												for="package_length"
 												value="Package Length*"
@@ -185,7 +185,7 @@
 												placeholder="Package Width"
 												required
 											/>
-										</div>
+										</div>-->
 
                                         <div class="col-md-6 form-group">
 											<breeze-label
