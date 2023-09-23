@@ -5,3 +5,4 @@
 /uploads
 *.zip
 .htaccess
+/public/.htaccess
