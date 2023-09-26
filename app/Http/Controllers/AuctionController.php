@@ -9,6 +9,7 @@ use App\Models\AuctionCategory;
 use App\Models\Package;
 use App\Models\User;
 use App\Models\Warehouse;
+use App\Notifications\BidderSelectionNotification;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -105,9 +106,11 @@ class AuctionController extends Controller
                 $qry->where('auction_category_id', $request->auction_category_id);
             })
             ->when($request->type && !empty($request->type), function ($qry) use ($request) {
-                if ($request->type == 'all') {
+                if ($request->type == '') {
 
                 } elseif ($request->type == 'bid') {
+                    $qry->whereHas('bids');
+                }elseif ($request->type == 'bid') {
                     $qry->whereHas('bids');
                 }
             })
@@ -347,5 +350,35 @@ class AuctionController extends Controller
         $imageUrl = $directory . '/' . $filename;
 
         return $imageUrl;
+    }
+
+    public function selectBidder(Request $request)
+    {
+        $validated = $request->validate([
+            "bid_id" => 'required',
+        ]);
+
+        $bid = AuctionBid::find($request->bid_id);
+
+        if($bid == null){
+            return response()->json([
+                'status' => 0,
+                'message' => 'Invalid Bidder'
+            ]);
+        }
+
+        $bid->is_selected = 1;
+        $bid->save();
+
+
+        $customer = User::find($bid->bidder_id);
+        $customer->notify(new BidderSelectionNotification($bid));
+
+        return response()->json([
+            'status' => 1,
+            'message' => 'Bidder has been Notified'
+        ]);
+
+
     }
 }
