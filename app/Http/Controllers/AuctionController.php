@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use File;
+use Illuminate\Support\Facades\Log;
 
 class AuctionController extends Controller
 {
@@ -372,7 +373,11 @@ class AuctionController extends Controller
 
 
         $customer = User::find($bid->bidder_id);
-        $customer->notify(new BidderSelectionNotification($bid));
+        try {
+            $customer->notify(new BidderSelectionNotification($bid));
+        }catch(\Throwable $exception){
+            Log::info($exception->getMessage());
+        }
 
         return response()->json([
             'status' => 1,
