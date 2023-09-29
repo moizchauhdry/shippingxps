@@ -13,7 +13,7 @@ class Auction extends Model
 
     protected $guarded = [];
 
-    protected $appends = ['main_image','category_name','latest_bid'];
+    protected $appends = ['main_image','category_name','latest_bid','is_bidder_selected'];
 
     /**
      * Get all of the images for the Auction
@@ -52,7 +52,10 @@ class Auction extends Model
         return $this->bids()->orderByDesc('amount')->first();
     }
 
-
+    public function getIsBidderSelectedAttribute()
+    {
+        return $this->bids()->where('is_selected',1)->count();
+    }
 
 
 }

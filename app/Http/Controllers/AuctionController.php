@@ -9,11 +9,13 @@ use App\Models\AuctionCategory;
 use App\Models\Package;
 use App\Models\User;
 use App\Models\Warehouse;
+use App\Notifications\BidderSelectionNotification;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use File;
+use Illuminate\Support\Facades\Log;
 
 class AuctionController extends Controller
 {
@@ -105,9 +107,11 @@ class AuctionController extends Controller
                 $qry->where('auction_category_id', $request->auction_category_id);
             })
             ->when($request->type && !empty($request->type), function ($qry) use ($request) {
-                if ($request->type == 'all') {
+                if ($request->type == '') {
 
                 } elseif ($request->type == 'bid') {
+                    $qry->whereHas('bids');
+                }elseif ($request->type == 'bid') {
                     $qry->whereHas('bids');
                 }
             })
@@ -161,9 +165,9 @@ class AuctionController extends Controller
             'weight_unit' => 'required',
             'dim_unit' => 'required',
             'package_weight' => 'required|numeric|gt:0',
-            'package_length' => 'required|numeric|gt:0',
+            /*'package_length' => 'required|numeric|gt:0',
             'package_width' => 'required|numeric|gt:0',
-            'package_height' => 'required|numeric|gt:0',
+            'package_height' => 'required|numeric|gt:0',*/
             "starting_price" => 'required|numeric|gt:0',
             "buy_price" => 'nullable|numeric|gt:0',
             "ending_at" => 'required|date',
@@ -179,9 +183,9 @@ class AuctionController extends Controller
             "weight_unit" => $request->weight_unit,
             "dimension_unit" => $request->dim_unit,
             "weight" => $request->package_weight,
-            "length" => $request->package_length,
+            /*"length" => $request->package_length,
             "width" => $request->package_width,
-            "height" => $request->package_height,
+            "height" => $request->package_height,*/
             "starting_price" => $request->starting_price,
             "buy_price" => $request->buy_price,
             "ending_at" => $request->ending_at,
@@ -263,9 +267,9 @@ class AuctionController extends Controller
             'weight_unit' => 'required',
             'dim_unit' => 'required',
             'package_weight' => 'required|numeric|gt:0',
-            'package_length' => 'required|numeric|gt:0',
+            /*'package_length' => 'required|numeric|gt:0',
             'package_width' => 'required|numeric|gt:0',
-            'package_height' => 'required|numeric|gt:0',
+            'package_height' => 'required|numeric|gt:0',*/
             "starting_price" => 'required|numeric|gt:0',
             "buy_price" => 'nullable|numeric|gt:0',
             "thumbnail" => 'nullable|mimes:png,svg.bmp,jpg,jpeg',
@@ -280,9 +284,9 @@ class AuctionController extends Controller
             "weight_unit" => $request->weight_unit,
             "dimension_unit" => $request->dim_unit,
             "weight" => $request->package_weight,
-            "length" => $request->package_length,
+            /*"length" => $request->package_length,
             "width" => $request->package_width,
-            "height" => $request->package_height,
+            "height" => $request->package_height,*/
             "starting_price" => $request->starting_price,
             "buy_price" => $request->buy_price,
             "ending_at" => $request->ending_at,
@@ -347,5 +351,39 @@ class AuctionController extends Controller
         $imageUrl = $directory . '/' . $filename;
 
         return $imageUrl;
+    }
+
+    public function selectBidder(Request $request)
+    {
+        $validated = $request->validate([
+            "bid_id" => 'required',
+        ]);
+
+        $bid = AuctionBid::find($request->bid_id);
+
+        if($bid == null){
+            return response()->json([
+                'status' => 0,
+                'message' => 'Invalid Bidder'
+            ]);
+        }
+
+        $bid->is_selected = 1;
+        $bid->save();
+
+
+        $customer = User::find($bid->bidder_id);
+        try {
+            $customer->notify(new BidderSelectionNotification($bid));
+        }catch(\Throwable $exception){
+            Log::info($exception->getMessage());
+        }
+
+        return response()->json([
+            'status' => 1,
+            'message' => 'Bidder has been Notified'
+        ]);
+
+
     }
 }

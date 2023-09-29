@@ -83,6 +83,7 @@ Route::group(['prefix' => 'auctions-a','middleware' => 'auth','as' => 'auctions.
    Route::get('edit/{id}',[AuctionController::class,'edit'])->name('edit');
    Route::post('update/{id}',[AuctionController::class,'update'])->name('update');
    Route::post('delete-image',[AuctionController::class,'deleteImage'])->name('delete-image');
+   Route::post('select-bid',[AuctionController::class,'selectBidder'])->name('select-bid');
 });
 
 Route::get('/settings', 'SettingsController@index')->name('settings')->middleware('auth');
