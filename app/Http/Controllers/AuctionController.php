@@ -44,7 +44,7 @@ class AuctionController extends Controller
 
             });
 
-        $auctions = $query->where('ending_at','>=',Carbon::now())->paginate(12)->withQueryString();
+        $auctions = $query->where('status',1)->where('ending_at','>=',Carbon::now())->paginate(12)->withQueryString();
 
         return Inertia::render('Frontend/Auctions', [
             'auctions' => $auctions,
@@ -351,6 +351,33 @@ class AuctionController extends Controller
         $imageUrl = $directory . '/' . $filename;
 
         return $imageUrl;
+    }
+
+    public function updateStatus(Request $request)
+    {
+        $validated = $request->validate([
+            "id" => 'required',
+            "status" => 'required',
+        ]);
+
+
+        $auction = Auction::find($request->id);
+
+        if($auction == null)
+        {
+            return response()->json([
+                'status' => 0,
+                'message' => 'No Auction Found'
+            ]);
+        }
+
+        $auction->status = $request->status;
+        $auction->save();
+
+        return response()->json([
+            'status' => 1,
+            'message' => 'Status changed'
+        ]);
     }
 
     public function selectBidder(Request $request)
