@@ -99,6 +99,7 @@
                 <span class="mr-1" :class="getLabelClass(auction.status)">{{ auction.status == 1 ? 'Active' : 'Inactive' }}</span>
               </td>
               <td>
+                <a v-if="$page.props.auth.user.type != 'customer'" class="btn btn-warning btn-sm m-1" href="javascript:void(0)" v-on:click="changeStatus(auction.id,auction.status == 1 ? 0 : 1)">Change Status</a>
                         <inertia-link v-if="$page.props.auth.user.type != 'customer'" class="btn btn-primary btn-sm m-1" :href="route('auctions.edit', auction.id)"><i class="fa fa-pencil-alt mr-1"></i>Edit</inertia-link>
                         <inertia-link class="btn btn-info btn-sm m-1" :href="route('auctions.show', auction.id)"><i class="fa fa-list mr-1"></i>Detail</inertia-link>
                     </td>
@@ -115,6 +116,25 @@
       </div>
       <div class="card-footer">
         <pagination :links="auctions.links" class="float-right"></pagination>
+      </div>
+    </div>
+
+    <div class="modal fade show" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="StatusTitle" :style="statusModal ? 'display: block' : 'display: none'">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="StatusLongTitle">Change Status</h5>
+            <button type="button" class="btn btn-secondary close" v-on:click="closeModal" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <h3>Are you sure ?</h3>
+            <p>You want to change status </p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" v-on:click="closeModal" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" v-on:click="confirmStatus">Yes</button>
+          </div>
+        </div>
       </div>
     </div>
   </MainLayout>
@@ -145,12 +165,17 @@ export default {
     return {
       active: "auctions",
       date: "",
+      statusModal:false,
       form: {
         status: this.filters.status,
         auction_category_id: this.filters.auction_category_id,
         date_range: this.filters.date_range,
         type: this.filters.type,
       },
+      formStatus:{
+        status:null,
+        id:null
+      }
     };
   },
   methods: {
@@ -194,6 +219,11 @@ export default {
 					return "text-uppercase badge badge-primary text-white";
 			}
 		},
+    changeStatus(id,status){
+      this.formStatus.id = id;
+      this.formStatus.status = status;
+      this.statusModal = true;
+    },
     formatDate(dateTime) {
       const today = new Date(dateTime);
       const formattedDate = today.toLocaleString("en-GB", {
@@ -201,6 +231,23 @@ export default {
       });
       return formattedDate;
     },
+    closeModal(){
+      this.statusModal = false
+      this.form.bid_id = null;
+    },
+    confirmStatus(){
+      axios.post(this.route('auctions.update-status'), this.formStatus).then(function (response) {
+        if (response.data.status == 1) {
+          alert(response.data.message);
+          const url = `${route("auctions.listing")}`;
+          Inertia.visit(url, {});
+        } else {
+          alert(response.data.message);
+        }
+      }).catch(function (error) {
+        console.log(error);
+      });
+    }
     /*submit() {
       const queryParams = new URLSearchParams(this.form);
       const url = `${route("packages.index")}?${queryParams.toString()}`;

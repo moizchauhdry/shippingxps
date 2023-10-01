@@ -38,6 +38,14 @@
                   <td>{{ formatDate(auction.ending_at)}}</td>
                 </tr>
                 <tr>
+                  <th>Expired</th>
+                  <td>{{ auction.expired_at != null ? 'YES' : 'NO' }}</td>
+                </tr>
+                <tr>
+                  <th>Bought</th>
+                  <td>{{ auction.bought_at != null ? 'YES' : 'NO' }}</td>
+                </tr>
+                <tr>
                   <th>Feature Image</th>
                   <td><img style=width:100px;height:auto class=img-thumbnail :src="'/'+auction.thumbnail"
                            @click=viewImage($event)></td>
