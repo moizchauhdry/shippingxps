@@ -3,8 +3,11 @@
 namespace App\Console\Commands;
 
 use App\Models\Auction;
+use App\Models\User;
+use App\Notifications\BidderSelectionNotification;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class AuctionCommand extends Command
 {
@@ -55,6 +58,12 @@ class AuctionCommand extends Command
                     if($highestBid != null){
                         $highestBid->is_selected = 1;
                         $highestBid->save();
+                        $customer = User::find($highestBid->bidder_id);
+                        try {
+                            $customer->notify(new BidderSelectionNotification($highestBid));
+                        }catch(\Throwable $exception){
+                            Log::info($exception->getMessage());
+                        }
                     }
 
                 }
