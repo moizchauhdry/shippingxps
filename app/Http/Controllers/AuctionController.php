@@ -188,7 +188,7 @@ class AuctionController extends Controller
             "height" => $request->package_height,*/
             "starting_price" => $request->starting_price,
             "buy_price" => $request->buy_price,
-            "ending_at" => $request->ending_at,
+            "ending_at" => date('Y-m-d 23:59:59',strtotime($request->ending_at)),
         ]);
 
 
@@ -289,7 +289,7 @@ class AuctionController extends Controller
             "height" => $request->package_height,*/
             "starting_price" => $request->starting_price,
             "buy_price" => $request->buy_price,
-            "ending_at" => $request->ending_at,
+            "ending_at" => date('Y-m-d 23:59:59',strtotime($request->ending_at)),
         ]);
 
         try {
