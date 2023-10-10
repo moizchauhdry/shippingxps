@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AddressController;
 use App\Http\Controllers\API\RegisterController;
 use App\Http\Controllers\ShippingRatesController;
 use Illuminate\Http\Request;
@@ -20,6 +21,12 @@ Route::post('register', [RegisterController::class, 'register']);
 Route::post('login', [RegisterController::class, 'login']);
 Route::post('rates', [ShippingRatesController::class, 'index']);
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+
+Route::group(['middleware' => 'auth:api'], function () {
+    Route::post('address/store', [AddressController::class, 'store']);
 });
+
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+

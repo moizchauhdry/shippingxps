@@ -9,6 +9,7 @@ use Inertia\Inertia;
 use App\Models\Address;
 use App\Models\Country;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
 class AddressController extends Controller
@@ -33,7 +34,11 @@ class AddressController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        // dd($request->all());
+
+        $user = Auth::user();
+
+        $rules = [
             'fullname' => 'regex:/^[A-Za-z0-9\s]+$/|required',
             'is_residential' => 'required|boolean',
             'country_id' => 'required',
@@ -41,22 +46,36 @@ class AddressController extends Controller
             'zip_code' => 'regex:/^[A-Za-z0-9\s]+$/|required|string',
             'phone' => 'required|string',
             'email' => 'email|required|string',
-            'address' => 'regex:/^[A-Za-z0-9\s]+$/|required|string|max:35',
+            'address' => 'required|string|max:35|regex:/^[A-Za-z0-9\s]+$/',
             'address_2' => 'nullable|string|max:35',
             'address_3' => 'nullable|string|max:35',
             'tax_no' => 'nullable|max:100',
-        ], [
+            'state' => ['min:2', 'max:2', Rule::requiredIf($request->state_required == true)],
+        ];
+
+        $messages = [
             'regex' => 'The :attribute must only contain letters (english) and numbers.'
-        ]);
+        ];
+
+        if ($request->api == true) {
+            $validator = Validator::make($request->all(), $rules, $messages);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => true,
+                    'message' => 'errors',
+                    'errors' => $validator->errors(),
+                ]);
+            }
+        } else {
+            $request->validate($rules, $messages);
+        }
 
 
         $country = Country::find($request->country_id);
         $country_code = $country->iso;
 
         if ($request->state_required == true) {
-            $validated += $request->validate([
-                'state' => 'required|min:2|max:2',
-            ]);
 
             try {
 
@@ -88,11 +107,11 @@ class AddressController extends Controller
                         [
                             "address" => [
                                 "streetLines" => [
-                                    $validated['address']
+                                    $request->address
                                 ],
-                                "city" =>  $validated['city'],
-                                "stateOrProvinceCode" =>  $validated['state'],
-                                "postalCode" =>  $validated['zip_code'],
+                                "city" =>  $request->city,
+                                "stateOrProvinceCode" =>  $request->state,
+                                "postalCode" =>  $request->zip_code,
                                 "countryCode" => $country_code,
                                 "urbanizationCode" => "string",
                                 "addressVerificationId" => "string"
@@ -112,42 +131,81 @@ class AddressController extends Controller
                 $address_type = $response->output->resolvedAddresses[0]->classification;
 
                 if ($address_type == 'BUSINESS' && $request->is_residential == 1) {
-                    return redirect()->back()->with('error', 'The address you have entered is business but you select residential.');
+                    $message = 'The address you have entered is business but you select residential.';
+                    if ($request->api == true) {
+                        return response()->json([
+                            'status' => true,
+                            'message' => $message,
+                        ]);
+                    } else {
+                        return redirect()->back()->with('error', $message);
+                    }
                 }
 
                 if ($address_type == 'RESIDENTIAL' && $request->is_residential == 0) {
-                    return redirect()->back()->with('error', 'The address you entered is residential but you select business.');
+                    $message = 'The address you entered is residential but you select business.';
+                    if ($request->api == true) {
+                        return response()->json([
+                            'status' => true,
+                            'message' => $message,
+                        ]);
+                    } else {
+                        return redirect()->back()->with('error', $message);
+                    }
                 }
 
                 if ($address_type == 'UNKNOWN') {
-                    return redirect()->back()->with('error', 'The address you have entered is not valid.');
+                    $message = 'The address you have entered is not valid.';
+                    if ($request->api == true) {
+                        return response()->json([
+                            'status' => true,
+                            'message' => $message,
+                        ]);
+                    } else {
+                        return redirect()->back()->with('error', $message);
+                    }
                 }
             } catch (\Throwable $th) {
-                return redirect()->back()->with('error', 'The address you have entered is not valid.');
+                if ($request->api == true) {
+                    return response()->json([
+                        'status' => true,
+                        'message' => $th->getMessage(),
+                    ]);
+                } else {
+                    return redirect()->back()->with('error', $th->getMessage());
+                }
             }
         }
 
         $address = new Address();
-        $address->user_id = Auth::user()->id;
-        $address->fullname = $validated['fullname'];
-        $address->country_id = $validated['country_id'];
+        $address->user_id = $user->id;
+        $address->fullname = $request->fullname;
+        $address->country_id = $request->country_id;
         $address->country_code = $country_code;
         $address->state = $request->state;
-        $address->city = $validated['city'];
-        $address->zip_code = $validated['zip_code'];
-        $address->phone = $validated['phone'];
-        $address->email = $validated['email'];
-        $address->address = $validated['address'];
+        $address->city = $request->city;
+        $address->zip_code = $request->zip_code;
+        $address->phone = $request->phone;
+        $address->email = $request->email;
+        $address->address = $request->address;
         $address->address_2 = $request->address_2;
         $address->address_3 =  $request->address_3;
-        $address->is_residential = $validated['is_residential'];
+        $address->is_residential = $request->is_residential;
         $address->tax_no = $request->tax_no;
         $address->save();
 
+        $success_message = "The address have been created successfully.";
         if ($request->packages_address == true) {
-            return redirect()->back()->with('success', 'The address have been created successfully.');
+            return redirect()->back()->with('success', $success_message);
         } else {
-            return redirect()->route('addresses')->with('success', 'The address have been created successfully.');
+            if ($request->api == true) {
+                return response()->json([
+                    'status' => true,
+                    'message' => $success_message,
+                ]);
+            } else {
+                return redirect()->route('addresses')->with('success', $success_message);
+            }
         }
     }
 
