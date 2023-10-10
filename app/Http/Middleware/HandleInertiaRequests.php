@@ -3,16 +3,29 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
 {
+
+    protected $rootView = 'app';
+    public function __construct()
+    {
+//        Log::info(\request()->route()->action['as']);
+        if(isset(\request()->route()->action['as']) && in_array(\request()->route()->action['as'],['auctions.index','auctions.detail','auctions.bid'])){
+            $this->rootView = 'frontend';
+        }
+
+
+    }
+
     /**
      * The root template that is loaded on the first page visit.
      *
      * @var string
      */
-    protected $rootView = 'app';
+
 
     /**
      * Determine the current asset version.

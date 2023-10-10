@@ -25,7 +25,7 @@
 									</div>
 
 									<!-- SHIPPING ADDRESS SECTION -->
-									<template v-if="payment_module != 'package'">
+									<template v-if="payment_module != 'package' || payment_module != 'auction'">
 										<h3 v-show="form.shipping_address_id == null">
 											Select Shipping Address to proceed
 										</h3>

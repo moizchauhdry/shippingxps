@@ -71,7 +71,7 @@ class ShippingRatesController extends Controller
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
-                'message' => 'error',
+                'message' => $th->getMessage(),
                 'data' => [],
             ]);
         }
