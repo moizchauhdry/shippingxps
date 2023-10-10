@@ -16,7 +16,7 @@ class AuctionCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'auction:check-expiry';
+    protected $signature = 'command:auction';
 
     /**
      * The console command description.
@@ -44,31 +44,26 @@ class AuctionCommand extends Command
     {
         $auctions = Auction::whereNull('expired_at')->get();
         $now = Carbon::now();
-        foreach ($auctions as $auction){
-            if($auction->ending_at <= $now){
+        foreach ($auctions as $key => $auction) {
+            if ($auction->ending_at <= $now) {
                 $auction->expired_at = $now;
-
                 $auction->save();
-                dump($auction->expired_at);
-                $checkBid = $auction->bids()->where('is_selected',1)->count();
-                dump($checkBid);
-                if($checkBid == 0){
-                    $highestBid = $auction->bids()->orderBy('amount','desc')->first();
-                    dump($highestBid);
-                    if($highestBid != null){
+                $checkBid = $auction->bids()->where('is_selected', 1)->count();
+                if ($checkBid == 0) {
+                    $highestBid = $auction->bids()->orderBy('amount', 'desc')->first();
+                    if ($highestBid != null) {
                         $highestBid->is_selected = 1;
                         $highestBid->save();
                         $customer = User::find($highestBid->bidder_id);
-                        try {
-                            $customer->notify(new BidderSelectionNotification($highestBid));
-                        }catch(\Throwable $exception){
-                            Log::info($exception->getMessage());
-                        }
+                        $customer->notify(new BidderSelectionNotification($highestBid));
+                        $auction->update([
+                            'winner_id' => $customer->id,
+                            'final_price' => $highestBid->amount,
+                        ]);
                     }
-
                 }
             }
-
+            \dump($key);
         }
     }
 }

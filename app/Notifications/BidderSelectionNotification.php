@@ -30,7 +30,7 @@ class BidderSelectionNotification extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail','database'];
+        return ['mail', 'database'];
     }
 
     /**
@@ -41,15 +41,14 @@ class BidderSelectionNotification extends Notification
      */
     public function toMail($notifiable)
     {
+        $url = route("auctions.show", ["id" => $this->bid->auction_id]);
+
         return (new MailMessage)
-            ->subject('Your bid has been Selected')
-            ->greeting('Hello!')
-                    ->line('Congratulation your bid has been selected.')
-                    ->line('Kindly review the details and proceed with the payment of $' . $this->bid->amount . ' to receive your auction package.')
-                    ->action('Pay', 'javascript:void(0)')
-                    ->line('Thank you for using our application!');
-
-
+            ->greeting('Dear Customer!')
+            ->line('Congratulation your bid has been selected.')
+            ->line('Kindly review the details and proceed with the payment of $' . $this->bid->amount . ' to receive your auction package.')
+            ->action('Login & Pay', $url)
+            ->line('Thank you for using our application!');
     }
 
     /**
@@ -60,10 +59,12 @@ class BidderSelectionNotification extends Notification
      */
     public function toArray($notifiable)
     {
+        $url = route("auctions.show", ["id" => $this->bid->auction_id]);
+
         return [
             'auction_id' => $this->bid->auction_id,
-            'message' => 'Congratulation your bid has been selected. Kindly review the details and proceed with the payment of $' . $this->bid->amount . ' to receive your auction package.',
-            'url' => 'javascript:void(0)'
+            'message' => '<a class="link-primary" href="' . $url . '" >Congratulation your bid has been selected. Kindly review the details and proceed with the payment of $' . $this->bid->amount . ' to receive your auction package.</a>',
+            'url' => $url
         ];
     }
 }

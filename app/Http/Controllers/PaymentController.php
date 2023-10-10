@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\PaymentEventHandler;
 use App\Models\AdditionalRequest;
 use App\Models\Address;
+use App\Models\Auction;
 use App\Models\Coupon;
 use App\Models\CustomerCoupon;
 use App\Models\GiftCard;
@@ -28,7 +29,7 @@ class PaymentController extends Controller
     {
         $payment_module = $request->payment_module;
 
-        if (!in_array($payment_module, ['package', 'gift_card', 'order'])) {
+        if (!in_array($payment_module, ['package', 'gift_card', 'order', 'auction'])) {
             return redirect()->back()->with('error', 'PAYMENT DENIED!');
         }
 
@@ -82,6 +83,22 @@ class PaymentController extends Controller
                     'label' => $address->fullname . ", " . $address->city . ", " . $address->state . ", " . $address->zip_code,
                 ];
             }
+        }
+
+        if ($payment_module == 'auction') {
+            $auction = Auction::query()
+                ->where('bought_at', NULL)
+                ->where('id', $request->auction_id)
+                ->where('winner_id', $user->id)
+                ->firstOrFail();
+
+            $amount = $auction->final_price;
+            $payment_module_id = $auction->id;
+        }
+
+
+        if ($amount <= 0) {
+            abort(403, 'The amount is less then 0');
         }
 
         $paypal_processing_fee = SiteSetting::where('name', 'paypal_processing_percentage')->first()->value ?? 0.00;
@@ -259,6 +276,12 @@ class PaymentController extends Controller
                     $gift_card->save();
                 }
 
+                if ($request->payment_module_type == 'auction') {
+                    $auction = Auction::find($payment_module_id);
+                    $auction->payment_status = "Paid";
+                    $auction->save();
+                }
+
                 if ($request->payment_module_type == 'package') {
                     $package = Package::find($payment_module_id);
                     $package->payment_status = "Paid";
@@ -429,6 +452,12 @@ class PaymentController extends Controller
             $gift_card = GiftCard::find($payment_module_id);
             $gift_card->payment_status = "Paid";
             $gift_card->save();
+        }
+
+        if ($request->payment_module_type == 'auction') {
+            $auction = Auction::find($payment_module_id);
+            $auction->payment_status = "Paid";
+            $auction->save();
         }
 
         if ($request->payment_module_type == 'package') {
@@ -684,7 +713,7 @@ class PaymentController extends Controller
         $payment = Payment::when(Auth::user()->type == 'customer', function ($qry) {
             $qry->where('customer_id', Auth::user()->id);
         })->findOrFail($id);
-        
+
         $customer = $payment->customer;
         $billing = json_decode($payment->billing_address) ?? [];
         $warehouse = Warehouse::first();

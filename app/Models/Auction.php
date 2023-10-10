@@ -57,5 +57,4 @@ class Auction extends Model
         return $this->bids()->where('is_selected',1)->count();
     }
 
-
 }
