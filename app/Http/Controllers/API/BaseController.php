@@ -14,7 +14,7 @@ class BaseController extends Controller
      */
     public function sendResponse($result, $message)
     {
-    	$response = [
+        $response = [
             'success' => true,
             'data'    => $result,
             'message' => $message,
@@ -30,18 +30,22 @@ class BaseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function sendError($error, $errorMessages = [], $code = 404)
+    public function sendError($error, $errorMessages = NULL, $code = 403)
     {
-    	$response = [
+        $response = [
             'success' => false,
             'message' => $error,
         ];
 
 
-        if(!empty($errorMessages)){
-            $response['data'] = $errorMessages;
+        $messages = [];
+        if (!empty($errorMessages)) {
+            foreach ($errorMessages->toArray() as $key => $value) {
+                $messages[$key] = $value[0];
+            }
         }
 
+        $response['errors'] = $messages;
 
         return response()->json($response, $code);
     }
