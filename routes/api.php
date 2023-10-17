@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\AddressController;
 use App\Http\Controllers\API\DataController;
+use App\Http\Controllers\API\PackageController;
 use App\Http\Controllers\API\RegisterController;
 use App\Http\Controllers\ShippingRatesController;
 use Illuminate\Http\Request;
@@ -25,6 +26,7 @@ Route::post('data', [DataController::class, 'index']);
 
 Route::group(['middleware' => 'auth:api'], function () {
     Route::post('address/store', [AddressController::class, 'store']);
+    Route::post('package/store', [PackageController::class, 'store']);
 });
 
 // Route::middleware('auth:api')->get('/user', function (Request $request) {
