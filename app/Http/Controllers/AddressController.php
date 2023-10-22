@@ -119,9 +119,9 @@ class AddressController extends Controller
                     return redirect()->back()->with('error', 'The address you entered is residential but you select business.');
                 }
 
-                if ($address_type == 'UNKNOWN') {
-                    return redirect()->back()->with('error', 'The address you have entered is not valid.');
-                }
+                // if ($address_type == 'UNKNOWN') {
+                //     return redirect()->back()->with('error', 'The address you have entered is not valid.');
+                // }
             } catch (\Throwable $th) {
                 return redirect()->back()->with('error', 'The address you have entered is not valid.');
             }
