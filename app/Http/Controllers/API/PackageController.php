@@ -63,7 +63,7 @@ class PackageController extends BaseController
 
     public function getPackage()
     {
-        $data['package'] = Package::service()->first();
+        $data['package'] = Package::with('shipTo', 'shipFrom')->service()->first();
 
         return $this->sendResponse($data, 'success');
     }
@@ -130,7 +130,7 @@ class PackageController extends BaseController
             $label = $this->label($package);
             $encoded_label = $label->output->transactionShipments[0]->pieceResponses[0]->packageDocuments[0]->encodedLabel;
             Storage::disk('public')->put('label-' . $package->id . '.pdf', base64_decode($encoded_label));
-            
+
             return $this->sendResponse('success', 'The custom decration form filled successfully.');
         } catch (\Throwable $th) {
             return response()->json([

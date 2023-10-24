@@ -32,6 +32,16 @@ class Package extends Model
         return $this->belongsTo(Address::class, 'address_book_id');
     }
 
+    public function shipFrom()
+    {
+        return $this->belongsTo(Address::class, 'ship_from');
+    }
+
+    public function shipTo()
+    {
+        return $this->belongsTo(Address::class, 'ship_to');
+    }
+
     public function orders()
     {
         return $this->hasMany(Order::class);

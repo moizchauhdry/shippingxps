@@ -25,10 +25,32 @@ class DataController extends BaseController
         ]);
     }
 
-    public function addresses()
+    public function addresses(Request $request)
     {
         $user = Auth::user();
-        $data['addresses'] = Address::where('user_id', $user->id)->orderBy('id', 'desc')->get();
+
+        if ($request->type == 1) {
+            $type = 'ship_from';
+            $search = $request->search_ship_from;
+        }
+
+        if ($request->type == 2) {
+            $type = 'ship_to';
+            $search = $request->search_ship_to;
+        }
+
+        $addresses = [];
+        
+        if ($search) {
+            $addresses = Address::query()
+                ->where('address', 'like', '%' . $search . '%')
+                ->where('user_id', $user->id)
+                ->where('type', $type)
+                ->orderBy('id', 'desc')
+                ->get();
+        }
+
+        $data['addresses'] = $addresses;
 
         return $this->sendResponse($data, 'success');
     }
