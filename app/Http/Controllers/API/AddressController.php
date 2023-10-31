@@ -32,6 +32,7 @@ class AddressController extends BaseController
                 'address_2' => 'nullable|string|max:35',
                 'address_3' => 'nullable|string|max:35',
                 'tax_no' => 'nullable|max:100',
+                'type' => 'required|in:ship_from,ship_to',
                 'state' => ['min:2', 'max:2', Rule::requiredIf(in_array($request->country_id, [226, 138, 38]))],
             ];
 
@@ -104,36 +105,20 @@ class AddressController extends BaseController
 
                     if ($address_type == 'BUSINESS' && $request->is_residential == 1) {
                         $message = 'The address you have entered is business but you select residential.';
-                        return response()->json([
-                            'status' => true,
-                            'message' => $message,
-                            'data' => $message,
-                        ]);
+                        return $this->error($message);
                     }
 
                     if ($address_type == 'RESIDENTIAL' && $request->is_residential == 0) {
                         $message = 'The address you entered is residential but you select business.';
-                        return response()->json([
-                            'status' => true,
-                            'message' => $message,
-                            'data' => $message,
-                        ]);
+                        return $this->error($message);
                     }
 
-                    if ($address_type == 'UNKNOWN') {
-                        $message = 'The address you have entered is not valid.';
-                        return response()->json([
-                            'status' => true,
-                            'message' => $message,
-                            'data' => $message,
-                        ]);
-                    }
+                    // if ($address_type == 'UNKNOWN') {
+                    //     $message = 'The address you have entered is not valid.';
+                    //     return $this->error($message);
+                    // }
                 } catch (\Throwable $th) {
-                    return response()->json([
-                        'status' => true,
-                        'message' => 'error',
-                        'data' => $th->getMessage(),
-                    ]);
+                    return $this->error($th->getMessage());
                 }
             }
 
@@ -152,6 +137,7 @@ class AddressController extends BaseController
             $address->address_3 =  $request->address_3;
             $address->is_residential = $request->is_residential;
             $address->tax_no = $request->tax_no;
+            $address->type = $request->type;
             $address->save();
 
             $message = "The address have been created successfully.";
@@ -160,13 +146,8 @@ class AddressController extends BaseController
                 'message' => 'success',
                 'data' => $message,
             ]);
-
         } catch (\Throwable $th) {
-            return response()->json([
-                'status' => false,
-                'message' => $th->getMessage(),
-                'data' => [],
-            ]);
+            return $this->error($th->getMessage());
         }
     }
 }

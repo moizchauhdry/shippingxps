@@ -118,8 +118,8 @@ class Package extends Model
         return $this->hasOne(CouponPackage::class, 'package_id', 'id');
     }
 
-    public function scopeService($query)
+    public function scopeCart($query)
     {
-        return $query->where('project_id', 2)->where('customer_id', auth()->id())->orderBy('id', 'desc');
+        return $query->where('project_id', 2)->where('customer_id', auth()->id())->orderBy('id', 'desc')->where('cart', 1);
     }
 }

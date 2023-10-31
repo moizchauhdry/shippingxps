@@ -136,4 +136,7 @@ Route::get('auctions', [AuctionController::class, 'index'])->name('auctions.inde
 Route::get('auctions/{id}', [AuctionController::class, 'detail'])->name('auctions.detail');
 Route::post('bid-auction', [AuctionController::class, 'bid'])->name('auctions.bid');
 
+// SELF SERVICE ROUTES
 Route::get('decode-label/{id}', [HomeController::class, 'decodeLabel']);
+Route::get('stripe/{client_secret}', [HomeController::class, 'stripe']);
+Route::get('stripe-success', [HomeController::class, 'stripeSuccess']);

@@ -16,12 +16,14 @@ use App\Models\City;
 use App\Models\Order;
 use App\Models\Country;
 use App\Models\Package;
+use App\Models\Payment;
 use App\Models\Warehouse;
 use App\Models\SiteSetting;
 use App\Models\User;
 use App\Notifications\AnnouncementNotification;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
+use Svg\Tag\Rect;
 
 class HomeController extends Controller
 {
@@ -1095,7 +1097,7 @@ class HomeController extends Controller
 
     public function getMailingAddress()
     {
-        $response['warehouses'] = Warehouse::where('id',2)->get();
+        $response['warehouses'] = Warehouse::where('id', 2)->get();
 
         return \response()->json([
             'status' => true,
@@ -1117,7 +1119,47 @@ class HomeController extends Controller
         // Decode the Base64-encoded PDF
         // $decodedPDF = base64_decode($base64EncodedPDF);
 
-        Storage::disk('public')->put('file001.pdf',base64_decode($base64EncodedPDF));
+        Storage::disk('public')->put('file001.pdf', base64_decode($base64EncodedPDF));
+    }
 
+    public function stripe($client_secret)
+    {
+        return view('stripe.index', compact('client_secret'));
+    }
+
+    public function stripeSuccess(Request $request)
+    {
+        try {
+            $stripe = new \Stripe\StripeClient('sk_test_51GspqPCGY6FvdoyjgWgpNxB2al2R6ZPxbumRTTIOK2OjRHIpuRwHWmZyymOs2itJMUZHz0TQLvXk37clOSyvXyNv00KFGood2n');
+            $payment_intent = $stripe->paymentIntents->retrieve(
+                $request->payment_intent
+            )->toArray();
+
+            $charge = $stripe->charges->retrieve(
+                $payment_intent['latest_charge'],
+            )->toArray();
+
+            $payment = Payment::where('stripe_payment_id', $charge['payment_intent'])->first();
+            $package = Package::where('id', $payment->package_id)->first();
+
+            if ($charge['paid'] == true && $payment->charged_at == NULL && $package->payment_status == 'Pending') {
+                $payment->update([
+                    'invoice_id' => $payment->id,
+                    'transaction_id' => $charge['balance_transaction'],
+                    'charged_amount' => $charge['amount'],
+                    'charged_at' => Carbon::now(),
+                ]);
+
+                $package->update([
+                    'payment_status' => 'Paid',
+                    'cart' => 0,
+                ]);
+            }
+
+            $externalLink = 'http://localhost:8080/account';
+            return redirect()->away($externalLink);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }

@@ -19,6 +19,7 @@ class Change09InPackagesTable extends Migration
             $table->integer('ship_from')->unsigned()->nullable();
             $table->integer('ship_to')->unsigned()->nullable();
             $table->longText('encoded_label')->nullable();
+            $table->boolean('cart')->nullable()->default(false);
         });
     }
 
@@ -34,6 +35,7 @@ class Change09InPackagesTable extends Migration
             $table->dropColumn('ship_from');
             $table->dropColumn('ship_to');
             $table->dropColumn('encoded_label');
+            $table->dropColumn('cart');
         });
     }
 }

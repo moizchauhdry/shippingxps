@@ -49,4 +49,15 @@ class BaseController extends Controller
 
         return response()->json($response, $code);
     }
+
+
+    public function error($error, $code = 403)
+    {
+        $response = [
+            'success' => false,
+            'message' => $error,
+        ];
+
+        return response()->json($response, $code);
+    }
 }
