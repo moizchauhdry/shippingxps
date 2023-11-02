@@ -1130,7 +1130,7 @@ class HomeController extends Controller
     public function stripeSuccess(Request $request)
     {
         try {
-            $stripe = new \Stripe\StripeClient('sk_test_51GspqPCGY6FvdoyjgWgpNxB2al2R6ZPxbumRTTIOK2OjRHIpuRwHWmZyymOs2itJMUZHz0TQLvXk37clOSyvXyNv00KFGood2n');
+            $stripe = new \Stripe\StripeClient(env('STRIPE_SANDBOX_SECRET_KEY'));
             $payment_intent = $stripe->paymentIntents->retrieve(
                 $request->payment_intent
             )->toArray();
@@ -1146,7 +1146,7 @@ class HomeController extends Controller
                 $payment->update([
                     'invoice_id' => $payment->id,
                     'transaction_id' => $charge['balance_transaction'],
-                    'charged_amount' => $charge['amount'],
+                    'charged_amount' => $charge['amount'] / 100,
                     'charged_at' => Carbon::now(),
                 ]);
 

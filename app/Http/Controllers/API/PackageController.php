@@ -8,6 +8,7 @@ use App\Models\OrderItem;
 use App\Models\Package;
 use App\Models\PackageBox;
 use App\Models\Payment;
+use App\Models\SiteSetting;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -26,6 +27,7 @@ class PackageController extends BaseController
 
     public function setRate(Request $request)
     {
+        // return $request;
         $user = Auth::user();
 
         $data = [
@@ -37,6 +39,8 @@ class PackageController extends BaseController
             'service_code' => $request->rate['type'],
             'package_type_code' => $request->rate['pkg_type'],
             'service_label' => $request->rate['name'],
+            'markup_fee' => $request->rate['markup'],
+            'shipping_charges' => $request->rate['total'],
             'currency' => "USD",
             'pkg_dim_status' => "done",
             'project_id' => 2,
@@ -65,7 +69,7 @@ class PackageController extends BaseController
 
     public function getPackage()
     {
-        $data['package'] = Package::with('shipTo', 'shipFrom','boxes','packageItems')->cart()->first();
+        $data['package'] = Package::with('shipTo', 'shipFrom', 'boxes', 'packageItems')->cart()->first();
 
         return $this->sendResponse($data, 'success');
     }
@@ -98,7 +102,7 @@ class PackageController extends BaseController
                 // 'items.*.origin_country' => 'required',
                 'items.*.batteries' => 'nullable',
                 'items.*.hs_code' => 'nullable',
-                // 'shipping_total' => 'required',
+                'shipping_total' => 'required',
                 'package_type' => 'required',
                 'country' => 'required',
             ],  [
@@ -113,9 +117,14 @@ class PackageController extends BaseController
                 return $this->sendError('validation error', $validator->errors());
             }
 
+            $grand_total =  $package->shipping_charges;
+
             $package->update([
                 'custom_form_status' => true,
-                'package_type' => $request->package_type
+                'status' => "filled",
+                'package_type' => $request->package_type,
+                'shipping_total' => $request->shipping_total,
+                'grand_total' => $grand_total,
             ]);
 
             OrderItem::where('package_id', $package->id)->delete();
@@ -299,20 +308,20 @@ class PackageController extends BaseController
 
     public function payment(Request $request)
     {
-        // return $request->all();
+       $package = Package::find($request->package_id);
 
         $grand_total = 0;
 
-        if ($request->grand_total > 0) {
-            $grand_total = $request->grand_total;
+        if ($package->grand_total > 0) {
+            $grand_total = $package->grand_total;
         } else {
             return $this->error('The value must be greater then 0',);
         }
 
-        $stripe = new \Stripe\StripeClient('sk_test_51GspqPCGY6FvdoyjgWgpNxB2al2R6ZPxbumRTTIOK2OjRHIpuRwHWmZyymOs2itJMUZHz0TQLvXk37clOSyvXyNv00KFGood2n');
+        $stripe = new \Stripe\StripeClient(env('STRIPE_SANDBOX_SECRET_KEY'));
         $customer = $stripe->customers->create([]);
 
-        \Stripe\Stripe::setApiKey('sk_test_51GspqPCGY6FvdoyjgWgpNxB2al2R6ZPxbumRTTIOK2OjRHIpuRwHWmZyymOs2itJMUZHz0TQLvXk37clOSyvXyNv00KFGood2n');
+        \Stripe\Stripe::setApiKey(env('STRIPE_SANDBOX_SECRET_KEY'));
         $intent = \Stripe\PaymentIntent::create([
             'customer' => $customer->id,
             'setup_future_usage' => 'off_session',
@@ -325,8 +334,8 @@ class PackageController extends BaseController
 
 
         $data = [
-            'package_id' => $request->id,
-            'customer_id' => $request->customer_id,
+            'package_id' => $package->id,
+            'customer_id' => $package->customer_id,
             'payment_type' => 'stripe',
             'charged_amount' => 0,
             'transaction_id' => 0,
@@ -335,23 +344,16 @@ class PackageController extends BaseController
             'stripe_client_secret' => $intent['client_secret'],
         ];
 
-        Payment::updateOrCreate(['package_id' => $request->id], $data);
+        Payment::updateOrCreate(['package_id' => $package->id], $data);
 
         $data['client_secret'] = $intent['client_secret'];
 
         return $this->sendResponse($data, 'The payment intent created successfully.');
     }
 
-    public function stripeSuccess(Request $request)
-    {
-    }
-
     public function chargeLater()
     {
-        // Set your secret key. Remember to switch to your live secret key in production.
-        // See your keys here: https://dashboard.stripe.com/apikeys
-        $stripe = new \Stripe\StripeClient('sk_test_51GspqPCGY6FvdoyjgWgpNxB2al2R6ZPxbumRTTIOK2OjRHIpuRwHWmZyymOs2itJMUZHz0TQLvXk37clOSyvXyNv00KFGood2n');
-
+        $stripe = new \Stripe\StripeClient(env('STRIPE_SANDBOX_SECRET_KEY'));
         $method = $stripe->paymentMethods->all([
             'customer' => 'cus_OunbXeFZ80GHpv',
             'type' => 'card',
@@ -359,16 +361,12 @@ class PackageController extends BaseController
 
         $pm_id = $method['data'][0]['id'];
 
-
-        // Set your secret key. Remember to switch to your live secret key in production.
-        // See your keys here: https://dashboard.stripe.com/apikeys
-        \Stripe\Stripe::setApiKey('sk_test_51GspqPCGY6FvdoyjgWgpNxB2al2R6ZPxbumRTTIOK2OjRHIpuRwHWmZyymOs2itJMUZHz0TQLvXk37clOSyvXyNv00KFGood2n');
+        \Stripe\Stripe::setApiKey(env('STRIPE_SANDBOX_SECRET_KEY'));
 
         try {
             \Stripe\PaymentIntent::create([
                 'amount' => 1099 * 100,
                 'currency' => 'usd',
-                // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
                 'automatic_payment_methods' => ['enabled' => true],
                 'customer' => 'cus_OunbXeFZ80GHpv',
                 'payment_method' => $pm_id,
@@ -379,7 +377,6 @@ class PackageController extends BaseController
 
             dd('success');
         } catch (\Stripe\Exception\CardException $e) {
-            // Error code will be authentication_required if authentication is needed
             echo 'Error code is:' . $e->getError()->code;
             $payment_intent_id = $e->getError()->payment_intent->id;
             $payment_intent = \Stripe\PaymentIntent::retrieve($payment_intent_id);
