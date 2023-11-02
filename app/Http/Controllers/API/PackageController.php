@@ -20,8 +20,8 @@ class PackageController extends BaseController
     public function index()
     {
         $user = Auth::user();
-        $data['packages'] = Package::cart()->paginate(100);
-        return $this->sendResponse($data, 'The custom decration form filled successfully.');
+        $data['packages'] = Package::where('project_id', 2)->where('customer_id', $user->id)->orderBy('id', 'desc')->paginate(100);
+        return $this->sendResponse($data, 'success');
     }
 
     public function setRate(Request $request)
@@ -65,7 +65,7 @@ class PackageController extends BaseController
 
     public function getPackage()
     {
-        $data['package'] = Package::with('shipTo', 'shipFrom')->cart()->first();
+        $data['package'] = Package::with('shipTo', 'shipFrom','boxes','packageItems')->cart()->first();
 
         return $this->sendResponse($data, 'success');
     }
@@ -94,7 +94,7 @@ class PackageController extends BaseController
             $validator = Validator::make($request->all(), [
                 'items.*.description' => 'required',
                 'items.*.quantity' => 'required|gt:0',
-                'items.*.price' => 'required|gt:0|numeric',
+                'items.*.unit_price' => 'required|gt:0|numeric',
                 // 'items.*.origin_country' => 'required',
                 'items.*.batteries' => 'nullable',
                 'items.*.hs_code' => 'nullable',
@@ -113,19 +113,21 @@ class PackageController extends BaseController
                 return $this->sendError('validation error', $validator->errors());
             }
 
-            $package->update(['custom_form_status' => true]);
+            $package->update([
+                'custom_form_status' => true,
+                'package_type' => $request->package_type
+            ]);
 
             OrderItem::where('package_id', $package->id)->delete();
-
             foreach ($request->items as $key => $item) {
                 $order_item = new OrderItem();
                 $order_item->package_id = $package->id;
-                // $order_item->hs_code = $item['hs_code'] ?? null;
+                $order_item->origin_country = $request->country;
+                $order_item->hs_code = $item['hs_code'] ?? null;
                 $order_item->description = $item['description'];
                 $order_item->quantity = $item['quantity'];
-                $order_item->unit_price = $item['price'];
-                // $order_item->origin_country = $item['origin_country'];
-                // $order_item->batteries = $item['batteries'] ?? null;
+                $order_item->unit_price = $item['unit_price'];
+                $order_item->batteries = $item['batteries'] ?? null;
                 $order_item->save();
             }
 
@@ -142,7 +144,6 @@ class PackageController extends BaseController
             ]);
         }
     }
-
 
     public function label($package)
     {

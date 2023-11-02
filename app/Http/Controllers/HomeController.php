@@ -1152,6 +1152,7 @@ class HomeController extends Controller
 
                 $package->update([
                     'payment_status' => 'Paid',
+                    'status' => 'complete',
                     'cart' => 0,
                 ]);
             }
