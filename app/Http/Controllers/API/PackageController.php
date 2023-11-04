@@ -139,18 +139,14 @@ class PackageController extends BaseController
                 $order_item->batteries = $item['batteries'] ?? null;
                 $order_item->save();
             }
-
+            
             $label = $this->label($package);
             $encoded_label = $label->output->transactionShipments[0]->pieceResponses[0]->packageDocuments[0]->encodedLabel;
             Storage::disk('public')->put('label-' . $package->id . '.pdf', base64_decode($encoded_label));
 
             return $this->sendResponse('success', 'The custom decration form filled successfully.');
         } catch (\Throwable $th) {
-            return response()->json([
-                'status' => false,
-                'message' => $th->getMessage(),
-                'data' => [],
-            ]);
+            return $this->error($th->getMessage());
         }
     }
 
@@ -250,7 +246,7 @@ class PackageController extends BaseController
                             "emailAddress" => $ship_to->email,
                             "phoneExtension" => "91",
                             "phoneNumber" => "16572101801",
-                            "companyName" => "OCTALSOL"
+                            "companyName" => $ship_to->fullname
                         ]
                     ]
                 ],

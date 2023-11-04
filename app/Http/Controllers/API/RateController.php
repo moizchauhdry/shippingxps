@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class RateController extends BaseController
 {
@@ -19,6 +20,8 @@ class RateController extends BaseController
             [
                 'ship_from_country_code' => 'required',
                 'ship_to_country_code' => 'required',
+                'ship_from_postal_code' => Rule::requiredIf($request->ship_from_country_code === $request->ship_to_country_code),
+                'ship_to_postal_code' => Rule::requiredIf($request->ship_from_country_code === $request->ship_to_country_code),
                 'dimensions' => 'required|array',
                 'dimensions.*.weight' => 'required',
                 'dimensions.*.length' => 'required',
@@ -30,6 +33,8 @@ class RateController extends BaseController
                 'dimensions.*.length.required' => 'The length field is required.',
                 'dimensions.*.width.required' => 'The width field is required.',
                 'dimensions.*.height.required' => 'The height field is required.',
+                'ship_from_postal_code.required' => 'The field is required.',
+                'ship_to_postal_code.required' => 'The field is required.',
             ]
         );
 
@@ -39,21 +44,16 @@ class RateController extends BaseController
 
         try {
 
+            if ($request->ship_from_postal_code) {
+                $ship_from_postal_code = $request->ship_from_postal_code;
+            } else {
+                $ship_from_postal_code = '92804'; // DEFAULT US ZIP CODE
+            }
+
             if ($request->ship_to_postal_code) {
                 $ship_to_postal_code = $request->ship_to_postal_code;
             } else {
                 $ship_to_postal_code = '00000';
-            }
-
-            if ($request->ship_from == 'other') {
-                $ship_from_postal_code = $request->ship_from_postal_code;
-                $ship_from_city = $request->ship_from_city;
-                $ship_from_state = NULL;
-            } else {
-                $warehouse = Warehouse::find($request->ship_from);
-                $ship_from_postal_code = $warehouse->zip;
-                $ship_from_city = $warehouse->city;
-                $ship_from_state = $warehouse->state;
             }
 
             if ($request->units == true) {
@@ -69,8 +69,8 @@ class RateController extends BaseController
             $data = [
                 'ship_from_postal_code' => $ship_from_postal_code,
                 'ship_from_country_code' => $request->ship_from_country_code,
-                'ship_from_city' => $ship_from_city,
-                'ship_from_state' => $ship_from_state,
+                // 'ship_from_city' => $ship_from_city,
+                // 'ship_from_state' => $ship_from_state,
                 'ship_to_postal_code' => $ship_to_postal_code,
                 'ship_to_country_code' => $request->ship_to_country_code,
                 'ship_to_city' => $request->ship_to_city,
