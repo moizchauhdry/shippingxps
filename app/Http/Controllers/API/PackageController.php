@@ -314,10 +314,10 @@ class PackageController extends BaseController
             return $this->error('The value must be greater then 0',);
         }
 
-        $stripe = new \Stripe\StripeClient(env('STRIPE_SANDBOX_SECRET_KEY'));
+        $stripe = new \Stripe\StripeClient(config('app.stripe_secret_key'));
         $customer = $stripe->customers->create([]);
 
-        \Stripe\Stripe::setApiKey(env('STRIPE_SANDBOX_SECRET_KEY'));
+        \Stripe\Stripe::setApiKey(config('app.stripe_secret_key'));
         $intent = \Stripe\PaymentIntent::create([
             'customer' => $customer->id,
             'setup_future_usage' => 'off_session',
@@ -349,7 +349,7 @@ class PackageController extends BaseController
 
     public function chargeLater()
     {
-        $stripe = new \Stripe\StripeClient(env('STRIPE_SANDBOX_SECRET_KEY'));
+        $stripe = new \Stripe\StripeClient(config('app.stripe_secret_key'));
         $method = $stripe->paymentMethods->all([
             'customer' => 'cus_OunbXeFZ80GHpv',
             'type' => 'card',
@@ -357,7 +357,7 @@ class PackageController extends BaseController
 
         $pm_id = $method['data'][0]['id'];
 
-        \Stripe\Stripe::setApiKey(env('STRIPE_SANDBOX_SECRET_KEY'));
+        \Stripe\Stripe::setApiKey(config('app.stripe_secret_key'));
 
         try {
             \Stripe\PaymentIntent::create([

@@ -1130,7 +1130,7 @@ class HomeController extends Controller
     public function stripeSuccess(Request $request)
     {
         try {
-            $stripe = new \Stripe\StripeClient(env('STRIPE_SANDBOX_SECRET_KEY'));
+            $stripe = new \Stripe\StripeClient(config('app.stripe_secret_key'));
             $payment_intent = $stripe->paymentIntents->retrieve(
                 $request->payment_intent
             )->toArray();
