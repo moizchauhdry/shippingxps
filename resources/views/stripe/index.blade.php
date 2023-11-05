@@ -40,7 +40,7 @@
                     const { error } = await stripe.confirmPayment({
                         elements,
                         confirmParams: {
-                            return_url: 'http://shippingxps.test/stripe-success',
+                            return_url: 'https://staging.shippingxps.com/stripe-success',
                         },
                     });
 
