@@ -67,6 +67,24 @@ class PackageController extends BaseController
         return $this->sendResponse($data, 'success');
     }
 
+    public function updateRate(Request $request)
+    {
+        $package = Package::where('id', $request->package_id)->first();
+
+        $data = [
+            'carrier_code' => $request->rate['code'],
+            'service_code' => $request->rate['type'],
+            'package_type_code' => $request->rate['pkg_type'],
+            'service_label' => $request->rate['name'],
+            'markup_fee' => $request->rate['markup'],
+            'shipping_charges' => $request->rate['total'],
+        ];
+
+        $package->update($data);
+
+        return $this->sendResponse($data, 'success');
+    }
+
     public function getPackage()
     {
         $data['package'] = Package::with('shipTo', 'shipFrom', 'boxes', 'packageItems')->cart()->first();
@@ -76,14 +94,13 @@ class PackageController extends BaseController
 
     public function setAddress(Request $request)
     {
-        $user = Auth::user();
         $package = Package::cart()->first();
 
-        if ($request->type == 1) {
+        if ($request->type == 'ship_from') {
             $package->update(['ship_from' => $request->id]);
         }
 
-        if ($request->type == 2) {
+        if ($request->type == 'ship_to') {
             $package->update(['ship_to' => $request->id]);
         }
 
@@ -139,7 +156,7 @@ class PackageController extends BaseController
                 $order_item->batteries = $item['batteries'] ?? null;
                 $order_item->save();
             }
-            
+
             $label = $this->label($package);
             $encoded_label = $label->output->transactionShipments[0]->pieceResponses[0]->packageDocuments[0]->encodedLabel;
             Storage::disk('public')->put('label-' . $package->id . '.pdf', base64_decode($encoded_label));
@@ -304,7 +321,7 @@ class PackageController extends BaseController
 
     public function payment(Request $request)
     {
-       $package = Package::find($request->package_id);
+        $package = Package::find($request->package_id);
 
         $grand_total = 0;
 

@@ -58,6 +58,8 @@ class BaseController extends Controller
             'message' => $error,
         ];
 
+        $response['errors'] = $error;
+
         return response()->json($response, $code);
     }
 }

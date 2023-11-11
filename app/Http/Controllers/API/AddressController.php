@@ -16,9 +16,16 @@ class AddressController extends BaseController
     public function store(Request $request)
     {
         try {
-            // dd($request->all());
 
             $user = Auth::user();
+
+            $address_count = Address::where('user_id', $user->id)
+                ->where('type', $request->type)
+                ->count();
+
+            if ($address_count > 5) {
+                return $this->sendError('The address count is not more than 5.');
+            }
 
             $rules = [
                 'fullname' => 'required|regex:/^[A-Za-z0-9\s]+$/',
@@ -33,8 +40,13 @@ class AddressController extends BaseController
                 'address_3' => 'nullable|string|max:35',
                 'tax_no' => 'nullable|max:100',
                 'type' => 'required|in:ship_from,ship_to',
-                'state' => ['min:2', 'max:2', Rule::requiredIf(in_array($request->country_id, [226, 138, 38]))],
             ];
+
+            if (in_array($request->country_id, [226, 138, 38])) {
+                $rules += [
+                    'state' => ['min:2', 'max:2', 'required'],
+                ];
+            }
 
             $messages = [
                 'regex' => 'The :attribute must only contain letters (english) and numbers.'
@@ -105,21 +117,30 @@ class AddressController extends BaseController
 
                     if ($address_type == 'BUSINESS' && $request->is_residential == 1) {
                         $message = 'The address you have entered is business but you select residential.';
-                        return $this->error($message);
+                        return $this->sendError($message);
                     }
 
                     if ($address_type == 'RESIDENTIAL' && $request->is_residential == 0) {
                         $message = 'The address you entered is residential but you select business.';
-                        return $this->error($message);
+                        return $this->sendError($message);
                     }
 
                     // if ($address_type == 'UNKNOWN') {
                     //     $message = 'The address you have entered is not valid.';
-                    //     return $this->error($message);
+                    //     return $this->sendError($message);
                     // }
                 } catch (\Throwable $th) {
-                    return $this->error($th->getMessage());
+                    return $this->sendError($th->getMessage());
                 }
+            }
+
+            $address = Address::where('user_id', $user->id)
+                ->where('address', $request->address)
+                ->where('type', $request->type)
+                ->first();
+
+            if ($address) {
+                return $this->sendError('This address is already added.');
             }
 
             $address = new Address();
@@ -141,13 +162,16 @@ class AddressController extends BaseController
             $address->save();
 
             $message = "The address have been created successfully.";
+            $data['address_id'] = $address->id;
+            $data['address_type'] = $address->type;
+
             return response()->json([
                 'status' => true,
-                'message' => 'success',
-                'data' => $message,
+                'message' => $message,
+                'data' => $data,
             ]);
         } catch (\Throwable $th) {
-            return $this->error($th->getMessage());
+            return $this->sendError($th->getMessage());
         }
     }
 }

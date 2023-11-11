@@ -29,6 +29,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('package/index', [PackageController::class, 'index']);
     Route::post('package/get-package', [PackageController::class, 'getPackage']);
     Route::post('package/set-rate', [PackageController::class, 'setRate']);
+    Route::post('package/update-rate', [PackageController::class, 'updateRate']);
     Route::post('package/set-address', [PackageController::class, 'setAddress']);
     Route::post('package/set-custom', [PackageController::class, 'setCustom']);
     Route::post('package/payment', [PackageController::class, 'payment']);

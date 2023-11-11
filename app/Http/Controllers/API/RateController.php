@@ -4,7 +4,6 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\SiteSetting;
-use App\Models\Warehouse;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
@@ -56,15 +55,9 @@ class RateController extends BaseController
                 $ship_to_postal_code = '00000';
             }
 
-            if ($request->units == true) {
-                $weight_units = 'KG';
-                $dimension_units = 'CM';
-                $measurement_unit = 'metric';
-            } else {
-                $weight_units = 'LB';
-                $dimension_units = 'IN';
-                $measurement_unit = 'imperial';
-            }
+            $weight_units = 'LB';
+            $dimension_units = 'IN';
+            $measurement_unit = 'imperial';
 
             $data = [
                 'ship_from_postal_code' => $ship_from_postal_code,

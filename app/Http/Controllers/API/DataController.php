@@ -40,10 +40,17 @@ class DataController extends BaseController
         }
 
         $addresses = [];
-        
+
         if ($search) {
             $addresses = Address::query()
-                ->where('address', 'like', '%' . $search . '%')
+                ->where(function ($query) use ($search) {
+                    $query->where('address', 'like', '%' . $search . '%')
+                        ->orWhere('address_2', 'like', '%' . $search . '%')
+                        ->orWhere('address_3', 'like', '%' . $search . '%')
+                        ->orWhere('fullname', 'like', '%' . $search . '%')
+                        ->orWhere('state', 'like', '%' . $search . '%')
+                        ->orWhere('city', 'like', '%' . $search . '%');
+                })
                 ->where('user_id', $user->id)
                 ->where('type', $type)
                 ->orderBy('id', 'desc')
