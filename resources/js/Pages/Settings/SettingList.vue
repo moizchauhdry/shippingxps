@@ -1,35 +1,26 @@
 <template>
     <MainLayout>
         <div class="card">
-            <div class="card-header font-bold">Settings</div>
+            <div class="card-header font-bold">General Settings</div>
             <div class="card-body">
                 <form @submit.prevent="submit">
                     <table class="table table-sm table-striped table-bordered">
-                        <thead>
-                            <tr>
-                                <th scope="col">Name</th>
-                                <th scope="col">Description</th>
-                                <th scope="col">Value</th>
-                            </tr>
-                        </thead>
                         <tbody>
                             <tr>
-                                <td>General</td>
+                                <th colspan="3" class="text-center text-lg">Fee & Charges</th>
                             </tr>
                             <tr v-for="setting in form.settings" :key="setting.id">
-                                <td>{{ setting.name }}</td>
-                                <td>{{ setting.description ?? '-' }}</td>
+                                <td class="text-uppercase">{{ setting.name }}</td>
                                 <td>
                                     <input name="title" id="title" type="text" class="form-control" placeholder="Title"
                                         v-model="setting.value" required />
                                 </td>
                             </tr>
-                              <tr>
-                                <td>Shipping Services</td>
+                            <tr>
+                                <th colspan="3" class="text-center text-lg">Shipping Services - Markup Percentage</th>
                             </tr>
                             <tr v-for="service in form.shipping_services" :key="service.id">
-                                <td>{{ service.service_name }}</td>
-                                <td>-</td>
+                                <td class="text-uppercase">{{ service.service_name }}</td>
                                 <td>
                                     <input type="text" class="form-control" placeholder="Markup Percentage"
                                         v-model="service.markup_percentage" required />
