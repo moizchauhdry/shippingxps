@@ -1157,7 +1157,7 @@ class HomeController extends Controller
                 ]);
             }
 
-            $externalLink = 'http://localhost:8080/account';
+            $externalLink = 'https://self.shippingxps.com/account';
             return redirect()->away($externalLink);
         } catch (\Throwable $th) {
             throw $th;
