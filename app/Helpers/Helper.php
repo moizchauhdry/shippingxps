@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\ShippingService;
 use App\Models\SiteSetting;
 use Carbon\Carbon;
 
@@ -41,4 +42,15 @@ function calulate_storage($package)
     ]);
 
     return true;
+}
+
+function shipping_service_markup($type)
+{
+    $percentage = 0;
+    $service = ShippingService::where('service_code', $type)->first();
+    if ($service) {
+        $percentage = $service->markup_percentage;
+    }
+
+    return $percentage;
 }
