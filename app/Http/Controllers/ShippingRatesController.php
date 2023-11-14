@@ -60,8 +60,9 @@ class ShippingRatesController extends Controller
             $fedex_rates = $this->fedex($data);
             $dhl_rates = $this->dhl($data);
             $ups_rates = $this->ups($data);
+            $usps_rates = $this->usps($data);
 
-            $rates = array_merge($fedex_rates, $dhl_rates, $ups_rates);
+            $rates = array_merge($fedex_rates, $dhl_rates, $ups_rates, $usps_rates);
 
             return response()->json([
                 'status' => true,
@@ -420,7 +421,7 @@ class ShippingRatesController extends Controller
             $rates = [];
             foreach ($rating_response->RateResponse->RatedShipment as $key => $ups) {
                 $price = $ups->NegotiatedRateCharges->TotalCharge->MonetaryValue;
-                
+
                 $markup = shipping_service_markup($ups->Service->Code);
                 $markup_amount = $price * ((int)$markup / 100);
                 $total = $price + $markup_amount;
@@ -511,5 +512,86 @@ class ShippingRatesController extends Controller
 
 
         return $name;
+    }
+
+    public function usps($data)
+    {
+        try {
+            $headers = [
+                'cache-control' => 'no-cache',
+                'Content-Type' => 'application/json',
+                'Authorization' => 'Bearer m99PyQIqoq5GmAKjs1wOTAbhQ0ozkc0s'
+            ];
+
+            $pieces = [];
+            foreach ($data['dimensions'] as $key => $dimension) {
+                $pieces[] =  [
+                    "weight" => (string) $dimension['weight'],
+                    "length" => (string) $dimension['length'],
+                    "width" => (string) $dimension['width'],
+                    "height" => (string) $dimension['height'],
+                    "insuranceAmount" => "0",
+                    "declaredValue" => "0"
+                ];
+            }
+
+            $body = [
+                "carrierCode" => "usps",
+                "sender" => [
+                    "country" => "US",
+                    "zip" => $data['ship_from_postal_code']
+                ],
+                "receiver" => [
+                    "city" => "test",
+                    "country" => $data['ship_to_country_code'],
+                    "zip" => $data['ship_to_postal_code']
+                ],
+                "residential" => true,
+                "signatureOptionCode" => "DIRECT",
+                "contentDescription" => "stuff and things",
+                "weightUnit" => strtolower($data['weight_units']),
+                "dimUnit" => strtolower($data['dimension_units']),
+                "currency" => "USD",
+                "customsCurrency" => "USD",
+                "pieces" => $pieces,
+                "billing" => [
+                    "party" => "sender"
+                ]
+            ];
+
+            $client = new Client();
+            $request = $client->post('https://xpsshipper.com/restapi/v1/customers/12339140/quote', [
+                'headers' => $headers,
+                'body' => json_encode($body),
+                'http_errors' => true,
+            ]);
+
+            $response = $request ? $request->getBody()->getContents() : null;
+            $response = json_decode($response);
+
+            $rates = [];
+            foreach ($response->quotes as $key => $usps) {
+                $price = $usps->totalAmount;
+                $markup = shipping_service_markup($usps->serviceCode);
+                $markup_amount = $price * ((float)$markup / 100);
+
+                $total = $price + $markup_amount;
+                $total = number_format((float)$total, 2, '.', '');
+
+                $rates[] = [
+                    'code' => 'usps',
+                    'type' => $usps->serviceCode,
+                    'name' => $usps->serviceDescription,
+                    'pkg_type' => $usps->packageTypeCode,
+                    'price' => $price,
+                    'markup' => $markup_amount,
+                    'total' => $total,
+                ];
+            }
+
+            return $rates;
+        } catch (\Throwable $th) {
+            return [];
+        }
     }
 }
