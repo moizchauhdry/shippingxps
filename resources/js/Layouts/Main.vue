@@ -288,6 +288,7 @@
 					<FlashMessages />
 				</div>
 				<div class="col-md-12">
+					<Announcement></Announcement>
 					<slot />
 				</div>
 			</div>
