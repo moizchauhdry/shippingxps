@@ -50,14 +50,23 @@ class RegisterController extends BaseController
      */
     public function login(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError('Kindly address the validation errors and resubmit your information with accurate data.', $validator->errors());
+        }
+
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-            $user = User::where('id',auth()->user()->id)->first();
-            $success['token'] =  $user->createToken('XPS_SELF_SERVICE')->plainTextToken; 
+            $user = User::where('id', auth()->user()->id)->first();
+            $success['token'] =  $user->createToken('XPS_SELF_SERVICE')->plainTextToken;
             $success['name'] =  $user->name;
 
             return $this->sendResponse($success, 'User login successfully.');
         } else {
-            return $this->sendError('Unauthorised.', ['error' => 'Unauthorised']);
+            return $this->sendError('The credentials do not match.');
         }
     }
 }
