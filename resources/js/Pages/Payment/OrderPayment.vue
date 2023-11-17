@@ -157,7 +157,7 @@
 						<hr class="mb-3 mt-3" /> -->
 
 						<!-- PAYPAL PAYMENT -->
-						<div class="row" v-show="payment_module == 'package' || form.shipping_address_id != null">
+						<div class="row">
 							<div class="col-md-6 offset-md-3 text-center">
 								<!-- <h4 class="p-2"><strong>OR</strong></h4> -->
 								<h5>
@@ -345,12 +345,12 @@ export default {
 				);
 		},
 		submitPayPal() {
-			if (
-				this.payment_module != "package" &&
-				this.form.shipping_address_id == null
-			) {
-				alert("PLEASE SELECT SHIPPING ADDRESS");
-			}
+			// if (
+			// 	this.payment_module != "package" &&
+			// 	this.form.shipping_address_id == null
+			// ) {
+			// 	alert("PLEASE SELECT SHIPPING ADDRESS");
+			// }
 
 			if (document.getElementById("termsPayPal").checked != true) {
 				alert("PLEASE ACCEPT TERMS & CONDITION TO PROCEED PAYMENT.");
