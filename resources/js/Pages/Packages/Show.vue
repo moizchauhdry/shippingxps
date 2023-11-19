@@ -3,20 +3,26 @@
 		<div class="container mb-5">
 			<div class="row">
 				<div class="col-md-12">
-					<return-component v-bind="$props"></return-component>
-					<notification-component v-bind="$props"></notification-component>
-					<child-package-component v-bind="$props"></child-package-component>
-					<shipping-address-component v-bind="$props"></shipping-address-component>
-					<package-box-component v-bind="$props"></package-box-component>
-					<shipping-rate-component v-bind="$props"></shipping-rate-component>
-					<consolidation-component v-bind="$props"></consolidation-component>
-					<service-component v-bind="$props"></service-component>
-					<storage-component v-bind="$props"></storage-component>
-					<mailout-component v-bind="$props"></mailout-component>
-					<!-- <shipout-component v-bind="$props"></shipout-component> -->
-					<package-image-component v-bind="$props"></package-image-component>
-					<payment-component v-bind="$props"></payment-component>
-					<package-delete-component v-bind="$props"></package-delete-component>
+
+					<template v-if="packag.project_id == 1">
+						<notification-component v-bind="$props"></notification-component>
+						<return-component v-bind="$props"></return-component>
+						<child-package-component v-bind="$props"></child-package-component>
+						<shipping-address-component v-bind="$props"></shipping-address-component>
+						<package-box-component v-bind="$props"></package-box-component>
+						<shipping-rate-component v-bind="$props"></shipping-rate-component>
+						<consolidation-component v-bind="$props"></consolidation-component>
+						<service-component v-bind="$props"></service-component>
+						<storage-component v-bind="$props"></storage-component>
+						<mailout-component v-bind="$props"></mailout-component>
+						<package-image-component v-bind="$props"></package-image-component>
+						<payment-component v-bind="$props"></payment-component>
+						<package-delete-component v-bind="$props"></package-delete-component>
+					</template>
+
+					<template v-if="packag.project_id == 2">
+						<SelfServiceComponent v-bind="$props"></SelfServiceComponent>
+					</template>
 
 					<div v-show="overlay === true" class="overlay">
 						<div class="overlay__inner">
@@ -51,6 +57,7 @@ import PaymentComponent from "./Components/PaymentComponent.vue";
 import PackageDeleteComponent from "./Components/PackageDeleteComponent.vue";
 import ReturnComponent from "./Components/ReturnComponent.vue";
 import StorageComponent from "./Components/StorageComponent.vue";
+import SelfServiceComponent from "./Components/SelfServiceComponent.vue";
 
 export default {
 	components: {
@@ -71,7 +78,8 @@ export default {
 		PaymentComponent,
 		PackageDeleteComponent,
 		ReturnComponent,
-		StorageComponent
+		StorageComponent,
+		SelfServiceComponent
 	},
 	data() {
 		return {
@@ -109,6 +117,8 @@ export default {
 		mailout_fee: Number,
 		eei_charges: Number,
 		label_charges: Number,
+		payments: Array,
+		package_files: Array,
 	},
 	computed: {
 		siuteNum() {
@@ -116,7 +126,7 @@ export default {
 		},
 	},
 	mounted() {
-		// this.getStorageFee();
+		//
 	},
 	methods: {
 		formatNumber(num) {
@@ -193,17 +203,6 @@ export default {
 		makePackageUrl(order_id) {
 			return route("package.create") + "?order_id=" + order_id;
 		},
-		// getStorageFee() {
-		// 	axios
-		// 		.get(this.route("getStorageFee"), {
-		// 			params: {
-		// 				package_id: this.packag.id,
-		// 			},
-		// 		})
-		// 		.then((response) => {
-		// 			this.storage_fee = response.data;
-		// 		});
-		// },
 	},
 };
 </script>

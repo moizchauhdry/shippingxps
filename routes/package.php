@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['auth'])->group(function () {
     Route::prefix('packages')->group(function () {
         Route::any('index', 'PackageController@index')->name('packages.index');
-        // Route::get('getStorageFee', 'PackageController@getStorageFee')->name('getStorageFee');
         Route::post('service-request', 'PackageController@serviceRequest')->name('packages.service-request');
         Route::post('service-handle', 'PackageController@serviceHandle')->name('packages.service-handle');
         Route::post('ship-package', 'PackageController@shipPackage')->name('packages.ship-package');
@@ -20,7 +19,6 @@ Route::middleware(['auth'])->group(function () {
         Route::post('return-package', 'PackageController@returnPackage')->name('packages.return-package');
         Route::post('coupon', 'PackageController@coupon')->name('packages.coupon');
         Route::post('coupon/remove', 'PackageController@removeCoupon')->name('packages.coupon.remove');
-
         Route::get('show/{id}', 'PackageController@show')->name('packages.show');
         Route::get('create/{order_id}', 'PackageController@create')->name('package.create');
         Route::post('store', 'PackageController@store')->name('package.store');
@@ -29,5 +27,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('custom/{id}/{mode?}', 'PackageController@custom')->name('packages.custom');
         Route::get('commercial-invoice/{id}', 'PackageController@commercialInvoice')->name('packages.pdf');
         Route::post('destroy', 'PackageController@destroy')->name('packages.destroy');
+        Route::post('upload-file', 'PackageController@uploadFile')->name('packages.upload-file');
     });
 });

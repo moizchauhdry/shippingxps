@@ -18,6 +18,7 @@ use App\Models\Warehouse;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use PDF;
 use net\authorize\api\contract\v1 as AnetAPI;
@@ -795,5 +796,69 @@ class PaymentController extends Controller
         ]);
 
         return redirect()->back();
+    }
+
+    public function stripeChargeLater(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $payment_module = $request->payment_module;
+
+            if (!in_array($payment_module, ['package'])) {
+                return redirect()->back()->with('error', 'PAYMENT DENIED!');
+            }
+
+            if ($payment_module == 'package') {
+                $payment = Payment::where('package_id', $request->package_id)->first();
+            }
+
+            $stripe = new \Stripe\StripeClient(config('app.stripe_secret_key'));
+            $method = $stripe->paymentMethods->all([
+                'customer' => $payment->stripe_customer_id,
+                'type' => 'card',
+            ])->toArray();
+
+            $pm_id = $method['data'][0]['id'];
+
+            \Stripe\Stripe::setApiKey(config('app.stripe_secret_key'));
+
+            try {
+                $intent =  \Stripe\PaymentIntent::create([
+                    'amount' => $request->amount * 100,
+                    'currency' => 'usd',
+                    'automatic_payment_methods' => ['enabled' => true],
+                    'customer' => $payment->stripe_customer_id,
+                    'payment_method' => $pm_id,
+                    // 'return_url' => 'https://example.com/order/123/complete',
+                    'off_session' => true,
+                    'confirm' => true,
+                ])->toArray();
+
+                $data = [
+                    'package_id' => $payment->package_id,
+                    'customer_id' => $payment->customer_id,
+                    'payment_type' => 'stripe',
+                    'charged_amount' => $intent['amount'] / 100,
+                    'charged_at' => Carbon::now(),
+                    'transaction_id' => 0,
+                    'stripe_customer_id' => $intent['customer'],
+                    'stripe_payment_id' => $intent['id'],
+                    'stripe_client_secret' => $intent['client_secret'],
+                ];
+
+                Payment::create($data);
+
+                DB::commit();
+                return redirect()->back()->with('success', 'charge success');
+            } catch (\Stripe\Exception\CardException $e) {
+                echo 'Error code is:' . $e->getError()->code;
+                // $payment_intent_id = $e->getError()->payment_intent->id;
+                // $payment_intent = \Stripe\PaymentIntent::retrieve($payment_intent_id);
+            }
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return redirect()->back()->with('error', $th->getMessage());
+        }
     }
 }

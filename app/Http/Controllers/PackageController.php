@@ -18,6 +18,9 @@ use App\Models\Coupon;
 use App\Models\CouponPackage;
 use App\Models\OrderItem;
 use App\Models\PackageBox;
+use App\Models\PackageFile;
+use App\Models\Payment;
+use App\Models\Project;
 use App\Models\Service;
 use App\Models\ServiceRequest;
 use App\Models\User;
@@ -34,44 +37,8 @@ use Illuminate\Validation\Rule;
 
 class PackageController extends Controller
 {
-    public $token = 'm99PyQIqoq5GmAKjs1wOTAbhQ0ozkc0s';
-    public $customer_id = '12339140';
-    public $integration_id = '59690';
-    public $status_list = ['arrived', 'labeled', 'shipped', 'delivered', 'rejected'];
-
     private function calculate_storage_fee($id)
     {
-        // $storage_days_exceeded = 0;
-
-        // $package = Package::find($id);
-        // $boxes_weight = $package->boxes->sum('weight');
-        // $fee = (float) SiteSetting::where('name', 'storage_fee')->first()->value;
-
-        // $createdAt = Carbon::parse($package->created_at);
-        // $now = Carbon::now();
-        // $days_exceeded = $now->diffInDays($createdAt) - 75;
-        // $storage_days = $now->diffInDays($createdAt);
-
-        // if ($days_exceeded > 0) {
-        //     $storage_fee = $fee * $boxes_weight * $days_exceeded;
-        // } else {
-        //     $storage_fee = 0;
-        // }
-
-        // if ($days_exceeded > 0) {
-        //     $storage_days_exceeded = $days_exceeded;
-        // }
-
-        // $package->update([
-        //     'storage_fee' => (float) $storage_fee,
-        //     'storage_days' => (float) $storage_days,
-        //     'storage_days_exceeded' => (float) $storage_days_exceeded,
-        // ]);
-
-        // if ($storage_days > 80) {
-        //     $package->update(['auctioned' => 1]);
-        // }
-
         $package = Package::find($id);
         calulate_storage($package);
     }
@@ -99,9 +66,6 @@ class PackageController extends Controller
             ->when($request->payment_status && !empty($request->payment_status), function ($qry) use ($request) {
                 $qry->where('payment_status', $request->payment_status);
             })
-            // ->when($request->tracking_no && !empty($request->tracking_no), function ($qry) use ($request) {
-            //     $qry->where('tracking_number_out', $request->tracking_no);
-            // })
             ->when($request->auctioned && !empty($request->auctioned), function ($qry) use ($request) {
                 $qry->where('auctioned', $request->auctioned);
             })
@@ -110,18 +74,24 @@ class PackageController extends Controller
                 $from = date("Y-m-d", strtotime($range[0]));
                 $to = date("Y-m-d", strtotime($range[1]));
                 $qry->whereDate('created_at', '>=', $from)->whereDate('created_at', '<=', $to);
+            })
+            ->when($request->project_id && !empty($request->project_id), function ($qry) use ($request) {
+                $qry->where('project_id', $request->project_id);
             });
 
         $packages_count = $query->count();
         $packages = $query->orderBy('id', 'desc')->paginate(10)->withQueryString();
 
         $open_pkgs_count = Package::where('status', 'open')->where('pkg_type', 'single')->count();
+        $projects = Project::active()->get();
 
         return Inertia::render('Packages/Index', [
             'pkgs' => $packages,
             'open_pkgs_count' => $open_pkgs_count,
             'packages_count' => $packages_count,
+            'projects' => $projects,
             'filters' => [
+                'project_id' => $request->project_id ?? "",
                 'pkg_id' => $request->pkg_id ?? "",
                 'suit_no' => $request->suit_no ?? "",
                 'pkg_status' => $request->pkg_status ?? "",
@@ -274,6 +244,15 @@ class PackageController extends Controller
             event(new PackageShippingServiceSelected($packag));
         }
 
+        $payments = [];
+        if ($packag->project_id == 2) {
+            $payments = Payment::where('package_id', $packag->id)->get();
+        }
+        $package_files = [];
+        if ($packag->project_id == 2) {
+            $package_files = PackageFile::where('package_id', $packag->id)->get();
+        }
+
         return Inertia::render('Packages/Show', [
             'packag' => $packag,
             'child_package_orders' => $child_package_orders,
@@ -293,6 +272,8 @@ class PackageController extends Controller
             'mailout_fee' => (float) SiteSetting::getByName('mailout_fee'),
             'eei_charges' => $eei_charges,
             'label_charges' => (float) $label_charges,
+            'payments' => $payments,
+            'package_files' => $package_files,
         ]);
     }
 
@@ -819,37 +800,6 @@ class PackageController extends Controller
         ]);
     }
 
-    public function hitApi($postParameters)
-    {
-        try {
-
-            $headers = [
-                'cache-control' => 'no-cache',
-                'Content-Type' => 'application/json',
-                'Authorization' => 'Bearer ' . $this->token
-            ];
-
-            $client = new Client();
-
-            $request = $client->put('https://xpsshipper.com/restapi/v1/customers/' . $this->customer_id . '/integrations/' . $this->integration_id . '/orders/' . $postParameters['orderId'], [
-                'headers' => $headers,
-                'body' => json_encode($postParameters),
-                'http_errors' => true,
-            ]);
-
-            $response = $request ? $request->getBody()->getContents() : null;
-
-            \Log::info($response);
-
-            return $response;
-        } catch (\Exception $ex) {
-
-            $ex_message = $ex->getMessage();
-
-            return $ex_message;
-        }
-    }
-
     public function consolidation(Request $request)
     {
         $query = Package::with('customer', 'warehouse')
@@ -1091,5 +1041,21 @@ class PackageController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'The coupon remove successfully!');
+    }
+
+    public function uploadFile(Request $request)
+    {
+        // dd($request->all());
+        try {
+            $path = $request->file('file')->store('package-files', 'public');
+            PackageFile::create([
+                'package_id' => $request->package_id,
+                'path' => $path
+            ]);
+
+            return redirect()->back();
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', $th->getMessage());
+        }
     }
 }

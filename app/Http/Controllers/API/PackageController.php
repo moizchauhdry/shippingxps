@@ -363,36 +363,4 @@ class PackageController extends BaseController
 
         return $this->sendResponse($data, 'The payment intent created successfully.');
     }
-
-    public function chargeLater()
-    {
-        $stripe = new \Stripe\StripeClient(config('app.stripe_secret_key'));
-        $method = $stripe->paymentMethods->all([
-            'customer' => 'cus_OunbXeFZ80GHpv',
-            'type' => 'card',
-        ])->toArray();
-
-        $pm_id = $method['data'][0]['id'];
-
-        \Stripe\Stripe::setApiKey(config('app.stripe_secret_key'));
-
-        try {
-            \Stripe\PaymentIntent::create([
-                'amount' => 1099 * 100,
-                'currency' => 'usd',
-                'automatic_payment_methods' => ['enabled' => true],
-                'customer' => 'cus_OunbXeFZ80GHpv',
-                'payment_method' => $pm_id,
-                'return_url' => 'https://example.com/order/123/complete',
-                'off_session' => true,
-                'confirm' => true,
-            ]);
-
-            dd('success');
-        } catch (\Stripe\Exception\CardException $e) {
-            echo 'Error code is:' . $e->getError()->code;
-            $payment_intent_id = $e->getError()->payment_intent->id;
-            $payment_intent = \Stripe\PaymentIntent::retrieve($payment_intent_id);
-        }
-    }
 }
