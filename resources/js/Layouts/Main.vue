@@ -80,15 +80,16 @@
 
 						<inertia-link v-if="$page.props.auth.user.type != 'customer'" class="nav-link"
 							:href="route('customers.index')" :class="{
-								active:route().current('customers.index') || route().current('customers.edit') || route().current('customers.detail')}" 
-								:active="route().current('customers.index')">
+								active: route().current('customers.index') || route().current('customers.edit') || route().current('customers.detail')
+							}" :active="route().current('customers.index')">
 							<i class="fas fa-users"></i><span>Manage Customers</span>
 						</inertia-link>
 					</div>
 
-					<button class="accordion">Address</button>
-					<div class="accordion-content">
-						<!-- <inertia-link
+					<template v-if="$page.props.auth.user.type == 'customer'">
+						<button class="accordion">Address</button>
+						<div class="accordion-content">
+							<!-- <inertia-link
 							class="nav-link"
 							:href="route('address.suite')"
 							:class="{ active: route().current('address.suite') }"
@@ -97,17 +98,17 @@
 							<i class="fas fa-address-book"></i>
 							<span>Mailing Addresses</span>
 						</inertia-link> -->
-						<inertia-link v-if="$page.props.auth.user.type != 'admin'" class="nav-link"
-							:href="route('addresses')" :class="{
+							<inertia-link class="nav-link" :href="route('addresses')" :class="{
 								active:
 									route().current('addresses') ||
 									route().current('address.create') ||
 									route().current('address.edit'),
 							}" :active="route().current('addresses')">
-							<i class="fas fa-address-book"></i>
-							<span>Shipping Address</span>
-						</inertia-link>
-					</div>
+								<i class="fas fa-address-book"></i>
+								<span>Shipping Address</span>
+							</inertia-link>
+						</div>
+					</template>
 
 					<button class="accordion">Packages</button>
 					<div class="accordion-content">
