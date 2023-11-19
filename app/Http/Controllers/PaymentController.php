@@ -505,21 +505,18 @@ class PaymentController extends Controller
 
     public function getPayments(Request $request)
     {
-        $user = \Auth::user();
+        $user = Auth::user();
 
-        if ($user->type == 'admin') {
-            $payments = Payment::with(['customer', 'package' => function ($query) {
-                $query->with('address', function ($qry) {
-                    $qry->with('country');
-                });
-            }, 'order'])->orderByDesc('id');
-        } else {
-            $payments = Payment::with(['customer', 'package' => function ($query) {
-                $query->with('address', function ($qry) {
-                    $qry->with('country');
-                });
-            }, 'order'])->where('customer_id', $user->id)->orderByDesc('id');
-        }
+        $payments = Payment::with(['customer', 'package' => function ($query) {
+            $query->with('address', function ($qry) {
+                $qry->with('country');
+            });
+        }, 'order'])
+            ->when($user->type == 'customer', function ($qry) use ($user) {
+                $qry->where('customer_id', $user->id);
+            })
+            ->orderBy('id', 'desc');
+
 
         if ($request->isMethod('post')) {
 
@@ -535,6 +532,8 @@ class PaymentController extends Controller
                 'payments' => $payments->paginate($perPage),
             ]);
         }
+
+
         return Inertia::render('Payment/Index', ['payments' => $payments->paginate(10)]);
     }
 
@@ -645,32 +644,41 @@ class PaymentController extends Controller
 
     public function searchPayments(Request $request, $payments)
     {
-        if ($request->has('search') && $request->search != null) {
-            $search = $request->search;
-            $payments->where(function ($query) use ($search) {
-                $query->where('id', 'LIKE', "%$search%")
-                    ->orWhere('transaction_id', 'LIKE', "%$search%")
-                    ->orWhere('package_id', 'LIKE', "%$search%")
-                    ->orWhere('invoice_id', 'LIKE', "%$search%")
-                    ->orWhere('charged_amount', 'LIKE', "%$search%");
-            })
-                ->orWhereHas('customer', function ($qry) use ($search) {
-                    $qry->where('name', 'LIKE', '%' . $search . '%');
-                    if (is_numeric($search)) {
-                        $s = (int)$search;
-                        $s = $s - 4000;
-                        $qry->orWhere('id', 'LIKE', '%' . $s . '%');
-                    }
-                })
-                ->orWhereHas('package', function ($qry) use ($search) {
-                    $qry->where('payment_status', 'LIKE', "%$search%")
-                        ->orWhere('service_label', 'LIKE', "%$search%")
-                        ->orWhere('shipping_charges', 'LIKE', "%$search%");
-                })
-                ->orWhereHas('order', function ($qry) use ($search) {
-                    $qry->where('id', 'LIKE', '%' . $search . '%');
-                });
-        }
+        $search_invoice_no = $request->search_invoice_no;
+        $search_suit_no = $request->search_suit_no;
+
+        $payments->when($search_invoice_no && !empty($search_invoice_no), function ($qry) use ($search_invoice_no) {
+            $qry->where('id', $search_invoice_no);
+        });
+
+        $payments->when($search_suit_no && !empty($search_suit_no), function ($qry) use ($search_suit_no) {
+            $suit_no = (int) $search_suit_no;
+            $suit_no = $suit_no - 4000;
+            $qry->whereHas('customer', function ($q) use ($suit_no) {
+                $q->where('id', $suit_no);
+            });
+        });
+
+        // $payments->where(function ($query) use ($search) {
+        //     $query->where('id', 'LIKE', "%$search%")
+        //         ->orWhere('transaction_id', 'LIKE', "%$search%")
+        //         ->orWhere('package_id', 'LIKE', "%$search%")
+        //         ->orWhere('invoice_id', 'LIKE', "%$search%")
+        //         ->orWhere('charged_amount', 'LIKE', "%$search%");
+        // })->orWhereHas('customer', function ($qry) use ($search) {
+        //     $qry->where('name', 'LIKE', '%' . $search . '%');
+        //     if (is_numeric($search)) {
+        //         $s = (int)$search;
+        //         $s = $s - 4000;
+        //         $qry->orWhere('id', 'LIKE', '%' . $s . '%');
+        //     }
+        // })->orWhereHas('package', function ($qry) use ($search) {
+        //     $qry->where('payment_status', 'LIKE', "%$search%")
+        //         ->orWhere('service_label', 'LIKE', "%$search%")
+        //         ->orWhere('shipping_charges', 'LIKE', "%$search%");
+        // })->orWhereHas('order', function ($qry) use ($search) {
+        //     $qry->where('id', 'LIKE', '%' . $search . '%');
+        // });
 
         if ($request->has('date_selection') && $request->get('date_selection') != NULL) {
             if ($request->get('date_selection') == '1') {

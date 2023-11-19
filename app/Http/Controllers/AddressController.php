@@ -154,17 +154,9 @@ class AddressController extends Controller
                     }
                 }
 
-                if ($address_type == 'UNKNOWN') {
-                    $message = 'The address you have entered is not valid.';
-                    if ($request->api == true) {
-                        return response()->json([
-                            'status' => true,
-                            'message' => $message,
-                        ]);
-                    } else {
-                        return redirect()->back()->with('error', $message);
-                    }
-                }
+                // if ($address_type == 'UNKNOWN') {
+                //     return redirect()->back()->with('error', 'The address you have entered is not valid.');
+                // }
             } catch (\Throwable $th) {
                 if ($request->api == true) {
                     return response()->json([
