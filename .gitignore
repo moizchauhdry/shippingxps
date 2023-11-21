@@ -6,3 +6,4 @@
 *.zip
 .htaccess
 /public/.htaccess
+/storage
