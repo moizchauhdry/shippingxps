@@ -6,7 +6,7 @@
 				<div class="card-body">
 					<div class="container">
 						<!-- AUTHORIZE.NET PAYMENT -->
-						<!-- <form @submit.prevent="submit" enctype="multipart/form-data">
+						<form @submit.prevent="submit" enctype="multipart/form-data">
 							<div class="row">
 								<div class="col-md-6 offset-md-3">
 									<div class="bg-dark border-3 border-warning container mb-3 text-center text-white">
@@ -19,7 +19,7 @@
 										{{ response_message }}
 									</div>
 
-									<template v-if="payment_module != 'package' || payment_module != 'auction'">
+									<!-- <template v-if="payment_module != 'package' || payment_module != 'auction'">
 										<h3 v-show="form.shipping_address_id == null">
 											Select Shipping Address to proceed
 										</h3>
@@ -33,7 +33,7 @@
 											</template>
 										</select>
 										<hr class="mb-3 mt-3" />
-									</template>
+									</template> -->
 
 									<div class="row" v-show="payment_module == 'package' ||
 										form.shipping_address_id != null">
@@ -154,12 +154,12 @@
 							</div>
 						</form>
 
-						<hr class="mb-3 mt-3" /> -->
+						<hr class="mb-3 mt-3" />
 
 						<!-- PAYPAL PAYMENT -->
 						<div class="row">
 							<div class="col-md-6 offset-md-3 text-center">
-								<!-- <h4 class="p-2"><strong>OR</strong></h4> -->
+								<h4 class="p-2"><strong>OR</strong></h4>
 								<h5>
 									<strong>Pay by PayPal with {{ paypal_processing_fee }}% processing
 										Fee.</strong>
