@@ -35,8 +35,7 @@
 										<hr class="mb-3 mt-3" />
 									</template> -->
 
-									<div class="row" v-show="payment_module == 'package' ||
-										form.shipping_address_id != null">
+									<div class="row">
 										<div class="col-12" v-if="status != undefined">
 											<p style="color: red">{{ status.message[0].text }}</p>
 										</div>
@@ -319,12 +318,12 @@ export default {
 	},
 	methods: {
 		submit() {
-			if (
-				this.payment_module != "package" &&
-				this.form.shipping_address_id == null
-			) {
-				alert("PLEASE SELECT SHIPPING ADDRESS");
-			}
+			// if (
+			// 	this.payment_module != "package" &&
+			// 	this.form.shipping_address_id == null
+			// ) {
+			// 	alert("PLEASE SELECT SHIPPING ADDRESS");
+			// }
 			this.response_message = null;
 			this.overlay = true;
 			axios
