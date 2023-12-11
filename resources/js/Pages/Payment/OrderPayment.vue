@@ -70,8 +70,8 @@
 											</div>
 											<div class="form-group col-4">
 												<breeze-label value="CVV *" />
-												<input v-model="form.cvv" class="form-control" type="number" :maxlength="3"
-													name="cvv" placeholder="123" required pattern="[0-9]*" />
+												<input v-model="form.cvv" class="form-control" type="text" placeholder="123"
+													required />
 											</div>
 										</div>
 
