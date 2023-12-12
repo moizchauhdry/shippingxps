@@ -11,6 +11,7 @@ use App\Models\CustomerCoupon;
 use App\Models\GiftCard;
 use App\Models\InsuranceRequest;
 use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\Package;
 use App\Models\Payment;
 use App\Models\SiteSetting;
@@ -717,6 +718,7 @@ class PaymentController extends Controller
         $insurance = null;
         $giftCard = null;
         $service_requests = [];
+        $order_items = [];
 
         $payment = Payment::when(Auth::user()->type == 'customer', function ($qry) {
             $qry->where('customer_id', Auth::user()->id);
@@ -735,6 +737,7 @@ class PaymentController extends Controller
 
         if (isset($payment->order_id)) {
             $order = $payment->order;
+            $order_items = OrderItem::where('order_id',$order->id)->get();
         }
 
         if (isset($payment->additional_request_id)) {
@@ -758,6 +761,7 @@ class PaymentController extends Controller
             'warehouse' => $warehouse,
             'billing' => $billing,
             'order' => $order,
+            'order_items' => $order_items,
             'additionalRequest' => $additionalRequest,
             'insuranceRequest' => $insurance,
             'giftCard' => $giftCard,
@@ -767,6 +771,7 @@ class PaymentController extends Controller
 
         $pdf = PDF::loadView('pdfs.payment-invoice');
         $pdf->setPaper('A4', 'portrait');
+        
         return $pdf->stream('payment-invoice.pdf', array("Attachment" => false));
     }
 

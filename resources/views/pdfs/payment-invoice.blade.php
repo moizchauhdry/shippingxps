@@ -91,6 +91,21 @@
     </table>
 
     <br>
+
+    @isset($order)
+    <span style="font-size:10px"><b>ITEMS:</b></span>
+    <table class="border" style="width: 100%">
+        @foreach ($order_items as $oi)
+        <tr>
+            <td>{{$oi->name}} - {{$oi->description}} x {{$oi->quantity}}</td>
+            <td style="width: 100px">${{ format_number($oi->unit_price) }}</td>
+        </tr>
+        @endforeach
+    </table>
+    @endisset
+    
+    <br>
+
     <span style="font-size:10px"><b>CHARGES:</b></span>
 
     @isset($package)
@@ -227,22 +242,31 @@
     <br>
     <table class="border" style="width:100%;">
         <tr>
-            <th>Payment</th>
+            <th>Invoice</th>
             <th>Date</th>
             <th>Status</th>
             <th>Amount</th>
         </tr>
         <tr>
             <td>
+                @if (isset($payment->package->boxes[0]->tracking_out) && $payment->package->pkg_type == 'single')
+                Tracking Number: {{$payment->package->boxes[0]->tracking_out}} <br>
+                @endif
                 Transaction ID: {{$payment->transaction_id}} <br>
-                Type: {{$payment->payment_type}} <br>
-                Method: Card <br>
+                Payment Type: {{$payment->payment_type}} <br>
+                Payment Method: Card <br>
             </td>
             <td>{{ date('d-m-Y',strtotime($payment->charged_at)) }}</td>
             <td>Paid</td>
             <td>${{ format_number($payment->charged_amount) }}</td>
         </tr>
     </table>
+
+    <br>
+
+    <p style="font-size: 10px">
+        I possess an electronic signature confirming both the initiation and authorization of the payment, which was made by me.
+    </p>
 </body>
 
 </html>
