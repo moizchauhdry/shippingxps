@@ -123,6 +123,7 @@ class PaymentController extends Controller
     // AUTHORIZE NET - PAYMENT SUCCESS
     public function pay(Request $request)
     {
+        // dd($request->all());
         if (!in_array($request->payment_module_type, ['package', 'gift_card', 'order'])) {
             return redirect()->back()->with('error', 'PAYMENT DENIED!');
         }
@@ -169,7 +170,7 @@ class PaymentController extends Controller
         $customerAddress->setZip($request->zip ?? 'None');
         $customerAddress->setCountry($request->country ?? '');
 
-        $billing = [
+        $billing_address = [
             'email' => $request->email ?? $user->email ?? '',
             'fullname' => $request->first_name . ' ' . $request->last_name ?? '',
             'phone' => $request->phone_no ?? '',
@@ -207,7 +208,8 @@ class PaymentController extends Controller
 
         // Create the controller and get the response
         $controller = new AnetController\CreateTransactionController($transaction);
-        $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::PRODUCTION);
+        // $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::PRODUCTION);
+        $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::SANDBOX);
 
         // Check to see if the API request was successfully received and acted upon
         if ($response->getMessages()->getResultCode() == "Ok") {
@@ -232,6 +234,7 @@ class PaymentController extends Controller
                 $payment->charged_at = Carbon::now()->format('Y-m-d H:i:s');
                 $payment->save();
                 $payment->invoice_id = $invoiceID;
+                $payment->billing_address = $billing_address;
                 $payment->save();
 
                 $shipping = [];
@@ -425,6 +428,7 @@ class PaymentController extends Controller
         $payment->save();
         $invoiceID =  sprintf("%05d", $payment->id);
         $payment->invoice_id = $invoiceID;
+        $payment->billing_address = $billing;
         $payment->save();
 
         $payment_module_id = $request->payment_module_id;
@@ -737,7 +741,7 @@ class PaymentController extends Controller
 
         if (isset($payment->order_id)) {
             $order = $payment->order;
-            $order_items = OrderItem::where('order_id',$order->id)->get();
+            $order_items = OrderItem::where('order_id', $order->id)->get();
         }
 
         if (isset($payment->additional_request_id)) {
@@ -771,7 +775,7 @@ class PaymentController extends Controller
 
         $pdf = PDF::loadView('pdfs.payment-invoice');
         $pdf->setPaper('A4', 'portrait');
-        
+
         return $pdf->stream('payment-invoice.pdf', array("Attachment" => false));
     }
 
