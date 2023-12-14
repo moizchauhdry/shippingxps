@@ -779,29 +779,54 @@ class PaymentController extends Controller
         return $pdf->stream('payment-invoice.pdf', array("Attachment" => false));
     }
 
-    public function add_payment(Request $request)
+    public function addPayment(Request $request)
     {
+
+        // dd($request->all());
+
         $data = $request->validate([
             'transaction_id' => 'required',
             'payment_type' => 'required',
+            'payment_module_id' => 'required',
+            'payment_module' => 'required|in:package,order',
         ]);
 
-        $package = Package::find($request->package_id);
+        $pm = $request->payment_module;
+        $pmi = $request->payment_module_id;
 
-        if ($package->payment_status != 'Paid') {
-            Payment::create([
-                'customer_id' => $package->customer_id,
-                'package_id' => $package->id,
-                'transaction_id' => $data['transaction_id'],
-                'payment_type' => $data['payment_type'],
-                'charged_amount' => $package->grand_total,
-                'charged_at' => Carbon::now()
-            ]);
+        if ($pm == 'package') {
+            $package = Package::where('id', $pmi)->first();
+
+            if ($package->payment_status != 'Paid') {
+                Payment::create([
+                    'customer_id' => $package->customer_id,
+                    'package_id' => $package->id,
+                    'transaction_id' => $data['transaction_id'],
+                    'payment_type' => $data['payment_type'],
+                    'charged_amount' => $package->grand_total,
+                    'charged_at' => Carbon::now()
+                ]);
+            }
+
+            $package->update(['payment_status' => 'Paid']);
         }
 
-        $package->update([
-            'payment_status' => 'Paid'
-        ]);
+        if ($pm == 'order') {
+            $order = Order::where('id', $pmi)->first();
+
+            if ($order->payment_status != 'Paid') {
+                Payment::create([
+                    'customer_id' => $order->customer_id,
+                    'order_id' => $order->id,
+                    'transaction_id' => $data['transaction_id'],
+                    'payment_type' => $data['payment_type'],
+                    'charged_amount' => $order->grand_total,
+                    'charged_at' => Carbon::now()
+                ]);
+            }
+
+            $order->update(['payment_status' => 'Paid']);
+        }
 
         return redirect()->back();
     }
