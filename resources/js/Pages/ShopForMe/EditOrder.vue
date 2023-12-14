@@ -10,7 +10,11 @@
 			This order has been rejected by ShippingXPS.
 		</div>
 
-		<PaymentComponent v-bind="$props"></PaymentComponent>
+		<div class="row">
+			<div class="col-md-12 mb-2">
+				<PaymentComponent v-bind="$props"></PaymentComponent>
+			</div>
+		</div>
 
 		<!-- Invoice Section -->
 		<div class="card mb-3" v-if="$page.props.auth.user.type == 'admin' && order.payment_status == 'Paid'">
@@ -254,12 +258,12 @@ import PaymentComponent from "./PaymentComponent.vue";
 
 export default {
 	components: {
-    BreezeAuthenticatedLayout,
-    MainLayout,
-    BreezeLabel,
-    BreezeValidationErrors,
-    PaymentComponent
-},
+		BreezeAuthenticatedLayout,
+		MainLayout,
+		BreezeLabel,
+		BreezeValidationErrors,
+		PaymentComponent
+	},
 	data() {
 		return {
 			form: this.$inertia.form({

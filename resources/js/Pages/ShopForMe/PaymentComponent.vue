@@ -20,17 +20,19 @@
                         </div>
                         <div class="modal-body">
                             <div class="row">
-                                <breeze-validation-errors class="mb-4" />
+                                <div class="col-md-12">
+                                    <breeze-validation-errors class="mb-4" />
+                                </div>
 
-                                <div class="form-group">
-                                    <select class="form-control form-select" v-model="payment_form.payment_type">
+                                <div class="col-md-5 form-group">
+                                    <select class="form-control custom-select" v-model="payment_form.payment_type">
                                         <option value="">Choose Method</option>
                                         <option value="PayPal">PayPal</option>
                                         <option value="Authorize.net">Authorize.net</option>
                                         <option value="Other">Other</option>
                                     </select>
                                 </div>
-                                <div class="form-group">
+                                <div class="col-md-7 form-group">
                                     <input type="text" class="form-control" v-model="payment_form.transaction_id"
                                         placeholder="Transaction ID" />
                                 </div>
@@ -82,8 +84,16 @@ export default {
             modal.style.display = "none";
         },
         add_payment() {
-            this.payment_form.post(this.route("payment.add"));
-            this.close();
+            this.payment_form.post(this.route("payment.add"))
+                .then(response => {
+                    this.close();
+                })
+                .catch(error => {
+                    //
+                })
+                .finally(() => {
+                    //
+                });
         },
     },
 };
