@@ -63,8 +63,8 @@
 									<td>
 										<div v-for="image in child_pkg.images" :key="image.id">
 											<div class="m-1 p-1">
-												<img style="width: 100px; height: auto" class="img-thumbnail"
-													@click="viewImage($event)" :src="imgURL(image.image)" />
+												<img style="width: 50px; height: 50px" @click="viewImage($event)"
+													:src="imgURL(image.image)" />
 											</div>
 										</div>
 										<div class="text-xs text-danger" v-if="child_pkg.images.length == 0">
