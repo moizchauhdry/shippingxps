@@ -16,7 +16,7 @@ class Change09InPackagesTable extends Migration
         Schema::table('packages', function (Blueprint $table) {
             $table->dateTime('label_generated_at')->nullable();
             $table->integer('label_generated_by')->nullable();
-            // $table->string('label_url', 100)->nullable();
+            $table->string('label_url', 100)->nullable();
         });
     }
 
@@ -30,7 +30,7 @@ class Change09InPackagesTable extends Migration
         Schema::table('packages', function (Blueprint $table) {
             $table->dropColumn('label_generated_at');
             $table->dropColumn('label_generated_by');
-            // $table->dropColumn('label_url');
+            $table->dropColumn('label_url');
         });
     }
 }
