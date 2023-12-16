@@ -91,7 +91,7 @@
 						<a class="btn btn-warning btn-sm m-1" @click="generateLabel">
 							<i class="fa fa-print mr-1"></i>Generate Label</a>
 
-						<a :href="labelURL(packag.id)" target="_blank" v-if="packag.label_generated_at"
+						<a :href="labelURL(packag.label_url)" target="_blank" v-if="packag.label_generated_at"
 							class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Print
 							Label</a>
 					</template>
@@ -136,8 +136,8 @@ export default {
 		imgURL(url) {
 			return "/public/uploads/" + url;
 		},
-		labelURL(package_id) {
-			return "/storage/app/public/label-" + package_id + '.pdf';
+		labelURL(url) {
+			return "/" + url;
 		},
 		viewImage(event) {
 			console.log(event.target.src);
