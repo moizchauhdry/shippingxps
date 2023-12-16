@@ -1102,13 +1102,15 @@ class PackageController extends Controller
             $package = Package::where('id', $request->package_id)->first();
             $warehouse = Warehouse::where('id', $package->warehouse_id)->first();
             $ship_to = Address::where('id', $package->address_book_id)->first();
-            $items = OrderItem::with('originCountry')->where('package_id', $package->id)->get();
+            $package_weight = $package->boxes->sum('weight');
+
 
             $commodities = [];
+            $items = OrderItem::with('originCountry')->where('package_id', $package->id)->get();
             foreach ($items as $key => $item) {
                 $commodities[] = [
                     "description" => $item->description,
-                    "countryOfManufacture" => "US",
+                    "countryOfManufacture" => $item->originCountry->iso,
                     "quantity" => $item->quantity,
                     "quantityUnits" => "PCS",
                     "unitPrice" => [
@@ -1121,7 +1123,24 @@ class PackageController extends Controller
                     ],
                     "weight" => [
                         "units" => "LB",
-                        "value" => 1
+                        "value" => $package_weight
+                    ]
+                ];
+            }
+
+            $requestedPackageLineItems = [];
+            foreach ($package->boxes as $key => $box) {
+                $requestedPackageLineItems[] = [
+                    "sequenceNumber" => ++$key,
+                    "weight" => [
+                        "units" => "LB",
+                        "value" => $box->weight
+                    ],
+                    "dimensions" => [
+                        "length" => $box->length,
+                        "width" => $box->width,
+                        "height" => $box->height,
+                        "units" => "IN"
                     ]
                 ];
             }
@@ -1159,21 +1178,20 @@ class PackageController extends Controller
                     "shipper" => [
                         "address" => [
                             "streetLines" => [
-                                "3578 W savanna",
-                                "st Anaheim"
+                                $warehouse->address,
                             ],
-                            "city" => "Anaheim",
-                            "stateOrProvinceCode" => "CA",
-                            "postalCode" => "92804",
+                            "city" => $warehouse->city,
+                            "stateOrProvinceCode" => $warehouse->state,
+                            "postalCode" => $warehouse->zip,
                             "countryCode" => "US",
                             "residential" => false
                         ],
                         "contact" => [
-                            "personName" => "Habibur haseeb",
-                            "emailAddress" => "habib10@me.com",
+                            "personName" => $warehouse->contact_person,
+                            "emailAddress" => $warehouse->email,
                             "phoneExtension" => "91",
-                            "phoneNumber" => "1209717988",
-                            "companyName" => "shippingxps"
+                            "phoneNumber" => $warehouse->phone,
+                            "companyName" => "ShippingXPS"
                         ]
                     ],
                     "recipients" => [
@@ -1193,27 +1211,13 @@ class PackageController extends Controller
                             "contact" => [
                                 "personName" => $ship_to->fullname,
                                 "emailAddress" => $ship_to->email,
-                                "phoneExtension" => "91",
-                                "phoneNumber" => "16572101801",
+                                // "phoneExtension" => "91",
+                                "phoneNumber" => $ship_to->phone,
                                 "companyName" => $ship_to->fullname
                             ]
                         ]
                     ],
-                    "requestedPackageLineItems" => [
-                        [
-                            "sequenceNumber" => "1",
-                            "weight" => [
-                                "units" => "LB",
-                                "value" => 3
-                            ],
-                            "dimensions" => [
-                                "length" => 1,
-                                "width" => 1,
-                                "height" => 1,
-                                "units" => "IN"
-                            ]
-                        ],
-                    ],
+                    "requestedPackageLineItems" => $requestedPackageLineItems,
                     "labelSpecification" => [
                         "imageType" => "PDF",
                         "labelStockType" => "PAPER_85X11_TOP_HALF_LABEL",

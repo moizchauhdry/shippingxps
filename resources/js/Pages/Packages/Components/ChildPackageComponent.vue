@@ -88,8 +88,8 @@
 					</template>
 
 					<template v-if="packag.payment_status == 'Paid' && $page.props.auth.user.type == 'admin'">
-						<a class="btn btn-warning btn-sm m-1" @click="generateLabel">
-							<i class="fa fa-print mr-1"></i>Generate Label</a>
+						<a class="btn btn-info btn-sm m-1" @click="generateLabel">
+							<i class="fas fa-wrench mr-1"></i>Generate Label</a>
 
 						<a :href="labelURL(packag.label_url)" target="_blank" v-if="packag.label_generated_at"
 							class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Print
