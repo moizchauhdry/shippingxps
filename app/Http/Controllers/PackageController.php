@@ -1253,7 +1253,7 @@ class PackageController extends Controller
             $encoded_label = $response->output->transactionShipments[0]->pieceResponses[0]->packageDocuments[0]->encodedLabel;
 
             if ($encoded_label) {
-                Storage::disk('labels')->put('label-' . $package->id . '.pdf', base64_decode($encoded_label));
+                Storage::disk('public')->put('label-' . $package->id . '.pdf', base64_decode($encoded_label));
                 $package->update([
                     'label_generated_at' => Carbon::now(),
                     'label_generated_by' => auth()->id(),
