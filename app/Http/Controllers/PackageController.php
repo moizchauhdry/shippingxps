@@ -31,6 +31,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\File;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Storage;
 
 class PackageController extends Controller
 {
@@ -1091,5 +1092,178 @@ class PackageController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'The coupon remove successfully!');
+    }
+
+    public function generateLabel(Request $request)
+    {
+        // dd($request->all());
+
+        try {
+            $package = Package::where('id', $request->package_id)->first();
+            $warehouse = Warehouse::where('id', $package->warehouse_id)->first();
+            $ship_to = Address::where('id', $package->address_book_id)->first();
+            $items = OrderItem::with('originCountry')->where('package_id', $package->id)->get();
+
+            $commodities = [];
+            foreach ($items as $key => $item) {
+                $commodities[] = [
+                    "description" => $item->description,
+                    "countryOfManufacture" => "US",
+                    "quantity" => $item->quantity,
+                    "quantityUnits" => "PCS",
+                    "unitPrice" => [
+                        "amount" => $item->unit_price,
+                        "currency" => "USD"
+                    ],
+                    "customsValue" => [
+                        "amount" => $item->unit_price,
+                        "currency" => "USD"
+                    ],
+                    "weight" => [
+                        "units" => "LB",
+                        "value" => 1
+                    ]
+                ];
+            }
+
+            $client = new Client();
+
+            $result = $client->post('https://apis.fedex.com/oauth/token', [
+                'form_params' => [
+                    'grant_type' => 'client_credentials',
+                    'client_id' => 'l7ef7275cc94544aaabf802ef4308bb66a',
+                    'client_secret' => '48b51793-fd0d-426d-8bf0-3ecc62d9c876',
+                ]
+            ]);
+
+            $authorization = $result->getBody()->getContents();
+            $authorization = json_decode($authorization);
+
+            $headers = [
+                'X-locale' => 'en_US',
+                'Content-Type' => 'application/json',
+                'Authorization' => 'Bearer ' . $authorization->access_token
+            ];
+
+
+            $body = [
+                "mergeLabelDocOption" => "LABELS_ONLY",
+                "requestedShipment" => [
+                    "shipDatestamp" => Carbon::parse(Carbon::now())->format('Y-m-d'),
+                    "pickupType" => "USE_SCHEDULED_PICKUP",
+                    "serviceType" => $package->service_code,
+                    "packagingType" => "YOUR_PACKAGING",
+                    "shippingChargesPayment" => [
+                        "paymentType" => "SENDER"
+                    ],
+                    "shipper" => [
+                        "address" => [
+                            "streetLines" => [
+                                "3578 W savanna",
+                                "st Anaheim"
+                            ],
+                            "city" => "Anaheim",
+                            "stateOrProvinceCode" => "CA",
+                            "postalCode" => "92804",
+                            "countryCode" => "US",
+                            "residential" => false
+                        ],
+                        "contact" => [
+                            "personName" => "Habibur haseeb",
+                            "emailAddress" => "habib10@me.com",
+                            "phoneExtension" => "91",
+                            "phoneNumber" => "1209717988",
+                            "companyName" => "shippingxps"
+                        ]
+                    ],
+                    "recipients" => [
+                        [
+                            "address" => [
+                                "streetLines" => [
+                                    $ship_to->address,
+                                    $ship_to->address_1,
+                                    $ship_to->address_2
+                                ],
+                                "city" => $ship_to->city,
+                                "stateOrProvinceCode" => $ship_to->state,
+                                "postalCode" => $ship_to->zip_code,
+                                "countryCode" => $ship_to->country->iso,
+                                "residential" => false
+                            ],
+                            "contact" => [
+                                "personName" => $ship_to->fullname,
+                                "emailAddress" => $ship_to->email,
+                                "phoneExtension" => "91",
+                                "phoneNumber" => "16572101801",
+                                "companyName" => $ship_to->fullname
+                            ]
+                        ]
+                    ],
+                    "requestedPackageLineItems" => [
+                        [
+                            "sequenceNumber" => "1",
+                            "weight" => [
+                                "units" => "LB",
+                                "value" => 3
+                            ],
+                            "dimensions" => [
+                                "length" => 1,
+                                "width" => 1,
+                                "height" => 1,
+                                "units" => "IN"
+                            ]
+                        ],
+                    ],
+                    "labelSpecification" => [
+                        "imageType" => "PDF",
+                        "labelStockType" => "PAPER_85X11_TOP_HALF_LABEL",
+                        "returnedDispositionDetail" => true,
+                        "customerSpecifiedDetail" => [
+                            "maskedData" => [
+                                "DUTIES_AND_TAXES_PAYOR_ACCOUNT_NUMBER",
+                                "TRANSPORTATION_CHARGES_PAYOR_ACCOUNT_NUMBER"
+                            ]
+                        ]
+                    ],
+                    "customsClearanceDetail" => [
+                        "isDocumentOnly" => true,
+                        "commodities" => $commodities,
+                        "dutiesPayment" => [
+                            "paymentType" => "RECIPIENT"
+                        ]
+                    ]
+                ],
+                "labelResponseOptions" => "LABEL",
+                "accountNumber" => [
+                    "value" => "695684150"
+                ],
+                "shipAction" => "CONFIRM",
+                "processingOptionType" => "ALLOW_ASYNCHRONOUS",
+                "oneLabelAtATime" => true
+            ];
+
+            $request = $client->post('https://apis.fedex.com/ship/v1/shipments', [
+                'headers' => $headers,
+                'body' => json_encode($body)
+            ]);
+
+            $response = $request->getBody()->getContents();
+            $response = json_decode($response);
+
+            $encoded_label = $response->output->transactionShipments[0]->pieceResponses[0]->packageDocuments[0]->encodedLabel;
+
+            if ($encoded_label) {
+                Storage::disk('public')->put('label-' . $package->id . '.pdf', base64_decode($encoded_label));
+                $package->update([
+                    'label_generated_at' => Carbon::now(),
+                    'label_generated_by' => auth()->id(),
+                ]);
+            }
+
+            return redirect()->back();
+        } catch (\Throwable $th) {
+            //throw $th;
+            dd($th);
+        }
     }
 }

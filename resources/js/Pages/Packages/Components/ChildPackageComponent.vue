@@ -87,6 +87,15 @@
 							<i class="fa fa-print mr-1"></i>Print Commercial Invoice</a>
 					</template>
 
+					<template v-if="packag.payment_status == 'Paid' && $page.props.auth.user.type == 'admin'">
+						<a class="btn btn-warning btn-sm m-1" @click="generateLabel">
+							<i class="fa fa-print mr-1"></i>Generate Label</a>
+
+						<a :href="labelURL(packag.id)" target="_blank" v-if="packag.label_generated_at"
+							class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Print
+							Label</a>
+					</template>
+
 					<template
 						v-if="packag.payment_status == 'Pending' && packag.address_book_id != 0 && packag.address_type == 'international'">
 
@@ -115,7 +124,9 @@ export default {
 	},
 	data() {
 		return {
-			//
+			label_form: this.$inertia.form({
+				package_id: this.packag.id,
+			}),
 		};
 	},
 	methods: {
@@ -124,6 +135,9 @@ export default {
 		},
 		imgURL(url) {
 			return "/public/uploads/" + url;
+		},
+		labelURL(package_id) {
+			return "/storage/app/public/label-" + package_id + '.pdf';
 		},
 		viewImage(event) {
 			console.log(event.target.src);
@@ -168,6 +182,18 @@ export default {
 				default:
 					return "text-uppercase badge badge-primary p-2 text-white";
 			}
+		},
+		generateLabel() {
+			this.label_form.post(this.route("packages.generate-label"))
+				.then(response => {
+					// 
+				})
+				.catch(error => {
+					alert('err');
+				})
+				.finally(() => {
+					//
+				});
 		},
 	},
 };
