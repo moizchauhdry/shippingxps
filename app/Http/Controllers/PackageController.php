@@ -1213,7 +1213,7 @@ class PackageController extends Controller
                                 "emailAddress" => $ship_to->email,
                                 // "phoneExtension" => "91",
                                 "phoneNumber" => $ship_to->phone,
-                                "companyName" => $ship_to->fullname
+                                // "companyName" => $ship_to->fullname
                             ]
                         ]
                     ],
