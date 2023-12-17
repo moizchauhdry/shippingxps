@@ -1199,8 +1199,8 @@ class PackageController extends Controller
                             "address" => [
                                 "streetLines" => [
                                     $ship_to->address,
-                                    $ship_to->address_1,
-                                    $ship_to->address_2
+                                    $ship_to->address_2,
+                                    $ship_to->address_3
                                 ],
                                 "city" => $ship_to->city,
                                 "stateOrProvinceCode" => $ship_to->state,
