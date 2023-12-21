@@ -1103,31 +1103,32 @@ class PackageController extends Controller
             $package = Package::where('id', $request->package_id)->first();
             $warehouse = Warehouse::where('id', $package->warehouse_id)->first();
             $ship_to = Address::where('id', $package->address_book_id)->first();
-            $package_weight = $package->boxes->sum('weight');
-
+            // $package_weight = $package->boxes->sum('weight');
 
             $commodities = [];
-            $items = OrderItem::with('originCountry')->where('package_id', $package->id)->get();
-            foreach ($items as $key => $item) {
-                $commodities[] = [
-                    "description" => $item->description,
-                    "countryOfManufacture" => $item->originCountry->iso,
-                    "quantity" => $item->quantity,
-                    "quantityUnits" => "PCS",
-                    "unitPrice" => [
-                        "amount" => $item->unit_price,
-                        "currency" => "USD"
-                    ],
-                    "customsValue" => [
-                        "amount" => $item->unit_price,
-                        "currency" => "USD"
-                    ],
-                    "weight" => [
-                        "units" => "LB",
-                        // "value" => $package_weight
-                        "value" => 0
-                    ]
-                ];
+            if ($warehouse->country_id != $ship_to->country_id) {
+                $items = OrderItem::with('originCountry')->where('package_id', $package->id)->get();
+                foreach ($items as $key => $item) {
+                    $commodities[] = [
+                        "description" => $item->description,
+                        "countryOfManufacture" => $item->originCountry->iso,
+                        "quantity" => $item->quantity,
+                        "quantityUnits" => "PCS",
+                        "unitPrice" => [
+                            "amount" => $item->unit_price,
+                            "currency" => "USD"
+                        ],
+                        "customsValue" => [
+                            "amount" => $item->unit_price,
+                            "currency" => "USD"
+                        ],
+                        "weight" => [
+                            "units" => "LB",
+                            // "value" => $package_weight
+                            "value" => 0
+                        ]
+                    ];
+                }
             }
 
             $requestedPackageLineItems = [];
