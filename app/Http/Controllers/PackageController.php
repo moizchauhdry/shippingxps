@@ -1207,8 +1207,8 @@ class PackageController extends Controller
                             "address" => [
                                 "streetLines" => [
                                     $ship_to->address,
-                                    $ship_to->address_2,
-                                    $ship_to->address_3
+                                    // $ship_to->address_2,
+                                    // $ship_to->address_3
                                 ],
                                 "city" => $ship_to->city,
                                 "stateOrProvinceCode" => $service_type == 'domestic' ? $ship_to->state : NULL,
