@@ -1105,8 +1105,13 @@ class PackageController extends Controller
             $ship_to = Address::where('id', $package->address_book_id)->first();
             // $package_weight = $package->boxes->sum('weight');
 
+            $service_type = 'international';
+            if ($warehouse->country_id == $ship_to->country_id) {
+                $service_type = 'domestic';
+            }
+
             $commodities = [];
-            if ($warehouse->country_id != $ship_to->country_id) {
+            if ($service_type == 'domestic') {
                 $items = OrderItem::with('originCountry')->where('package_id', $package->id)->get();
                 foreach ($items as $key => $item) {
                     $commodities[] = [
@@ -1206,7 +1211,7 @@ class PackageController extends Controller
                                     $ship_to->address_3
                                 ],
                                 "city" => $ship_to->city,
-                                // "stateOrProvinceCode" => $ship_to->state,
+                                "stateOrProvinceCode" => $service_type == 'domestic' ? $ship_to->state : NULL,
                                 "postalCode" => $ship_to->zip_code,
                                 "countryCode" => $ship_to->country->iso,
                                 "residential" => false
@@ -1239,6 +1244,7 @@ class PackageController extends Controller
                     //         "paymentType" => "RECIPIENT"
                     //     ]
                     // ]
+                    "customsClearanceDetail" => []
                 ],
                 "labelResponseOptions" => "LABEL",
                 "accountNumber" => [
