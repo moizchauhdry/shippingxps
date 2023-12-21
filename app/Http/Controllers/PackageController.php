@@ -1232,13 +1232,13 @@ class PackageController extends Controller
                             ]
                         ]
                     ],
-                    "customsClearanceDetail" => [
-                        "isDocumentOnly" => true,
-                        "commodities" => $commodities,
-                        "dutiesPayment" => [
-                            "paymentType" => "RECIPIENT"
-                        ]
-                    ]
+                    // "customsClearanceDetail" => [
+                    //     "isDocumentOnly" => true,
+                    //     "commodities" => $commodities,
+                    //     "dutiesPayment" => [
+                    //         "paymentType" => "RECIPIENT"
+                    //     ]
+                    // ]
                 ],
                 "labelResponseOptions" => "LABEL",
                 "accountNumber" => [
