@@ -33,6 +33,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
 use Webklex\PDFMerger\Facades\PDFMergerFacade as PDFMerger;
+use PDF;
 
 class PackageController extends Controller
 {
@@ -556,6 +557,38 @@ class PackageController extends Controller
         $mpdf->AddPage();
         $mpdf->WriteHTML($html);
         $mpdf->Output();
+    }
+
+    public function commercialInvoiceForLabel($id)
+    {
+        $package = Package::with(['packageItems', 'warehouse.country'])
+            ->when(Auth::user()->type == 'customer', function ($qry) {
+                $qry->where('customer_id', Auth::user()->id);
+            })->findOrFail($id);
+
+        $warehouse = $package->warehouse;
+        $user = User::find($package->customer_id);
+        $address = Address::find($package->address_book_id);
+
+        $package_weight = 0;
+        if (isset($package->boxes)) {
+            $package_weight = $package->boxes->sum('weight');
+        }
+
+        view()->share([
+            'package' => $package,
+            'package_weight' => $package_weight,
+            'warehouse' => $warehouse,
+            'user' => $user,
+            'address' => $address
+        ]);
+
+        $pdf = PDF::loadView('pdfs.commercial-invoice');
+        $pdf->setPaper('A4', 'portrait');
+
+        $filename = Carbon::parse(Carbon::now())->format('dmyhis') . '-' . $package->id . '.pdf';
+        Storage::disk('commercial-invoices')->put($filename, $pdf->output());
+        return response()->download('storage/commercial-invoices/' . $filename);
     }
 
     public function serviceRequest(Request $request)
@@ -1265,6 +1298,8 @@ class PackageController extends Controller
             $encoded_labels = $response->output->transactionShipments[0]->pieceResponses;
 
             if ($encoded_labels) {
+
+                $this->commercialInvoiceForLabel($package->id);
                 $oMerger = PDFMerger::init();
                 $filename1 = Carbon::parse(Carbon::now())->format('dmyhis') . '-' . $package->id;
                 foreach ($encoded_labels as $key => $encoded_label) {
@@ -1272,6 +1307,8 @@ class PackageController extends Controller
                     Storage::disk('labels')->put($filename2, base64_decode($encoded_label->packageDocuments[0]->encodedLabel));
                     $oMerger->addPDF('storage/labels/' . $filename2, 'all');
                 }
+
+                $oMerger->addPDF('storage/commercial-invoices/' . $filename1 . '.pdf', 'all');
 
                 $oMerger->merge();
                 $label_url = 'storage/labels/' . $filename1 . '.pdf';

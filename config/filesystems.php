@@ -60,6 +60,13 @@ return [
             'visibility' => 'public',
         ],
 
+        'commercial-invoices' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/commercial-invoices'),
+            'url' => env('APP_URL').'/storage/commercial-invoices',
+            'visibility' => 'public',
+        ],
+
     ],
 
     /*
