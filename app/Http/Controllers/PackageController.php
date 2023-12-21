@@ -32,6 +32,7 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\File;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
+use Webklex\PDFMerger\Facades\PDFMergerFacade as PDFMerger;
 
 class PackageController extends Controller
 {
@@ -1243,7 +1244,7 @@ class PackageController extends Controller
                 ],
                 "shipAction" => "CONFIRM",
                 "processingOptionType" => "ALLOW_ASYNCHRONOUS",
-                "oneLabelAtATime" => true
+                // "oneLabelAtATime" => true
             ];
 
             $request = $client->post('https://apis.fedex.com/ship/v1/shipments', [
@@ -1254,15 +1255,25 @@ class PackageController extends Controller
             $response = $request->getBody()->getContents();
             $response = json_decode($response);
 
-            $encoded_label = $response->output->transactionShipments[0]->pieceResponses[0]->packageDocuments[0]->encodedLabel;
+            $encoded_labels = $response->output->transactionShipments[0]->pieceResponses;
 
-            if ($encoded_label) {
-                $label_file = Carbon::parse(Carbon::now())->format('dmyhis') . '-' . $package->id . '.pdf';
-                Storage::disk('labels')->put($label_file, base64_decode($encoded_label));
+            if ($encoded_labels) {
+                $oMerger = PDFMerger::init();
+                $filename1 = Carbon::parse(Carbon::now())->format('dmyhis') . '-' . $package->id;
+                foreach ($encoded_labels as $key => $encoded_label) {
+                    $filename2 = $filename1 . '-' . ++$key . '.pdf';
+                    Storage::disk('labels')->put($filename2, base64_decode($encoded_label->packageDocuments[0]->encodedLabel));
+                    $oMerger->addPDF('storage/labels/' . $filename2, 'all');
+                }
+
+                $oMerger->merge();
+                $label_url = 'storage/labels/' . $filename1 . '.pdf';
+                $oMerger->save($label_url);
+
                 $package->update([
                     'label_generated_at' => Carbon::now(),
                     'label_generated_by' => auth()->id(),
-                    'label_url' => 'storage/labels/' . $label_file,
+                    'label_url' => $label_url,
                 ]);
             }
 
