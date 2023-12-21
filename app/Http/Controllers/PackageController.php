@@ -1211,7 +1211,7 @@ class PackageController extends Controller
                                     $ship_to->address_3
                                 ],
                                 "city" => $ship_to->city,
-                                // "stateOrProvinceCode" => $service_type == 'domestic' ? $ship_to->state : NULL,
+                                "stateOrProvinceCode" => $service_type == 'domestic' ? $ship_to->state : NULL,
                                 "postalCode" => $ship_to->zip_code,
                                 "countryCode" => $ship_to->country->iso,
                                 "residential" => false
@@ -1244,7 +1244,6 @@ class PackageController extends Controller
                     //         "paymentType" => "RECIPIENT"
                     //     ]
                     // ]
-                    "customsClearanceDetail" => []
                 ],
                 "labelResponseOptions" => "LABEL",
                 "accountNumber" => [
