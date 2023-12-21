@@ -1124,7 +1124,8 @@ class PackageController extends Controller
                     ],
                     "weight" => [
                         "units" => "LB",
-                        "value" => $package_weight
+                        // "value" => $package_weight
+                        "value" => 0
                     ]
                 ];
             }
