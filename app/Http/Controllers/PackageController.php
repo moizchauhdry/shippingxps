@@ -1206,7 +1206,7 @@ class PackageController extends Controller
                                     $ship_to->address_3
                                 ],
                                 "city" => $ship_to->city,
-                                "stateOrProvinceCode" => $ship_to->state,
+                                // "stateOrProvinceCode" => $ship_to->state,
                                 "postalCode" => $ship_to->zip_code,
                                 "countryCode" => $ship_to->country->iso,
                                 "residential" => false
