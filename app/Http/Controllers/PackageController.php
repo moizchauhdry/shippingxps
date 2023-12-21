@@ -1111,7 +1111,7 @@ class PackageController extends Controller
             }
 
             $commodities = [];
-            if ($service_type == 'domestic') {
+            if ($service_type == 'international') {
                 $items = OrderItem::with('originCountry')->where('package_id', $package->id)->get();
                 foreach ($items as $key => $item) {
                     $commodities[] = [
@@ -1207,14 +1207,14 @@ class PackageController extends Controller
                             "address" => [
                                 "streetLines" => [
                                     $ship_to->address,
-                                    // $ship_to->address_2,
-                                    // $ship_to->address_3
+                                    $ship_to->address_2,
+                                    $ship_to->address_3
                                 ],
                                 "city" => $ship_to->city,
                                 "stateOrProvinceCode" => $service_type == 'domestic' ? $ship_to->state : NULL,
                                 "postalCode" => $ship_to->zip_code,
                                 "countryCode" => $ship_to->country->iso,
-                                "residential" => false
+                                "residential" => $ship_to->is_residential
                             ],
                             "contact" => [
                                 "personName" => $ship_to->fullname,
@@ -1237,13 +1237,13 @@ class PackageController extends Controller
                             ]
                         ]
                     ],
-                    // "customsClearanceDetail" => [
-                    //     "isDocumentOnly" => true,
-                    //     "commodities" => $commodities,
-                    //     "dutiesPayment" => [
-                    //         "paymentType" => "RECIPIENT"
-                    //     ]
-                    // ]
+                    "customsClearanceDetail" => $service_type == 'international' ? [
+                        "isDocumentOnly" => true,
+                        "commodities" => $commodities,
+                        "dutiesPayment" => [
+                            "paymentType" => "RECIPIENT"
+                        ]
+                    ] : NULL
                 ],
                 "labelResponseOptions" => "LABEL",
                 "accountNumber" => [
