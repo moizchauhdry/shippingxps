@@ -1142,6 +1142,10 @@ class PackageController extends Controller
                 generateLabelUps($package->id);
             }
 
+            if ($package->carrier_code == 'dhl') {
+                generateLabelDhl($package->id);
+            }
+
             return redirect()->back()->with('success', 'The label has been generated successfully.');
         } catch (\Throwable $th) {
             // throw $th;

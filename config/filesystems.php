@@ -38,7 +38,7 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            'url' => env('APP_URL') . '/storage',
             'visibility' => 'public',
         ],
 
@@ -56,21 +56,35 @@ return [
         'labels' => [
             'driver' => 'local',
             'root' => storage_path('app/public/labels'),
-            'url' => env('APP_URL').'/storage/labels',
+            'url' => env('APP_URL') . '/storage/labels',
             'visibility' => 'public',
         ],
 
         'commercial-invoices' => [
             'driver' => 'local',
             'root' => storage_path('app/public/commercial-invoices'),
-            'url' => env('APP_URL').'/storage/commercial-invoices',
+            'url' => env('APP_URL') . '/storage/commercial-invoices',
             'visibility' => 'public',
         ],
 
         'ups-labels' => [
             'driver' => 'local',
             'root' => storage_path('app/public/ups-labels'),
-            'url' => env('APP_URL').'/storage/ups-labels',
+            'url' => env('APP_URL') . '/storage/ups-labels',
+            'visibility' => 'public',
+        ],
+
+        'fedex-labels' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/fedex-labels'),
+            'url' => env('APP_URL') . '/storage/fedex-labels',
+            'visibility' => 'public',
+        ],
+
+        'dhl-labels' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/dhl-labels'),
+            'url' => env('APP_URL') . '/storage/dhl-labels',
             'visibility' => 'public',
         ],
 

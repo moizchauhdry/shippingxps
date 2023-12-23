@@ -64,12 +64,43 @@ function shipping_service_markup($type)
     return $percentage;
 }
 
+function commercialInvoiceForLabel($id)
+{
+    $package = Package::with(['packageItems', 'warehouse.country'])
+        ->when(Auth::user()->type == 'customer', function ($qry) {
+            $qry->where('customer_id', Auth::user()->id);
+        })->findOrFail($id);
+
+    $warehouse = $package->warehouse;
+    $user = User::find($package->customer_id);
+    $address = Address::find($package->address_book_id);
+
+    $package_weight = 0;
+    if (isset($package->boxes)) {
+        $package_weight = $package->boxes->sum('weight');
+    }
+
+    view()->share([
+        'package' => $package,
+        'package_weight' => $package_weight,
+        'warehouse' => $warehouse,
+        'user' => $user,
+        'address' => $address
+    ]);
+
+    $pdf = PDF::loadView('pdfs.commercial-invoice');
+    $pdf->setPaper('A4', 'portrait');
+
+    $filename = $package->id . '.pdf';
+    Storage::disk('commercial-invoices')->put($filename, $pdf->output());
+    return response()->download('storage/commercial-invoices/' . $filename);
+}
+
 function generateLabelFedex($id)
 {
     $package = Package::where('id', $id)->first();
     $warehouse = Warehouse::where('id', $package->warehouse_id)->first();
     $ship_to = Address::where('id', $package->address_book_id)->first();
-    // $package_weight = $package->boxes->sum('weight');
 
     $service_type = 'international';
     if ($warehouse->country_id == $ship_to->country_id) {
@@ -95,7 +126,6 @@ function generateLabelFedex($id)
                 ],
                 "weight" => [
                     "units" => "LB",
-                    // "value" => $package_weight
                     "value" => 0
                 ]
             ];
@@ -229,28 +259,35 @@ function generateLabelFedex($id)
 
     $encoded_labels = $response->output->transactionShipments[0]->pieceResponses;
 
-    if ($encoded_labels) {
+    commercialInvoiceForLabel($package->id);
+    $oMerger = PDFMerger::init();
+    $filename1 = $package->id;
+    $count = 1;
+    foreach ($encoded_labels as $key => $encoded_label) {
+        $filename2 = $filename1 . '-' . $count . '.pdf';
+        Storage::disk('fedex-labels')->put($filename2, base64_decode($encoded_label->packageDocuments[0]->encodedLabel));
+        $oMerger->addPDF('storage/fedex-labels/' . $filename2, 'all');
+        $count++;
+    }
 
-        commercialInvoiceForLabel($package->id);
-        $oMerger = PDFMerger::init();
-        $filename1 = Carbon::parse(Carbon::now())->format('dmyhis') . '-' . $package->id;
-        foreach ($encoded_labels as $key => $encoded_label) {
-            $filename2 = $filename1 . '-' . ++$key . '.pdf';
-            Storage::disk('labels')->put($filename2, base64_decode($encoded_label->packageDocuments[0]->encodedLabel));
-            $oMerger->addPDF('storage/labels/' . $filename2, 'all');
-        }
+    $oMerger->addPDF('storage/commercial-invoices/' . $filename1 . '.pdf', 'all');
+    $oMerger->merge();
+    $label_url = 'storage/labels/' . $filename1 . '.pdf';
+    $oMerger->save($label_url);
 
-        $oMerger->addPDF('storage/commercial-invoices/' . $filename1 . '.pdf', 'all');
+    $package->update([
+        'label_generated_at' => Carbon::now(),
+        'label_generated_by' => auth()->id(),
+        'label_url' => $label_url,
+    ]);
 
-        $oMerger->merge();
-        $label_url = 'storage/labels/' . $filename1 . '.pdf';
-        $oMerger->save($label_url);
-
-        $package->update([
-            'label_generated_at' => Carbon::now(),
-            'label_generated_by' => auth()->id(),
-            'label_url' => $label_url,
-        ]);
+    // DELETE ADDITIONAL FILES
+    $count = 1;
+    foreach ($package->boxes as $key => $box) {
+        Storage::disk('commercial-invoices')->delete($box->package_id . '.pdf');
+        Storage::disk('fedex-labels')->delete($box->package_id . '-' . $count . '.pdf');
+        Storage::disk('labels')->delete($box->package_id . '-' . $count . '.pdf');
+        $count++;
     }
 }
 
@@ -336,7 +373,7 @@ function generateLabelUps($id)
                 ],
                 "ShipTo" => [
                     "Name" => $ship_to->fullname,
-                    "AttentionName" =>$ship_to->fullname,
+                    "AttentionName" => $ship_to->fullname,
                     "Phone" => [
                         "Number" => $ship_to->phone
                     ],
@@ -347,7 +384,7 @@ function generateLabelUps($id)
                             $ship_to->address_3,
                         ],
                         "City" => $ship_to->city,
-                        "StateProvinceCode" => $service_type == 'domestic' ? $ship_to->state :$ship_to->state,
+                        "StateProvinceCode" => $service_type == 'domestic' ? $ship_to->state : $ship_to->state,
                         "PostalCode" => $ship_to->zip_code,
                         "CountryCode" => $ship_to->country->iso
                     ],
@@ -383,9 +420,9 @@ function generateLabelUps($id)
                     "Description" => $package->service_label
                 ],
                 "Package" => $package_boxes,
-                "InvoiceLineTotal"=> [
-                    "MonetaryValue"=> "10",
-                    "CurrencyCode"=> "USD"
+                "InvoiceLineTotal" => [
+                    "MonetaryValue" => "10",
+                    "CurrencyCode" => "USD"
                 ]
             ],
             "LabelSpecification" => [
@@ -417,7 +454,7 @@ function generateLabelUps($id)
 
     commercialInvoiceForLabel($package->id);
     $oMerger = PDFMerger::init();
-    $filename1 = Carbon::parse(Carbon::now())->format('dmyhis') . '-' . $package->id;
+    $filename1 = $package->id;
     $count = 1;
     foreach ($results as $key => $result) {
         $filename2 = $filename1 . '-' . $count . '.png';
@@ -443,36 +480,19 @@ function generateLabelUps($id)
         'label_generated_by' => auth()->id(),
         'label_url' => $label_url,
     ]);
+
+
+    // DELETE ADDITIONAL FILES
+    $count = 1;
+    foreach ($package->boxes as $key => $box) {
+        Storage::disk('commercial-invoices')->delete($box->package_id . '.pdf');
+        Storage::disk('ups-labels')->delete($box->package_id . '-' . $count . '.pdf');
+        Storage::disk('labels')->delete($box->package_id . '-' . $count . '.png');
+        $count++;
+    }
 }
 
-function commercialInvoiceForLabel($id)
+function generateLabelDhl($id)
 {
-    $package = Package::with(['packageItems', 'warehouse.country'])
-        ->when(Auth::user()->type == 'customer', function ($qry) {
-            $qry->where('customer_id', Auth::user()->id);
-        })->findOrFail($id);
-
-    $warehouse = $package->warehouse;
-    $user = User::find($package->customer_id);
-    $address = Address::find($package->address_book_id);
-
-    $package_weight = 0;
-    if (isset($package->boxes)) {
-        $package_weight = $package->boxes->sum('weight');
-    }
-
-    view()->share([
-        'package' => $package,
-        'package_weight' => $package_weight,
-        'warehouse' => $warehouse,
-        'user' => $user,
-        'address' => $address
-    ]);
-
-    $pdf = PDF::loadView('pdfs.commercial-invoice');
-    $pdf->setPaper('A4', 'portrait');
-
-    $filename = Carbon::parse(Carbon::now())->format('dmyhis') . '-' . $package->id . '.pdf';
-    Storage::disk('commercial-invoices')->put($filename, $pdf->output());
-    return response()->download('storage/commercial-invoices/' . $filename);
+    dd('comming soon');
 }
