@@ -67,6 +67,13 @@ return [
             'visibility' => 'public',
         ],
 
+        'ups-labels' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/ups-labels'),
+            'url' => env('APP_URL').'/storage/ups-labels',
+            'visibility' => 'public',
+        ],
+
     ],
 
     /*

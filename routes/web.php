@@ -136,4 +136,4 @@ Route::get('auctions', [AuctionController::class, 'index'])->name('auctions.inde
 Route::get('auctions/{id}', [AuctionController::class, 'detail'])->name('auctions.detail');
 Route::post('bid-auction', [AuctionController::class, 'bid'])->name('auctions.bid');
 
-// Route::get('decode-pdf', [HomeController::class, 'decodePdf']);
+Route::get('decode-pdf', [HomeController::class, 'decodePdf']);
