@@ -494,5 +494,197 @@ function generateLabelUps($id)
 
 function generateLabelDhl($id)
 {
-    dd('comming soon');
+    $package = Package::where('id', $id)->first();
+    $warehouse = Warehouse::where('id', $package->warehouse_id)->first();
+    $ship_to = Address::where('id', $package->address_book_id)->first();
+
+    $service_type = 'international';
+    if ($warehouse->country_id == $ship_to->country_id) {
+        $service_type = 'domestic';
+    }
+
+    $client = new Client();
+
+    $headers = [
+        'Content-Type' => 'application/json',
+        'Authorization' => 'Basic YXBHN3RWNGNSMWFVOGQ6Wl40c0ckMXlSQDZ4VSM5Yw=='
+    ];
+
+    $line_items = [];
+    // if ($service_type == 'international') {
+    $items = OrderItem::with('originCountry')->where('package_id', $package->id)->get();
+    $count = 1;
+    foreach ($items as $key => $item) {
+        $line_items[] = [
+            "number" => 1,
+            "description" => $item->description,
+            "price" => $item->unit_price,
+            "priceCurrency" => "USD",
+            "manufacturerCountry" => "US",
+            "weight" => [
+                "netValue" => 1,
+                "grossValue" => 1
+            ],
+            "quantity" => [
+                "value" => $item->quantity,
+                "unitOfMeasurement" => "EA"
+            ],
+            "commodityCodes" => [
+                [
+                    "typeCode" => "outbound",
+                    "value" => "4204.00"
+                ]
+            ]
+        ];
+
+        $count++;
+    }
+    // }
+
+    $package_boxes = [];
+    foreach ($package->boxes as $key => $box) {
+        $package_boxes[] =    [
+            "description" => 'shippingxps',
+            "weight" => $box->weight,
+            "dimensions" => [
+                "length" => $box->length,
+                "width" => $box->width,
+                "height" => $box->height
+            ]
+        ];
+    }
+
+    $body = [
+        "plannedShippingDateAndTime" => "2023-12-30T11:00:00GMT-08:00",
+        "productCode" => "P",
+        "customerDetails" => [
+            "shipperDetails" => [
+                "postalAddress" => [
+                    "postalCode" => $warehouse->zip,
+                    "cityName" => $warehouse->city,
+                    "countryCode" => "US",
+                    "provinceCode" => $warehouse->state,
+                    "addressLine1" => $warehouse->address
+                ],
+                "contactInformation" => [
+                    "email" => $warehouse->email,
+                    "phone" => $warehouse->phone,
+                    "companyName" => "ShippingXPS",
+                    "fullName" => $warehouse->contact_person
+                ]
+            ],
+            "receiverDetails" => [
+                "postalAddress" => [
+                    "postalCode" => $ship_to->zip_code,
+                    "cityName" => $ship_to->city,
+                    "countryCode" => $ship_to->country->iso,
+                    "addressLine1" =>  $ship_to->address,
+                    "addressLine2" =>  $ship_to->address_2,
+                ],
+                "contactInformation" => [
+                    "email" => $ship_to->email,
+                    "phone" =>  $ship_to->phone,
+                    "companyName" => $ship_to->fullname,
+                    "fullName" =>  $ship_to->fullname,
+                ]
+            ]
+        ],
+        "content" => [
+            "isCustomsDeclarable" => true,
+            "description" => "Apple Iphone 15 & 15 Pro Max",
+            "declaredValue" => 14,
+            "declaredValueCurrency" => "USD",
+            "incoterm" => "DAP",
+            "unitOfMeasurement" => "imperial",
+            "packages" => $package_boxes,
+            "exportDeclaration" => [
+                "invoice" => [
+                    "number" => "1",
+                    "date" => "2023-09-29"
+                ],
+                "lineItems" => $line_items
+            ]
+        ],
+        "pickup" => [
+            "isRequested" => false
+        ],
+        "getRateEstimates" => false,
+        "accounts" => [
+            [
+                "typeCode" => "shipper",
+                "number" => "849192247"
+            ]
+        ],
+        "valueAddedServices" => [
+            [
+                "serviceCode" => "WY"
+            ]
+        ],
+        "outputImageProperties" => [
+            "printerDPI" => 300,
+            "encodingFormat" => "pdf",
+            "imageOptions" => [
+                [
+                    "typeCode" => "invoice",
+                    "templateName" => "COMMERCIAL_INVOICE_P_10",
+                    "isRequested" => true,
+                    "invoiceType" => "commercial",
+                    "languageCode" => "eng"
+                ]
+            ],
+            "splitTransportAndWaybillDocLabels" => false,
+            "allDocumentsInOneImage" => false,
+            "splitDocumentsByPages" => false,
+            "splitInvoiceAndReceipt" => true
+        ],
+        "customerReferences" => [
+            [
+                "value" => "Customer reference",
+                "typeCode" => "CU"
+            ]
+        ],
+        "requestOndemandDeliveryURL" => false,
+        "getOptionalInformation" => false
+    ];
+
+    $request = $client->post('https://express.api.dhl.com/mydhlapi/shipments', [
+        'headers' => $headers,
+        'body' => json_encode($body)
+    ]);
+
+    $response = $request->getBody()->getContents();
+    $response = json_decode($response);
+
+    $results = $response->documents;
+
+    commercialInvoiceForLabel($package->id);
+    $oMerger = PDFMerger::init();
+    $filename1 = $package->id;
+    $count = 1;
+    foreach ($results as $key => $result) {
+        $filename2 = $filename1 . '-' . $count . '.pdf';
+        Storage::disk('dhl-labels')->put($filename2, base64_decode($result->content));
+        $oMerger->addPDF('storage/dhl-labels/' . $filename2, 'all');
+        $count++;
+    }
+
+    $oMerger->addPDF('storage/commercial-invoices/' . $filename1 . '.pdf', 'all');
+    $oMerger->merge();
+    $label_url = 'storage/labels/' . $filename1 . '.pdf';
+    $oMerger->save($label_url);
+
+    $package->update([
+        'label_generated_at' => Carbon::now(),
+        'label_generated_by' => auth()->id(),
+        'label_url' => $label_url,
+    ]);
+
+    // DELETE ADDITIONAL FILES
+    $count = 1;
+    foreach ($package->boxes as $key => $box) {
+        Storage::disk('commercial-invoices')->delete($box->package_id . '.pdf');
+        Storage::disk('dhl-labels')->delete($box->package_id . '-' . $count . '.pdf');
+        Storage::disk('labels')->delete($box->package_id . '-' . $count . '.pdf');
+        $count++;
+    }
 }
