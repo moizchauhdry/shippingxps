@@ -555,7 +555,7 @@ function generateLabelDhl($id)
     }
 
     $body = [
-        "plannedShippingDateAndTime" => "2023-12-30T11:00:00GMT-08:00",
+        "plannedShippingDateAndTime" => Carbon::parse(Carbon::now())->format('Y-m-d\TH:i:s\TG:i:s'),
         "productCode" => "P",
         "customerDetails" => [
             "shipperDetails" => [
