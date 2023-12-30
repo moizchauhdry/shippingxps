@@ -1148,7 +1148,7 @@ class PackageController extends Controller
 
             return redirect()->back()->with('success', 'The label has been generated successfully.');
         } catch (\Throwable $th) {
-            throw $th;
+            // throw $th;
             return redirect()->back()->with('error', $th->getMessage());
         }
     }
