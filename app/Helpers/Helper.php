@@ -121,7 +121,7 @@ function generateLabelFedex($id)
                     "currency" => "USD"
                 ],
                 "customsValue" => [
-                    "amount" => $item->unit_price,
+                    "amount" => $item->unit_price * $item->quantity,
                     "currency" => "USD"
                 ],
                 "weight" => [
