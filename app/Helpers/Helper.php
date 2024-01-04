@@ -512,13 +512,13 @@ function generateLabelDhl($id)
 
     $line_items = [];
     // if ($service_type == 'international') {
-    $items = OrderItem::with('originCountry')->where('package_id', $package->id)->get();
+    $order_items = OrderItem::with('originCountry')->where('package_id', $package->id)->get();
     $count = 1;
-    foreach ($items as $key => $item) {
+    foreach ($order_items as $key => $oitem) {
         $line_items[] = [
-            "number" => 1,
-            "description" => $item->description,
-            "price" => $item->unit_price,
+            "number" => $count,
+            "description" => $oitem->description,
+            "price" => $oitem->unit_price,
             "priceCurrency" => "USD",
             "manufacturerCountry" => "US",
             "weight" => [
@@ -526,7 +526,7 @@ function generateLabelDhl($id)
                 "grossValue" => 1
             ],
             "quantity" => [
-                "value" => $item->quantity,
+                "value" => $oitem->quantity,
                 "unitOfMeasurement" => "EA"
             ],
             "commodityCodes" => [
@@ -553,6 +553,9 @@ function generateLabelDhl($id)
             ]
         ];
     }
+
+
+    // dd($package_boxes);
 
     $body = [
         "plannedShippingDateAndTime" => "2024-01-05T11:00:00GMT-08:00",
@@ -646,6 +649,9 @@ function generateLabelDhl($id)
         "requestOndemandDeliveryURL" => false,
         "getOptionalInformation" => false
     ];
+
+
+    // dd($body);
 
     $request = $client->post('https://express.api.dhl.com/mydhlapi/shipments', [
         'headers' => $headers,
