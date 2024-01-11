@@ -19,6 +19,7 @@ use App\Models\Warehouse;
 use App\Models\Package;
 use App\Notifications\OrderInvoiceNotification;
 use App\Notifications\ShopForMeNotification;
+use App\Notifications\Shopping\StatusNotification;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -93,7 +94,7 @@ class ShopController extends Controller
     public function create()
     {
         $additional_pickup_charges = SiteSetting::where('name', 'additional_pickup_charges')->first()->value;
-        $warehouses = Warehouse::where('id',2)->get();
+        $warehouses = Warehouse::where('id', 2)->get();
         $stores = Store::where('status', 1)->get();
         return Inertia::render('ShopForMe/CreateOrder', [
             'warehouses' => $warehouses,
@@ -564,11 +565,14 @@ class ShopController extends Controller
         ]);
 
         $url = URL::route('shop-for-me.edit', $shopForMe->id);
-        $auser = $user->type == 'admin' ? 'Admin' : $order_comment->user->name;
+
         $data = [
-            'url' => URL::route('additional-request.edit', $shopForMe->id),
-            'message' => $auser . ' has commented on an shopping list. <a style="font-weight:600" href="' . $url . '">Click Here</a>',
+            'url' => URL::route('shop-for-me.edit', $shopForMe->id),
+            'message' => '<a href="' . $url . '">' . $order_comment->user->name . ' has commented on an shopping list.</a>',
+            'message_email' => $order_comment->user->name . ' has commented on an shopping list.',
+            'comment' => '"' . $order_comment->message . '"',
         ];
+
         if ($user->type == 'admin') {
             $customer = User::find($shopForMe->customer_id);
             $customer->notify(new ShopForMeNotification($data));
@@ -593,12 +597,16 @@ class ShopController extends Controller
 
     public function changeStatus(Request $request)
     {
+        // dd($request->all());
         $id = $request->id;
         $status = $request->status;
 
         $order = Order::find($id);
         $order->status = $status;
         $order->save();
+
+        $customer = User::find($order->customer_id);
+        $customer->notify(new StatusNotification($request->status, $order));
 
         return redirect()->back();
     }

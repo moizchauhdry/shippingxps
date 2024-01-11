@@ -236,6 +236,9 @@
 							<div class="card">
 								<div class="card-header">
 									<b>{{ comment.user.name }}</b>
+									<span class="float-right">
+										{{ comment.created_at }}
+									</span>
 								</div>
 								<div class="card-body">
 									{{ comment.message }}

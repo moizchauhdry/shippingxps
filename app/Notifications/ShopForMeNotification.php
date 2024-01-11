@@ -29,7 +29,7 @@ class ShopForMeNotification extends Notification
      */
     public function via($notifiable)
     {
-        return ['database'];
+        return ['database', 'mail'];
     }
 
     /**
@@ -41,9 +41,11 @@ class ShopForMeNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->line('The introduction to the notification.')
-            ->action('Notification Action', url('/'))
-            ->line('Thank you for using our application!');
+            ->subject('Shopping Notification')
+            ->greeting('Dear Customer,')
+            ->line($this->data['message_email'])
+            ->line($this->data['comment'])
+            ->action('Click Here', url($this->data['url']));
     }
 
     /**
