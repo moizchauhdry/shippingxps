@@ -568,8 +568,8 @@ class ShopController extends Controller
 
         $data = [
             'url' => URL::route('shop-for-me.edit', $shopForMe->id),
-            'message' => '<a href="' . $url . '">' . $order_comment->user->name . ' has commented on an shopping list.</a>',
-            'message_email' => $order_comment->user->name . ' has commented on an shopping list.',
+            'message' => '<a href="' . $url . '">' . 'ShippingXPS has commented on an shopping list.</a>',
+            'message_email' => 'ShippingXPS has commented on an shopping list.',
             'comment' => '"' . $order_comment->message . '"',
         ];
 
@@ -597,7 +597,6 @@ class ShopController extends Controller
 
     public function changeStatus(Request $request)
     {
-        // dd($request->all());
         $id = $request->id;
         $status = $request->status;
 
