@@ -43,9 +43,7 @@ class AnnouncementNotification extends Notification
         return (new MailMessage)
             ->subject('Important Announcement!')
             ->greeting('Dear Customer,')
-            ->line('Send all your packages to Delaware location.')
-            ->line('Packages will be received in California until August 25, 2023. After this date, package reception in California will cease. Subsequently, 
-            the responsibility for arranging the transportation of packages to Delaware will fall upon the customer.');
+            ->line('We are off on November 22, 2023 (Wednesday) and November 23, 2023 (Thursday) because of Thanksgiving.');
     }
 
     /**

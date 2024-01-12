@@ -34,6 +34,9 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\File;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Storage;
+use Webklex\PDFMerger\Facades\PDFMergerFacade as PDFMerger;
+use PDF;
 
 class PackageController extends Controller
 {
@@ -535,6 +538,38 @@ class PackageController extends Controller
         $mpdf->AddPage();
         $mpdf->WriteHTML($html);
         $mpdf->Output();
+    }
+
+    public function commercialInvoiceForLabel($id)
+    {
+        $package = Package::with(['packageItems', 'warehouse.country'])
+            ->when(Auth::user()->type == 'customer', function ($qry) {
+                $qry->where('customer_id', Auth::user()->id);
+            })->findOrFail($id);
+
+        $warehouse = $package->warehouse;
+        $user = User::find($package->customer_id);
+        $address = Address::find($package->address_book_id);
+
+        $package_weight = 0;
+        if (isset($package->boxes)) {
+            $package_weight = $package->boxes->sum('weight');
+        }
+
+        view()->share([
+            'package' => $package,
+            'package_weight' => $package_weight,
+            'warehouse' => $warehouse,
+            'user' => $user,
+            'address' => $address
+        ]);
+
+        $pdf = PDF::loadView('pdfs.commercial-invoice');
+        $pdf->setPaper('A4', 'portrait');
+
+        $filename = Carbon::parse(Carbon::now())->format('dmyhis') . '-' . $package->id . '.pdf';
+        Storage::disk('commercial-invoices')->put($filename, $pdf->output());
+        return response()->download('storage/commercial-invoices/' . $filename);
     }
 
     public function serviceRequest(Request $request)

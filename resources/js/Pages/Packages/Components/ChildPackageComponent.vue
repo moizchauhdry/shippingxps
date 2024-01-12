@@ -63,8 +63,8 @@
 									<td>
 										<div v-for="image in child_pkg.images" :key="image.id">
 											<div class="m-1 p-1">
-												<img style="width: 100px; height: auto" class="img-thumbnail"
-													@click="viewImage($event)" :src="imgURL(image.image)" />
+												<img style="width: 50px; height: 50px" @click="viewImage($event)"
+													:src="imgURL(image.image)" />
 											</div>
 										</div>
 										<div class="text-xs text-danger" v-if="child_pkg.images.length == 0">
@@ -85,6 +85,15 @@
 					<template v-if="packag.status != 'open'">
 						<a class="btn btn-warning btn-sm m-1" :href="route('packages.pdf', packag.id)" target="_blank">
 							<i class="fa fa-print mr-1"></i>Print Commercial Invoice</a>
+					</template>
+
+					<template v-if="packag.payment_status == 'Paid' && $page.props.auth.user.type == 'admin'">
+						<a class="btn btn-info btn-sm m-1" @click="generateLabel">
+							<i class="fas fa-wrench mr-1"></i>Generate Label</a>
+
+						<a :href="labelURL(packag.label_url)" target="_blank" v-if="packag.label_generated_at"
+							class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Print
+							Label</a>
 					</template>
 
 					<template
@@ -115,7 +124,9 @@ export default {
 	},
 	data() {
 		return {
-			//
+			label_form: this.$inertia.form({
+				package_id: this.packag.id,
+			}),
 		};
 	},
 	methods: {
@@ -124,6 +135,9 @@ export default {
 		},
 		imgURL(url) {
 			return "/public/uploads/" + url;
+		},
+		labelURL(url) {
+			return "/" + url;
 		},
 		viewImage(event) {
 			console.log(event.target.src);
@@ -168,6 +182,18 @@ export default {
 				default:
 					return "text-uppercase badge badge-primary p-2 text-white";
 			}
+		},
+		generateLabel() {
+			this.label_form.post(this.route("packages.generate-label"))
+				.then(response => {
+					// 
+				})
+				.catch(error => {
+					alert('err');
+				})
+				.finally(() => {
+					//
+				});
 		},
 	},
 };

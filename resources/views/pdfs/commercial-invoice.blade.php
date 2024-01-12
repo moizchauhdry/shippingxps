@@ -8,8 +8,8 @@
     <title>Commercial Invoice - {{$package->id}} </title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;500;600;700&display=swap"
-        rel="stylesheet">
+    {{-- <link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;500;600;700&display=swap"
+        rel="stylesheet"> --}}
     <style>
         h5,
         table,
@@ -49,7 +49,7 @@
 </head>
 
 <body>
-    <table style="border:none;">
+    {{-- <table style="border:none;">
         <tr>
             <td style="width:50%" style="border:none;font-size:7px;text-align:left;">
                 <p>Commercial Invoice</p>
@@ -61,7 +61,7 @@
                 <p>{{ $warehouse->country->nicename }}</p>
             </td>
         </tr>
-    </table>
+    </table> --}}
     <h5 style="text-align:center;"> COMMERCIAL INVOICE </h5>
     <table style="margin-bottom: 30px;">
         <tr>
@@ -206,8 +206,8 @@
                 <strong>Signature</strong>:<br> <b>{{ $warehouse->contact_person }}</b>
             </td>
             <td colspan="7" style="height:80px;border-left:none;text-align: right">
-                <img style="height: 75px; width: auto;margin-right:10px"
-                    src="{{ asset('storage/'.$warehouse->signature) }}" alt="">
+                {{-- <img style="height: 75px; width: auto;margin-right:10px"
+                    src="{{ asset('storage/'.$warehouse->signature) }}" alt=""> --}}
             </td>
         </tr>
     </table>

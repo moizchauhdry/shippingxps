@@ -35,6 +35,9 @@
 								<a :href="'https://www.ups.com/track?loc=en_US&tracknum=' + box.tracking_out + '&requester=WT%2Ftrackdetails'"
 									target="_blank" v-if="pkg.carrier_code == 'ups'">
 									{{ box.tracking_out }}</a>
+								<a :href="'https://tools.usps.com/go/TrackConfirmAction?tRef=fullpage&tLc=2&text28777=&tLabels=' + box.tracking_out + '%2C&tABt=false'"
+									target="_blank" v-if="pkg.carrier_code == 'usps'">
+									{{ box.tracking_out }}</a>
 							</span>
 							<span v-else>-</span>
 						</div>

@@ -6,9 +6,9 @@
 				<div class="card-body">
 					<div class="container">
 						<!-- AUTHORIZE.NET PAYMENT -->
-						<!-- <form @submit.prevent="submit" enctype="multipart/form-data">
+						<form @submit.prevent="submit" enctype="multipart/form-data">
 							<div class="row">
-								<div class="col-md-6 offset-md-3">
+								<div class="col-md-8 offset-md-2">
 									<div class="bg-dark border-3 border-warning container mb-3 text-center text-white">
 										<h2 style="color: #fff; font-weight: bold; font-size: 25px">
 											Checkout
@@ -19,7 +19,7 @@
 										{{ response_message }}
 									</div>
 
-									<template v-if="payment_module != 'package' || payment_module != 'auction'">
+									<!-- <template v-if="payment_module != 'package' || payment_module != 'auction'">
 										<h3 v-show="form.shipping_address_id == null">
 											Select Shipping Address to proceed
 										</h3>
@@ -33,10 +33,9 @@
 											</template>
 										</select>
 										<hr class="mb-3 mt-3" />
-									</template>
+									</template> -->
 
-									<div class="row" v-show="payment_module == 'package' ||
-										form.shipping_address_id != null">
+									<div class="row">
 										<div class="col-12" v-if="status != undefined">
 											<p style="color: red">{{ status.message[0].text }}</p>
 										</div>
@@ -71,8 +70,8 @@
 											</div>
 											<div class="form-group col-4">
 												<breeze-label value="CVV *" />
-												<input v-model="form.cvv" class="form-control" type="number" :maxlength="3"
-													name="cvv" placeholder="123" required pattern="[0-9]*" />
+												<input v-model="form.cvv" class="form-control" type="text" placeholder="123"
+													required />
 											</div>
 										</div>
 
@@ -139,10 +138,13 @@
 										</table>
 										<div class="form-group col-12" style="font-size: 12px">
 											<input type="checkbox" id="terms" required />
-											<label for="terms">&nbsp;By clicking here, I state that I have read and
-												understood the&nbsp;</label>
+											<label for="terms">&nbsp; I confirm that I have read and understood the
+												&nbsp;</label>
 											<inertia-link :href="route('page-show', 'terms_and_conditions')"
-												class="link-hover-style-1">Terms and Conditions.</inertia-link>
+												class="link-hover-style-1">Terms and Conditions.</inertia-link> <br>
+											<input type="checkbox" id="signature" required />
+											<label for="terms">&nbsp; I possess an electronic signature confirming both the
+												initiation and authorization of the payment, which was made by me.</label>
 										</div>
 										<div class="form-group col-12">
 											<button type="submit" v-on:submit="submit()" class="btn btn-primary w-100">
@@ -154,22 +156,27 @@
 							</div>
 						</form>
 
-						<hr class="mb-3 mt-3" /> -->
+						<hr class="mb-3 mt-3" />
 
 						<!-- PAYPAL PAYMENT -->
 						<div class="row">
-							<div class="col-md-6 offset-md-3 text-center">
-								<!-- <h4 class="p-2"><strong>OR</strong></h4> -->
-								<h5>
-									<strong>Pay by PayPal with {{ paypal_processing_fee }}% processing
-										Fee.</strong>
-								</h5>
+							<div class="col-md-8 offset-md-2">
+								<div class="text-center">
+									<h4 class="p-2"><strong>OR</strong></h4>
+									<h5>
+										<strong>Pay by PayPal with {{ paypal_processing_fee }}% processing
+											Fee.</strong>
+									</h5>
+								</div>
 								<div class="form-group mt-2 mb-2" style="font-size: 12px">
-									<input type="checkbox" id="termsPayPal" required />
-									<label for="terms">&nbsp;By clicking here, I state that I have read and
-										understood the&nbsp;</label><inertia-link
-										:href="route('page-show', 'terms_and_conditions')" class="link-hover-style-1">Terms
-										and Conditions.</inertia-link>
+									<input type="checkbox" id="terms-paypal" required />
+									<label for="terms">&nbsp; I confirm that I have read and understood the
+										&nbsp;</label><inertia-link :href="route('page-show', 'terms_and_conditions')"
+										class="link-hover-style-1">Terms
+										and Conditions.</inertia-link> <br>
+									<input type="checkbox" id="signature-paypal" required />
+									<label for="terms">&nbsp; I possess an electronic signature confirming both the
+										initiation and authorization of the payment, which was made by me.</label>
 								</div>
 								<button class="btn btn-info w-100" v-on:click="submitPayPal()">
 									<span class="text-lg">Pay ${{ paypal_charged_amount }}</span>
@@ -319,30 +326,36 @@ export default {
 	},
 	methods: {
 		submit() {
-			if (
-				this.payment_module != "package" &&
-				this.form.shipping_address_id == null
-			) {
-				alert("PLEASE SELECT SHIPPING ADDRESS");
-			}
-			this.response_message = null;
-			this.overlay = true;
-			axios
-				.post(this.route("payment.pay"), this.form)
-				.then(
-					(response) => (
-						(this.response = response),
-						(this.response_message = response.data.message),
-						(this.overlay = false)
+			// if (
+			// 	this.payment_module != "package" &&
+			// 	this.form.shipping_address_id == null
+			// ) {
+			// 	alert("PLEASE SELECT SHIPPING ADDRESS");
+			// }
+
+			if (document.getElementById("terms").checked == true && document.getElementById("signature").checked == true) {
+				this.response_message = null;
+				this.overlay = true;
+				axios
+					.post(this.route("payment.pay"), this.form)
+					.then(
+						(response) => (
+							(this.response = response),
+							(this.response_message = response.data.message),
+							(this.overlay = false)
+						)
 					)
-				)
-				.finally(
-					() =>
-					(location.href = this.route(
-						"payments.PaymentSuccess",
-						this.response.data.payment_id
-					))
-				);
+					.finally(
+						() =>
+						(location.href = this.route(
+							"payments.PaymentSuccess",
+							this.response.data.payment_id
+						))
+					);
+			} else {
+				alert("Please mark both checkboxes to proceed.");
+			}
+
 		},
 		submitPayPal() {
 			// if (
@@ -352,13 +365,13 @@ export default {
 			// 	alert("PLEASE SELECT SHIPPING ADDRESS");
 			// }
 
-			if (document.getElementById("termsPayPal").checked != true) {
-				alert("PLEASE ACCEPT TERMS & CONDITION TO PROCEED PAYMENT.");
-			} else {
+			if (document.getElementById("terms-paypal").checked == true && document.getElementById("signature-paypal").checked == true) {
 				this.response_message = null;
 				this.overlay = true;
 				this.form.amount = this.paypal_charged_amount;
 				this.form.post(this.route("payment.payPalInit"));
+			} else {
+				alert("Please mark both checkboxes to proceed with PayPal.");
 			}
 		},
 		responseFromSubmit() {
