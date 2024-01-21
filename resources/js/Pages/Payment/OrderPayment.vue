@@ -146,10 +146,20 @@
 											<label for="terms">&nbsp; I possess an electronic signature confirming both the
 												initiation and authorization of the payment, which was made by me.</label>
 										</div>
+
+
 										<div class="form-group col-12">
 											<button type="submit" v-on:submit="submit()" class="btn btn-primary w-100">
 												<span class="text-lg">Pay ${{ amount }}</span>
 											</button>
+										</div>
+
+										<div class="container">
+											<span class="card p-4 mb-4"
+												style="color: red ; font-size: 15px; border: 3px solid red;">
+												<b style="font-size: 14px;">Note: PayPal is the only available option.
+													Please use PayPal for smooth and fast payments.</b>
+											</span>
 										</div>
 									</div>
 								</div>
