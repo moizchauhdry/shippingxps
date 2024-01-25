@@ -1,31 +1,21 @@
 <template>
 	<MainLayout>
 		<div class="card">
-			<div class="card-header">
-				Manage Payments
-				<div class="float-right">
-					<!-- <a
-						v-if="$page.props.auth.user.type == 'admin'"
-						:href="route('generateReportList')"
-						class="btn btn-primary"
-						target="_blank"
-						>Download Reports</a
-					> -->
-				</div>
-			</div>
+			<div class="card-header">Manage Payments</div>
 			<div class="card-body">
-				<div class="row">
-					<div class="col-md-3 form-group">
-						<label for="">Inoice No</label>
-						<input type="text" class="form-control" v-model="filter.search_invoice_no"
-							placeholder="Search by Invoice No" @keyup="getResults(route('payments.getPayments'))" />
-					</div>
-					<div class="col-md-3 form-group">
-						<label for="">Suit No</label>
-						<input type="text" class="form-control" v-model="filter.search_suit_no"
-							placeholder="Search by Suit No" @keyup="getResults(route('payments.getPayments'))" />
-					</div>
-					<div class="col-md-3 form-group">
+				<form @submit.prevent="submit">
+					<div class="row">
+						<div class="col-md-2 form-group">
+							<label for="">Invoice No</label>
+							<input type="text" class="form-control" v-model="form.search_invoice_no"
+								placeholder="Search by Invoice No" />
+						</div>
+						<div class="col-md-2 form-group">
+							<label for="">Suit No</label>
+							<input type="text" class="form-control" v-model="form.search_suit_no"
+								placeholder="Search by Suit No" />
+						</div>
+						<!-- <div class="col-md-3 form-group">
 						<label for="">Filter By</label>
 						<select class="form-control" @change="getResults(route('payments.getPayments'))"
 							v-model="filter.date_selection" id="">
@@ -36,18 +26,25 @@
 							<option value="4">Last 30 Days</option>
 							<option value="5">Custom Range</option>
 						</select>
+					</div> -->
+						<!-- <div class="col-md-3 form-group">
+							<label for="" v-show="filter.date_selection === '5'">Date Range</label>
+							<Datepicker v-show="filter.date_selection === '5'" v-model="date" range :format="format"
+								:enableTimePicker="false"></Datepicker>
+						</div> -->
 					</div>
-					<div class="col-md-3 form-group">
-						<label for="" v-show="filter.date_selection === '5'">Date Range</label>
-						<Datepicker v-show="filter.date_selection === '5'" v-model="date" range :format="format"
-							:enableTimePicker="false"></Datepicker>
+					<div class="row">
+						<div class="form-group col-md-12">
+							<button type="submit" class="btn btn-primary mr-1">Search</button>
+							<button type="button" class="btn btn-info" @click="clear()">Clear</button>
+						</div>
 					</div>
-				</div>
+				</form>
+
 				<div class="table-responsive">
-					<table class="table table-striped text-center">
+					<table class="table table-striped">
 						<thead>
 							<tr>
-								<th>Sr. #</th>
 								<th>Invoice ID</th>
 								<th>Customer</th>
 								<th>Payment Type</th>
@@ -60,7 +57,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr v-for="(item, index) in data.data" :key="item.id">
+							<!-- <tr v-for="(item, index) in data.data" :key="item.id">
 								<td>{{ ++index }}</td>
 								<td>{{ item.id }}</td>
 								<td>
@@ -99,25 +96,30 @@
 								<td colspan="15">
 									<div class="container text-center p-5">No Record Found</div>
 								</td>
+							</tr> -->
+
+							<tr v-for="(payment, index) in payments.data" :key="payment.id">
+								<td>{{ payment.p_id }}</td>
+								<td>{{ payment.u_name }}</td>
+								<td>-</td>
+								<td>{{ payment.t_id }}</td>
+								<td>{{ payment.p_method }}</td>
+								<td>-</td>
+								<td>{{ payment.charged_amount }}</td>
+								<td>{{ payment.charged_at }}</td>
+								<td>
+									<a :href="route('payment.invoice', payment.p_id)" class="btn btn-primary btn-sm m-1"
+										target="_blank">Print Invoice</a>
+									<a :href="route('generateReport', payment.p_id)" target="_blank"
+										class="btn btn-info btn-sm m-1">Print Report</a>
+								</td>
 							</tr>
 						</tbody>
 					</table>
 				</div>
-				<div id="parent">
-					<nav class="float-right">
-						<ul class="pagination">
-							<template v-for="link in data.links">
-								<li v-if="link.active" class="page-item active" aria-current="page">
-									<span class="page-link" v-html="link.label"></span>
-								</li>
-								<li v-else class="page-item">
-									<a href="javascript:void(0)" class="page-link" @click="getResults(link.url)"
-										v-html="link.label"></a>
-								</li>
-							</template>
-						</ul>
-					</nav>
-				</div>
+			</div>
+			<div class="card-footer">
+				<pagination :links="payments.links" class="float-right"></pagination>
 			</div>
 		</div>
 	</MainLayout>
@@ -130,19 +132,21 @@ import BreezeLabel from "@/Components/Label";
 import Paginate from "@/Components/Paginate";
 import Datepicker from "vue3-date-time-picker";
 import "vue3-date-time-picker/dist/main.css";
+import Pagination from "@/Components/Pagination.vue";
+import { Inertia } from "@inertiajs/inertia";
 
 export default {
 	data() {
 		return {
-			data: this.payments,
-			filter: this.$inertia.form({
-				search_invoice_no: "",
-				search_suit_no: "",
-				date_selection: "",
-				date_range: null,
-				per_page: null,
-			}),
-			date: null,
+			// data: this.payments,
+			form: {
+				search_invoice_no: this.filters.search_invoice_no,
+				search_suit_no: this.filters.search_suit_no,
+				// date_selection: "",
+				// date_range: null,
+				// per_page: null,
+			},
+			date: "",
 		};
 	},
 	components: {
@@ -151,61 +155,75 @@ export default {
 		BreezeLabel,
 		Paginate,
 		Datepicker,
+		Pagination
 	},
 	props: {
 		auth: Object,
 		payments: Object,
+		filters: Object,
 	},
 	mounted() { },
 	methods: {
-		getResults(url) {
-			if (url != null) {
-				axios.post(url, this.filter).then((response) => {
-					this.data = response.data.payments;
-				});
-			}
-		},
-		changeStatus(id, status, event) {
-			axios
-				.post(this.route("coupon.changeStatus"), {
-					id: id,
-					status: status,
-				})
-				.then(function (response) {
-					console.log(response.data.coupon.status);
-					let status = response.data.coupon.status;
-					if (status === 1) {
-						event.target.classList.remove("btn-success");
-						event.target.classList.add("btn-danger");
-					} else {
-						event.target.classList.add("btn-success");
-						event.target.classList.remove("btn-danger");
-					}
-				})
-				.catch(function (error) {
-					console.log(error);
-				});
-		},
-		getAddress(address) {
-			return (
-				address.address + ", " + address.city + ", " + address.country.name
-			);
-		},
-		format() {
-			var start = new Date(this.date[0]);
-			var end = new Date(this.date[1]);
-			console.log(this.date[0]);
-			console.log(this.date[1]);
-			var startDay = start.getDate();
-			var startMonth = start.getMonth() + 1;
-			var startYear = start.getFullYear();
-			var endDay = end.getDate();
-			var endMonth = end.getMonth() + 1;
-			var endYear = end.getFullYear();
+		// getResults(url) {
+		// 	if (url != null) {
+		// 		axios.post(url, this.filter).then((response) => {
+		// 			this.data = response.data.payments;
+		// 		});
+		// 	}
+		// },
+		// changeStatus(id, status, event) {
+		// 	axios
+		// 		.post(this.route("coupon.changeStatus"), {
+		// 			id: id,
+		// 			status: status,
+		// 		})
+		// 		.then(function (response) {
+		// 			console.log(response.data.coupon.status);
+		// 			let status = response.data.coupon.status;
+		// 			if (status === 1) {
+		// 				event.target.classList.remove("btn-success");
+		// 				event.target.classList.add("btn-danger");
+		// 			} else {
+		// 				event.target.classList.add("btn-success");
+		// 				event.target.classList.remove("btn-danger");
+		// 			}
+		// 		})
+		// 		.catch(function (error) {
+		// 			console.log(error);
+		// 		});
+		// },
+		// getAddress(address) {
+		// 	return (
+		// 		address.address + ", " + address.city + ", " + address.country.name
+		// 	);
+		// },
+		// format() {
+		// 	var start = new Date(this.date[0]);
+		// 	var end = new Date(this.date[1]);
+		// 	console.log(this.date[0]);
+		// 	console.log(this.date[1]);
+		// 	var startDay = start.getDate();
+		// 	var startMonth = start.getMonth() + 1;
+		// 	var startYear = start.getFullYear();
+		// 	var endDay = end.getDate();
+		// 	var endMonth = end.getMonth() + 1;
+		// 	var endYear = end.getFullYear();
 
-			this.filter.date_range = `${startYear}/${startMonth}/${startDay} - ${endYear}/${endMonth}/${endDay}`;
-			this.getResults(route("payments.getPayments"));
-			return `${startDay}/${startMonth}/${startYear} - ${endDay}/${endMonth}/${endYear}`;
+		// 	this.filter.date_range = `${startYear}/${startMonth}/${startDay} - ${endYear}/${endMonth}/${endDay}`;
+		// 	this.getResults(route("payments.getPayments"));
+		// 	return `${startDay}/${startMonth}/${startYear} - ${endDay}/${endMonth}/${endYear}`;
+		// },
+		submit() {
+			const queryParams = new URLSearchParams(this.form);
+			const url = `${route("payments.getPayments")}?${queryParams.toString()}`;
+			Inertia.visit(url, { preserveState: true });
+		},
+		// siuteNum(user_id) {
+		// 	return 4000 + user_id;
+		// },
+		clear() {
+			this.form = {};
+			this.submit();
 		},
 	},
 	created() {
