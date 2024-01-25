@@ -7,13 +7,19 @@
 					<div class="row">
 						<div class="col-md-2 form-group">
 							<label for="">Invoice No</label>
-							<input type="text" class="form-control" v-model="form.search_invoice_no"
-								placeholder="Search by Invoice No" />
+							<input type="text" class="form-control" v-model="form.search_invoice_no" />
 						</div>
 						<div class="col-md-2 form-group">
 							<label for="">Suit No</label>
-							<input type="text" class="form-control" v-model="form.search_suit_no"
-								placeholder="Search by Suit No" />
+							<input type="text" class="form-control" v-model="form.search_suit_no" />
+						</div>
+						<div class="col-md-2 form-group">
+							<label for="">Tracking No</label>
+							<input type="text" class="form-control" v-model="form.search_tracking_no" />
+						</div>
+						<div class="form-group">
+							<label for="">Date Range</label>
+							<Datepicker v-model="date" range :format="format" :enableTimePicker="false"></Datepicker>
 						</div>
 						<!-- <div class="col-md-3 form-group">
 						<label for="">Filter By</label>
@@ -42,16 +48,16 @@
 				</form>
 
 				<div class="table-responsive">
-					<table class="table table-striped">
+					<table class="table table-striped table-bordered">
 						<thead>
 							<tr>
-								<th>Invoice ID</th>
+								<th>Payment ID</th>
 								<th>Customer</th>
-								<th>Payment Type</th>
+								<th>Type</th>
 								<th>Transaction ID</th>
-								<th>Payment Method</th>
-								<th>Shipping Service</th>
-								<th>Charged Amount (USD)</th>
+								<th>Method</th>
+								<th>Service</th>
+								<th>Amount (USD)</th>
 								<th>Charged Date</th>
 								<th>Action</th>
 							</tr>
@@ -100,11 +106,11 @@
 
 							<tr v-for="(payment, index) in payments.data" :key="payment.id">
 								<td>{{ payment.p_id }}</td>
-								<td>{{ payment.u_name }}</td>
-								<td>-</td>
+								<td>{{ payment.u_name }} - {{ siuteNum(payment.u_id) }}</td>
+								<td>{{ payment.p_type }}</td>
 								<td>{{ payment.t_id }}</td>
 								<td>{{ payment.p_method }}</td>
-								<td>-</td>
+								<td>{{ payment.pkg_service_label }}</td>
 								<td>{{ payment.charged_amount }}</td>
 								<td>{{ payment.charged_at }}</td>
 								<td>
@@ -138,13 +144,11 @@ import { Inertia } from "@inertiajs/inertia";
 export default {
 	data() {
 		return {
-			// data: this.payments,
 			form: {
 				search_invoice_no: this.filters.search_invoice_no,
 				search_suit_no: this.filters.search_suit_no,
-				// date_selection: "",
-				// date_range: null,
-				// per_page: null,
+				search_tracking_no: this.filters.search_tracking_no,
+				date_range: this.filters.date_range,
 			},
 			date: "",
 		};
@@ -164,65 +168,30 @@ export default {
 	},
 	mounted() { },
 	methods: {
-		// getResults(url) {
-		// 	if (url != null) {
-		// 		axios.post(url, this.filter).then((response) => {
-		// 			this.data = response.data.payments;
-		// 		});
-		// 	}
-		// },
-		// changeStatus(id, status, event) {
-		// 	axios
-		// 		.post(this.route("coupon.changeStatus"), {
-		// 			id: id,
-		// 			status: status,
-		// 		})
-		// 		.then(function (response) {
-		// 			console.log(response.data.coupon.status);
-		// 			let status = response.data.coupon.status;
-		// 			if (status === 1) {
-		// 				event.target.classList.remove("btn-success");
-		// 				event.target.classList.add("btn-danger");
-		// 			} else {
-		// 				event.target.classList.add("btn-success");
-		// 				event.target.classList.remove("btn-danger");
-		// 			}
-		// 		})
-		// 		.catch(function (error) {
-		// 			console.log(error);
-		// 		});
-		// },
-		// getAddress(address) {
-		// 	return (
-		// 		address.address + ", " + address.city + ", " + address.country.name
-		// 	);
-		// },
-		// format() {
-		// 	var start = new Date(this.date[0]);
-		// 	var end = new Date(this.date[1]);
-		// 	console.log(this.date[0]);
-		// 	console.log(this.date[1]);
-		// 	var startDay = start.getDate();
-		// 	var startMonth = start.getMonth() + 1;
-		// 	var startYear = start.getFullYear();
-		// 	var endDay = end.getDate();
-		// 	var endMonth = end.getMonth() + 1;
-		// 	var endYear = end.getFullYear();
+		format() {
+			var start = new Date(this.date[0]);
+			var end = new Date(this.date[1]);
+			var startDay = start.getDate();
+			var startMonth = start.getMonth() + 1;
+			var startYear = start.getFullYear();
+			var endDay = end.getDate();
+			var endMonth = end.getMonth() + 1;
+			var endYear = end.getFullYear();
 
-		// 	this.filter.date_range = `${startYear}/${startMonth}/${startDay} - ${endYear}/${endMonth}/${endDay}`;
-		// 	this.getResults(route("payments.getPayments"));
-		// 	return `${startDay}/${startMonth}/${startYear} - ${endDay}/${endMonth}/${endYear}`;
-		// },
+			this.form.date_range = `${startYear}/${startMonth}/${startDay} - ${endYear}/${endMonth}/${endDay}`;
+			return `${startDay}/${startMonth}/${startYear} - ${endDay}/${endMonth}/${endYear}`;
+		},
 		submit() {
 			const queryParams = new URLSearchParams(this.form);
 			const url = `${route("payments.getPayments")}?${queryParams.toString()}`;
 			Inertia.visit(url, { preserveState: true });
 		},
-		// siuteNum(user_id) {
-		// 	return 4000 + user_id;
-		// },
+		siuteNum(user_id) {
+			return 4000 + user_id;
+		},
 		clear() {
 			this.form = {};
+			this.date = "";
 			this.submit();
 		},
 	},

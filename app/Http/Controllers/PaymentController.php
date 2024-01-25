@@ -19,6 +19,7 @@ use App\Models\Warehouse;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use PDF;
 use net\authorize\api\contract\v1 as AnetAPI;
@@ -731,119 +732,60 @@ class PaymentController extends Controller
         return redirect()->back();
     }
 
-    // public function searchPayments(Request $request, $payments)
-    // {
-    //     $search_invoice_no = $request->search_invoice_no;
-    //     $search_suit_no = $request->search_suit_no;
-
-    //     $payments->when($search_invoice_no && !empty($search_invoice_no), function ($qry) use ($search_invoice_no) {
-    //         $qry->where('id', $search_invoice_no);
-    //     });
-
-    //     $payments->when($search_suit_no && !empty($search_suit_no), function ($qry) use ($search_suit_no) {
-    //         $suit_no = (int) $search_suit_no;
-    //         $suit_no = $suit_no - 4000;
-    //         $qry->whereHas('customer', function ($q) use ($suit_no) {
-    //             $q->where('id', $suit_no);
-    //         });
-    //     });
-
-    //     if ($request->has('date_selection') && $request->get('date_selection') != NULL) {
-    //         if ($request->get('date_selection') == '1') {
-    //             $payments->whereDate('created_at', Carbon::today());
-    //         }
-    //         if ($request->get('date_selection') == '2') {
-    //             $payments->whereDate('created_at', Carbon::yesterday());
-    //         }
-    //         if ($request->get('date_selection') == '3') {
-    //             $date = Carbon::now()->subDays(7);
-    //             $payments->where('created_at', '>=', $date);
-    //         }
-    //         if ($request->get('date_selection') == '4') {
-    //             $date = Carbon::now()->subDays(30);
-    //             $payments->where('created_at', '>=', $date);
-    //         }
-    //         if ($request->date_selection == 5) {
-    //             if ($request->get('date_range')) {
-    //                 $dateRange = explode(' - ', $request->date_range);
-    //                 $from = date("Y-m-d", strtotime($dateRange[0]));
-    //                 $to = date("Y-m-d", strtotime($dateRange[1]));
-    //                 $payments->whereBetween('created_at', [$from, $to]);
-    //             }
-    //         }
-    //     }
-
-    //     return $payments;
-    // }
-
-    // public function getPayments(Request $request)
-    // {
-    //     $user = Auth::user();
-
-    //     $payments = Payment::with(['customer', 'package' => function ($query) {
-    //         $query->with('address', function ($qry) {
-    //             $qry->with('country');
-    //         });
-    //     }, 'order'])
-    //         ->when($user->type == 'customer', function ($qry) use ($user) {
-    //             $qry->where('customer_id', $user->id);
-    //         })
-    //         ->orderBy('id', 'desc');
-
-
-    //     if ($request->isMethod('post')) {
-
-    //         $payments = $this->searchPayments($request, $payments);
-
-    //         $perPage = 10;
-
-    //         if ($request->has('per_page') && $request->get('per_page') != NULL) {
-    //             $perPage = $request->get('per_page');
-    //         }
-
-    //         return response([
-    //             'payments' => $payments->paginate($perPage),
-    //         ]);
-    //     }
-
-
-    //     return Inertia::render('Payment/Index', ['payments' => $payments->paginate(10)]);
-    // }
-
     public function getPayments(Request $request)
     {
-        // dd($request->all());
-
         $user = Auth::user();
         $search_invoice_no = $request->search_invoice_no;
         $search_suit_no = $request->search_suit_no;
+        $search_tracking_no = $request->search_tracking_no;
 
         $query = Payment::query();
 
         $query->select(
+            'u.id as u_id',
             'u.name as u_name',
             'payments.id as p_id',
             'payments.transaction_id as t_id',
             'payments.payment_type as p_method',
             'payments.charged_amount as charged_amount',
             'payments.charged_at as charged_at',
+            'pkg.id as pkg_id',
+            'pkg.service_label as pkg_service_label',
+            DB::raw('CASE 
+                WHEN payments.package_id IS NOT NULL THEN "package"
+                WHEN payments.order_id IS NOT NULL THEN "order"
+                WHEN payments.gift_card_id IS NOT NULL THEN "gift"
+                ELSE "unknown"
+            END AS p_type')
         );
 
-        $query->leftJoin('users as u', 'u.id', 'payments.customer_id');
+        $query->join('users as u', 'u.id', 'payments.customer_id');
+        $query->leftJoin('packages as pkg', 'pkg.id', 'payments.package_id');
 
         $query->when($user->type === 'customer', function ($qry) use ($user) {
             $qry->where('payments.customer_id', $user->id);
         });
 
         $query->when($search_invoice_no && !empty($search_invoice_no), function ($qry) use ($search_invoice_no) {
-            // dd($search_invoice_no);
             $qry->where('payments.id', $search_invoice_no);
+        });
+
+        $query->when($search_tracking_no && !empty($search_tracking_no), function ($qry) use ($search_tracking_no) {
+            $qry->join('package_boxes as pb', 'pb.package_id', 'payments.package_id');
+            $qry->where('pb.tracking_out', $search_tracking_no);
         });
 
         $query->when($search_suit_no && !empty($search_suit_no), function ($qry) use ($search_suit_no) {
             $suit_no = (int) $search_suit_no;
             $suit_no = $suit_no - 4000;
             $qry->where('u.id', $suit_no);
+        });
+
+        $query->when($request->date_range && !empty($request->date_range), function ($qry) use ($request) {
+            $range = explode(' - ', $request->date_range);
+            $from = date("Y-m-d", strtotime($range[0]));
+            $to = date("Y-m-d", strtotime($range[1]));
+            $qry->whereDate('charged_at', '>=', $from)->whereDate('charged_at', '<=', $to);
         });
 
         $payments = $query->orderBy('payments.id', 'desc')->paginate(10)->withQueryString();
@@ -853,6 +795,8 @@ class PaymentController extends Controller
             'filters' => [
                 'search_invoice_no' => $search_invoice_no ?? "",
                 'search_suit_no' => $search_suit_no ?? "",
+                'search_tracking_no' => $request->search_tracking_no ?? "",
+                'date_range' => $request->date_range ?? "",
             ]
         ]);
     }
