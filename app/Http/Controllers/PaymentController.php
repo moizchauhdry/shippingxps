@@ -756,7 +756,13 @@ class PaymentController extends Controller
                 WHEN payments.order_id IS NOT NULL THEN "order"
                 WHEN payments.gift_card_id IS NOT NULL THEN "gift"
                 ELSE "unknown"
-            END AS p_type')
+            END AS p_type'),
+            DB::raw('CASE 
+                WHEN payments.package_id IS NOT NULL THEN payments.package_id
+                WHEN payments.order_id IS NOT NULL THEN payments.order_id
+                WHEN payments.gift_card_id IS NOT NULL THEN payments.gift_card_id
+                ELSE "unknown"
+            END AS p_type_id')
         );
 
         $query->join('users as u', 'u.id', 'payments.customer_id');
