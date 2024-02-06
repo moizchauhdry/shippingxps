@@ -418,10 +418,16 @@ export default {
 
 			sum = sum + shipping_charges;
 
-			var servivceCharges = sum * 0.05;
+			// var servivceCharges = sum * 0.05;
+			// if (servivceCharges <= 5 && sum > 0) {
+			// 	this.form.service_charges = parseFloat(5).toFixed(2);
+			// } else {
+			// 	this.form.service_charges = parseFloat(servivceCharges).toFixed(2);
+			// }
 
-			if (servivceCharges <= 5 && sum > 0) {
-				this.form.service_charges = parseFloat(5).toFixed(2);
+			var servivceCharges = sum * 0.07;
+			if (servivceCharges <= 7 && sum > 0) {
+				this.form.service_charges = parseFloat(7).toFixed(2);
 			} else {
 				this.form.service_charges = parseFloat(servivceCharges).toFixed(2);
 			}
