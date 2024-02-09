@@ -96,6 +96,9 @@ class PackageController extends Controller
             ->when($request->pkg_type && !empty($request->pkg_type), function ($qry) use ($request) {
                 $qry->where('pkg_type', $request->pkg_type);
             })
+            ->when($request->pkg_carrier && !empty($request->pkg_carrier), function ($qry) use ($request) {
+                $qry->where('carrier_code', $request->pkg_carrier);
+            })
             ->when($request->pkg_status && !empty($request->pkg_status) && $request->pkg_status != 'mailout', function ($qry) use ($request) {
                 $qry->where('status', $request->pkg_status);
             })
@@ -129,6 +132,7 @@ class PackageController extends Controller
                 'suit_no' => $request->suit_no ?? "",
                 'pkg_status' => $request->pkg_status ?? "",
                 'pkg_type' => $request->pkg_type ?? "",
+                'pkg_carrier' => $request->pkg_carrier ?? "",
                 'payment_status' => $request->payment_status ?? "",
                 'auctioned' => $request->auctioned ?? "",
                 'date_range' => $request->date_range ?? "",

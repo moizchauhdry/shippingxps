@@ -544,7 +544,7 @@ function generateLabelDhl($id)
     $package_boxes = [];
     foreach ($package->boxes as $key => $box) {
         $package_boxes[] =    [
-            "description" => 'shippingxps',
+            "description" => 'Items',
             "weight" => $box->weight,
             "dimensions" => [
                 "length" => $box->length,
@@ -554,11 +554,32 @@ function generateLabelDhl($id)
         ];
     }
 
+    $shipment_date = Carbon::now();
+    $shipment_date = $shipment_date->addDays(1);
+    $shipment_date = $shipment_date->format('Y-m-d');
 
-    // dd($package_boxes);
+    $receiver_postal_address = [
+        "postalCode" => $ship_to->zip_code,
+        "cityName" => $ship_to->city,
+        "countryCode" => $ship_to->country->iso,
+        "addressLine1" =>  $ship_to->address,
+    ];
+
+
+    if ($ship_to->address_2) {
+        $receiver_postal_address += [
+            "addressLine2" => $ship_to->address_2,
+        ];
+    }
+
+    if ($ship_to->address_3) {
+        $receiver_postal_address += [
+            "addressLine3" => $ship_to->address_3,
+        ];
+    }
 
     $body = [
-        "plannedShippingDateAndTime" => "2024-01-05T11:00:00GMT-08:00",
+        "plannedShippingDateAndTime" => $shipment_date . "T11:00:00GMT-08:00",
         "productCode" => "P",
         "customerDetails" => [
             "shipperDetails" => [
@@ -577,24 +598,18 @@ function generateLabelDhl($id)
                 ]
             ],
             "receiverDetails" => [
-                "postalAddress" => [
-                    "postalCode" => $ship_to->zip_code,
-                    "cityName" => $ship_to->city,
-                    "countryCode" => $ship_to->country->iso,
-                    "addressLine1" =>  $ship_to->address,
-                    "addressLine2" =>  $ship_to->address_2,
-                ],
+                "postalAddress" => $receiver_postal_address,
                 "contactInformation" => [
                     "email" => $ship_to->email,
                     "phone" =>  $ship_to->phone,
-                    "companyName" => $ship_to->fullname,
+                    "companyName" => "-",
                     "fullName" =>  $ship_to->fullname,
                 ]
             ]
         ],
         "content" => [
             "isCustomsDeclarable" => true,
-            "description" => "Apple Iphone 15 & 15 Pro Max",
+            "description" => "Items",
             "declaredValue" => 14,
             "declaredValueCurrency" => "USD",
             "incoterm" => "DAP",
@@ -618,11 +633,11 @@ function generateLabelDhl($id)
                 "number" => "849192247"
             ]
         ],
-        "valueAddedServices" => [
-            [
-                "serviceCode" => "WY"
-            ]
-        ],
+        // "valueAddedServices" => [
+        //     [
+        //         "serviceCode" => "WY"
+        //     ]
+        // ],
         "outputImageProperties" => [
             "printerDPI" => 300,
             "encodingFormat" => "pdf",
@@ -640,18 +655,15 @@ function generateLabelDhl($id)
             "splitDocumentsByPages" => false,
             "splitInvoiceAndReceipt" => true
         ],
-        "customerReferences" => [
-            [
-                "value" => "Customer reference",
-                "typeCode" => "CU"
-            ]
-        ],
+        // "customerReferences" => [
+        //     [
+        //         "value" => "Customer reference",
+        //         "typeCode" => "CU"
+        //     ]
+        // ],
         "requestOndemandDeliveryURL" => false,
         "getOptionalInformation" => false
     ];
-
-
-    // dd($body);
 
     $request = $client->post('https://express.api.dhl.com/mydhlapi/shipments', [
         'headers' => $headers,
