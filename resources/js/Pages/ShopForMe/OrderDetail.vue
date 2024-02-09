@@ -150,7 +150,7 @@
 								>
 									<th style="text-align: end">
 										Service Charges <br />
-										<small>minimum $5 or 5% of subtotal</small>
+										<small>minimum $7 or 7% of subtotal</small>
 									</th>
 									<td>${{ order.service_charges }}</td>
 								</tr>
