@@ -200,7 +200,7 @@
 										<td>
 											${{ packag.shipping_charges ?? 0 }}
 											<button class="btn btn-link"
-												v-if="$page.props.auth.user.type == 'admin' && packag.payment_status != 'Paid'"
+												v-if="$page.props.auth.user.type == 'admin' && packag.payment_status != 'Paid' && !package_expired"
 												@click="editCharges(packag.shipping_charges, 'shipping_charges')">
 												<i class="fa fa-edit"></i>
 											</button>
@@ -216,7 +216,7 @@
 										</td>
 										<td></td>
 									</tr>
-									<tr>
+									<tr v-if="!package_expired">
 										<!-- <template v-if="$page.props.auth.user.type == 'customer'">
 											<td v-if="(packag.carrier_code != null || packag.return_label == 1) && packag.payment_status != 'Paid'"
 												colspan="4">
@@ -237,7 +237,8 @@
 												<button type="button" @click="checkout()"
 													class="btn btn-primary">Checkout</button>
 
-												<span v-for="cm in checkout_message" :key="cm.id" class="badge badge-danger">
+												<span v-for="cm in checkout_message" :key="cm.id"
+													class="badge badge-danger">
 													{{ cm }}
 												</span>
 											</td>
@@ -334,6 +335,7 @@ export default {
 		mailout_fee: Number,
 		eei_charges: Number,
 		label_charges: Number,
+		package_expired: Boolean,
 	},
 	data() {
 		return {

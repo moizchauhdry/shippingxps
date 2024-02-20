@@ -155,8 +155,10 @@ class PackageController extends Controller
             })
             ->findOrFail($id);
 
+        $package_expired = false;
         if ($packag->storage_days > 80) {
-            abort(403, 'The package has exceeded 80 days, so it has been terminated and has become the property of ShippingXPS.');
+            // abort(403, 'The package has exceeded 80 days, so it has been terminated and has become the property of ShippingXPS.');
+            $package_expired = true;
         }
 
         $child_package_orders = [];
@@ -304,6 +306,7 @@ class PackageController extends Controller
             'mailout_fee' => (float) SiteSetting::getByName('mailout_fee'),
             'eei_charges' => $eei_charges,
             'label_charges' => (float) $label_charges,
+            'package_expired' => $package_expired,
         ]);
     }
 

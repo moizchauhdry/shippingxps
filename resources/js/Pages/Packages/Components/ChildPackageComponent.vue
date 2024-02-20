@@ -71,7 +71,7 @@
 											Not uploaded yet.
 										</div>
 									</td>
-									<td>
+									<td v-if="!package_expired">
 										<inertia-link v-if="$page.props.auth.user.type == 'admin' &&
 											child_pkg.status == 'open'
 											" :href="route('order.edit', child_pkg.order_id)" class="btn btn-primary btn-sm m-1"><i
@@ -87,7 +87,7 @@
 							<i class="fa fa-print mr-1"></i>Print Commercial Invoice</a>
 					</template>
 
-					<template v-if="packag.payment_status == 'Paid' && $page.props.auth.user.type == 'admin'">
+					<template v-if="packag.payment_status == 'Paid' && $page.props.auth.user.type == 'admin' && !package_expired">
 						<a class="btn btn-info btn-sm m-1" @click="generateLabel">
 							<i class="fas fa-wrench mr-1"></i>Generate Label</a>
 
@@ -99,7 +99,7 @@
 					<template
 						v-if="packag.payment_status == 'Pending' && packag.address_book_id != 0 && packag.address_type == 'international'">
 
-						<inertia-link class="btn btn-primary btn-sm m-1" v-if="packag.custom_form_status == 1"
+						<inertia-link class="btn btn-primary btn-sm m-1" v-if="packag.custom_form_status == 1 && !package_expired"
 							:href="route('packages.custom', { id: packag.id, mode: 'edit' })">
 							<i class="fa fa-edit mr-1"></i>Custom Form
 						</inertia-link>
@@ -121,6 +121,7 @@ export default {
 	props: {
 		packag: Object,
 		child_package_orders: Object,
+		package_expired: Boolean,
 	},
 	data() {
 		return {

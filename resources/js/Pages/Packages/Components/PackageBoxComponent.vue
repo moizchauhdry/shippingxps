@@ -39,7 +39,7 @@
 								</div>
 
 								<template
-									v-if="packag.payment_status == 'Paid' && $page.props.auth.user.type == 'admin' && index == 0">
+									v-if="packag.payment_status == 'Paid' && $page.props.auth.user.type == 'admin' && index == 0 && !package_expired">
 									<hr class="m-4" />
 									<div class="form-group">
 										<input class="form-control" type="text" placeholder="Tracking out"
@@ -62,6 +62,7 @@ export default {
 	name: "Package Box Component",
 	props: {
 		packag: Object,
+		package_expired: Boolean,
 	},
 	data() {
 		return {
