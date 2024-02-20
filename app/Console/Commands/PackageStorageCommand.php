@@ -4,9 +4,11 @@ namespace App\Console\Commands;
 
 use App\Models\Package;
 use App\Models\User;
+use App\Notifications\PackageAuctionNotification;
 use App\Notifications\PackageDestroyNotification;
 use App\Notifications\PackageStorageNotification;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Notification;
 
 class PackageStorageCommand extends Command
 {
@@ -58,8 +60,11 @@ class PackageStorageCommand extends Command
             $notification = new PackageDestroyNotification($package);
             $user->notify($notification);
             $package->update(['auctioned' => 1]);
+
+            $users = User::where(['type' => 'admin'])->get();
+            Notification::send($users, new PackageAuctionNotification($package));
         }
 
-        dd('Success.');
+        dd('success.');
     }
 }
