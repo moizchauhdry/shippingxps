@@ -53,6 +53,7 @@ class PackageStorageCommand extends Command
             $user = User::where('email', $package->customer->email)->first();
             $notification = new PackageStorageNotification($package);
             $user->notify($notification);
+            dump('package-storage-email-' . $package->id);
         }
 
         foreach ($packages->where('storage_days', '>', 80)->where('auctioned', 0) as $key => $package) {
@@ -61,8 +62,12 @@ class PackageStorageCommand extends Command
             $user->notify($notification);
             $package->update(['auctioned' => 1]);
 
+            dump('package-destroy-email-' . $package->id);
+
             $users = User::where(['type' => 'admin'])->get();
             Notification::send($users, new PackageAuctionNotification($package));
+
+            dump('package-auction-email-' . $package->id);
         }
 
         dd('success.');
