@@ -33,8 +33,8 @@
 									<input type="number" name="number" v-model="form.suit_no" class="form-control" />
 								</div>
 								<div class="form-group">
-									<label for="">Tracking Number</label>
-									<input type="text" v-model="form.tracking_no" class="form-control" />
+									<label for="">Tracking Out</label>
+									<input type="text" v-model="form.tracking_out" class="form-control" />
 								</div>
 								<div class="form-group">
 									<label for="">Package Status</label>
@@ -43,7 +43,7 @@
 										<option value="open">Open</option>
 										<option value="filled">Filled</option>
 										<option value="checkout">Checkout</option>
-										<!-- <option value="shipped">Shipped</option> -->
+										<option value="shipped">Shipped</option>
 										<option value="rejected">Rejected</option>
 									</select>
 								</div>
@@ -145,7 +145,7 @@ export default {
 				pkg_carrier: this.filters.pkg_carrier,
 				payment_status: this.filters.payment_status,
 				auctioned: this.filters.auctioned,
-				tracking_no: this.filters.tracking_no,
+				tracking_out: this.filters.tracking_out,
 				date_range: this.filters.date_range,
 			},
 		};
@@ -167,6 +167,7 @@ export default {
 			this.form.pkg_carrier = "";
 			this.form.payment_status = "";
 			this.form.date_range = "";
+			this.form.tracking_out = "";
 			this.date = "";
 			this.submit();
 		},

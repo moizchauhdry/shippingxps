@@ -737,7 +737,7 @@ class PaymentController extends Controller
         $user = Auth::user();
         $search_invoice_no = $request->search_invoice_no;
         $search_suit_no = $request->search_suit_no;
-        $search_tracking_no = $request->search_tracking_no;
+        $search_tracking_out = $request->search_tracking_out;
 
         $query = Payment::query();
 
@@ -751,6 +751,7 @@ class PaymentController extends Controller
             'payments.charged_at as charged_at',
             'pkg.id as pkg_id',
             'pkg.service_label as pkg_service_label',
+            'pkg.tracking_number_out as pkg_tracking_out',
             DB::raw('CASE 
                 WHEN payments.package_id IS NOT NULL THEN "package"
                 WHEN payments.order_id IS NOT NULL THEN "order"
@@ -776,9 +777,8 @@ class PaymentController extends Controller
             $qry->where('payments.id', $search_invoice_no);
         });
 
-        $query->when($search_tracking_no && !empty($search_tracking_no), function ($qry) use ($search_tracking_no) {
-            $qry->join('package_boxes as pb', 'pb.package_id', 'payments.package_id');
-            $qry->where('pb.tracking_out', $search_tracking_no);
+        $query->when($search_tracking_out && !empty($search_tracking_out), function ($qry) use ($search_tracking_out) {
+            $qry->where('pkg.tracking_number_out', $search_tracking_out);
         });
 
         $query->when($search_suit_no && !empty($search_suit_no), function ($qry) use ($search_suit_no) {

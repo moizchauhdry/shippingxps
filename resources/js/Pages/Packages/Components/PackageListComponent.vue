@@ -24,20 +24,21 @@
 						</template>
 					</td>
 					<td>
-						<div v-for="box in pkg.boxes" :key="box.id">
-							<span v-if="box.tracking_out && pkg.carrier_code" class="font-bold text-primary underline">
-								<a :href="'https://www.fedex.com/apps/fedextrack/?action=track&amp;trackingnumber=' + box.tracking_out"
+						<div>
+							<span v-if="pkg.tracking_number_out && pkg.carrier_code"
+								class="font-bold text-primary underline">
+								<a :href="'https://www.fedex.com/apps/fedextrack/?action=track&amp;trackingnumber=' + pkg.tracking_number_out"
 									target="_blank" v-if="pkg.carrier_code == 'fedex'">
-									{{ box.tracking_out }}</a>
-								<a :href="'http://www.dhl.com/en/express/tracking.html?brand=DHL&amp;AWB=' + box.tracking_out"
+									{{ pkg.tracking_number_out }}</a>
+								<a :href="'http://www.dhl.com/en/express/tracking.html?brand=DHL&amp;AWB=' + pkg.tracking_number_out"
 									target="_blank" v-if="pkg.carrier_code == 'dhl'">
-									{{ box.tracking_out }}</a>
-								<a :href="'https://www.ups.com/track?loc=en_US&tracknum=' + box.tracking_out + '&requester=WT%2Ftrackdetails'"
+									{{ pkg.tracking_number_out }}</a>
+								<a :href="'https://www.ups.com/track?loc=en_US&tracknum=' + pkg.tracking_number_out + '&requester=WT%2Ftrackdetails'"
 									target="_blank" v-if="pkg.carrier_code == 'ups'">
-									{{ box.tracking_out }}</a>
-								<a :href="'https://tools.usps.com/go/TrackConfirmAction?tRef=fullpage&tLc=2&text28777=&tLabels=' + box.tracking_out + '%2C&tABt=false'"
+									{{ pkg.tracking_number_out }}</a>
+								<a :href="'https://tools.usps.com/go/TrackConfirmAction?tRef=fullpage&tLc=2&text28777=&tLabels=' + pkg.tracking_number_out + '%2C&tABt=false'"
 									target="_blank" v-if="pkg.carrier_code == 'usps'">
-									{{ box.tracking_out }}</a>
+									{{ pkg.tracking_number_out }}</a>
 							</span>
 							<span v-else>-</span>
 						</div>

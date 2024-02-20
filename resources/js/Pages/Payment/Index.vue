@@ -14,8 +14,8 @@
 							<input type="text" class="form-control" v-model="form.search_suit_no" />
 						</div>
 						<div class="form-group">
-							<label for="">Tracking No</label>
-							<input type="text" class="form-control" v-model="form.search_tracking_no" />
+							<label for="">Tracking Out</label>
+							<input type="text" class="form-control" v-model="form.search_tracking_out" />
 						</div>
 						<div class="form-group">
 							<label for="">Date Range</label>
@@ -38,9 +38,7 @@
 								<th>Customer</th>
 								<th>Payment Type</th>
 								<th>Transaction ID</th>
-								<th>Method</th>
-								<th>Shipping Service</th>
-								<th>Amount (USD)</th>
+								<th>Amount</th>
 								<th>Charged Date</th>
 								<th>Action</th>
 							</tr>
@@ -50,10 +48,18 @@
 								<td>{{ payment.p_id }}</td>
 								<td>{{ payment.u_name }} - {{ siuteNum(payment.u_id) }}</td>
 								<td>
-									<inertia-link v-if="payment.p_type === 'package'"
-										:href="route('packages.show', payment.p_type_id)">
-										{{ payment.p_type }} - {{ payment.p_type_id }}
-									</inertia-link>
+									<template v-if="payment.p_type === 'package'">
+										<inertia-link :href="route('packages.show', payment.p_type_id)">
+											<span class="font-bold text-primary underline">{{ payment.p_type }} - {{
+												payment.p_type_id }}</span>
+										</inertia-link>
+										<br>
+										{{ payment.pkg_service_label }}
+										<br>
+										{{ payment.pkg_tracking_out }}
+									</template>
+
+
 									<template v-if="payment.p_type === 'order'">
 										{{ payment.p_type }} - {{ payment.p_type_id }}
 									</template>
@@ -62,10 +68,11 @@
 										{{ payment.p_type }} - {{ payment.p_type_id }}
 									</inertia-link>
 								</td>
-								<td>{{ payment.t_id }}</td>
-								<td>{{ payment.p_method }}</td>
-								<td>{{ payment.pkg_service_label }}</td>
-								<td>{{ payment.charged_amount }}</td>
+								<td>
+									{{ payment.t_id }} <br>
+									{{ payment.p_method }}
+								</td>
+								<td>${{ payment.charged_amount }}</td>
 								<td>{{ payment.charged_at }}</td>
 								<td>
 									<a :href="route('payment.invoice', payment.p_id)" class="btn btn-primary btn-sm m-1"
@@ -106,7 +113,7 @@ export default {
 			form: {
 				search_invoice_no: this.filters.search_invoice_no,
 				search_suit_no: this.filters.search_suit_no,
-				search_tracking_no: this.filters.search_tracking_no,
+				search_tracking_out: this.filters.search_tracking_out,
 				date_range: this.filters.date_range,
 			},
 			date: "",

@@ -7,7 +7,7 @@
 				</div>
 				<div class="card-body">
 					<div class="row">
-						<div class="col-md-4" v-for="box in packag.boxes" :key="box.id">
+						<div class="col-md-4" v-for="box, index in packag.boxes" :key="box.id">
 							<div class="card shadow p-4">
 								<div>
 									Dimension:
@@ -38,17 +38,14 @@
 									<span v-else>-</span>
 								</div>
 
-								<template v-if="packag.payment_status == 'Paid' &&
-									$page.props.auth.user.type == 'admin'
-									">
+								<template
+									v-if="packag.payment_status == 'Paid' && $page.props.auth.user.type == 'admin' && index == 0">
 									<hr class="m-4" />
 									<div class="form-group">
 										<input class="form-control" type="text" placeholder="Tracking out"
 											v-model="tracking_out_form.tracking_out" />
 										<button type="button" class="btn btn-success btn-sm mt-1"
-											@click="update_tracking_out(box.id)">
-											Update
-										</button>
+											@click="update_tracking_out(box.id, packag.id)">Update</button>
 									</div>
 								</template>
 							</div>
@@ -71,16 +68,18 @@ export default {
 			tracking_out_form: this.$inertia.form({
 				tracking_out: "",
 				box_id: "",
+				pkg_id: "",
 			}),
 		};
 	},
 	methods: {
-		edit_tracking_out(box_id) {
+		// edit_tracking_out(box_id) {
+		// 	this.tracking_out_form.box_id = box_id;
+		// 	this.tracking_out_form.post(this.route("packages.ship-package"));
+		// },
+		update_tracking_out(box_id, pkg_id) {
 			this.tracking_out_form.box_id = box_id;
-			this.tracking_out_form.post(this.route("packages.ship-package"));
-		},
-		update_tracking_out(box_id) {
-			this.tracking_out_form.box_id = box_id;
+			this.tracking_out_form.pkg_id = pkg_id;
 			this.tracking_out_form.post(this.route("packages.ship-package"));
 		},
 	},

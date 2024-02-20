@@ -99,15 +99,19 @@ class PackageController extends Controller
             ->when($request->pkg_carrier && !empty($request->pkg_carrier), function ($qry) use ($request) {
                 $qry->where('carrier_code', $request->pkg_carrier);
             })
-            ->when($request->pkg_status && !empty($request->pkg_status) && $request->pkg_status != 'mailout', function ($qry) use ($request) {
-                $qry->where('status', $request->pkg_status);
+            ->when($request->pkg_status && !empty($request->pkg_status), function ($qry) use ($request) {
+                if ($request->pkg_status == 'shipped') {
+                    $qry->where('tracking_number_out', '!=', NULL);
+                } else {
+                    $qry->where('status', $request->pkg_status);
+                }
             })
             ->when($request->payment_status && !empty($request->payment_status), function ($qry) use ($request) {
                 $qry->where('payment_status', $request->payment_status);
             })
-            // ->when($request->tracking_no && !empty($request->tracking_no), function ($qry) use ($request) {
-            //     $qry->where('tracking_number_out', $request->tracking_no);
-            // })
+            ->when($request->tracking_out && !empty($request->tracking_out), function ($qry) use ($request) {
+                $qry->where('tracking_number_out', $request->tracking_out);
+            })
             ->when($request->auctioned && !empty($request->auctioned), function ($qry) use ($request) {
                 $qry->where('auctioned', $request->auctioned);
             })
@@ -136,7 +140,7 @@ class PackageController extends Controller
                 'payment_status' => $request->payment_status ?? "",
                 'auctioned' => $request->auctioned ?? "",
                 'date_range' => $request->date_range ?? "",
-                'tracking_no' => $request->tracking_no ?? "",
+                'tracking_out' => $request->tracking_out ?? "",
             ]
         ]);
     }
@@ -668,12 +672,22 @@ class PackageController extends Controller
     {
         $data = $request->validate([
             'tracking_out' => 'required',
-            'box_id' => 'required'
+            'box_id' => 'required',
+            'pkg_id' => 'required'
         ]);
 
-        $pkg_box = PackageBox::find($data['box_id']);
-        $pkg_box->update(['tracking_out' => $data['tracking_out']]);
 
+        $package = Package::with('boxes')->find($request->pkg_id);
+        $package->update(['tracking_number_out' => $request->tracking_out]);
+
+        foreach ($package->boxes as $key => $box) {
+            $box->update([
+                'tracking_out' => $data['tracking_out']
+            ]);
+        }
+
+        // $pkg_box = PackageBox::find($data['box_id']);
+        // $pkg_box->update(['tracking_out' => $data['tracking_out']]);
         // event(new PackageShipped($package));
 
         return redirect()->back()->with('success', 'Package set for shipment.');
@@ -1135,7 +1149,7 @@ class PackageController extends Controller
     public function generateLabel(Request $request)
     {
         try {
-            
+
             $package = Package::where('id', $request->package_id)->first();
 
             if ($package->carrier_code == 'fedex') {
