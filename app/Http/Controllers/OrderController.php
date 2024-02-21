@@ -104,87 +104,87 @@ class OrderController extends Controller
             'package_height' => 'required|numeric|gt:0',
         ]);
 
-        try {
-            $package = Package::create([
-                'customer_id' => $validated['customer_id'],
-                'warehouse_id' => $validated['warehouse_id'],
-                'tracking_number_in' => $validated['tracking_number_in'],
-                'received_from' => 'NIL',
-                'notes' => 'NIL',
-                'status' => 'open',
-                'pkg_type' => 'single',
-                'pkg_dim_status' => 'done',
-                'admin_status' => 'accepted',
-            ]);
+        // try {
+        $package = Package::create([
+            'customer_id' => $validated['customer_id'],
+            'warehouse_id' => $validated['warehouse_id'],
+            'tracking_number_in' => $validated['tracking_number_in'],
+            'received_from' => 'NIL',
+            'notes' => 'NIL',
+            'status' => 'open',
+            'pkg_type' => 'single',
+            'pkg_dim_status' => 'done',
+            'admin_status' => 'accepted',
+        ]);
 
-            $package->update([
-                'package_no' => $package->id,
-                'package_handler_id' => $package->id,
-            ]);
+        $package->update([
+            'package_no' => $package->id,
+            'package_handler_id' => $package->id,
+        ]);
 
-            PackageBox::create([
-                'package_id' => $package->id,
-                'pkg_type' => $package->pkg_type,
-                'weight_unit' => $validated['weight_unit'],
-                'dim_unit' => $validated['dim_unit'],
-                'weight' => $validated['package_weight'],
-                'length' => $validated['package_length'],
-                'width' => $validated['package_width'],
-                'height' => $validated['package_height'],
-            ]);
+        PackageBox::create([
+            'package_id' => $package->id,
+            'pkg_type' => $package->pkg_type,
+            'weight_unit' => $validated['weight_unit'],
+            'dim_unit' => $validated['dim_unit'],
+            'weight' => $validated['package_weight'],
+            'length' => $validated['package_length'],
+            'width' => $validated['package_width'],
+            'height' => $validated['package_height'],
+        ]);
 
-            $order = new Order();
-            $order->package_id = $package->id;
-            $order->customer_id = $validated['customer_id'];
-            $order->warehouse_id = $validated['warehouse_id'];
-            $order->tracking_number_in = $validated['tracking_number_in'];
-            $order->weight_unit = $validated['weight_unit'];
-            $order->dim_unit = $validated['dim_unit'];
-            $order->package_weight = $validated['package_weight'];
-            $order->package_length = $validated['package_length'];
-            $order->package_width = $validated['package_width'];
-            $order->package_height = $validated['package_height'];
-            $order->received_from = 'NIL';
-            $order->notes = 'NIL';
-            $order->arrived_at = Carbon::now();
-            $order->created_at = Carbon::now();
-            $order->save();
+        $order = new Order();
+        $order->package_id = $package->id;
+        $order->customer_id = $validated['customer_id'];
+        $order->warehouse_id = $validated['warehouse_id'];
+        $order->tracking_number_in = $validated['tracking_number_in'];
+        $order->weight_unit = $validated['weight_unit'];
+        $order->dim_unit = $validated['dim_unit'];
+        $order->package_weight = $validated['package_weight'];
+        $order->package_length = $validated['package_length'];
+        $order->package_width = $validated['package_width'];
+        $order->package_height = $validated['package_height'];
+        $order->received_from = 'NIL';
+        $order->notes = 'NIL';
+        $order->arrived_at = Carbon::now();
+        $order->created_at = Carbon::now();
+        $order->save();
 
-            $files = $request->file();
-            if (isset($files['images'])) {
-                foreach ($files['images'] as $key => $file) {
-                    $image_object = $file['image'];
-                    $file_name = time() . '_' . $order->package_id;
-                    $image_object->storeAs('uploads', $file_name);
-                    if ($_SERVER['HTTP_HOST'] == 'localhost:8000') {
-                        File::move(storage_path('app/uploads/' . $file_name), public_path('/public/uploads/' . $file_name));
-                    } else {
-                        File::move(storage_path('app/uploads/' . $file_name), public_path('../public/uploads/' . $file_name));
-                    }
-                    $order_image = new OrderImage();
-                    $order_image->image = $file_name;
-                    $order_image->order_id = $order->id;
-                    if ($key == 0) {
-                        $order_image->display = 1;
-                    } else {
-                        $order_image->display = 0;
-                    }
-                    $order_image->save();
+        $files = $request->file();
+        if (isset($files['images'])) {
+            foreach ($files['images'] as $key => $file) {
+                $image_object = $file['image'];
+                $file_name = time() . '_' . $order->package_id;
+                $image_object->storeAs('uploads', $file_name);
+                if ($_SERVER['HTTP_HOST'] == 'localhost:8000') {
+                    File::move(storage_path('app/uploads/' . $file_name), public_path('/public/uploads/' . $file_name));
+                } else {
+                    File::move(storage_path('app/uploads/' . $file_name), public_path('../public/uploads/' . $file_name));
                 }
+                $order_image = new OrderImage();
+                $order_image->image = $file_name;
+                $order_image->order_id = $order->id;
+                if ($key == 0) {
+                    $order_image->display = 1;
+                } else {
+                    $order_image->display = 0;
+                }
+                $order_image->save();
             }
-
-            try {
-                event(new OrderCreatedEvent($order));
-            } catch (\Throwable $th) {
-                throw $th;
-            }
-
-            return redirect()->route('packages.index')->with('success', 'The package has been added successfully.');
-        } catch (\Throwable $th) {
-            throw $th;
-            DB::rollBack();
-            return redirect()->route('packages.index')->with('error', $th->getMessage());
         }
+
+        // try {
+        event(new OrderCreatedEvent($order));
+        // } catch (\Throwable $th) {
+        //     throw $th;
+        // }
+
+        return redirect()->route('packages.index')->with('success', 'The package has been added successfully.');
+        // } catch (\Throwable $th) {
+        //     throw $th;
+        //     DB::rollBack();
+        //     return redirect()->route('packages.index')->with('error', $th->getMessage());
+        // }
     }
 
     public function edit($id)
