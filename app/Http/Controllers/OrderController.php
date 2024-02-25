@@ -251,6 +251,8 @@ class OrderController extends Controller
     public function update(Request $request)
     {
 
+        // dd($request->all());
+
         $id = $request->input('id');
         $order = Order::find($id);
 
@@ -282,7 +284,7 @@ class OrderController extends Controller
             if (isset($files['images'])) {
                 foreach ($files['images'] as $key => $file) {
                     $image_object = $file['image'];
-                    $file_name = time() . '_' . $order->package_id;
+                    $file_name = time() . '-' . $order->package_id . '-' . $key;
                     $image_object->storeAs('uploads', $file_name);
                     if ($_SERVER['HTTP_HOST'] == 'localhost:8000') {
                         File::move(storage_path('app/uploads/' . $file_name), public_path('/public/uploads/' . $file_name));
