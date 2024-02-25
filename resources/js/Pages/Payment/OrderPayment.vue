@@ -36,11 +36,11 @@
 									</template> -->
 
 									<div class="row">
-										<div class="col-12" v-if="status != undefined">
+										<!-- <div class="col-12" v-if="status != undefined">
 											<p style="color: red">{{ status.message[0].text }}</p>
-										</div>
+										</div> -->
 
-										<div class="row">
+										<!-- <div class="row">
 											<div class="form-group col-12">
 												<breeze-label value="Card Number *" />
 												<input v-model="form.card_no" class="form-control" type="number"
@@ -73,9 +73,9 @@
 												<input v-model="form.cvv" class="form-control" type="text" placeholder="123"
 													required />
 											</div>
-										</div>
+										</div> -->
 
-										<div class="row">
+										<!-- <div class="row">
 											<div class="col-md-12">
 												<h1 class="text-lg"><b>Billing Address</b></h1>
 											</div>
@@ -124,9 +124,9 @@
 												<input v-model="form.email" class="form-control" type="email" name="email"
 													placeholder="" required />
 											</div>
-										</div>
+										</div> -->
 
-										<table class="table" cols="4">
+										<!-- <table class="table" cols="4">
 											<tbody>
 												<tr>
 													<th class="w-75 text-end">
@@ -152,7 +152,7 @@
 											<button type="submit" v-on:submit="submit()" class="btn btn-primary w-100">
 												<span class="text-lg">Pay ${{ amount }}</span>
 											</button>
-										</div>
+										</div> -->
 
 										<div class="container">
 											<span class="card p-4 mb-4"
