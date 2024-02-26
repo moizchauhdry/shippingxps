@@ -911,7 +911,8 @@ class PackageController extends Controller
         $query = Package::with('customer', 'warehouse')
             ->where('warehouse_id', $request->warehouse_id)
             ->where('payment_status', 'Pending')
-            ->where('pkg_type', 'single');
+            ->where('pkg_type', 'single')
+            ->where('auctioned', 1);
 
         if (Auth::user()->type == 'customer') {
             $query->where('customer_id', Auth::user()->id);
@@ -975,7 +976,8 @@ class PackageController extends Controller
         $query = Package::with('customer', 'warehouse')
             ->where('warehouse_id', $request->warehouse_id)
             ->where('status', 'open')
-            ->where('pkg_type', 'single');
+            ->where('pkg_type', 'single')
+            ->where('auctioned', 0);
 
         if (Auth::user()->type == 'customer') {
             $query->where('customer_id', Auth::user()->id);
