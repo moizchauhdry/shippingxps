@@ -801,7 +801,7 @@ class PaymentController extends Controller
             'filters' => [
                 'search_invoice_no' => $search_invoice_no ?? "",
                 'search_suit_no' => $search_suit_no ?? "",
-                'search_tracking_no' => $request->search_tracking_no ?? "",
+                'search_tracking_out' => $request->search_tracking_out ?? "",
                 'date_range' => $request->date_range ?? "",
             ]
         ]);
