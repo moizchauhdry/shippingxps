@@ -385,7 +385,7 @@ export default {
 								if (response.code == 200) {
 									location.href = response.route;
 								} else {
-									statusContainer.innerHTML = "SUCCESS FAILED!";
+									statusContainer.innerHTML = "PAYMENT DECLINE!";
 								}
 							},
 							error: function (errors) {
