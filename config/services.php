@@ -46,8 +46,9 @@ return [
     'square' => [
         'application_id' => env('SQUARE_APPLICATION_ID'),
         'location_id' => env('SQUARE_LOCATION_ID'),
-        'auth_token' => env('SQUARE_AUTH_TOKEN'),
-        'base_url' => env('SQUARE_BASE_URL'),
+        'access_token' => env('SQUARE_ACCESS_TOKEN'),
+        'api_url' => env('SQUARE_API_URL'),
+        'web_url' => env('SQUARE_WEB_URL'),
     ],
 
 ];

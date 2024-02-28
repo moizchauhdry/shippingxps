@@ -41,7 +41,7 @@
     @endenv
 
     {{-- SQUARE START --}}
-    <script src="https://sandbox.web.squarecdn.com/v1/square.js"></script>
+    <script src="{{config('services.square.web_url')}}/square.js"></script>
     {{-- SQUARE END --}}
 
     <script src="https://www.google.com/recaptcha/api.js?render=6LcKxb0hAAAAALPcMiT1eLu03DnQfxaluzJhgD8F"></script>

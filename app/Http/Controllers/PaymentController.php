@@ -818,7 +818,7 @@ class PaymentController extends Controller
     {
         try {
 
-            $square_base_url = config('services.square.base_url');
+            $SQUARE_API_URL = config('services.square.api_url');
             $user = Auth::user();
 
             $payment_module = $request->payment_module;
@@ -849,11 +849,11 @@ class PaymentController extends Controller
             $amount = (int) $grand_total;
 
             $headers = [
-                'Authorization' => 'Bearer ' . config('services.square.auth_token')
+                'Authorization' => 'Bearer ' . config('services.square.access_token')
             ];
 
             // CREATE CUSTOMER
-            $customer_url = $square_base_url . '/customers';
+            $customer_url = $SQUARE_API_URL . '/customers';
             $customer_body = [
                 "company_name" => $user->name,
                 'idempotency_key' => (string) Str::uuid(),
@@ -863,7 +863,7 @@ class PaymentController extends Controller
             $customer_response = json_decode($customer_response->getBody(), true);
 
             // CREATE CARD
-            $card_url =  $square_base_url . '/cards';
+            $card_url =  $SQUARE_API_URL . '/cards';
             $card_body = [
                 "card" => [
                     "cardholder_name" => $user->name,
@@ -877,7 +877,7 @@ class PaymentController extends Controller
             $card_response = json_decode($card_response->getBody(), true);
 
             // CREATE PAYMENT
-            $payment_url =  $square_base_url . '/payments';
+            $payment_url =  $SQUARE_API_URL . '/payments';
             $payment_body = [
                 'amount_money' => [
                     'amount' => $amount,
