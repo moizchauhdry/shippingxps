@@ -24,6 +24,8 @@ use Inertia\Inertia;
 use PDF;
 use net\authorize\api\contract\v1 as AnetAPI;
 use net\authorize\api\controller as AnetController;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 
 class PaymentController extends Controller
 {
@@ -107,6 +109,9 @@ class PaymentController extends Controller
         $paypal_charged_amount = ($amount * $paypal_processing_fee / 100) + $amount;
         $paypal_charged_amount =  number_format((float)$paypal_charged_amount, 2, '.', '');
 
+        $square_application_id = config('services.square.application_id');
+        $square_location_id = config('services.square.application_id');
+
         return Inertia::render(
             'Payment/OrderPayment',
             [
@@ -117,6 +122,8 @@ class PaymentController extends Controller
                 'shipping_address' => $shipping_address,
                 'paypal_processing_fee' => $paypal_processing_fee,
                 'paypal_charged_amount' => $paypal_charged_amount,
+                'square_application_id' => $square_application_id,
+                'square_location_id' => $square_location_id,
             ]
         );
     }
@@ -805,5 +812,131 @@ class PaymentController extends Controller
                 'date_range' => $request->date_range ?? "",
             ]
         ]);
+    }
+
+    public function squareSuccess(Request $request)
+    {
+        try {
+
+            $square_base_url = config('services.square.base_url');
+            $user = Auth::user();
+
+            $payment_module = $request->payment_module;
+
+            if (!in_array($payment_module, ['package'])) {
+                // return redirect()->back()->with('error', 'CURRENTLY AVAILABLE FOR PACAKGES');
+                dd('CURRENTLY AVAILABLE FOR PACAKGES');
+            }
+
+            $package = NULL;
+            if ($payment_module == 'package') {
+                $package = Package::query()
+                    ->where('payment_status', 'Pending')
+                    ->where('id', $request->payment_module_id)
+                    ->where('customer_id', $user->id)
+                    ->firstOrFail();
+
+                if ($package->grand_total <= 0) {
+                    // return redirect()->back()->with('error', 'AMOUNT MUST BE GREATER THEN 0');
+                    dd('AMOUNT MUST BE GREATER THEN 0');
+                }
+
+                $amount = $package->grand_total;
+                $payment_module_id = $package->id;
+            }
+
+            $grand_total = $amount * 100;
+            $amount = (int) $grand_total;
+
+            $headers = [
+                'Authorization' => 'Bearer ' . config('services.square.auth_token')
+            ];
+
+            // CREATE CUSTOMER
+            $customer_url = $square_base_url . '/customers';
+            $customer_body = [
+                "company_name" => $user->name,
+                'idempotency_key' => (string) Str::uuid(),
+            ];
+
+            $customer_response = Http::withHeaders($headers)->post($customer_url, $customer_body);
+            $customer_response = json_decode($customer_response->getBody(), true);
+
+            // CREATE CARD
+            $card_url =  $square_base_url . '/cards';
+            $card_body = [
+                "card" => [
+                    "cardholder_name" => $user->name,
+                    "customer_id" => $customer_response['customer']['id']
+                ],
+                'idempotency_key' => (string) Str::uuid(),
+                'source_id' => $request->payment_token,
+            ];
+
+            $card_response = Http::withHeaders($headers)->post($card_url, $card_body);
+            $card_response = json_decode($card_response->getBody(), true);
+
+            // CREATE PAYMENT
+            $payment_url =  $square_base_url . '/payments';
+            $payment_body = [
+                'amount_money' => [
+                    'amount' => $amount,
+                    'currency' => 'USD',
+                ],
+                'idempotency_key' => (string) Str::uuid(),
+                'source_id' => $card_response['card']['id'],
+                'customer_id' => $customer_response['customer']['id'],
+            ];
+
+            $payment_response = Http::withHeaders($headers)->post($payment_url, $payment_body);
+            $payment_response = json_decode($payment_response->getBody(), true);
+
+            $data = [
+                // 'payment_module' => $payment_module,
+                $payment_module . '_id' => $payment_module_id,
+                'customer_id' => $user->id,
+                'transaction_id' => $payment_response['payment']['id'],
+                'payment_type' => 'square',
+                'charged_amount' => $payment_response['payment']['amount_money']['amount'] / 100,
+                'charged_at' => Carbon::now(),
+
+                // 'sq_customer_id' => $customer_response['customer']['id'],
+                // 'sq_customer_response' => json_encode($customer_response),
+                // 'sq_card_id' => $card_response['card']['id'],
+                // 'sq_card_response' => json_encode($card_response),
+                // 'sq_payment_id' => $payment_response['payment']['id'],
+                // 'sq_payment_response' => json_encode($payment_response),
+            ];
+
+            Payment::updateOrCreate([
+                $payment_module . '_id' => $payment_module_id,
+            ], $data);
+
+            if ($payment_response['payment']['status'] === 'COMPLETED') {
+
+                $package->update([
+                    'payment_status' => 'Paid',
+                ]);
+
+                return response()->json([
+                    'status' => true,
+                    'code' => 200,
+                    'message' => 'success',
+                    'route' => route('packages.show', $payment_module_id),
+                ]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'code' => 403,
+                    'message' => $payment_response,
+                ]);
+            }
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'code' => 403,
+                'message' => $th->getMessage(),
+            ]);
+        }
     }
 }

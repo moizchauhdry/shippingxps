@@ -154,17 +154,33 @@
 											</button>
 										</div> -->
 
-										<div class="container">
+										<!-- <div class="container">
 											<span class="card p-4 mb-4"
 												style="color: red ; font-size: 15px; border: 3px solid red;">
 												<b style="font-size: 14px;">Note: PayPal is the only available option.
 													Please use PayPal for smooth and fast payments.</b>
 											</span>
-										</div>
+										</div> -->
 									</div>
 								</div>
 							</div>
 						</form>
+
+
+						<!-- SQUARE START -->
+						<form id="payment-form" v-if="payment_module == 'package'">
+							<div class="row">
+								<div class="col-md-8 offset-md-2">
+									<h1 class="text-uppercase"><b>Debit or Credit Card</b></h1>
+									<div id="card-container"></div>
+									<button id="card-button" type="button" class="btn btn-primary w-100"><span
+											class="text-lg">Pay
+											${{ amount }}</span></button>
+									<div id="payment-status-container"></div>
+								</div>
+							</div>
+						</form>
+						<!-- SQUARE END -->
 
 						<hr class="mb-3 mt-3" />
 
@@ -209,7 +225,7 @@
 		<input type="text" ref="transaction_id" id="transaction_id" class="hidden" @change="getValues()" />
 		<textarea name="payment_detail" id="payment_detail" cols="30" rows="10" class="hidden"></textarea>
 
-		<div v-show="overlay === true" class="overlay">
+		<div v-if="overlay" class="overlay">
 			<div class="overlay__inner">
 				<div class="overlay__content"><span class="spinner"></span></div>
 			</div>
@@ -320,6 +336,8 @@ export default {
 		shipping_address: Object,
 		paypal_processing_fee: Object,
 		paypal_charged_amount: Object,
+		square_application_id: String,
+		square_location_id: String,
 	},
 	watch: {
 		form: {
@@ -333,8 +351,65 @@ export default {
 		var formdata = this.form;
 		this.coupon_message = "";
 		this.coupon_status = 2;
+
+		this.square();
+
 	},
 	methods: {
+		async square() {
+			const payments = Square.payments(this.square_application_id, this.square_location_id);
+			const card = await payments.card();
+			await card.attach('#card-container');
+
+			const cardButton = document.getElementById('card-button');
+			cardButton.addEventListener('click', async () => {
+				const statusContainer = document.getElementById('payment-status-container');
+
+				try {
+					const result = await card.tokenize();
+					if (result.status === 'OK') {
+						this.overlay = true;
+						$.ajax({
+							method: "POST",
+							data: {
+								_token: $('meta[name="csrf-token"]').attr('content'),
+								'payment_token': result.token,
+								'payment_module': this.payment_module,
+								'payment_module_id': this.payment_module_id,
+							},
+							url: this.route("payment.square-success"),
+							beforeSend: function () {
+								this.overlay = true;
+							},
+							success: function (response) {
+								if (response.code == 200) {
+									location.href = response.route;
+								} else {
+									statusContainer.innerHTML = "SUCCESS FAILED!";
+								}
+							},
+							error: function (errors) {
+								statusContainer.innerHTML = "PAYMENT DENIED!";
+								this.overlay = false;
+							}
+						});
+
+					} else {
+						let errorMessage = `Tokenization failed with status: ${result.status}`;
+						if (result.errors) {
+							errorMessage += ` and errors: ${JSON.stringify(
+								result.errors
+							)}`;
+						}
+
+						throw new Error(errorMessage);
+					}
+				} catch (e) {
+					console.error(e);
+					statusContainer.innerHTML = "PAYMENT FAILED.";
+				}
+			});
+		},
 		submit() {
 			// if (
 			// 	this.payment_module != "package" &&

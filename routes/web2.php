@@ -93,6 +93,8 @@ Route::middleware('auth')->group(function () {
         Route::get('generateReport/{id}', [\App\Http\Controllers\PaymentController::class, 'generateReport'])->name('generateReport');
         Route::any('generateReportList', [\App\Http\Controllers\PaymentController::class, 'generateReportList'])->name('generateReportList');
         Route::post('add-payment', [PaymentController::class, 'addPayment'])->middleware(['auth'])->name('payment.add');
+
+        Route::post('square-success', [PaymentController::class, 'squareSuccess'])->name('payment.square-success');
     });
 
     Route::get('getShippingAddress/{id}', [\App\Http\Controllers\AddressController::class, 'getShippingAddress'])->name('getShippingAddress');
