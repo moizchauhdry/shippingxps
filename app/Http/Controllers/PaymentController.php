@@ -110,7 +110,7 @@ class PaymentController extends Controller
         $paypal_charged_amount =  number_format((float)$paypal_charged_amount, 2, '.', '');
 
         $square_application_id = config('services.square.application_id');
-        $square_location_id = config('services.square.application_id');
+        $square_location_id = config('services.square.location_id');
 
         return Inertia::render(
             'Payment/OrderPayment',
