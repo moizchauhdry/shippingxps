@@ -776,6 +776,8 @@ class PaymentController extends Controller
         $query->join('users as u', 'u.id', 'payments.customer_id');
         $query->leftJoin('packages as pkg', 'pkg.id', 'payments.package_id');
 
+        $query->where('payments.charged_at', '!=', NULL);
+        
         $query->when($user->type === 'customer', function ($qry) use ($user) {
             $qry->where('payments.customer_id', $user->id);
         });
