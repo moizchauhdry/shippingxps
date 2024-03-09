@@ -897,26 +897,24 @@ class PaymentController extends Controller
                 'customer_id' => $user->id,
                 'transaction_id' => $payment_response['payment']['id'],
                 'payment_type' => 'square',
-                'charged_amount' => $payment_response['payment']['amount_money']['amount'] / 100,
-                'charged_at' => Carbon::now(),
-
-                // 'sq_customer_id' => $customer_response['customer']['id'],
-                // 'sq_customer_response' => json_encode($customer_response),
-                // 'sq_card_id' => $card_response['card']['id'],
-                // 'sq_card_response' => json_encode($card_response),
-                // 'sq_payment_id' => $payment_response['payment']['id'],
-                // 'sq_payment_response' => json_encode($payment_response),
+                'sq_customer_id' => $customer_response['customer']['id'],
+                'sq_customer_response' => json_encode($customer_response),
+                'sq_card_id' => $card_response['card']['id'],
+                'sq_card_response' => json_encode($card_response),
+                'sq_payment_id' => $payment_response['payment']['id'],
+                'sq_payment_response' => json_encode($payment_response),
             ];
 
-            Payment::updateOrCreate([
-                $payment_module . '_id' => $payment_module_id,
-            ], $data);
+            $payment = Payment::updateOrCreate([$payment_module . '_id' => $payment_module_id], $data);
 
             if ($payment_response['payment']['status'] === 'COMPLETED') {
 
-                $package->update([
-                    'payment_status' => 'Paid',
+                $payment->update([
+                    'charged_amount' => $payment_response['payment']['amount_money']['amount'] / 100,
+                    'charged_at' => Carbon::now(),
                 ]);
+
+                $package->update(['payment_status' => 'Paid']);
 
                 return response()->json([
                     'status' => true,
