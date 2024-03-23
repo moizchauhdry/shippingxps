@@ -206,7 +206,8 @@ function generateLabelFedex($id)
                             $ship_to->address_3
                         ],
                         "city" => $ship_to->city,
-                        "stateOrProvinceCode" => $service_type == 'domestic' ? $ship_to->state : NULL,
+                        // "stateOrProvinceCode" => $service_type == 'domestic' ? $ship_to->state : NULL,
+                        "stateOrProvinceCode" => $ship_to->state ?? NULL,
                         "postalCode" => $ship_to->zip_code,
                         "countryCode" => $ship_to->country->iso,
                         "residential" => $ship_to->is_residential
