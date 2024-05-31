@@ -169,6 +169,7 @@ class ShippingRatesController extends Controller
                 'pkg_type' => $fedex->packagingType,
                 'price' => $price,
                 'markup' => $markup_amount,
+                'markup_percentage' => $markup,
                 'total' => $total,
             ];
         }
@@ -274,6 +275,7 @@ class ShippingRatesController extends Controller
                 'pkg_type' => 'YOUR_PACKAGING',
                 'price' => $price,
                 'markup' => $markup_amount,
+                'markup_percentage' => $markup,
                 'total' => $total,
             ];
 
@@ -434,6 +436,7 @@ class ShippingRatesController extends Controller
                     'pkg_type' => 'YOUR_PACKAGING',
                     'price' => $price,
                     'markup' => $markup_amount,
+                    'markup_percentage' => $markup,
                     'total' => $total,
                 ];
             }
@@ -585,6 +588,7 @@ class ShippingRatesController extends Controller
                     'pkg_type' => $usps->packageTypeCode,
                     'price' => $price,
                     'markup' => $markup_amount,
+                    'markup_percentage' => $markup,
                     'total' => $total,
                 ];
             }

@@ -708,6 +708,9 @@ class PackageController extends Controller
         $package->currency = "USD";
         $package->markup_fee = $request->markup;
         $package->shipping_charges = $request->total;
+        $package->shipping_charges_gross = $request->price;
+        $package->shipping_markup_percentage = $request->markup_percentage;
+        $package->shipping_markup_fee = $request->markup;
         $package->update();
 
         return redirect()->route('packages.show', $package->id)->with('success', 'The package has been set for shipment.');
