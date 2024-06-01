@@ -1,95 +1,96 @@
 <template>
 	<MainLayout>
 		<div class="card mb-5">
-			<div class="card-header">
-				<b>Manage Report</b>
-				
-			</div>
+			<div class="card-header">Manage Reports</div>
 			<div class="card-body">
-				<div class="row">
-					<div class="col-md-12">
-						<form @submit.prevent="submit">
-							<div class="d-flex search">
-								<div class="form-group">
-									<label for="">Package Number</label>
-									<input type="number" name="number" v-model="form.pkg_id" class="form-control" />
-								</div>
-								<div class="form-group">
-									<label for="">Suit Number</label>
-									<input type="number" name="number" v-model="form.suit_no" class="form-control" />
-								</div>
-								<div class="form-group">
-									<label for="">Tracking Out</label>
-									<input type="text" v-model="form.tracking_out" class="form-control" />
-								</div>
-								<div class="form-group">
-									<label for="">Package Status</label>
-									<select class="form-control custom-select" v-model="form.pkg_status">
-										<option value="" selected>All</option>
-										<option value="open">Open</option>
-										<option value="filled">Filled</option>
-										<option value="checkout">Checkout</option>
-										<option value="shipped">Shipped</option>
-										<option value="rejected">Rejected</option>
-									</select>
-								</div>
-								<div class="form-group">
-									<label for="">Package Type</label>
-									<select class="form-control custom-select" v-model="form.pkg_type">
-										<option value="" selected>All</option>
-										<option value="single">Single</option>
-										<option value="consolidation">Consolidation</option>
-										<option value="multipiece">Multipiece</option>
-										<option value="assigned">Assigned</option>
-									</select>
-								</div>
-								<div class="form-group">
-									<label for="">Payment Status</label>
-									<select class="form-control custom-select" v-model="form.payment_status">
-										<option value="" selected>All</option>
-										<option value="Paid">Paid</option>
-										<option value="Pending">Pending</option>
-									</select>
-								</div>
-								<div class="form-group">
-									<label for="">Auction Status</label>
-									<select class="form-control custom-select" v-model="form.auctioned">
-										<option value="" selected>All</option>
-										<option value="1">Yes</option>
-										<option value="0">No</option>
-									</select>
-								</div>
-								<div class="form-group">
-									<label for="">Shipping Service</label>
-									<select class="form-control custom-select" v-model="form.pkg_carrier">
-										<option value="" selected>All</option>
-										<option value="fedex">FEDEX</option>
-										<option value="ups">UPS</option>
-										<option value="dhl">DHL</option>
-										<option value="usps">USPS</option>
-									</select>
-								</div>
-								<div class="form-group">
-									<label for="">Date Range</label>
-									<Datepicker v-model="date" range :format="format" :enableTimePicker="false">
-									</Datepicker>
-								</div>
-							</div>
-							<div class="row">
-								<div class="form-group col-md-12">
-									<button type="submit" class="btn btn-primary mr-1">Search</button>
-									<button type="button" class="btn btn-info" @click="clear()">Clear</button>
-								</div>
-							</div>
-						</form>
+				<form @submit.prevent="submit">
+					<div class="d-flex search">
+						<div class="form-group">
+							<label for="">Invoice No</label>
+							<input type="text" class="form-control" v-model="form.search_invoice_no" />
+						</div>
+						<div class="form-group">
+							<label for="">Suit No</label>
+							<input type="text" class="form-control" v-model="form.search_suit_no" />
+						</div>
+						<div class="form-group">
+							<label for="">Tracking Out</label>
+							<input type="text" class="form-control" v-model="form.search_tracking_out" />
+						</div>
+						<div class="form-group">
+							<label for="">Date Range</label>
+							<Datepicker v-model="date" range :format="format" :enableTimePicker="false"></Datepicker>
+						</div>
 					</div>
-				</div>
+					<div class="row">
+						<div class="form-group col-md-12">
+							<button type="submit" class="btn btn-primary mr-1">Search</button>
+							<button type="button" class="btn btn-info" @click="clear()">Clear</button>
+						</div>
+					</div>
+				</form>
 
-				<package-list-component v-bind="$props"></package-list-component>
+				<div class="table-responsive">
+					<table class="table table-striped table-bordered text-uppercase">
+						<thead>
+							<tr>
+								<th>Invoive ID</th>
+								<th>Customer</th>
+								<th>Payment Type</th>
+								<th>Transaction ID</th>
+								<th>Charged Date</th>
+								<th>charged Amount</th>
+								<th>Shipping Total</th>
+								<th>Markup Percentage</th>
+								<th>Markup / Profit</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for="(payment, index) in payments.data" :key="payment.id">
+								<td>{{ payment.p_id }}</td>
+								<td>{{ payment.u_name }} - {{ siuteNum(payment.u_id) }}</td>
+								<td>
+									<template v-if="payment.p_type === 'package'">
+										<inertia-link :href="route('packages.show', payment.p_type_id)">
+											<span class="font-bold text-primary underline">{{ payment.p_type }} - {{
+												payment.p_type_id }}</span>
+										</inertia-link>
+										<br>
+										{{ payment.pkg_service_label }}
+										<br>
+										{{ payment.pkg_tracking_out }}
+									</template>
+
+
+									<template v-if="payment.p_type === 'order'">
+										{{ payment.p_type }} - {{ payment.p_type_id }}
+									</template>
+									<inertia-link v-if="payment.p_type === 'gift'"
+										:href="route('gift-card.edit', payment.p_type_id)">
+										{{ payment.p_type }} - {{ payment.p_type_id }}
+									</inertia-link>
+								</td>
+								<td>
+									{{ payment.t_id }} <br>
+									{{ payment.p_method }}
+								</td>
+								<td>{{ payment.charged_at }}</td>
+								<td>${{ payment.charged_amount }}</td>
+								<td>${{ payment.shipping_charges_gross }}</td>
+								<td>{{ payment.shipping_markup_percentage }}%</td>
+								<td>${{ payment.shipping_markup_fee }}</td>
+							</tr>
+							<tr v-if="payments.data.length == 0">
+								<td class="text-primary text-center" colspan="9">
+									There are no payments found.
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</div>
 			<div class="card-footer">
-				<span class="float-left"><b>Showing Records: {{ packages_count }}</b></span>
-				<pagination :links="pkgs.links" class="float-right"></pagination>
+				<pagination :links="payments.links" class="float-right"></pagination>
 			</div>
 		</div>
 	</MainLayout>
@@ -98,65 +99,40 @@
 <script>
 import MainLayout from "@/Layouts/Main";
 import BreezeAuthenticatedLayout from "@/Layouts/Authenticated";
-import { Inertia } from "@inertiajs/inertia";
-import PackageListComponent from "../Reports/Components/PackageListComponent.vue";
+import BreezeLabel from "@/Components/Label";
+import Paginate from "@/Components/Paginate";
 import Datepicker from "vue3-date-time-picker";
 import "vue3-date-time-picker/dist/main.css";
 import Pagination from "@/Components/Pagination.vue";
+import { Inertia } from "@inertiajs/inertia";
 
 export default {
+	data() {
+		return {
+			form: {
+				search_invoice_no: this.filters.search_invoice_no,
+				search_suit_no: this.filters.search_suit_no,
+				search_tracking_out: this.filters.search_tracking_out,
+				date_range: this.filters.date_range,
+			},
+			date: "",
+		};
+	},
 	components: {
 		BreezeAuthenticatedLayout,
 		MainLayout,
-		PackageListComponent,
+		BreezeLabel,
+		Paginate,
 		Datepicker,
 		Pagination
 	},
 	props: {
 		auth: Object,
-		pkgs: Object,
-		open_pkgs_count: Object,
-		packages_count: Object,
+		payments: Object,
 		filters: Object,
 	},
-	data() {
-		return {
-			active: "packages",
-			date: "",
-			form: {
-				pkg_id: this.filters.pkg_id,
-				suit_no: this.filters.suit_no,
-				pkg_status: this.filters.pkg_status,
-				pkg_type: this.filters.pkg_type,
-				pkg_carrier: this.filters.pkg_carrier,
-				payment_status: this.filters.payment_status,
-				auctioned: this.filters.auctioned,
-				tracking_out: this.filters.tracking_out,
-				date_range: this.filters.date_range,
-			},
-		};
-	},
+	mounted() { },
 	methods: {
-		submit() {
-			const queryParams = new URLSearchParams(this.form);
-			const url = `${route("report.index")}?${queryParams.toString()}`;
-			Inertia.visit(url, { preserveState: true });
-		},
-		siuteNum(user_id) {
-			return 4000 + user_id;
-		},
-		clear() {
-			this.form.pkg_id = "";
-			this.form.suit_no = "";
-			this.form.pkg_status = "";
-			this.form.pkg_type = "";
-			this.form.pkg_carrier = "";
-			this.form.payment_status = "";
-			this.form.date_range = "";
-			this.form.tracking_out = "";
-			this.date = "";
-			this.submit();
-		},
 		format() {
 			var start = new Date(this.date[0]);
 			var end = new Date(this.date[1]);
@@ -170,6 +146,22 @@ export default {
 			this.form.date_range = `${startYear}/${startMonth}/${startDay} - ${endYear}/${endMonth}/${endDay}`;
 			return `${startDay}/${startMonth}/${startYear} - ${endDay}/${endMonth}/${endYear}`;
 		},
+		submit() {
+			const queryParams = new URLSearchParams(this.form);
+			const url = `${route("report.index")}?${queryParams.toString()}`;
+			Inertia.visit(url, { preserveState: true });
+		},
+		siuteNum(user_id) {
+			return 4000 + user_id;
+		},
+		clear() {
+			this.form = {};
+			this.date = "";
+			this.submit();
+		},
+	},
+	created() {
+		console.log(this.data);
 	},
 };
 </script>
