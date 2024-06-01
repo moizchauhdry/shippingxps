@@ -275,6 +275,13 @@
 							<i class="fas fa-file-invoice"></i>
 							<span>Fee & Charges</span>
 						</inertia-link>
+
+						<inertia-link v-if="$page.props.auth.user.type == 'admin'" class="nav-link"
+							:href="route('report.index')" :class="{ active: route().current('report.index') }"
+							:active="route().current('report.index')">
+							<i class="fas fa-file-invoice"></i>
+							<span>Report</span>
+						</inertia-link>
 					</div>
 				</div>
 			</div>

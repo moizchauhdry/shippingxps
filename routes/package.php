@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth'])->group(function () {
@@ -29,5 +30,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('commercial-invoice/{id}', 'PackageController@commercialInvoice')->name('packages.pdf');
         Route::post('destroy', 'PackageController@destroy')->name('packages.destroy');
         Route::post('generate-label', 'PackageController@generateLabel')->name('packages.generate-label');
+
+        
+    });
+
+    Route::prefix('reports')->group(function () {
+        Route::any('report',[ReportController::class,'index'] )->name('report.index');
     });
 });
