@@ -17,6 +17,7 @@ class ReportController extends Controller
         $search_invoice_no = $request->search_invoice_no;
         $search_suit_no = $request->search_suit_no;
         $search_tracking_out = $request->search_tracking_out;
+        $search_service_type = $request->search_service_type;
 
         $query = Payment::query();
 
@@ -29,6 +30,7 @@ class ReportController extends Controller
             'payments.charged_amount as charged_amount',
             'payments.charged_at as charged_at',
             'pkg.id as pkg_id',
+            'pkg.carrier_code as carrier_code',
             'pkg.service_label as pkg_service_label',
             'pkg.tracking_number_out as pkg_tracking_out',
             'pkg.shipping_charges_gross',
@@ -51,6 +53,7 @@ class ReportController extends Controller
         $query->join('users as u', 'u.id', 'payments.customer_id');
         $query->leftJoin('packages as pkg', 'pkg.id', 'payments.package_id');
 
+        $query->where('payments.package_id', '!=', NULL);
         $query->where('payments.charged_at', '!=', NULL);
         
         $query->when($user->type === 'customer', function ($qry) use ($user) {
@@ -59,6 +62,10 @@ class ReportController extends Controller
 
         $query->when($search_invoice_no && !empty($search_invoice_no), function ($qry) use ($search_invoice_no) {
             $qry->where('payments.id', $search_invoice_no);
+        });
+
+        $query->when($search_service_type && !empty($search_service_type), function ($qry) use ($search_service_type) {
+            $qry->where('pkg.carrier_code', $search_service_type);
         });
 
         $query->when($search_tracking_out && !empty($search_tracking_out), function ($qry) use ($search_tracking_out) {
@@ -78,10 +85,16 @@ class ReportController extends Controller
             $qry->whereDate('charged_at', '>=', $from)->whereDate('charged_at', '<=', $to);
         });
 
+
         $payments = $query->orderBy('payments.id', 'desc')->paginate(10)->withQueryString();
 
         return Inertia::render('Reports/PackageReport', [
             'payments' => $payments,
+            'stats' => [
+                'total' => number_format($query->sum('payments.charged_amount'),2),
+                'profit' => number_format($query->sum('pkg.shipping_markup_fee'),2),
+                'gross_shipping' => number_format($query->sum('pkg.shipping_charges_gross'),2),
+            ],
             'filters' => [
                 'search_invoice_no' => $search_invoice_no ?? "",
                 'search_suit_no' => $search_suit_no ?? "",
