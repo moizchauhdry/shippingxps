@@ -14,6 +14,16 @@
 							<input type="text" class="form-control" v-model="form.search_suit_no" />
 						</div>
 						<div class="form-group">
+							<label for="">Service Type</label>
+							<select class="form-control form-select" v-model="form.search_service_type" style="width: 150px;">
+								<option value="">All</option>
+								<option value="dhl">DHL</option>
+								<option value="fedex">Fedex</option>
+								<option value="ups">UPS</option>
+								<option value="usps">USPS</option>
+							</select>
+						</div>
+						<div class="form-group">
 							<label for="">Tracking Out</label>
 							<input type="text" class="form-control" v-model="form.search_tracking_out" />
 						</div>
@@ -30,6 +40,39 @@
 					</div>
 				</form>
 
+
+				<div class="container-fluid mb-2">
+					<div class="row">
+						<div class="col-6 col-md-2">
+							<div class="card" style="border:1px solid #000000;border-radius: 20%;">
+								<div class="card-body">
+									<h2>Total Charged Amount</h2>
+									<p>$ {{ stats.total }}</p>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-6 col-md-2">
+							<div class="card" style="border:1px solid #000000;border-radius: 20%;">
+								<div class="card-body">
+									<h2>Total Shipping Gross</h2>
+									<p>$ {{ stats.gross_shipping }}</p>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-6 col-md-2">
+							<div class="card" style="border:1px solid #000000;border-radius: 20%;">
+								<div class="card-body">
+									<h2>Total Profit</h2>
+									<p>$ {{ stats.profit }}</p>
+								</div>
+							</div>
+						</div>
+						
+					</div>
+				</div>
+
 				<div class="table-responsive">
 					<table class="table table-striped table-bordered text-uppercase">
 						<thead>
@@ -40,7 +83,7 @@
 								<th>Transaction ID</th>
 								<th>Charged Date</th>
 								<th>charged Amount</th>
-								<th>Shipping Total</th>
+								<th>Shipping Charges Gross</th>
 								<th>Markup Percentage</th>
 								<th>Markup / Profit</th>
 							</tr>
@@ -128,6 +171,7 @@ export default {
 	},
 	props: {
 		auth: Object,
+		stats: Object,
 		payments: Object,
 		filters: Object,
 	},
