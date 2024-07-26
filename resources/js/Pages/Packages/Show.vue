@@ -110,6 +110,7 @@ export default {
 		eei_charges: Number,
 		label_charges: Number,
 		package_expired: Boolean,
+		signature_types: Array,
 	},
 	computed: {
 		siuteNum() {

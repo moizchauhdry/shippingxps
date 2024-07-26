@@ -23,6 +23,7 @@ use App\Models\ServiceRequest;
 use App\Models\User;
 use App\Models\SiteSetting;
 use App\Models\Shipping;
+use App\Models\SignatureType;
 use App\Models\Warehouse;
 use App\Notifications\CustomerPackageRequestNotification;
 use App\Notifications\ReturnPackageNotification;
@@ -287,6 +288,8 @@ class PackageController extends Controller
             event(new PackageShippingServiceSelected($packag));
         }
 
+        $signature_types = SignatureType::where('active', 1)->get();
+
         return Inertia::render('Packages/Show', [
             'packag' => $packag,
             'child_package_orders' => $child_package_orders,
@@ -307,6 +310,7 @@ class PackageController extends Controller
             'eei_charges' => $eei_charges,
             'label_charges' => (float) $label_charges,
             'package_expired' => $package_expired,
+            'signature_types' => $signature_types,
         ]);
     }
 
