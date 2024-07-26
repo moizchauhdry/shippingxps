@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use App\Models\Address;
 use App\Models\Country;
+use App\Models\SignatureType;
 use GuzzleHttp\Client;
 use Illuminate\Validation\Rule;
 
@@ -25,9 +26,11 @@ class AddressController extends Controller
     public function create()
     {
         $countries = Country::all(['id', 'nicename as name', 'iso'])->toArray();
+        $signature_types = SignatureType::where('active', 1)->get();
 
         return Inertia::render('Address/CreateAddress', [
             'countries' => $countries,
+            'signature_types' => $signature_types,
         ]);
     }
 
@@ -46,6 +49,7 @@ class AddressController extends Controller
             'address_2' => 'nullable|string|max:35',
             'address_3' => 'nullable|string|max:35',
             'tax_no' => 'nullable|max:100',
+            'signature_type_id' => 'required',
         ], [
             'regex' => 'The :attribute must only contain letters (english) and numbers.'
         ]);
@@ -143,6 +147,7 @@ class AddressController extends Controller
         $address->address_3 =  $request->address_3;
         $address->is_residential = $validated['is_residential'];
         $address->tax_no = $request->tax_no;
+        $address->signature_type_id = $request->signature_type_id;
         $address->save();
 
         if ($request->packages_address == true) {
@@ -157,10 +162,12 @@ class AddressController extends Controller
         $address = Address::find($id);
 
         $countries = Country::all(['id', 'nicename as name', 'iso'])->toArray();
+        $signature_types = SignatureType::where('active', 1)->get();
 
         return Inertia::render('Address/EditAddress', [
             'address' => $address,
-            'countries' => $countries
+            'countries' => $countries,
+            'signature_types' => $signature_types,
         ]);
     }
 
@@ -181,6 +188,7 @@ class AddressController extends Controller
             'address_2' => 'nullable|string|max:35',
             'address_3' => 'nullable|string|max:35',
             'tax_no' => 'nullable|max:100',
+            'signature_type_id' => 'required',
         ], [
             'regex' => 'The :attribute must only contain letters (english) and numbers.'
         ]);
@@ -271,7 +279,7 @@ class AddressController extends Controller
         $address->address_3 =  $request->address_3;
         $address->is_residential = $validated['is_residential'];
         $address->tax_no = $request->tax_no;
-
+        $address->signature_type_id = $request->signature_type_id;
         $address->update();
 
         if ($request->packages_address == true) {
