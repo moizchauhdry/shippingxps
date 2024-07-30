@@ -10,7 +10,7 @@ use App\Models\City;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 
-class HomeController extends Controller
+class ShoppingController extends Controller
 {
 
 

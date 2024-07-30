@@ -52,7 +52,7 @@
 													<breeze-label for="Business/Residential"
 														value="Business/Residential *" />
 													<select class="form-control" v-model="create_shipping_address_form.is_residential
-														" required>
+													" required>
 														<option value="" selected>Select</option>
 														<option value="0">Business</option>
 														<option value="1">Residential</option>
@@ -94,7 +94,7 @@
 													<breeze-label for="state" :value="create_shipping_address_form.state_required
 														? 'State *'
 														: 'State (optional)'
-														" />
+													" />
 													<input type="text" class="form-control" placeholder="e.g NY,CA,DE"
 														v-model="create_shipping_address_form.state" />
 												</div>
@@ -114,7 +114,8 @@
 												<div class="form-group col-md-6">
 													<breeze-label for="tax_no" value="Tax ID" />
 													<input name="tax_no" id="tax_no" type="text" class="form-control"
-														placeholder="Tax/ VAT ID" v-model="create_shipping_address_form.tax_no" />
+														placeholder="Tax/ VAT ID"
+														v-model="create_shipping_address_form.tax_no" />
 												</div>
 
 												<div class="form-group col-md-6">
@@ -127,6 +128,17 @@
 													<breeze-label for="email" value="Email *" />
 													<input type="email" class="form-control"
 														v-model="create_shipping_address_form.email" required />
+												</div>
+
+												<div class="form-group col-md-6">
+													<breeze-label for="Signature Type" value="Signature Type *" />
+													<select v-model="create_shipping_address_form.signature_type_id" class="form-control">
+														<template v-for="signature_type in signature_types"
+															:key="signature_type.id">
+															<option :value="signature_type.id">{{ signature_type.name }}
+															</option>
+														</template>
+													</select>
 												</div>
 											</div>
 
@@ -162,6 +174,7 @@ export default {
 		packag: Object,
 		shipping_address: Object,
 		countries: Object,
+		signature_types: Array,
 	},
 	components: {
 		BreezeAuthenticatedLayout,
@@ -190,7 +203,8 @@ export default {
 				phone: "",
 				email: "",
 				state_required: false,
-				packages_address: true
+				packages_address: true,
+				signature_type_id: 1,
 			}),
 		};
 	},

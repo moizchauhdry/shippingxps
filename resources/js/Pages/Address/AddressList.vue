@@ -19,6 +19,7 @@
 							<th scope="col">Zip Code</th>
 							<th scope="col">Phone</th>
 							<th scope="col">Address</th>
+							<th scope="col">Signature Type</th>
 							<th scope="col">Actions</th>
 						</tr>
 					</thead>
@@ -32,6 +33,7 @@
 							<td>{{ address.zip_code }}</td>
 							<td>{{ address.phone }}</td>
 							<td>{{ address.address }}</td>
+							<td>{{ address.signature_type_id }}</td>
 							<td>
 								<inertia-link class="nav-link" :href="route('address.edit', address.id)">
 									<i class="fas fa-external-link-alt mr-1"></i><span>Edit</span>

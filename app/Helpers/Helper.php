@@ -102,6 +102,20 @@ function generateLabelFedex($id)
     $warehouse = Warehouse::where('id', $package->warehouse_id)->first();
     $ship_to = Address::where('id', $package->address_book_id)->first();
 
+    if ($ship_to->signature_type_id == 1) {
+        $signature_type = "SERVICE_DEFAULT";
+    } else if ($ship_to->signature_type_id == 2) {
+        $signature_type = "NO_SIGNATURE_REQUIRED";
+    } else if ($ship_to->signature_type_id == 3) {
+        $signature_type = "INDIRECT";
+    } else if ($ship_to->signature_type_id == 4) {
+        $signature_type = "DIRECT";
+    } else if ($ship_to->signature_type_id == 5) {
+        $signature_type = "ADULT";
+    } else {
+        $signature_type = "SERVICE_DEFAULT";
+    }
+
     $service_type = 'international';
     if ($warehouse->country_id == $ship_to->country_id) {
         $service_type = 'domestic';
@@ -150,6 +164,12 @@ function generateLabelFedex($id)
                 "width" => $box->width,
                 "height" => $box->height,
                 "units" => "IN"
+            ],
+            "packageSpecialServices" => [
+                "specialServiceTypes" => [
+                    // "NON_STANDARD_CONTAINER"
+                ],
+                "signatureOptionType" => $signature_type
             ]
         ];
     }

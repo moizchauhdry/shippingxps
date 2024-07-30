@@ -176,6 +176,12 @@
 										<td>${{ formatNumber(packag.storage_fee) }}</td>
 										<td></td>
 									</tr>
+									<tr v-if="packag.signature_charges > 0">
+										<td>Signature Charges</td>
+										<td></td>
+										<td>${{ formatNumber(packag.signature_charges) }}</td>
+										<td></td>
+									</tr>
 									<tr>
 										<td>Discount</td>
 										<td></td>
