@@ -249,7 +249,7 @@ class PackageController extends Controller
             }
         }
 
-        $total = $subtotal + $packag->shipping_charges + (float) SiteSetting::getByName('mailout_fee') + $packag->storage_fee + $packag->consolidation_fee - $packag->discount;
+        $total = ($subtotal + $packag->shipping_charges + (float) SiteSetting::getByName('mailout_fee') + $packag->storage_fee + $packag->consolidation_fee + $packag->signature_charges) - $packag->discount;
 
         $eei_charges = 0;
         if ($packag->shipping_total >= 2500 || (isset($packag->address->country) && in_array($packag->address->country->iso, ['CN', 'HK', 'RU', 'VE']))) {
@@ -1072,6 +1072,14 @@ class PackageController extends Controller
                 'address_book_id' => 0,
                 'address_type' => NULL,
             ]);
+        }
+
+
+        if ($address->signature_type_id == 5) {
+            $signature_charges = SiteSetting::where('name', 'signature_charges')->first();
+            $package->update(['signature_charges' => $signature_charges->value]);
+        } else {
+            $package->update(['signature_charges' => 0]);
         }
 
         return redirect()->route('packages.show', $package->id);
