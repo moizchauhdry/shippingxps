@@ -3,6 +3,8 @@
 use App\Models\Address;
 use App\Models\OrderItem;
 use App\Models\Package;
+use App\Models\Service;
+use App\Models\ServiceRequest;
 use App\Models\ShippingService;
 use App\Models\SiteSetting;
 use App\Models\User;
@@ -102,19 +104,27 @@ function generateLabelFedex($id)
     $warehouse = Warehouse::where('id', $package->warehouse_id)->first();
     $ship_to = Address::where('id', $package->address_book_id)->first();
 
-    if ($ship_to->signature_type_id == 1) {
-        $signature_type = "SERVICE_DEFAULT";
-    } else if ($ship_to->signature_type_id == 2) {
-        $signature_type = "NO_SIGNATURE_REQUIRED";
-    } else if ($ship_to->signature_type_id == 3) {
-        $signature_type = "INDIRECT";
-    } else if ($ship_to->signature_type_id == 4) {
-        $signature_type = "DIRECT";
-    } else if ($ship_to->signature_type_id == 5) {
+    $service = Service::where('keyword', 'signature')->first();
+    $signature_service_request = ServiceRequest::where('package_id', $package->id)->where('service_id', $service->id)->first();
+    if ($signature_service_request) {
         $signature_type = "ADULT";
     } else {
         $signature_type = "SERVICE_DEFAULT";
     }
+
+    // if ($ship_to->signature_type_id == 1) {
+    //     $signature_type = "SERVICE_DEFAULT";
+    // } else if ($ship_to->signature_type_id == 2) {
+    //     $signature_type = "NO_SIGNATURE_REQUIRED";
+    // } else if ($ship_to->signature_type_id == 3) {
+    //     $signature_type = "INDIRECT";
+    // } else if ($ship_to->signature_type_id == 4) {
+    //     $signature_type = "DIRECT";
+    // } else if ($ship_to->signature_type_id == 5) {
+    //     $signature_type = "ADULT";
+    // } else {
+    //     $signature_type = "SERVICE_DEFAULT";
+    // }
 
     $service_type = 'international';
     if ($warehouse->country_id == $ship_to->country_id) {

@@ -130,7 +130,7 @@
 														v-model="create_shipping_address_form.email" required />
 												</div>
 
-												<div class="form-group col-md-6">
+												<!-- <div class="form-group col-md-6">
 													<breeze-label for="Signature Type" value="Signature Type *" />
 													<select v-model="create_shipping_address_form.signature_type_id" class="form-control">
 														<template v-for="signature_type in signature_types"
@@ -139,7 +139,7 @@
 															</option>
 														</template>
 													</select>
-												</div>
+												</div> -->
 											</div>
 
 											<div class="order-button">
@@ -204,7 +204,7 @@ export default {
 				email: "",
 				state_required: false,
 				packages_address: true,
-				signature_type_id: 1,
+				// signature_type_id: 1,
 			}),
 		};
 	},
