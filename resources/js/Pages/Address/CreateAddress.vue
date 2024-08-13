@@ -83,14 +83,14 @@
 									<input type="email" class="form-control" placeholder="Phone" v-model="form.email" />
 								</div>
 
-								<div class="form-group col-md-6">
+								<!-- <div class="form-group col-md-6">
 									<breeze-label for="Signature Type" value="Signature Type *" />
 									<select v-model="form.signature_type_id" class="form-control">
 										<template v-for="signature_type in signature_types" :key="signature_type.id">
 											<option :value="signature_type.id">{{ signature_type.name }}</option>
 										</template>
 									</select>
-								</div>
+								</div> -->
 							</div>
 							<div class="row">
 								<div class="form-group col-md-6">
@@ -137,7 +137,7 @@ export default {
 				is_residential: "1",
 				tax_no: "",
 				state_required: false,
-				signature_type_id: 1,
+				// signature_type_id: 1,
 			}),
 		};
 	},
