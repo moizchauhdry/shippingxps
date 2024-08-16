@@ -14,6 +14,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Package;
 use App\Models\Payment;
+use App\Models\ServiceRequest;
 use App\Models\SiteSetting;
 use App\Models\Warehouse;
 use Carbon\Carbon;
@@ -55,6 +56,12 @@ class PaymentController extends Controller
 
             $amount = $package->grand_total;
             $payment_module_id = $package->id;
+
+
+            $sr_count = ServiceRequest::where('package_id', $package->id)->where('status', 'pending')->count();
+            if ($sr_count > 0) {
+                abort(403, "The service request is pending on the admin side, so you can't proceed with checkout.");
+            }
         }
 
         if ($payment_module == 'gift_card') {
@@ -777,7 +784,7 @@ class PaymentController extends Controller
         $query->leftJoin('packages as pkg', 'pkg.id', 'payments.package_id');
 
         $query->where('payments.charged_at', '!=', NULL);
-        
+
         $query->when($user->type === 'customer', function ($qry) use ($user) {
             $qry->where('payments.customer_id', $user->id);
         });
