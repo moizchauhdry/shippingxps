@@ -1,15 +1,6 @@
 <template>
-  <div
-    class="row"
-    v-if="
-      $page.props.auth.user.type == 'customer' &&
-      (packag.status == 'filled' ||
-        packag.status == 'consolidated' ||
-        packag.address_type == 'domestic') &&
-      packag.pkg_dim_status == 'done' &&
-      packag.return_label == 0
-    "
-  >
+  <div class="row"
+    v-if="$page.props.auth.user.type == 'customer' && (packag.status == 'filled' || packag.status == 'consolidated' || packag.address_type == 'domestic') && packag.pkg_dim_status == 'done' && packag.return_label == 0">
     <div class="col-md-12" v-if="packag.service_code == null">
       <div class="card mt-2">
         <div class="card-header">
@@ -19,11 +10,7 @@
           <div class="row">
             <div class="col-md-3">
               <template v-if="service_request_pending_count == 0">
-                <button
-                  class="btn btn-success"
-                  v-on:click="getShippingRates()"
-                  :disabled="loading"
-                >
+                <button class="btn btn-success" v-on:click="getShippingRates()" :disabled="loading">
                   <span v-if="!loading">Get Shipping Rates</span>
                   <span v-else>Loading ... Please wait.</span>
                 </button>
@@ -35,7 +22,7 @@
                 </span>
               </template>
             </div>
-            <div class="col-md-9">
+            <div class="col-md-9" v-if="service_request_pending_count == 0">
               <table class="table table-sm table-striped">
                 <thead>
                   <tr>
@@ -48,35 +35,19 @@
                   <template v-for="rate in shipping_rates" :key="rate.id">
                     <tr>
                       <td>
-                        <img
-                          src="https://app.shippingxps.com/theme/img/demos/business-consulting-3/partner-01.png"
-                          style="width: 100px"
-                          v-if="rate.code == 'usps'"
-                        />
-                        <img
-                          src="https://app.shippingxps.com/theme/img/demos/business-consulting-3/partner-02.png"
-                          style="width: 100px"
-                          v-if="rate.code == 'dhl'"
-                        />
-                        <img
-                          src="https://app.shippingxps.com/theme/img/demos/business-consulting-3/partner-03.png"
-                          style="width: 100px"
-                          v-if="rate.code == 'fedex'"
-                        />
-                        <img
-                          src="https://app.shippingxps.com/theme/img/demos/business-consulting-3/partner-04.png"
-                          style="width: 100px"
-                          v-if="rate.code == 'ups'"
-                        />
+                        <img src="https://app.shippingxps.com/theme/img/demos/business-consulting-3/partner-01.png"
+                          style="width: 100px" v-if="rate.code == 'usps'" />
+                        <img src="https://app.shippingxps.com/theme/img/demos/business-consulting-3/partner-02.png"
+                          style="width: 100px" v-if="rate.code == 'dhl'" />
+                        <img src="https://app.shippingxps.com/theme/img/demos/business-consulting-3/partner-03.png"
+                          style="width: 100px" v-if="rate.code == 'fedex'" />
+                        <img src="https://app.shippingxps.com/theme/img/demos/business-consulting-3/partner-04.png"
+                          style="width: 100px" v-if="rate.code == 'ups'" />
                         {{ rate.name }}
                       </td>
                       <td>${{ rate.total }}</td>
                       <td>
-                        <a
-                          v-on:click="setShippingService(rate)"
-                          class="btn btn-info"
-                          >Confirm</a
-                        >
+                        <a v-on:click="setShippingService(rate)" class="btn btn-info">Confirm</a>
                       </td>
                     </tr>
                   </template>
