@@ -11,7 +11,7 @@
 								<div class="col-md-8 offset-md-2">
 									<div class="bg-dark border-3 border-warning container mb-3 text-center text-white">
 										<h2 style="color: #fff; font-weight: bold; font-size: 25px">
-											Checkout
+											Checkout - Developer Mode
 										</h2>
 									</div>
 
@@ -31,9 +31,9 @@
 											<template v-for="address in shipping_address" :key="address.id">
 												<option :value="address.id">{{ address.label }}</option>
 											</template>
-										</select>
-										<hr class="mb-3 mt-3" />
-									</template> -->
+</select>
+<hr class="mb-3 mt-3" />
+</template> -->
 
 									<div class="row">
 										<!-- <div class="col-12" v-if="status != undefined">
@@ -209,7 +209,8 @@
 								</button>
 							</div>
 							<div class="col-md-6 offset-md-3">
-								<a href="javascript:void(0)" id="paymentSuccess" @click="paymentSuccess" class="hidden">pay
+								<a href="javascript:void(0)" id="paymentSuccess" @click="paymentSuccess"
+									class="hidden">pay
 									Success</a>
 								<div id="smart-button-container">
 									<div style="text-align: center">
@@ -357,7 +358,9 @@ export default {
 	},
 	methods: {
 		async square() {
+			console.log(this.square_application_id, this.square_location_id, 'step 01');
 			const payments = Square.payments(this.square_application_id, this.square_location_id);
+			console.log(payments, 'step 02');
 			const card = await payments.card();
 			await card.attach('#card-container');
 
