@@ -832,26 +832,65 @@ class PaymentController extends Controller
 
             $payment_module = $request->payment_module;
 
-            if (!in_array($payment_module, ['package'])) {
-                // return redirect()->back()->with('error', 'CURRENTLY AVAILABLE FOR PACAKGES');
-                dd('CURRENTLY AVAILABLE FOR PACAKGES');
-            }
-
             $package = NULL;
             if ($payment_module == 'package') {
                 $package = Package::query()
-                    ->where('payment_status', 'Pending')
                     ->where('id', $request->payment_module_id)
                     ->where('customer_id', $user->id)
+                    ->where('payment_status', 'Pending')
                     ->firstOrFail();
 
                 if ($package->grand_total <= 0) {
-                    // return redirect()->back()->with('error', 'AMOUNT MUST BE GREATER THEN 0');
-                    dd('AMOUNT MUST BE GREATER THEN 0');
+                    abort(403, 'AMOUNT MUST BE GREATER THEN 0');
                 }
 
                 $amount = $package->grand_total;
                 $payment_module_id = $package->id;
+            }
+
+            if ($payment_module == 'order') {
+                $order = Order::query()
+                    ->where('id', $request->payment_module_id)
+                    ->where('customer_id', $user->id)
+                    ->where('payment_status', 'Pending')
+                    ->firstOrFail();;
+
+                if ($order->grand_total <= 0) {
+                    abort(403, 'AMOUNT MUST BE GREATER THEN 0');
+                }
+
+                $amount = $order->grand_total;
+                $payment_module_id = $order->id;
+            }
+
+            if ($payment_module == 'gift_card') {
+                $gift_card = GiftCard::query()
+                    ->where('id', $request->payment_module_id)
+                    ->where('customer_id', $user->id)
+                    ->where('payment_status', 'Pending')
+                    ->firstOrFail();;
+
+                if ($gift_card->final_amount <= 0) {
+                    abort(403, 'AMOUNT MUST BE GREATER THEN 0');
+                }
+
+                $amount = $gift_card->final_amount;
+                $payment_module_id = $gift_card->id;
+            }
+
+            if ($payment_module == 'auction') {
+                $auction = Auction::query()
+                    ->where('payment_status', 'Pending')
+                    ->where('id', $request->payment_module_id)
+                    ->where('customer_id', $user->id)
+                    ->firstOrFail();;
+
+                if ($auction->final_price <= 0) {
+                    abort(403, 'AMOUNT MUST BE GREATER THEN 0');
+                }
+
+                $amount = $auction->final_price;
+                $payment_module_id = $auction->id;
             }
 
             $grand_total = $amount * 100;
@@ -901,7 +940,6 @@ class PaymentController extends Controller
             $payment_response = json_decode($payment_response->getBody(), true);
 
             $data = [
-                // 'payment_module' => $payment_module,
                 $payment_module . '_id' => $payment_module_id,
                 'customer_id' => $user->id,
                 'transaction_id' => $payment_response['payment']['id'],
@@ -923,7 +961,21 @@ class PaymentController extends Controller
                     'charged_at' => Carbon::now(),
                 ]);
 
-                $package->update(['payment_status' => 'Paid']);
+                if ($payment_module == 'package') {
+                    $package->update(['payment_status' => 'Paid']);
+                }
+
+                if ($payment_module == 'order') {
+                    $order->update(['payment_status' => 'Paid']);
+                }
+
+                if ($payment_module == 'gift_card') {
+                    $gift_card->update(['payment_status' => 'Paid']);
+                }
+
+                if ($payment_module == 'auction') {
+                    $auction->update(['payment_status' => 'Paid']);
+                }
 
                 return response()->json([
                     'status' => true,
