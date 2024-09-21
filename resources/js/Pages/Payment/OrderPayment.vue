@@ -11,7 +11,7 @@
 								<div class="col-md-8 offset-md-2">
 									<div class="bg-dark border-3 border-warning container mb-3 text-center text-white">
 										<h2 style="color: #fff; font-weight: bold; font-size: 25px">
-											Checkout - Developer Mode
+											Checkout
 										</h2>
 									</div>
 
@@ -168,7 +168,7 @@
 
 
 						<!-- SQUARE START -->
-						<form id="payment-form" v-if="payment_module == 'package'">
+						<form id="payment-form">
 							<div class="row">
 								<div class="col-md-8 offset-md-2">
 									<h1 class="text-uppercase"><b>Debit or Credit Card</b></h1>
@@ -358,9 +358,7 @@ export default {
 	},
 	methods: {
 		async square() {
-			console.log(this.square_application_id, this.square_location_id, 'step 01');
 			const payments = Square.payments(this.square_application_id, this.square_location_id);
-			console.log(payments, 'step 02');
 			const card = await payments.card();
 			await card.attach('#card-container');
 
