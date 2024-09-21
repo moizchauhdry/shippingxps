@@ -981,7 +981,8 @@ class PaymentController extends Controller
                     'status' => true,
                     'code' => 200,
                     'message' => 'success',
-                    'route' => route('packages.show', $payment_module_id),
+                    // 'route' => route('packages.show', $payment_module_id),
+                    'route' => route('payments.getPayments'),
                 ]);
             } else {
                 return response()->json([
