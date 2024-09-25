@@ -108,7 +108,6 @@ class PaymentController extends Controller
             $payment_module_id = $auction->id;
         }
 
-
         if ($amount <= 0) {
             abort(403, 'The amount is less then 0');
         }

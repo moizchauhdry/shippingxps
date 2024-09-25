@@ -55,7 +55,8 @@
 												<template v-if="packag?.address?.tax_no">
 													VAT ID: {{ packag?.address?.tax_no }} <br>
 												</template>
-												Type: {{ packag?.address?.is_residential == 1 ? 'Residential' : 'Commercial'
+												Type: {{ packag?.address?.is_residential == 1 ? 'Residential' :
+													'Commercial'
 												}} <br />
 											</td>
 										</tr>
@@ -111,7 +112,7 @@
 								<tbody>
 									<template v-if="packag.pkg_type == 'consolidation' &&
 										packag.pkg_dim_status == 'done'
-										">
+									">
 										<tr>
 											<td>Consolidation</td>
 											<td>
@@ -146,7 +147,7 @@
 												${{ formatNumber(package_service_request.amount) }}
 												<button v-if="$page.props.auth.user.type == 'admin' &&
 													packag.payment_status != 'Paid'
-													" class="btn btn-link" @click="editServiceCharges(package_service_request)">
+												" class="btn btn-link" @click="editServiceCharges(package_service_request)">
 													<i class="fa fa-edit"></i>
 												</button>
 											</td>
@@ -261,7 +262,7 @@
 	</div>
 
 	<div v-if="$page.props.auth.user.type == 'admin' && packag.payment_status != 'Paid'
-		" class="modal fade" id="charges_update_modal" tabindex="-1" aria-labelledby="charges_update_label"
+	" class="modal fade" id="charges_update_modal" tabindex="-1" aria-labelledby="charges_update_label"
 		aria-hidden="true">
 		<div class="modal-dialog border">
 			<form @submit.prevent="updateServiceCharges">
@@ -383,8 +384,14 @@ export default {
 				this.checkout_message.push('The shipping rate required');
 			}
 
+			// if (this.checkout_message.length === 0) {
+			// 	this.$inertia.post(route("payment.index"), this.form_checkout);
+			// }
+
 			if (this.checkout_message.length === 0) {
-				this.$inertia.post(route("payment.index"), this.form_checkout);
+				const queryParams = new URLSearchParams(this.form_checkout).toString();
+				const urlWithParams = `${route("payment.index")}?${queryParams}`;
+				this.$inertia.post(urlWithParams, {});
 			}
 		},
 		editCharges(amount, type) {
