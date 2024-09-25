@@ -37,7 +37,11 @@ function calulate_storage($package)
     $storage_days = $now->diffInDays($createdAt);
 
     if ($days_exceeded > 0) {
-        $storage_fee = $fee * $boxes_weight * $days_exceeded;
+        // $storage_fee = $fee * $boxes_weight * $days_exceeded;
+
+        // Cap the days exceeded at 5 days maximum
+        $chargeable_days = min($days_exceeded, 5);
+        $storage_fee = $fee * $boxes_weight * $chargeable_days;
     } else {
         $storage_fee = 0;
     }
@@ -46,11 +50,13 @@ function calulate_storage($package)
         $storage_days_exceeded = $days_exceeded;
     }
 
-    $package->update([
-        'storage_fee' => (float) $storage_fee,
-        'storage_days' => (float) $storage_days,
-        'storage_days_exceeded' => (float) $storage_days_exceeded,
-    ]);
+    // if ($package->payment_status == "Pending") {
+        $package->update([
+            'storage_fee' => (float) $storage_fee,
+            'storage_days' => (float) $storage_days,
+            'storage_days_exceeded' => (float) $storage_days_exceeded,
+        ]);
+    // }
 
     return true;
 }
