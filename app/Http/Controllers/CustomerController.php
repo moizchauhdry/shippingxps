@@ -141,6 +141,7 @@ class CustomerController extends Controller
     public function index(Request $request)
     {
         // dd($request->all());
+
         $page = $request->has('page') ? $request->page : 10;
         $query = User::where('type', 'customer');
 
@@ -149,8 +150,12 @@ class CustomerController extends Controller
             $query->where('id', $suite_no);
         }
 
+        if (!empty($request->name)) {
+            $query->where('name', 'like', '%' . $request->name . '%');
+        }
+
         $customers = $query->orderBy('id', 'desc')->paginate(10)
-            ->through(fn ($customer) => [
+            ->through(fn($customer) => [
                 'id' => $customer->id,
                 'suite_no' => $customer->id,
                 'name' => $customer->name ?? '-',
