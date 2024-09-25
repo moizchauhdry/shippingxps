@@ -26,6 +26,7 @@ use PDF;
 use net\authorize\api\contract\v1 as AnetAPI;
 use net\authorize\api\controller as AnetController;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class PaymentController extends Controller
@@ -988,7 +989,7 @@ class PaymentController extends Controller
                 // ]);
             } else {
 
-                return redirect()->back()->with('error', $payment_response);
+                return redirect()->back()->with('error', $payment_response['errors'][0]['code']);
 
                 // return response()->json([
                 //     'status' => false,
@@ -998,7 +999,8 @@ class PaymentController extends Controller
             }
         } catch (\Throwable $th) {
 
-            return redirect()->back()->with('error', $th->getMessage());
+            Log::info($th);
+            return redirect()->back()->with('error', 'Payment Error.');
 
             // return response()->json([
             //     'status' => false,
