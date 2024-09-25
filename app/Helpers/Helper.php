@@ -3,6 +3,7 @@
 use App\Models\Address;
 use App\Models\OrderItem;
 use App\Models\Package;
+use App\Models\Payment;
 use App\Models\Service;
 use App\Models\ServiceRequest;
 use App\Models\ShippingService;
@@ -26,15 +27,21 @@ function format_number($number)
 
 function calulate_storage($package)
 {
+    $compare_date = Carbon::now();
+
+    if ($package->payment_status == 'Paid') {
+        $payment = Payment::where('package_id', $package->id)->first();
+        $compare_date = $payment->charged_at;
+    } 
+
     $storage_days_exceeded = 0;
 
     $boxes_weight = $package->boxes->sum('weight');
     $fee = (float) SiteSetting::where('name', 'storage_fee')->first()->value;
 
     $createdAt = Carbon::parse($package->created_at);
-    $now = Carbon::now();
-    $days_exceeded = $now->diffInDays($createdAt) - 75;
-    $storage_days = $now->diffInDays($createdAt);
+    $days_exceeded = $compare_date->diffInDays($createdAt) - 75;
+    $storage_days = $compare_date->diffInDays($createdAt);
 
     if ($days_exceeded > 0) {
         // $storage_fee = $fee * $boxes_weight * $days_exceeded;
@@ -50,13 +57,13 @@ function calulate_storage($package)
         $storage_days_exceeded = $days_exceeded;
     }
 
-    // if ($package->payment_status == "Pending") {
+    if ($package->payment_status == "Pending") {
         $package->update([
             'storage_fee' => (float) $storage_fee,
             'storage_days' => (float) $storage_days,
             'storage_days_exceeded' => (float) $storage_days_exceeded,
         ]);
-    // }
+    }
 
     return true;
 }
