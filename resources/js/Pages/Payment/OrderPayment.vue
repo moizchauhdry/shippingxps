@@ -173,9 +173,14 @@
 								<div class="col-md-8 offset-md-2">
 									<h1 class="text-uppercase"><b>Debit or Credit Card</b></h1>
 									<div id="card-container"></div>
-									<button id="card-button" type="button" class="btn btn-primary w-100"><span
-											class="text-lg">Pay
-											${{ amount }}</span></button>
+									<button id="card-button" type="button" class="btn btn-primary w-100"
+										:class="{ 'opacity-25': square_payment_form.processing }"
+										:disabled="square_payment_form.processing">
+										<span class="text-lg" v-if="square_payment_form.processing">
+											Loading ... Please wait.</span>
+										<span class="text-lg mr-1" v-else>Pay ${{ amount }}</span>
+
+									</button>
 									<div id="payment-status-container"></div>
 								</div>
 							</div>
@@ -327,6 +332,11 @@ export default {
 				discount: 0.0,
 				shipping_address_id: null,
 			}),
+			square_payment_form: this.$inertia.form({
+				payment_module: this.payment_module,
+				payment_module_id: this.payment_module_id,
+				payment_token: "",
+			}),
 		};
 	},
 	props: {
@@ -369,32 +379,8 @@ export default {
 				try {
 					const result = await card.tokenize();
 					if (result.status === 'OK') {
-						this.overlay = true;
-						$.ajax({
-							method: "POST",
-							data: {
-								_token: $('meta[name="csrf-token"]').attr('content'),
-								'payment_token': result.token,
-								'payment_module': this.payment_module,
-								'payment_module_id': this.payment_module_id,
-							},
-							url: this.route("payment.square-success"),
-							beforeSend: function () {
-								this.overlay = true;
-							},
-							success: function (response) {
-								if (response.code == 200) {
-									location.href = response.route;
-								} else {
-									statusContainer.innerHTML = "PAYMENT DECLINE!";
-								}
-							},
-							error: function (errors) {
-								statusContainer.innerHTML = "PAYMENT DENIED!";
-								this.overlay = false;
-							}
-						});
-
+						this.square_payment_form.payment_token = result.token;
+						this.square_payment_form.post(this.route("payment.square-success"));
 					} else {
 						let errorMessage = `Tokenization failed with status: ${result.status}`;
 						if (result.errors) {
@@ -402,7 +388,6 @@ export default {
 								result.errors
 							)}`;
 						}
-
 						throw new Error(errorMessage);
 					}
 				} catch (e) {

@@ -977,26 +977,34 @@ class PaymentController extends Controller
                     $auction->update(['payment_status' => 'Paid']);
                 }
 
-                return response()->json([
-                    'status' => true,
-                    'code' => 200,
-                    'message' => 'success',
-                    // 'route' => route('packages.show', $payment_module_id),
-                    'route' => route('payments.getPayments'),
-                ]);
+                return redirect()->route('payments.getPayments')->with('success', 'The payment have been completed successfully.');
+
+                // return response()->json([
+                //     'status' => true,
+                //     'code' => 200,
+                //     'message' => 'success',
+                //     // 'route' => route('packages.show', $payment_module_id),
+                //     'route' => route('payments.getPayments'),
+                // ]);
             } else {
-                return response()->json([
-                    'status' => false,
-                    'code' => 403,
-                    'message' => $payment_response,
-                ]);
+
+                return redirect()->back()->with('error', $payment_response);
+
+                // return response()->json([
+                //     'status' => false,
+                //     'code' => 403,
+                //     'message' => $payment_response,
+                // ]);
             }
         } catch (\Throwable $th) {
-            return response()->json([
-                'status' => false,
-                'code' => 403,
-                'message' => $th->getMessage(),
-            ]);
+
+            return redirect()->back()->with('error', $th->getMessage());
+
+            // return response()->json([
+            //     'status' => false,
+            //     'code' => 403,
+            //     'message' => $th->getMessage(),
+            // ]);
         }
     }
 }
