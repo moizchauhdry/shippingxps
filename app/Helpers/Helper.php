@@ -31,7 +31,7 @@ function calulate_storage($package)
 
     if ($package->payment_status == 'Paid') {
         $payment = Payment::where('package_id', $package->id)->first();
-        $compare_date = $payment->charged_at;
+        $compare_date = Carbon::parse($payment->charged_at);
     } 
 
     $storage_days_exceeded = 0;
