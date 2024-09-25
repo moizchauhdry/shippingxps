@@ -57,13 +57,13 @@ function calulate_storage($package)
         $storage_days_exceeded = $days_exceeded;
     }
 
-    if ($package->payment_status == "Pending") {
+    // if ($package->payment_status == "Pending") {
         $package->update([
             'storage_fee' => (float) $storage_fee,
             'storage_days' => (float) $storage_days,
             'storage_days_exceeded' => (float) $storage_days_exceeded,
         ]);
-    }
+    // }
 
     return true;
 }
