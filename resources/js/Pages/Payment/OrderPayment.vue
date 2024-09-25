@@ -11,7 +11,7 @@
 								<div class="col-md-8 offset-md-2">
 									<div class="bg-dark border-3 border-warning container mb-3 text-center text-white">
 										<h2 style="color: #fff; font-weight: bold; font-size: 25px">
-											Checkout - Square Payment
+											Checkout
 										</h2>
 									</div>
 
