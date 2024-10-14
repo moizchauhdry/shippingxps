@@ -1,10 +1,19 @@
 <template>
 	<MainLayout>
-		<div class="card mb-5">
+		<div class="card mb-5 mt-2">
 			<div class="card-header">Manage Reports</div>
 			<div class="card-body">
 				<form @submit.prevent="submit">
 					<div class="d-flex search">
+						<!-- <div class="form-group">
+							<label for="">Payment Module</label>
+							<select class="form-control form-select" v-model="filters.slug"
+								@change="submit" style="width: 150px;">
+								<option value="">All</option>
+								<option value="package">Package</option>
+								<option value="order">Order</option>
+							</select>
+						</div> -->
 						<div class="form-group">
 							<label for="">Invoice No</label>
 							<input type="text" class="form-control" v-model="form.search_invoice_no" />
@@ -15,7 +24,8 @@
 						</div>
 						<div class="form-group">
 							<label for="">Service Type</label>
-							<select class="form-control form-select" v-model="form.search_service_type" style="width: 150px;">
+							<select class="form-control form-select" v-model="form.search_service_type"
+								style="width: 150px;">
 								<option value="">All</option>
 								<option value="dhl">DHL</option>
 								<option value="fedex">Fedex</option>
@@ -40,70 +50,110 @@
 					</div>
 				</form>
 
-
 				<div class="container-fluid mb-2">
 					<div class="row">
-						<div class="col-6 col-md-2">
-							<div class="card" style="border:1px solid #000000;border-radius: 20%;">
-								<div class="card-body">
+						<div class="col-md-2">
+							<div class="card">
+								<div class="card-header">
 									<h2>Total Charged Amount</h2>
-									<p>$ {{ stats.total }}</p>
+								</div>
+								<div class="card-body">
+									<p class="text-lg">$ {{ stats.total }}</p>
 								</div>
 							</div>
 						</div>
 
-						<div class="col-6 col-md-2">
-							<div class="card" style="border:1px solid #000000;border-radius: 20%;">
-								<div class="card-body">
+						<div class="col-md-2">
+							<div class="card">
+								<div class="card-header">
 									<h2>Total Shipping Gross</h2>
-									<p>$ {{ stats.gross_shipping }}</p>
+								</div>
+								<div class="card-body">
+									<p class="text-lg">$ {{ stats.gross_shipping }}</p>
 								</div>
 							</div>
 						</div>
 
-						<div class="col-6 col-md-2">
-							<div class="card" style="border:1px solid #000000;border-radius: 20%;">
+						<div class="col-md-2">
+							<div class="card">
+								<div class="card-header">
+									<h2>Total Markup</h2>
+								</div>
 								<div class="card-body">
-									<h2>Total Profit</h2>
-									<p>$ {{ stats.profit }}</p>
+									<p class="text-lg">$ {{ stats.profit }}</p>
 								</div>
 							</div>
 						</div>
-						
+
+						<div class="col-md-2">
+							<div class="card">
+								<div class="card-header">
+									<h2>Total Service Charges</h2>
+								</div>
+								<div class="card-body">
+									<p class="text-lg">$ {{ stats.service_charges }}</p>
+								</div>
+							</div>
+						</div>
+
 					</div>
 				</div>
 
 				<div class="table-responsive">
-					<table class="table table-striped table-bordered text-uppercase">
-						<thead>
+					<table class="table table-bordered" style="white-space: nowrap;text-transform: uppercase">
+						<thead class="bg-light">
+							<tr v-if="filters.slug == 'packages' || filters.slug == 'orders'">
+								<th colspan="7" class="text-center"></th>
+								<th colspan="6" class="text-center" v-if="filters.slug == 'packages'">
+									Package Charges</th>
+								<th colspan="4" class="text-center" v-if="filters.slug == 'orders'">Order
+									Charges</th>
+								<th colspan="2" class="text-center" v-if="filters.slug == 'packages'">
+									{{ form.search_service_type }}
+								</th>
+							</tr>
 							<tr>
-								<th>Invoive ID</th>
+								<th>SR. #</th>
 								<th>Customer</th>
 								<th>Payment Type</th>
+								<th>Invoice ID</th>
 								<th>Transaction ID</th>
+								<th>Payment Method</th>
 								<th>Charged Date</th>
-								<th>charged Amount</th>
-								<th>Shipping Charges Gross</th>
-								<th>Markup Percentage</th>
-								<th>Markup / Profit</th>
+
+								<template v-if="filters.slug == 'packages'">
+									<th>Shipping Service</th>
+									<th>Tracking Number</th>
+
+									<th>Shipping Gross</th>
+									<th>Markup %</th>
+									<th>Markup Amount</th>
+								</template>
+
+								<template v-if="filters.slug == 'orders'">
+									<th>Service Charges</th>
+								</template>
+
+								<th>Net Charge</th>
+
+								<template v-if="filters.slug == 'packages'">
+									<th>{{ form.search_service_type }} Cost</th>
+									<th>Profit Amount</th>
+								</template>
+
 							</tr>
 						</thead>
 						<tbody>
 							<tr v-for="(payment, index) in payments.data" :key="payment.id">
-								<td>{{ payment.p_id }}</td>
-								<td>{{ payment.u_name }} - {{ siuteNum(payment.u_id) }}</td>
+								<td>{{ (payments.current_page - 1) * payments.per_page + index + 1 }}</td>
+								<td>{{ payment.u_name }} - {{ suiteNum(payment.u_id) }}</td>
 								<td>
 									<template v-if="payment.p_type === 'package'">
 										<inertia-link :href="route('packages.show', payment.p_type_id)">
 											<span class="font-bold text-primary underline">{{ payment.p_type }} - {{
 												payment.p_type_id }}</span>
 										</inertia-link>
-										<br>
-										{{ payment.pkg_service_label }}
-										<br>
-										{{ payment.pkg_tracking_out }}
 									</template>
-
 
 									<template v-if="payment.p_type === 'order'">
 										{{ payment.p_type }} - {{ payment.p_type_id }}
@@ -113,18 +163,32 @@
 										{{ payment.p_type }} - {{ payment.p_type_id }}
 									</inertia-link>
 								</td>
-								<td>
-									{{ payment.t_id }} <br>
-									{{ payment.p_method }}
-								</td>
+								<td>{{ payment.p_id }}</td>
+								<td>{{ payment.t_id }}</td>
+								<td>{{ payment.p_method }}</td>
 								<td>{{ payment.charged_at }}</td>
+
+								<template v-if="filters.slug == 'packages'">
+									<td>{{ payment.pkg_service_label }}</td>
+									<td>{{ payment.pkg_tracking_out }}</td>
+									<td>${{ payment.shipping_charges_gross }}</td>
+									<td>{{ payment.shipping_markup_percentage }}%</td>
+									<td>${{ payment.shipping_markup_fee }}</td>
+								</template>
+
+								<template v-if="filters.slug == 'orders'">
+									<td>${{ payment.order_service_charges }}</td>
+								</template>
+
 								<td>${{ payment.charged_amount }}</td>
-								<td>${{ payment.shipping_charges_gross }}</td>
-								<td>{{ payment.shipping_markup_percentage }}%</td>
-								<td>${{ payment.shipping_markup_fee }}</td>
+
+								<template v-if="filters.slug === 'packages'">
+									<td>-</td>
+									<td>-</td>
+								</template>
 							</tr>
 							<tr v-if="payments.data.length == 0">
-								<td class="text-primary text-center" colspan="9">
+								<td class="text-primary text-center" colspan="14">
 									There are no payments found.
 								</td>
 							</tr>
@@ -153,6 +217,8 @@ export default {
 	data() {
 		return {
 			form: {
+				search_payment_module: this.filters.search_payment_module,
+				search_service_type: this.filters.search_service_type,
 				search_invoice_no: this.filters.search_invoice_no,
 				search_suit_no: this.filters.search_suit_no,
 				search_tracking_out: this.filters.search_tracking_out,
@@ -195,11 +261,14 @@ export default {
 			const url = `${route("report.index")}?${queryParams.toString()}`;
 			Inertia.visit(url, { preserveState: true });
 		},
-		siuteNum(user_id) {
+		suiteNum(user_id) {
 			return 4000 + user_id;
 		},
 		clear() {
-			this.form = {};
+			this.form = {
+				search_payment_module: "",
+				search_service_type: "",
+			};
 			this.date = "";
 			this.submit();
 		},
@@ -238,4 +307,20 @@ button.active.btn.btn-light.w-100 {
 .search .form-group {
 	margin-left: 1px
 }
+</style>
+<style>
+/* .full-width-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+  } */
+
+/* .full-width-table th,
+  .full-width-table td {
+    white-space: nowrap;
+    overflow: hidden; 
+    text-overflow: ellipsis;
+    border: 1px solid #ddd;
+    padding: 8px;
+  } */
 </style>

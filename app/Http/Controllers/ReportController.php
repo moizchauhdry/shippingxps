@@ -11,9 +11,13 @@ use Illuminate\Support\Facades\DB;
 
 class ReportController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, $slug)
     {
+        // dd($slug);
+
         $user = Auth::user();
+
+        // $search_payment_module = $request->search_payment_module;
         $search_invoice_no = $request->search_invoice_no;
         $search_suit_no = $request->search_suit_no;
         $search_tracking_out = $request->search_tracking_out;
@@ -24,11 +28,13 @@ class ReportController extends Controller
         $query->select(
             'u.id as u_id',
             'u.name as u_name',
+            
             'payments.id as p_id',
             'payments.transaction_id as t_id',
             'payments.payment_type as p_method',
             'payments.charged_amount as charged_amount',
             'payments.charged_at as charged_at',
+
             'pkg.id as pkg_id',
             'pkg.carrier_code as carrier_code',
             'pkg.service_label as pkg_service_label',
@@ -36,12 +42,16 @@ class ReportController extends Controller
             'pkg.shipping_charges_gross',
             'pkg.shipping_markup_percentage',
             'pkg.shipping_markup_fee',
+
+            'orders.service_charges as order_service_charges',
+
             DB::raw('CASE 
                 WHEN payments.package_id IS NOT NULL THEN "package"
                 WHEN payments.order_id IS NOT NULL THEN "order"
                 WHEN payments.gift_card_id IS NOT NULL THEN "gift"
                 ELSE "unknown"
             END AS p_type'),
+            
             DB::raw('CASE 
                 WHEN payments.package_id IS NOT NULL THEN payments.package_id
                 WHEN payments.order_id IS NOT NULL THEN payments.order_id
@@ -52,10 +62,16 @@ class ReportController extends Controller
 
         $query->join('users as u', 'u.id', 'payments.customer_id');
         $query->leftJoin('packages as pkg', 'pkg.id', 'payments.package_id');
+        $query->leftJoin('orders', 'orders.id', 'payments.order_id');
 
-        $query->where('payments.package_id', '!=', NULL);
-        $query->where('payments.charged_at', '!=', NULL);
-        
+        $query->when($slug == 'packages', function ($qry) use ($user) {
+            $qry->where('payments.package_id', '!=', NULL);
+        });
+
+        $query->when($slug == 'orders', function ($qry) use ($user) {
+            $qry->where('payments.order_id', '!=', NULL);
+        });
+
         $query->when($user->type === 'customer', function ($qry) use ($user) {
             $qry->where('payments.customer_id', $user->id);
         });
@@ -86,16 +102,19 @@ class ReportController extends Controller
         });
 
 
-        $payments = $query->orderBy('payments.id', 'desc')->paginate(10)->withQueryString();
+        $payments = $query->orderBy('payments.id', 'desc')->paginate(25)->withQueryString();
 
         return Inertia::render('Reports/PackageReport', [
             'payments' => $payments,
             'stats' => [
-                'total' => number_format($query->sum('payments.charged_amount'),2),
-                'profit' => number_format($query->sum('pkg.shipping_markup_fee'),2),
-                'gross_shipping' => number_format($query->sum('pkg.shipping_charges_gross'),2),
+                'total' => number_format($query->sum('payments.charged_amount'), 2),
+                'profit' => number_format($query->sum('pkg.shipping_markup_fee'), 2),
+                'gross_shipping' => number_format($query->sum('pkg.shipping_charges_gross'), 2),
+                'service_charges' => number_format($query->sum('orders.service_charges'), 2),
             ],
             'filters' => [
+                'slug' => $slug,
+                'search_service_type' => $search_service_type ?? "",
                 'search_invoice_no' => $search_invoice_no ?? "",
                 'search_suit_no' => $search_suit_no ?? "",
                 'search_tracking_out' => $request->search_tracking_out ?? "",
