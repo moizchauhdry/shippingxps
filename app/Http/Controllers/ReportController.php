@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\CarrierCostImport;
 use Illuminate\Http\Request;
 use App\Models\Package;
 use App\Models\Payment;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
 {
@@ -28,7 +30,7 @@ class ReportController extends Controller
         $query->select(
             'u.id as u_id',
             'u.name as u_name',
-            
+
             'payments.id as p_id',
             'payments.transaction_id as t_id',
             'payments.payment_type as p_method',
@@ -43,6 +45,8 @@ class ReportController extends Controller
             'pkg.shipping_markup_percentage',
             'pkg.shipping_markup_fee',
 
+            'pkg.xls_carrier_cost',
+
             'orders.service_charges as order_service_charges',
 
             DB::raw('CASE 
@@ -51,7 +55,7 @@ class ReportController extends Controller
                 WHEN payments.gift_card_id IS NOT NULL THEN "gift"
                 ELSE "unknown"
             END AS p_type'),
-            
+
             DB::raw('CASE 
                 WHEN payments.package_id IS NOT NULL THEN payments.package_id
                 WHEN payments.order_id IS NOT NULL THEN payments.order_id
@@ -121,5 +125,30 @@ class ReportController extends Controller
                 'date_range' => $request->date_range ?? "",
             ]
         ]);
+    }
+
+    public function importCarrierCost(Request $request)
+    {
+        // dd($request->all());
+
+        $request->validate([
+            'file' => 'required|file|mimes:csv,xlsx',
+            'type' => 'required',
+        ]);
+
+        try {
+            $file = $request->file('file');
+            $type = $request->type;
+
+            if ($type == "1") {
+                $import = new CarrierCostImport();
+                Excel::import($import, $file);
+            }
+
+            return redirect()->route('report.index','packages');
+        } catch (\Throwable $th) {
+            throw $th;
+            // abort(403, $th->getMessage());
+        }
     }
 }

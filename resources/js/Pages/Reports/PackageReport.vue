@@ -3,17 +3,18 @@
 		<div class="card mb-5 mt-2">
 			<div class="card-header">Manage Reports</div>
 			<div class="card-body">
-				<form @submit.prevent="submit">
+				<form @submit.prevent="submit" class="search-form">
 					<div class="d-flex search">
-						<!-- <div class="form-group">
-							<label for="">Payment Module</label>
-							<select class="form-control form-select" v-model="filters.slug"
-								@change="submit" style="width: 150px;">
+						<div class="form-group" v-if="filters.slug == 'packages'">
+							<label for="">Service Type</label>
+							<select class="form-control" v-model="form.search_service_type" style="width: 150px;">
 								<option value="">All</option>
-								<option value="package">Package</option>
-								<option value="order">Order</option>
+								<option value="dhl">DHL</option>
+								<option value="fedex">Fedex</option>
+								<option value="ups">UPS</option>
+								<option value="usps">USPS</option>
 							</select>
-						</div> -->
+						</div>
 						<div class="form-group">
 							<label for="">Invoice No</label>
 							<input type="text" class="form-control" v-model="form.search_invoice_no" />
@@ -22,17 +23,7 @@
 							<label for="">Suit No</label>
 							<input type="text" class="form-control" v-model="form.search_suit_no" />
 						</div>
-						<div class="form-group">
-							<label for="">Service Type</label>
-							<select class="form-control form-select" v-model="form.search_service_type"
-								style="width: 150px;">
-								<option value="">All</option>
-								<option value="dhl">DHL</option>
-								<option value="fedex">Fedex</option>
-								<option value="ups">UPS</option>
-								<option value="usps">USPS</option>
-							</select>
-						</div>
+
 						<div class="form-group">
 							<label for="">Tracking Out</label>
 							<input type="text" class="form-control" v-model="form.search_tracking_out" />
@@ -50,53 +41,22 @@
 					</div>
 				</form>
 
-				<div class="container-fluid mb-2">
-					<div class="row">
-						<div class="col-md-2">
-							<div class="card">
-								<div class="card-header">
-									<h2>Total Charged Amount</h2>
-								</div>
-								<div class="card-body">
-									<p class="text-lg">$ {{ stats.total }}</p>
-								</div>
-							</div>
-						</div>
+				<div class="table table-bordered stats-table">
+					<tbody>
+						<tr>
+							<td><b>Total Charged Amount:</b> ${{ stats.total }}</td>
 
-						<div class="col-md-2">
-							<div class="card">
-								<div class="card-header">
-									<h2>Total Shipping Gross</h2>
-								</div>
-								<div class="card-body">
-									<p class="text-lg">$ {{ stats.gross_shipping }}</p>
-								</div>
-							</div>
-						</div>
+							<template v-if="filters.slug == 'packages'">
+								<td><b>Total Shipping Gross:</b> ${{ stats.gross_shipping }}</td>
 
-						<div class="col-md-2">
-							<div class="card">
-								<div class="card-header">
-									<h2>Total Markup</h2>
-								</div>
-								<div class="card-body">
-									<p class="text-lg">$ {{ stats.profit }}</p>
-								</div>
-							</div>
-						</div>
+								<td><b>Total Markup:</b> ${{ stats.profit }}</td>
+							</template>
 
-						<div class="col-md-2">
-							<div class="card">
-								<div class="card-header">
-									<h2>Total Service Charges</h2>
-								</div>
-								<div class="card-body">
-									<p class="text-lg">$ {{ stats.service_charges }}</p>
-								</div>
-							</div>
-						</div>
-
-					</div>
+							<template v-if="filters.slug == 'orders'">
+								<td><b>Total Service Charges:</b> ${{ stats.service_charges }}</td>
+							</template>
+						</tr>
+					</tbody>
 				</div>
 
 				<div class="table-responsive">
@@ -113,10 +73,10 @@
 								</th>
 							</tr>
 							<tr>
-								<th>SR. #</th>
+								<th>SR #</th>
+								<th>Invoice ID</th>
 								<th>Customer</th>
 								<th>Payment Type</th>
-								<th>Invoice ID</th>
 								<th>Transaction ID</th>
 								<th>Payment Method</th>
 								<th>Charged Date</th>
@@ -146,6 +106,7 @@
 						<tbody>
 							<tr v-for="(payment, index) in payments.data" :key="payment.id">
 								<td>{{ (payments.current_page - 1) * payments.per_page + index + 1 }}</td>
+								<td>{{ payment.p_id }}</td>
 								<td>{{ payment.u_name }} - {{ suiteNum(payment.u_id) }}</td>
 								<td>
 									<template v-if="payment.p_type === 'package'">
@@ -163,7 +124,6 @@
 										{{ payment.p_type }} - {{ payment.p_type_id }}
 									</inertia-link>
 								</td>
-								<td>{{ payment.p_id }}</td>
 								<td>{{ payment.t_id }}</td>
 								<td>{{ payment.p_method }}</td>
 								<td>{{ payment.charged_at }}</td>
@@ -171,20 +131,20 @@
 								<template v-if="filters.slug == 'packages'">
 									<td>{{ payment.pkg_service_label }}</td>
 									<td>{{ payment.pkg_tracking_out }}</td>
-									<td>${{ payment.shipping_charges_gross }}</td>
+									<td>${{ format_number(payment.shipping_charges_gross) }}</td>
 									<td>{{ payment.shipping_markup_percentage }}%</td>
-									<td>${{ payment.shipping_markup_fee }}</td>
+									<td>${{ format_number(payment.shipping_markup_fee) }}</td>
 								</template>
 
 								<template v-if="filters.slug == 'orders'">
-									<td>${{ payment.order_service_charges }}</td>
+									<td>${{ format_number(payment.order_service_charges) }}</td>
 								</template>
 
 								<td>${{ payment.charged_amount }}</td>
 
 								<template v-if="filters.slug === 'packages'">
-									<td>-</td>
-									<td>-</td>
+									<td>${{ format_number(payment.xls_carrier_cost) }}</td>
+									<td>${{ format_number(payment.charged_amount - payment.xls_carrier_cost) }}</td>
 								</template>
 							</tr>
 							<tr v-if="payments.data.length == 0">
@@ -258,7 +218,7 @@ export default {
 		},
 		submit() {
 			const queryParams = new URLSearchParams(this.form);
-			const url = `${route("report.index")}?${queryParams.toString()}`;
+			const url = `${route("report.index", this.filters.slug)}?${queryParams.toString()}`;
 			Inertia.visit(url, { preserveState: true });
 		},
 		suiteNum(user_id) {
@@ -272,6 +232,16 @@ export default {
 			this.date = "";
 			this.submit();
 		},
+		format_number(number) {
+			// if (typeof number !== 'number' || isNaN(number)) {
+			// 	return 0;
+			// }
+
+			return new Intl.NumberFormat('en-US', {
+				minimumFractionDigits: 2,
+				maximumFractionDigits: 2
+			}).format(number);
+		}
 	},
 	created() {
 		console.log(this.data);
@@ -279,48 +249,52 @@ export default {
 };
 </script>
 
-<style>
-button.active.btn.btn-light.w-100 {
-	background-color: red !important;
-	color: white;
-}
 
+<style>
 .dp__input {
-	background-color: var(--dp-background-color);
 	border-radius: 0px;
-	font-family: -apple-system, blinkmacsystemfont, "Segoe UI", roboto, oxygen, ubuntu, cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-	border: 1px solid var(--dp-border-color);
-	outline: none;
-	transition: border-color .2s cubic-bezier(0.645, 0.045, 0.355, 1);
-	width: 100%;
-	font-size: 1rem;
-	line-height: 1.5rem;
-	padding: 4px 33px;
-	color: var(--dp-text-color);
-	box-sizing: border-box;
+	padding: 4px 12px;
 }
 
-.label {
-	padding: 5px;
-}
 
-.search .form-group {
-	margin-left: 1px
-}
-</style>
-<style>
-/* .full-width-table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
-  } */
+/* Handle mobile view better */
+@media (max-width: 768px) {
+	.search {
+		flex-wrap: wrap;
+	}
 
-/* .full-width-table th,
-  .full-width-table td {
-    white-space: nowrap;
-    overflow: hidden; 
-    text-overflow: ellipsis;
-    border: 1px solid #ddd;
-    padding: 8px;
-  } */
+	.form-group {
+		flex: 1 1 100%;
+		margin-bottom: 5px;
+		width: 100%;
+	}
+
+	.stats-table {
+		display: block;
+		/* Convert table into a block layout */
+	}
+
+	.stats-table tr {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+	}
+
+	.stats-table td {
+		width: 100%;
+		/* Full width on mobile */
+		display: flex;
+		justify-content: space-between;
+		/* margin-bottom: 10px; */
+		border: none;
+		/* Remove borders between items */
+		border-bottom: 1px solid #dee2e6;
+		/* Optional separator */
+	}
+
+	.stats-table td:last-child {
+		border-bottom: none;
+		/* Remove last border */
+	}
+}
 </style>

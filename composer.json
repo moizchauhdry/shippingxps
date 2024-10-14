@@ -17,6 +17,7 @@
         "laravel/framework": "^8.40",
         "laravel/sanctum": "^2.15",
         "laravel/tinker": "^2.5",
+        "maatwebsite/excel": "^3.1",
         "mpdf/mpdf": "^8.0",
         "tightenco/ziggy": "^1.0",
         "webklex/laravel-pdfmerger": "^1.3"

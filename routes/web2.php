@@ -99,6 +99,7 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('reports')->group(function () {
         Route::any('report/{slug}',[ReportController::class,'index'] )->name('report.index');
+        Route::any('import-carrier-cost',[ReportController::class,'importCarrierCost'] )->name('report.import-carrier-cost');
     });
 
     Route::get('getShippingAddress/{id}', [\App\Http\Controllers\AddressController::class, 'getShippingAddress'])->name('getShippingAddress');
