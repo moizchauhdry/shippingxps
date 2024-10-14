@@ -4,6 +4,7 @@ use App\Http\Controllers\CustomFormController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GiftCardController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ReportController;
 
 Route::middleware('auth')->group(function () {
     Route::prefix('shop-for-me')->group(function () {
@@ -93,8 +94,12 @@ Route::middleware('auth')->group(function () {
         Route::get('generateReport/{id}', [\App\Http\Controllers\PaymentController::class, 'generateReport'])->name('generateReport');
         Route::any('generateReportList', [\App\Http\Controllers\PaymentController::class, 'generateReportList'])->name('generateReportList');
         Route::post('add-payment', [PaymentController::class, 'addPayment'])->middleware(['auth'])->name('payment.add');
-
         Route::post('square-success', [PaymentController::class, 'squareSuccess'])->name('payment.square-success');
+    });
+
+    Route::prefix('reports')->group(function () {
+        Route::any('report/{slug}',[ReportController::class,'index'] )->name('report.index');
+        Route::any('import-carrier-cost',[ReportController::class,'importCarrierCost'] )->name('report.import-carrier-cost');
     });
 
     Route::get('getShippingAddress/{id}', [\App\Http\Controllers\AddressController::class, 'getShippingAddress'])->name('getShippingAddress');
