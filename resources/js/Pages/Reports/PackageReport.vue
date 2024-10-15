@@ -7,7 +7,7 @@
 					<div class="d-flex search">
 						<div class="form-group" v-if="filters.slug == 'packages'">
 							<label for="">Service Type</label>
-							<select class="form-control" v-model="form.search_service_type" style="width: 150px;">
+							<select class="form-control" v-model="form.search_service_type">
 								<option value="">All</option>
 								<option value="dhl">DHL</option>
 								<option value="fedex">Fedex</option>
@@ -28,9 +28,26 @@
 							<label for="">Tracking Out</label>
 							<input type="text" class="form-control" v-model="form.search_tracking_out" />
 						</div>
-						<div class="form-group">
+						<!-- <div class="form-group">
 							<label for="">Date Range</label>
 							<Datepicker v-model="date" range :format="format" :enableTimePicker="false"></Datepicker>
+						</div> -->
+						<div class="form-group">
+							<label for="">Month</label>
+							<select v-model="form.month" class="form-control">
+								<template v-for="month in months">
+									<option :value="month.id">{{ month.name }}</option>
+								</template>
+							</select>
+						</div>
+
+						<div class="form-group">
+							<label for="">Year</label>
+							<select v-model="form.year" class="form-control">
+								<template v-for="year in years">
+									<option :value="year.value">{{ year.value }}</option>
+								</template>
+							</select>
 						</div>
 					</div>
 					<div class="row">
@@ -41,20 +58,22 @@
 					</div>
 				</form>
 
-				<div class="table table-bordered stats-table">
+				<div class="table table-bordered stats-table" style="text-transform: uppercase">
 					<tbody>
 						<tr>
-							<td><b>Total Charged Amount:</b> ${{ stats.total }}</td>
+							<td><b>Total Charged Amount:</b> ${{ format_number(stats.total) }}</td>
 
-							<template v-if="filters.slug == 'packages'">
-								<td><b>Total Shipping Gross:</b> ${{ stats.gross_shipping }}</td>
+							<td><b>Total Shipping Charges:</b> ${{ format_number(stats.shipping_with_markup) }}</td>
 
-								<td><b>Total Markup:</b> ${{ stats.profit }}</td>
-							</template>
+							<td><b>Total Service Charges:</b> ${{ format_number(stats.service_charges) }}</td>
+							
+							<td><b>Total Cost:</b> ${{ format_number(stats.xls_carrier_cost) }}</td>
 
-							<template v-if="filters.slug == 'orders'">
-								<td><b>Total Service Charges:</b> ${{ stats.service_charges }}</td>
-							</template>
+							<td><b>Gross Profit:</b> ${{ format_number(stats.carrier_profit) }}</td>
+
+							<td><b>Total Expense:</b> $0.0</td>
+
+							<td><b>Net Profit:</b> ${{ format_number(stats.carrier_profit) }}</td>
 						</tr>
 					</tbody>
 				</div>
@@ -64,7 +83,7 @@
 						<thead class="bg-light">
 							<tr v-if="filters.slug == 'packages' || filters.slug == 'orders'">
 								<th colspan="7" class="text-center"></th>
-								<th colspan="6" class="text-center" v-if="filters.slug == 'packages'">
+								<th colspan="7" class="text-center" v-if="filters.slug == 'packages'">
 									Package Charges</th>
 								<th colspan="4" class="text-center" v-if="filters.slug == 'orders'">Order
 									Charges</th>
@@ -82,12 +101,13 @@
 								<th>Charged Date</th>
 
 								<template v-if="filters.slug == 'packages'">
-									<th>Shipping Service</th>
+									<th>Shipping Charges</th>
 									<th>Tracking Number</th>
 
-									<th>Shipping Gross</th>
+									<th>Shipping Charges</th>
 									<th>Markup %</th>
 									<th>Markup Amount</th>
+									<th>Shipping with Markup</th>
 								</template>
 
 								<template v-if="filters.slug == 'orders'">
@@ -134,6 +154,7 @@
 									<td>${{ format_number(payment.shipping_charges_gross) }}</td>
 									<td>{{ payment.shipping_markup_percentage }}%</td>
 									<td>${{ format_number(payment.shipping_markup_fee) }}</td>
+									<td>${{ format_number(payment.shipping_with_markup) }}</td>
 								</template>
 
 								<template v-if="filters.slug == 'orders'">
@@ -182,9 +203,40 @@ export default {
 				search_invoice_no: this.filters.search_invoice_no,
 				search_suit_no: this.filters.search_suit_no,
 				search_tracking_out: this.filters.search_tracking_out,
-				date_range: this.filters.date_range,
+				// date_range: this.filters.date_range,
+				year: this.filters.year,
+				month: this.filters.month,
 			},
-			date: "",
+			// date: "",
+
+			months: [
+				{ id: 1, name: "January" },
+				{ id: 2, name: "February" },
+				{ id: 3, name: "March" },
+				{ id: 4, name: "April" },
+				{ id: 5, name: "May" },
+				{ id: 6, name: "June" },
+				{ id: 7, name: "July" },
+				{ id: 8, name: "August" },
+				{ id: 9, name: "September" },
+				{ id: 10, name: "October" },
+				{ id: 11, name: "November" },
+				{ id: 12, name: "December" },
+			],
+
+			years: [
+				{ id: 1, value: "2020" },
+				{ id: 2, value: "2021" },
+				{ id: 3, value: "2022" },
+				{ id: 4, value: "2023" },
+				{ id: 5, value: "2024" },
+				{ id: 6, value: "2025" },
+				{ id: 7, value: "2026" },
+				{ id: 8, value: "2027" },
+				{ id: 9, value: "2028" },
+				{ id: 10, value: "2029" },
+				{ id: 11, value: "2030" },
+			]
 		};
 	},
 	components: {
@@ -256,6 +308,10 @@ export default {
 	padding: 4px 12px;
 }
 
+.form-group {
+	min-width: 200px;
+	margin-right: 1px
+}
 
 /* Handle mobile view better */
 @media (max-width: 768px) {
