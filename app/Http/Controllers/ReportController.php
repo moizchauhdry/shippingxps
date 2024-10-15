@@ -6,6 +6,7 @@ use App\Imports\CarrierCostImport;
 use Illuminate\Http\Request;
 use App\Models\Package;
 use App\Models\Payment;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
@@ -24,6 +25,9 @@ class ReportController extends Controller
         $search_suit_no = $request->search_suit_no;
         $search_tracking_out = $request->search_tracking_out;
         $search_service_type = $request->search_service_type;
+
+        $month = $request->month ?? Carbon::now()->format('m');
+        $year = $request->year ?? Carbon::now()->format('Y');
 
         $query = Payment::query();
 
@@ -44,8 +48,8 @@ class ReportController extends Controller
             'pkg.shipping_charges_gross',
             'pkg.shipping_markup_percentage',
             'pkg.shipping_markup_fee',
-
             'pkg.xls_carrier_cost',
+            'pkg.shipping_charges as shipping_with_markup',
 
             'orders.service_charges as order_service_charges',
 
@@ -98,23 +102,30 @@ class ReportController extends Controller
             $qry->where('u.id', $suit_no);
         });
 
-        $query->when($request->date_range && !empty($request->date_range), function ($qry) use ($request) {
-            $range = explode(' - ', $request->date_range);
-            $from = date("Y-m-d", strtotime($range[0]));
-            $to = date("Y-m-d", strtotime($range[1]));
-            $qry->whereDate('charged_at', '>=', $from)->whereDate('charged_at', '<=', $to);
-        });
+        // $query->when($request->date_range && !empty($request->date_range), function ($qry) use ($request) {
+        //     $range = explode(' - ', $request->date_range);
+        //     $from = date("Y-m-d", strtotime($range[0]));
+        //     $to = date("Y-m-d", strtotime($range[1]));
+        //     $qry->whereDate('charged_at', '>=', $from)->whereDate('charged_at', '<=', $to);
+        // });
 
+
+        $query->whereYear('charged_at', $year);
+        $query->whereMonth('charged_at', $month);
 
         $payments = $query->orderBy('payments.id', 'desc')->paginate(25)->withQueryString();
 
         return Inertia::render('Reports/PackageReport', [
             'payments' => $payments,
             'stats' => [
-                'total' => number_format($query->sum('payments.charged_amount'), 2),
-                'profit' => number_format($query->sum('pkg.shipping_markup_fee'), 2),
-                'gross_shipping' => number_format($query->sum('pkg.shipping_charges_gross'), 2),
-                'service_charges' => number_format($query->sum('orders.service_charges'), 2),
+                'total' => $query->sum('payments.charged_amount'),
+                'profit' => $query->sum('pkg.shipping_markup_fee'),
+                'gross_shipping' => $query->sum('pkg.shipping_charges_gross'),
+                'shipping_with_markup' => $query->sum('pkg.shipping_charges'),
+                'xls_carrier_cost' => $query->sum('pkg.xls_carrier_cost'),
+                'carrier_profit' => $query->sum('payments.charged_amount') - $query->sum('pkg.xls_carrier_cost'),
+
+                'service_charges' => $query->sum('orders.service_charges'),
             ],
             'filters' => [
                 'slug' => $slug,
@@ -122,7 +133,9 @@ class ReportController extends Controller
                 'search_invoice_no' => $search_invoice_no ?? "",
                 'search_suit_no' => $search_suit_no ?? "",
                 'search_tracking_out' => $request->search_tracking_out ?? "",
-                'date_range' => $request->date_range ?? "",
+                // 'date_range' => $request->date_range ?? "",
+                'year' => $year,
+                'month' => $month,
             ]
         ]);
     }
@@ -145,7 +158,7 @@ class ReportController extends Controller
                 Excel::import($import, $file);
             }
 
-            return redirect()->route('report.index','packages');
+            return redirect()->route('report.index', 'packages');
         } catch (\Throwable $th) {
             throw $th;
             // abort(403, $th->getMessage());
