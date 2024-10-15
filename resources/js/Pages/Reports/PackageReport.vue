@@ -83,7 +83,7 @@
 						<thead class="bg-light">
 							<tr v-if="filters.slug == 'packages' || filters.slug == 'orders'">
 								<th colspan="7" class="text-center"></th>
-								<th colspan="6" class="text-center" v-if="filters.slug == 'packages'">
+								<th colspan="7" class="text-center" v-if="filters.slug == 'packages'">
 									Package Charges</th>
 								<th colspan="4" class="text-center" v-if="filters.slug == 'orders'">Order
 									Charges</th>
