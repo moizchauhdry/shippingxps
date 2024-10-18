@@ -66,7 +66,7 @@
 							<td><b>Total Shipping Charges:</b> ${{ format_number(stats.shipping_with_markup) }}</td>
 
 							<td><b>Total Service Charges:</b> ${{ format_number(stats.service_charges) }}</td>
-							
+
 							<td><b>Total Cost:</b> ${{ format_number(stats.xls_carrier_cost) }}</td>
 
 							<td><b>Gross Profit:</b> ${{ format_number(stats.carrier_profit) }}</td>
@@ -101,7 +101,7 @@
 								<th>Charged Date</th>
 
 								<template v-if="filters.slug == 'packages'">
-									<th>Shipping Charges</th>
+									<th>Shipping Service</th>
 									<th>Tracking Number</th>
 
 									<th>Shipping Charges</th>
@@ -277,11 +277,19 @@ export default {
 			return 4000 + user_id;
 		},
 		clear() {
+			const current_date = new Date();
+			const current_year = current_date.getFullYear();
+			const current_month = current_date.getMonth() + 1;
+
 			this.form = {
 				search_payment_module: "",
 				search_service_type: "",
+				search_invoice_no: "",
+				search_suit_no: "",
+				search_tracking_out: "",
+				year:current_year,
+				month: current_month,
 			};
-			this.date = "";
 			this.submit();
 		},
 		format_number(number) {

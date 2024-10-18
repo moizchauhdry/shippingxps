@@ -16,9 +16,12 @@ class ReportController extends Controller
 {
     public function index(Request $request, $slug)
     {
-        // dd($slug);
 
         $user = Auth::user();
+
+        if ($user->type != 'admin') {
+            abort('403','Access to reports is restricted to administrators only');
+        }
 
         // $search_payment_module = $request->search_payment_module;
         $search_invoice_no = $request->search_invoice_no;
@@ -115,7 +118,7 @@ class ReportController extends Controller
 
         $payments = $query->orderBy('payments.id', 'desc')->paginate(25)->withQueryString();
 
-        return Inertia::render('Reports/PackageReport', [
+        return Inertia::render('Reports/ReportList', [
             'payments' => $payments,
             'stats' => [
                 'total' => $query->sum('payments.charged_amount'),
