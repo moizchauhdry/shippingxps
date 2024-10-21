@@ -500,10 +500,9 @@ function generateLabelUps($id)
     $response = curl_exec($curl);
     $response = json_decode($response);
 
-    dd($response);
-    // if ($response['errors']) {
-    //     abort(403, $response['errors']);
-    // }
+    if (isset($response->response->errors[0])) {
+        abort(403, $response->response->errors[0]->message);
+    }
 
     $results = $response->ShipmentResponse->ShipmentResults->PackageResults;
 
