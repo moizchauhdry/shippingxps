@@ -500,7 +500,7 @@ function generateLabelUps($id)
     $response = curl_exec($curl);
     $response = json_decode($response);
 
-    dd($response->errors);
+    dd($response);
     // if ($response['errors']) {
     //     abort(403, $response['errors']);
     // }
