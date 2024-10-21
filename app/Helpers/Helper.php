@@ -536,7 +536,10 @@ function generateLabelUps($id)
         $count++;
     }
 
-    $oMerger->addPDF('storage/commercial-invoices/' . $filename1 . '.pdf', 'all');
+    if ($service_type == 'international') {
+        $oMerger->addPDF('storage/commercial-invoices/' . $filename1 . '.pdf', 'all');
+    }
+    
     $oMerger->merge();
     $label_url = 'storage/labels/' . $filename1 . '.pdf';
     $oMerger->save($label_url);
