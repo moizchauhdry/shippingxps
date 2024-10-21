@@ -499,6 +499,7 @@ function generateLabelUps($id)
 
     $response = curl_exec($curl);
     $response = json_decode($response);
+    dd($response);
     
     $results = $response->ShipmentResponse->ShipmentResults->PackageResults;
 
