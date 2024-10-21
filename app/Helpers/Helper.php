@@ -32,7 +32,7 @@ function calulate_storage($package)
     if ($package->payment_status == 'Paid') {
         $payment = Payment::where('package_id', $package->id)->first();
         $compare_date = Carbon::parse($payment->charged_at);
-    } 
+    }
 
     $storage_days_exceeded = 0;
 
@@ -58,11 +58,11 @@ function calulate_storage($package)
     }
 
     // if ($package->payment_status == "Pending") {
-        $package->update([
-            'storage_fee' => (float) $storage_fee,
-            'storage_days' => (float) $storage_days,
-            'storage_days_exceeded' => (float) $storage_days_exceeded,
-        ]);
+    $package->update([
+        'storage_fee' => (float) $storage_fee,
+        'storage_days' => (float) $storage_days,
+        'storage_days_exceeded' => (float) $storage_days_exceeded,
+    ]);
     // }
 
     return true;
@@ -501,7 +501,7 @@ function generateLabelUps($id)
     $response = json_decode($response);
 
     if ($response->errors) {
-        abort(403,$response->errors[0]);
+        abort(403, $response['errors']);
     }
 
     $results = $response->ShipmentResponse->ShipmentResults->PackageResults;
@@ -542,7 +542,7 @@ function generateLabelUps($id)
     if ($service_type == 'international') {
         $oMerger->addPDF('storage/commercial-invoices/' . $filename1 . '.pdf', 'all');
     }
-    
+
     $oMerger->merge();
     $label_url = 'storage/labels/' . $filename1 . '.pdf';
     $oMerger->save($label_url);
