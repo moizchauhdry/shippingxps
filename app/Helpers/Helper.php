@@ -501,13 +501,13 @@ function generateLabelUps($id)
     $response = json_decode($response);
     $results = $response->ShipmentResponse->ShipmentResults->PackageResults;
 
-    dd($response);
-
     commercialInvoiceForLabel($package->id);
     $oMerger = PDFMerger::init();
     $filename1 = $package->id;
     $count = 1;
     foreach ($results as $key => $result) {
+        dd($result);
+        
         $filename2 = $filename1 . '-' . $count . '.png';
         Storage::disk('labels')->put($filename2, base64_decode($result->ShippingLabel->GraphicImage));
 
