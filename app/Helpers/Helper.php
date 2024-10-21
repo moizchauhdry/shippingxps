@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\Storage;
 use Webklex\PDFMerger\Facades\PDFMergerFacade as PDFMerger;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 function format_number($number)
 {
@@ -500,10 +499,9 @@ function generateLabelUps($id)
 
     $response = curl_exec($curl);
     $response = json_decode($response);
-    
-    dd($response);
-
     $results = $response->ShipmentResponse->ShipmentResults->PackageResults;
+
+    dd($response);
 
     commercialInvoiceForLabel($package->id);
     $oMerger = PDFMerger::init();
