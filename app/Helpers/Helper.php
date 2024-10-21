@@ -499,9 +499,13 @@ function generateLabelUps($id)
 
     $response = curl_exec($curl);
     $response = json_decode($response);
+    
     $results = $response->ShipmentResponse->ShipmentResults->PackageResults;
 
-    commercialInvoiceForLabel($package->id);
+    if ($service_type == 'international') {
+        commercialInvoiceForLabel($package->id);
+    }
+
     $oMerger = PDFMerger::init();
     $filename1 = $package->id;
 
