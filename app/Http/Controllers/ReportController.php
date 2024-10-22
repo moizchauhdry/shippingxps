@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Imports\CarrierCostImport;
+use App\Models\Expense;
 use Illuminate\Http\Request;
 use App\Models\Package;
 use App\Models\Payment;
@@ -20,7 +21,7 @@ class ReportController extends Controller
         $user = Auth::user();
 
         if ($user->type != 'admin') {
-            abort('403','Access to reports is restricted to administrators only');
+            abort('403', 'Access to reports is restricted to administrators only');
         }
 
         // $search_payment_module = $request->search_payment_module;
@@ -118,6 +119,8 @@ class ReportController extends Controller
 
         $payments = $query->orderBy('payments.id', 'desc')->paginate(25)->withQueryString();
 
+        $total_expense = Expense::whereYear('expense_at', $year)->whereMonth('expense_at', $month)->sum('amount');
+
         return Inertia::render('Reports/ReportList', [
             'payments' => $payments,
             'stats' => [
@@ -127,8 +130,9 @@ class ReportController extends Controller
                 'shipping_with_markup' => $query->sum('pkg.shipping_charges'),
                 'xls_carrier_cost' => $query->sum('pkg.xls_carrier_cost'),
                 'carrier_profit' => $query->sum('payments.charged_amount') - $query->sum('pkg.xls_carrier_cost'),
-
                 'service_charges' => $query->sum('orders.service_charges'),
+                'total_expense' => $total_expense,
+                'net_profit' => ($query->sum('payments.charged_amount') - $query->sum('pkg.xls_carrier_cost')) - $total_expense,
             ],
             'filters' => [
                 'slug' => $slug,

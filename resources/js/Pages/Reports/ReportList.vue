@@ -71,9 +71,9 @@
 
 							<td><b>Gross Profit:</b> ${{ format_number(stats.carrier_profit) }}</td>
 
-							<td><b>Total Expense:</b> $0.0</td>
+							<td><b>Total Expense:</b> ${{ format_number(stats.total_expense) }}</td>
 
-							<td><b>Net Profit:</b> ${{ format_number(stats.carrier_profit) }}</td>
+							<td><b>Net Profit:</b> ${{ format_number(stats.net_profit) }}</td>
 						</tr>
 					</tbody>
 				</div>
