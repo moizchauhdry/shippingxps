@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CustomFormController;
+use App\Http\Controllers\ExpenseController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GiftCardController;
 use App\Http\Controllers\PaymentController;
@@ -100,6 +101,13 @@ Route::middleware('auth')->group(function () {
     Route::prefix('reports')->group(function () {
         Route::any('report/{slug}',[ReportController::class,'index'] )->name('report.index');
         Route::any('import-carrier-cost',[ReportController::class,'importCarrierCost'] )->name('report.import-carrier-cost');
+    });
+
+    Route::prefix('expenses')->group(function () {
+        Route::any('list',[ExpenseController::class,'index'] )->name('expense.index');
+        Route::get('create',[ExpenseController::class,'create'] )->name('expense.create');
+        Route::post('store',[ExpenseController::class,'store'] )->name('expense.store');
+        Route::post('destroy',[ExpenseController::class,'destroy'] )->name('expense.destroy');
     });
 
     Route::get('getShippingAddress/{id}', [\App\Http\Controllers\AddressController::class, 'getShippingAddress'])->name('getShippingAddress');
