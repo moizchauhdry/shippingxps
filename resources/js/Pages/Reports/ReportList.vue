@@ -3,7 +3,7 @@
 		<div class="card mb-5 mt-2">
 			<div class="card-header">Manage Reports</div>
 			<div class="card-body">
-				<form @submit.prevent="submit" class="search-form">
+				<form @submit.prevent="submit" class="report-form search-form">
 					<div class="d-flex search">
 						<div class="form-group" v-if="filters.slug == 'packages'">
 							<label for="">Service Type</label>
@@ -316,7 +316,7 @@ export default {
 	padding: 4px 12px;
 }
 
-.form-group {
+.report-form .form-group {
 	min-width: 200px;
 	margin-right: 1px
 }
