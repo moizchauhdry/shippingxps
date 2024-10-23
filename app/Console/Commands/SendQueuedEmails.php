@@ -42,13 +42,13 @@ class SendQueuedEmails extends Command
     {
         $sentToday = Cache::get('emails_sent_today', 0);
         
-        if ($sentToday >= 1000) {
-            $this->info("Daily limit of 1000 emails reached.");
+        if ($sentToday >= 500) {
+            $this->info("Daily limit of 500 emails reached.");
             return;
         }
 
         $customers = User::whereNull('email_sent_at')
-            ->limit(10) // Process 10 customers per hour
+            ->limit(5) // Process 5 customers per hour
             ->get();
 
         if ($customers->isEmpty()) {
