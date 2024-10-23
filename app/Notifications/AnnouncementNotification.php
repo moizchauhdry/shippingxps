@@ -7,6 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Log;
 
 class AnnouncementNotification extends Notification
 {
@@ -67,6 +68,8 @@ class AnnouncementNotification extends Notification
             'description' => $this->description,
         ];
 
+        Log::info("announcement notification .... ");
+        
         return (new UserGeneralMail($data))
             ->to($notifiable->email)
             ->cc('info@shippingxps.com')

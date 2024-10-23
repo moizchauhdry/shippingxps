@@ -6,6 +6,7 @@ use App\Jobs\SendEmailJob;
 use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class SendQueuedEmails extends Command
 {
@@ -41,7 +42,7 @@ class SendQueuedEmails extends Command
     public function handle()
     {
         $sentToday = Cache::get('emails_sent_today', 0);
-        
+
         if ($sentToday >= 500) {
             $this->info("Daily limit of 500 emails reached.");
             return;
@@ -57,6 +58,7 @@ class SendQueuedEmails extends Command
         }
 
         foreach ($customers as $customer) {
+            Log::info($customer . ' ... step 01');
             SendEmailJob::dispatch($customer);
 
             // Mark as sent to avoid duplicate processing

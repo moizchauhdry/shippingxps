@@ -10,6 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 
 class SendEmailJob implements ShouldQueue
@@ -34,6 +35,7 @@ class SendEmailJob implements ShouldQueue
      */
     public function handle()
     {
+        Log::info("send email job ...");
         Notification::send($this->customer, new AnnouncementNotification($this->customer));
 
         // $admin = User::where('email', 'moizchauhdry@gmail.com')->first();
