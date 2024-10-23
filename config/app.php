@@ -14,6 +14,7 @@ return [
     */
 
     'name' => env('APP_NAME', 'ShippingXPS'),
+    'log_channel' => env('LOG_CHANNEL', 'database'),
 
     /*
     |--------------------------------------------------------------------------
