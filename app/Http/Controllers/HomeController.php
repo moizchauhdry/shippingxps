@@ -1105,8 +1105,8 @@ class HomeController extends Controller
 
     public function announcement()
     {
-        $customers = User::orderBy('id', 'asc')->where('type', 'customer')->get();
-        Notification::send($customers, new AnnouncementNotification());
+        // $customers = User::orderBy('id', 'asc')->where('type', 'customer')->get();
+        // Notification::send($customers, new AnnouncementNotification());
     }
 
     public function decodePdf()
