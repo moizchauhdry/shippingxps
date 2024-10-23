@@ -68,7 +68,7 @@ class AnnouncementNotification extends Notification
             'description' => $this->description,
         ];
 
-        Log::info("announcement notification .... ");
+        Log::info($this->customer->name . "...send emails step 03");
         
         return (new UserGeneralMail($data))
             ->to($notifiable->email)

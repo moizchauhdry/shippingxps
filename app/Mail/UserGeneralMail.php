@@ -30,7 +30,7 @@ class UserGeneralMail extends Mailable
      */
     public function build()
     {
-        Log::info($this->data['name'] . "... sending");
+        Log::info($this->data['name'] . "...send emails step 04 - success");
         return $this->subject($this->data['subject'])->view('mail.general-mail');
     }
 }

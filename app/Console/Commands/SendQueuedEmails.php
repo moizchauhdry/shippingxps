@@ -58,7 +58,7 @@ class SendQueuedEmails extends Command
         }
 
         foreach ($customers as $customer) {
-            Log::info($customer . ' ... step 01');
+            Log::info($customer->name . "...send emails step 01");
             SendEmailJob::dispatch($customer);
 
             // Mark as sent to avoid duplicate processing

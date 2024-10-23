@@ -35,7 +35,7 @@ class SendEmailJob implements ShouldQueue
      */
     public function handle()
     {
-        Log::info("send email job ...");
+        Log::info($this->customer->name . "...send emails step 02");
         Notification::send($this->customer, new AnnouncementNotification($this->customer));
 
         // $admin = User::where('email', 'moizchauhdry@gmail.com')->first();
