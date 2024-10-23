@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class UserGeneralMail extends Mailable
 {
@@ -29,6 +30,7 @@ class UserGeneralMail extends Mailable
      */
     public function build()
     {
+        Log::info($this->data['name'] . "... sending");
         return $this->subject($this->data['subject'])->view('mail.general-mail');
     }
 }
