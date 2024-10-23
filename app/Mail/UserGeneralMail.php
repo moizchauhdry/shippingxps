@@ -29,14 +29,6 @@ class UserGeneralMail extends Mailable
      */
     public function build()
     {
-        // if (isset($this->data['attachment'])) {
-        //     return $this->subject($this->data['subject'])->view('mail.general-mail')
-        //         ->attach('public/' . $this->data['attachment'], [
-        //             'as' => 'orderPayment.pdf',
-        //             'mime' => 'application/pdf',
-        //         ]);
-        // } else {
         return $this->subject($this->data['subject'])->view('mail.general-mail');
-        // }
     }
 }
