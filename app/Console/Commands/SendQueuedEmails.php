@@ -49,7 +49,7 @@ class SendQueuedEmails extends Command
         }
 
         $customers = User::whereNull('email_sent_at')
-            ->limit(5) // Process 5 customers per hour
+            ->limit(50) // Process 5 customers per hour
             ->get();
 
         if ($customers->isEmpty()) {
