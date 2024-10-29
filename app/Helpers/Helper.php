@@ -286,6 +286,10 @@ function generateLabelFedex($id)
                 "commodities" => $commodities,
                 "dutiesPayment" => [
                     "paymentType" => "RECIPIENT"
+                ],
+                "insuranceCharge" => [
+                    "amount" => $package->insurance_amount,
+                    "currency" => "USD"
                 ]
             ] : NULL
         ],
