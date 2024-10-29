@@ -69,10 +69,9 @@ class AnnouncementNotification extends Notification
         ];
 
         Log::info($this->customer->name . "...send emails step 03");
-        
+
         return (new UserGeneralMail($data))
             ->to($notifiable->email)
-            ->cc('info@shippingxps.com')
             ->bcc('moizchauhdry@gmail.com');
     }
 

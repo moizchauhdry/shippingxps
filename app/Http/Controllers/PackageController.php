@@ -608,12 +608,20 @@ class PackageController extends Controller
 
     public function serviceRequest(Request $request)
     {
+        // dd($request->all());
 
         $service = $request->input('service');
+
         $service_request = new ServiceRequest();
         $service_request->service_id = $service['id'];
         $service_request->package_id = $request->input('package_id');
-        $service_request->price = $service['price'];
+        
+        if ($service['keyword'] == 'insurance') {
+            $service_request->price = $request->insurance_charges;
+        } else {
+            $service_request->price = $service['price'];
+        }
+
         $service_request->status = 'pending';
         $service_request->customer_message = $request->input('customer_message');
         $service_request->save();
@@ -621,6 +629,12 @@ class PackageController extends Controller
         if ($service['keyword'] == 'consolidation') {
             $package = Package::find($request->input('package_id'));
             $package->consolidation_request = 1;
+            $package->update();
+        }
+
+        if ($service['keyword'] == 'insurance') {
+            $package = Package::find($request->input('package_id'));
+            $package->insurance_amount = $request->insurance_amount;
             $package->update();
         }
 

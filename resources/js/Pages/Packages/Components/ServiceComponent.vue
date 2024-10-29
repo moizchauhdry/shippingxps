@@ -53,34 +53,51 @@
 								</table>
 							</div>
 							<div class="col-md-5">
+
 								<template v-if="form.service_id != null">
 									<form @submit.prevent="submit">
+										<h1 class="text-center text-lg mb-2"><u>{{ form.service.title }}</u></h1>
+
+										<p style="color: red">
+											Are you sure you want to use service? Add your message for
+											admin and continue.
+										</p>
+
 										<div class="form-group">
 											<breeze-label for="notes" value="Message for Admin" />
 											<textarea v-model="form.customer_message" name="notes" id="notes"
-												class="form-control" placeholder="Message for Admin" rows="2"
+												class="form-control" placeholder="Message for Admin" rows="4"
 												style="resize: none" required>
 											</textarea>
 										</div>
-										<p style="color: red">
-											Are you sure you want to use service? Add your message for
-											admin and continue
-										</p>
+
 										<p style="color: red">
 											Every service request is charged separately, so if you
 											have already requested any service wait for system
 											response.
 										</p>
-										<p>
-											Service : <strong>{{ form.service.title }}</strong>
-										</p>
-										<p>
-											Charges : <strong>${{ form.service.price }}</strong>
-										</p>
-										<div class="order-button">
-											<a class="btn btn-danger" v-on:click="cancelServiceForm()">
-												Cancel</a>
-											<input type="submit" value="Make Request" class="btn btn-success float-right" />
+
+										<template v-if="form.service_id == 6">
+											<div class="row mt-4 mb-2">
+												<div class="form-group col-md-6">
+													<label for="">Insurance Amount:</label>
+													<input type="text" v-model="form.insurance_amount" class="form-control" @keyup="calculateInsuranceCharges()">
+												</div>
+												<div class="form-group col-md-6">
+													<label>Insurance Charges:</label>
+													<input type="text" v-model="form.insurance_charges" class="form-control" readonly>
+												</div>
+											</div>
+										</template>
+
+										<template v-else>
+											<p>{{ form.service.title }} Charges : <strong>${{ form.service.price}}</strong></p>
+										</template>
+
+										<div class="order-button mt-3">
+											<a class="btn btn-danger" v-on:click="cancelServiceForm()">Cancel</a>
+											<input type="submit" value="Make Request"
+												class="btn btn-success float-right" />
 										</div>
 									</form>
 								</template>
@@ -101,7 +118,7 @@
 										</template>
 										<template v-if="$page.props.auth.user.type == 'admin' ||
 											$page.props.auth.user.type == 'manager'
-											">
+										">
 											<th scope="col">Customer Message</th>
 										</template>
 										<th scope="col">Admin Response</th>
@@ -109,7 +126,7 @@
 										<th scope="col">Charges</th>
 										<template v-if="$page.props.auth.user.type == 'admin' ||
 											$page.props.auth.user.type == 'manager'
-											">
+										">
 											<th scope="col"></th>
 										</template>
 									</tr>
@@ -135,8 +152,9 @@
 											<template v-if="($page.props.auth.user.type == 'admin' ||
 												$page.props.auth.user.type == 'manager') &&
 												request.status == 'pending'
-												">
-												<a v-on:click="setServiceResponse(request)" class="link-primary">Respond</a>
+											">
+												<a v-on:click="setServiceResponse(request)"
+													class="link-primary">Respond</a>
 											</template>
 										</td>
 									</tr>
@@ -148,7 +166,7 @@
 						</div>
 						<div v-if="$page.props.auth.user.type == 'admin' ||
 							$page.props.auth.user.type == 'manager'
-							" class="col-md-4">
+						" class="col-md-4">
 							<template v-if="form_respond.request != null">
 								<h3>Handle Service Request</h3>
 								<form @submit.prevent="submitRespondForm">
@@ -210,6 +228,8 @@ export default {
 				service_id: null,
 				customer_message: "",
 				service: null,
+				insurance_amount: null,
+				insurance_charges: null,
 			}),
 			form_respond: this.$inertia.form({
 				admin_message: "",
@@ -284,6 +304,10 @@ export default {
 					return "text-uppercase badge badge-primary p-2 text-white";
 			}
 		},
+		calculateInsuranceCharges() {
+			const amount = this.form.insurance_amount || 0;
+			this.form.insurance_charges = (amount / 100) * 3;
+		}
 	},
 };
 </script>
