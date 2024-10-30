@@ -28,7 +28,8 @@
 								<input type="file" class="form-control" name="receipt_url" id="receipt_url"
 									accept=".png,.jpg,.jpeg,.pdf,.docx,.xls,.xlsx"
 									@input="invoice_form.receipt_url = $event.target.files[0]" />
-								<progress v-if="invoice_form.progress" :value="invoice_form.progress.percentage" max="100">
+								<progress v-if="invoice_form.progress" :value="invoice_form.progress.percentage"
+									max="100">
 									{{ invoice_form.progress.percentage }}%
 								</progress>
 
@@ -64,7 +65,8 @@
 									<breeze-label for="warehouse_id" value="Warehouse" />
 									<select name="warehouse_id" class="form-control custom-select"
 										v-model="form.warehouse_id" disabled>
-										<option v-for="warehouse in warehouses" :value="warehouse.id" :key="warehouse.id">
+										<option v-for="warehouse in warehouses" :value="warehouse.id"
+											:key="warehouse.id">
 											{{ warehouse.name }}
 										</option>
 									</select>
@@ -93,7 +95,7 @@
 							<i class="fas fa-plus"></i> Add Item
 						</button>
 
-						<div class="table-responsive">
+						<div class="table-responsive" style="font-size:12px">
 							<table class="table">
 								<thead>
 									<tr>
@@ -106,7 +108,7 @@
 										<th>Description</th>
 										<th>URL</th>
 										<th>Price</th>
-										<th>Price - Tax</th>
+										<th>With Tax</th>
 										<th>Quantity</th>
 										<th>Line Total</th>
 										<th></th>
@@ -120,32 +122,31 @@
 													placeholder="Name" />
 											</td>
 											<td>
-												<input v-model="item.description" type="text" class="form-control item-desc"
-													placeholder="Description" />
+												<input v-model="item.description" type="text"
+													class="form-control item-desc" placeholder="Description" />
 											</td>
 											<td>
 												<input v-model="item.url" type="url" class="form-control item-url"
 													placeholder="URL" />
 											</td>
 											<td>
-												<input v-model="item.unit_price" @keyup="getLineTotal(index)"
-													@click="getLineTotal(index)" ref="price" type="number" min="0"
-													step="0.01" class="form-control item-price" />
+												<input v-model="item.unit_price" @input="getLineTotal(index)"
+													ref="price" type="number" min="0" step="0.01"
+													class="form-control item-price" />
 											</td>
 											<td>
-												<input v-model="item.price_with_tax" type="number" readonly
-													class="form-control item-tax" />
+												<span style="font-size: 14px;">${{ item.price_with_tax }}</span>
 											</td>
 											<td>
-												<input v-model="item.quantity" @keyup="getLineTotal(index)" type="number"
-													min="1" class="form-control item-qty" />
+												<input v-model="item.quantity" @input="getLineTotal(index)"
+													type="number" min="1" class="form-control item-qty" />
 											</td>
 											<td>
-												<input v-model="item.sub_total" type="number" readonly
-													class="form-control item-subtotal" />
+												<span style="font-size:14px">${{ item.sub_total }}</span>
 											</td>
 											<td>
-												<button type="button" @click="removeItem(index)" class="btn btn-link"
+												<button type="button" @click="removeItem(index)"
+													@input="getLineTotal(index)" class="btn btn-link"
 													:disabled="index == 0">
 													<i class="fas fa-times"></i>
 												</button>
@@ -156,7 +157,7 @@
 										<td colspan="4"></td>
 										<th colspan="2">Subtotal</th>
 										<td>
-											<input v-model="form.sub_total" type="number" class="form-control" readonly />
+											<span style="font-size:14px">${{ form.sub_total }}</span>
 										</td>
 									</tr>
 									<tr>
@@ -164,22 +165,21 @@
 										<th colspan="2">Shipping Charges</th>
 										<td>
 											<input v-model="form.shipping_from_shop" type="number" class="form-control"
-												step="0.01" @keyup="getGrandTotal()" />
+												step="0.01" @input="getGrandTotal()" />
 										</td>
 									</tr>
 									<tr>
 										<td colspan="4"></td>
 										<th colspan="2">Service Charges</th>
 										<td>
-											<input v-model="form.service_charges" type="number" class="form-control"
-												readonly />
+											<span style="font-size:14px">${{ form.service_charges }}</span>
 										</td>
 									</tr>
 									<tr>
 										<td colspan="4"></td>
 										<th colspan="2">Grand Total</th>
 										<td>
-											<input v-model="form.grand_total" type="number" class="form-control" readonly />
+											<span style="font-size:14px">${{ form.grand_total }}</span>
 										</td>
 									</tr>
 								</tbody>
@@ -190,7 +190,7 @@
 				<div class="card-footer">
 					<template v-if="$page.props.auth.user.type == 'customer' &&
 						order.payment_status != 'Paid'
-						">
+					">
 						<button v-if="order.status == 'pending'" type="button" @click="updateChanges()"
 							class="btn btn-success float-right">
 							Update Order
@@ -203,7 +203,7 @@
 
 					<template v-if="$page.props.auth.user.type == 'admin' ||
 						$page.props.auth.user.type == 'manager'
-						">
+					">
 						<button v-if="order.payment_status != 'Paid'" type="submit" value="Update Order"
 							class="btn btn-success float-right">
 							Update Order

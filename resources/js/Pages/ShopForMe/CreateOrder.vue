@@ -44,7 +44,7 @@
 						<i class="fas fa-plus"></i> Add Item
 					</button>
 
-					<div class="table-responsive">
+					<div class="table-responsive" style="font-size:12px">
 						<table class="table">
 							<thead>
 								<tr>
@@ -57,7 +57,7 @@
 									<th>Desc</th>
 									<th>URL</th>
 									<th>Price</th>
-									<th>Price - Tax</th>
+									<th>With Tax</th>
 									<th>Quantity</th>
 									<th>Line Total</th>
 									<th></th>
@@ -79,24 +79,21 @@
 												placeholder="URL" />
 										</td>
 										<td>
-											<input v-model="item.price" @keyup="getLineTotal(index)"
-												@click="getLineTotal(index)" ref="price_online" type="number" min="0"
+											<input v-model="item.price" @input="getLineTotal(index)" ref="price_online" type="number" min="0"
 												step="0.01" class="form-control item-price" />
 										</td>
 										<td>
-											<input v-model="item.price_with_tax" type="number" readonly
-												class="form-control item-tax" />
+											<span style="font-size: 14px;">${{ item.price_with_tax }}</span>
 										</td>
 										<td class="item_qty">
-											<input v-model="item.qty" @keyup="getLineTotal(index)" type="number" min="1"
+											<input v-model="item.qty" @input="getLineTotal(index)" type="number" min="1"
 												class="form-control item-qty" />
 										</td>
 										<td>
-											<input v-model="item.sub_total" type="number" readonly
-												class="form-control item-subtotal" />
+											<span style="font-size:14px">${{ item.sub_total }}</span>
 										</td>
 										<td>
-											<button type="button" @click="removeItem(index)" class="btn btn-link"
+											<button type="button" @click="removeItem(index)" @input="getLineTotal(index)" class="btn btn-link"
 												:disabled="index == 0">
 												<i class="fas fa-times"></i>
 											</button>
@@ -107,7 +104,7 @@
 									<td colspan="4"></td>
 									<th colspan="2">Subtotal</th>
 									<td>
-										<input v-model="form.sub_total" type="number" class="form-control" readonly />
+										<span style="font-size:14px">${{ form.sub_total }}</span>
 									</td>
 								</tr>
 								<tr>
@@ -115,21 +112,21 @@
 									<th colspan="2">Shipping Charges</th>
 									<td>
 										<input v-model="form.shipping_from_shop" type="number" step="0.01"
-											class="form-control" @keyup="getGrandTotal()" />
+											class="form-control" @input="getGrandTotal()" />
 									</td>
 								</tr>
 								<tr>
 									<td colspan="4"></td>
 									<th colspan="2">Service Charges</th>
 									<td>
-										<input v-model="form.service_charges" type="number" class="form-control" readonly />
+										<span style="font-size:14px">${{ form.service_charges }}</span>
 									</td>
 								</tr>
 								<tr>
 									<td colspan="4"></td>
 									<th colspan="2">Grand Total</th>
 									<td>
-										<input v-model="form.grand_total" type="number" class="form-control" readonly />
+										<span style="font-size:14px">${{ form.grand_total }}</span>
 									</td>
 								</tr>
 							</tbody>
