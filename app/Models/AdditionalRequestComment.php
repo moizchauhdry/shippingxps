@@ -4,14 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class AdditionalRequestComment extends Model
+class AdditionalRequestComment extends Model implements Auditable
 {
-    use HasFactory;
-    protected $guarded = [];
+  use \OwenIt\Auditing\Auditable;
 
-    public function user()
-    {
-      return $this->belongsTo(User::class);
-    }
+  use HasFactory;
+  protected $guarded = [];
+
+  public function user()
+  {
+    return $this->belongsTo(User::class);
+  }
 }

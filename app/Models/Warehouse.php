@@ -5,9 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use PHPUnit\Framework\Constraint\Count;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Warehouse extends Model
+
+class Warehouse extends Model implements Auditable
 {
+    use \OwenIt\Auditing\Auditable;
+
     use HasFactory;
 
     public $timestamps = false;
