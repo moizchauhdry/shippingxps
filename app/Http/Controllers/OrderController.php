@@ -188,8 +188,11 @@ class OrderController extends Controller
 
     public function edit($id)
     {
-
         $model = order::find($id);
+        $package = Package::where('id', $model->package_id)->first();
+        if ($package) {
+            abort_if($package->payment_status == 'Paid', 403);
+        }
 
         $items = [];
 
