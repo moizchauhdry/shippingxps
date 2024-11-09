@@ -244,7 +244,7 @@
                                                     <td colspan="3" class="header center" width="100%">
                                                         <span style="color: white;font-size:12px">©{{
                                                             Carbon\Carbon::now()->year }} <a href="https://shippingxps.com/"
-                                                                style="color:#fff">shippingxps.com</a> All Rights
+                                                                style="color:#fff">shippingxps.com</a> <br> All Rights
                                                             Reserved</span>
                                                     </td>
                                                 </tr>
