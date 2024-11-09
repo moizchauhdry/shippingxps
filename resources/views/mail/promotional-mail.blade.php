@@ -7,7 +7,7 @@
     </a> <br> --}}
 
     <a href="https://selfshiplabel.com" target="_blank">
-        <img src="https://app.shippingxps.com/images/promotional-banner.png" alt="" class="responsive-img">
+        <img src="https://app.shippingxps.com/images/promotional-banner-1.png" alt="" class="responsive-img">
     </a>
 
     <p>
