@@ -22,8 +22,7 @@
 					<h3 class="float-left">Packages/Orders Included</h3>
 					<h3 class="float-right">
 						<inertia-link :href="route('customers.show', packag?.customer?.id)" class="btn btn-link">
-							# {{ siuteNum(packag?.customer?.id) }} -
-							{{ packag?.customer?.name }}
+							# {{ siuteNum(packag?.customer?.id) }} - {{ packag?.customer?.name }}
 						</inertia-link>
 					</h3>
 				</div>
@@ -47,35 +46,26 @@
 										<span class="badge badge-primary text-sm">PKG #{{ child_pkg.pkg_id }}</span>
 									</td>
 									<td>
-										{{ child_pkg.length }}
-										{{ child_pkg.dim_unit }} x
-										{{ child_pkg.width }}
-										{{ child_pkg.dim_unit }} x
-										{{ child_pkg.height }}
-										{{ child_pkg.dim_unit }}
+										{{ child_pkg.length }} {{ child_pkg.dim_unit }} x {{ child_pkg.width }} {{ child_pkg.dim_unit }} x {{ child_pkg.height }} {{ child_pkg.dim_unit }}
 									</td>
 									<td>
-										{{ child_pkg.weight }}
-										{{ child_pkg.weight_unit }}
+										{{ child_pkg.weight }} {{ child_pkg.weight_unit }}
 									</td>
 									<td>{{ child_pkg.warehouse }}</td>
 									<td>{{ child_pkg.tracking_in }}</td>
 									<td>
 										<div v-for="image in child_pkg.images" :key="image.id">
 											<div class="m-1 p-1">
-												<img style="width: 50px; height: 50px" @click="viewImage($event)"
-													:src="imgURL(image.image)" />
+												<img style="width: 50px; height: 50px" @click="viewImage($event)" :src="imgURL(image.image)" />
 											</div>
 										</div>
-										<div class="text-xs text-danger" v-if="child_pkg.images.length == 0">
-											Not uploaded yet.
-										</div>
+										<div class="text-xs text-danger" v-if="child_pkg.images.length == 0">No Images</div>
 									</td>
-									<td v-if="!package_expired">
-										<inertia-link v-if="$page.props.auth.user.type == 'admin' &&
-											child_pkg.status == 'open'
-											" :href="route('order.edit', child_pkg.order_id)" class="btn btn-primary btn-sm m-1"><i
-												class="fa fa-edit mr-1"></i>Edit</inertia-link>
+									<td>
+										<template v-if="$page.props.auth.user.type == 'admin'">
+											<inertia-link v-if="packag.payment_status == 'Pending'" :href="route('order.edit', child_pkg.order_id)" class="btn btn-primary btn-sm m-1"><i class="fa fa-edit mr-1"></i>Edit</inertia-link>
+											<button v-else class="btn btn-primary btn-sm m-1" disabled><i class="fa fa-edit mr-1"></i>Edit</button>
+										</template>
 									</td>
 								</tr>
 							</template>
@@ -87,7 +77,8 @@
 							<i class="fa fa-print mr-1"></i>Print Commercial Invoice</a>
 					</template>
 
-					<template v-if="packag.payment_status == 'Paid' && $page.props.auth.user.type == 'admin' && !package_expired">
+					<template
+						v-if="packag.payment_status == 'Paid' && $page.props.auth.user.type == 'admin' && !package_expired">
 						<a class="btn btn-info btn-sm m-1" @click="generateLabel">
 							<i class="fas fa-wrench mr-1"></i>Generate Label</a>
 
@@ -99,7 +90,8 @@
 					<template
 						v-if="packag.payment_status == 'Pending' && packag.address_book_id != 0 && packag.address_type == 'international'">
 
-						<inertia-link class="btn btn-primary btn-sm m-1" v-if="packag.custom_form_status == 1 && !package_expired"
+						<inertia-link class="btn btn-primary btn-sm m-1"
+							v-if="packag.custom_form_status == 1 && !package_expired"
 							:href="route('packages.custom', { id: packag.id, mode: 'edit' })">
 							<i class="fa fa-edit mr-1"></i>Custom Form
 						</inertia-link>
