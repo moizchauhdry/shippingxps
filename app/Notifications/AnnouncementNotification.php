@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Mail\PromotionalMail;
 use App\Mail\UserGeneralMail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -52,27 +53,29 @@ class AnnouncementNotification extends Notification
         //     ->line('* Packages remaining beyond 35 days will be terminated and become the property of ShippingXPS.')
         //     ->line('* For the five-day period between 30 and 35 days, a daily fee will be charged');
 
-        $this->description = "
-            <p style='margin-top:10px'><strong>Effective December 1, 2024, the storage policy will be updated as follows:</strong></p>
-            <ul>
-                <li>Storage days will change from <strong>75 days to 30 days</strong>.</li>
-                <li>A <strong>storage fee</strong> will apply to packages held for more than 30 days.</li>
-                <li>Packages remaining beyond <strong>35 days</strong> will be terminated and become the property of ShippingXPS.</li>
-                <li>For the <strong>five-day period</strong> between 30 and 35 days, a daily fee will be charged.</li>
-            </ul>
-        ";
+        // $this->description = "
+        //     <p style='margin-top:10px'><strong>Effective December 1, 2024, the storage policy will be updated as follows:</strong></p>
+        //     <ul>
+        //         <li>Storage days will change from <strong>75 days to 30 days</strong>.</li>
+        //         <li>A <strong>storage fee</strong> will apply to packages held for more than 30 days.</li>
+        //         <li>Packages remaining beyond <strong>35 days</strong> will be terminated and become the property of ShippingXPS.</li>
+        //         <li>For the <strong>five-day period</strong> between 30 and 35 days, a daily fee will be charged.</li>
+        //     </ul>
+        // ";
+
+        $this->description = "<p style='margin-top:10px'><strong>https://selfshiplabel.com</strong></p>";
 
         $data = [
-            'subject' => "Storage Policy Notification",
+            'subject' => "Create Custom Labels",
             'name' => $this->customer->name,
             'description' => $this->description,
         ];
 
         Log::info($this->customer->name . "...send emails step 03");
 
-        return (new UserGeneralMail($data))
+        return (new PromotionalMail($data))
             ->to($notifiable->email)
-            ->bcc('moizchauhdry@gmail.com');
+            ->bcc('moizchauhdry01@gmail.com');
     }
 
     /**
