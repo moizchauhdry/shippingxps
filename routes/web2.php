@@ -117,4 +117,6 @@ Route::middleware('auth')->group(function () {
     Route::get('custom-form/create', [CustomFormController::class, 'create'])->name('custom-form.create');
     Route::post('custom-form/store', [CustomFormController::class, 'store'])->name('custom-form.store');
     Route::get('custom-form/print/{id}', [CustomFormController::class, 'print'])->name('custom-form.print');
+
+    Route::post('getAddressByID', [\App\Http\Controllers\AddressController::class, 'getAddressByID'])->name('getAddressByID');
 });

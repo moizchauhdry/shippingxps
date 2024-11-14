@@ -263,7 +263,7 @@ class PackageController extends Controller
             $total = $total + $label_charges;
         }
 
-        $shipping_address = Address::where('user_id', Auth::user()->id)->get();
+        $shipping_address = Address::where('user_id', $packag->customer_id)->get();
 
         $packag->update(['grand_total' => $total]);
 
@@ -615,7 +615,7 @@ class PackageController extends Controller
         $service_request = new ServiceRequest();
         $service_request->service_id = $service['id'];
         $service_request->package_id = $request->input('package_id');
-        
+
         if ($service['keyword'] == 'insurance') {
             $service_request->price = $request->insurance_charges;
         } else {

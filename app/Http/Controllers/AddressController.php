@@ -8,7 +8,9 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use App\Models\Address;
 use App\Models\Country;
+use App\Models\Package;
 use App\Models\SignatureType;
+use App\Models\SiteSetting;
 use GuzzleHttp\Client;
 use Illuminate\Validation\Rule;
 
@@ -35,7 +37,7 @@ class AddressController extends Controller
     }
 
     public function store(Request $request)
-    {
+    {        
         $validated = $request->validate([
             'fullname' => 'regex:/^[A-Za-z0-9\s]+$/|required',
             'is_residential' => 'required|boolean',
@@ -127,30 +129,64 @@ class AddressController extends Controller
                 // if ($address_type == 'UNKNOWN') {
                 //     return redirect()->back()->with('error', 'The address you have entered is not valid.');
                 // }
+                
             } catch (\Throwable $th) {
                 return redirect()->back()->with('error', 'The address you have entered is not valid.');
             }
         }
 
-        $address = new Address();
-        $address->user_id = Auth::user()->id;
-        $address->fullname = $validated['fullname'];
-        $address->country_id = $validated['country_id'];
-        $address->country_code = $country_code;
-        $address->state = $request->state;
-        $address->city = $validated['city'];
-        $address->zip_code = $validated['zip_code'];
-        $address->phone = $validated['phone'];
-        $address->email = $validated['email'];
-        $address->address = $validated['address'];
-        $address->address_2 = $request->address_2;
-        $address->address_3 =  $request->address_3;
-        $address->is_residential = $validated['is_residential'];
-        $address->tax_no = $request->tax_no;
-        // $address->signature_type_id = $request->signature_type_id;
-        $address->save();
+        $user = Auth::user();
 
+        $data = [
+            'user_id' => $user->id,
+            'fullname' => $request->fullname,
+            'country_id' => $request->country_id,
+            'country_code' => $country_code,
+            'state' => $request->state,
+            'city' => $request->city,
+            'zip_code' => $request->zip_code,
+            'phone' => $request->phone,
+            'email' => $request->email,
+            'address' => $request->address,
+            'address_2' => $request->address_2,
+            'address_3' =>  $request->address_3,
+            'is_residential' => $request->is_residential,
+            'tax_no' => $request->tax_no,
+        ];
+
+        $address = Address::where('user_id', $user->id)->where('address', $request->address)->first();
+        if ($address) {
+            $address->update($data);
+        } else {
+            $address = Address::create($data);
+        }
+        
         if ($request->packages_address == true) {
+
+            $package = Package::find($request->package_id);
+
+            if (isset($address)) {
+                $address_type = $address->country_id == 226 ? 'domestic' : 'international';
+                $package->update([
+                    'address_book_id' => $address->id,
+                    'address_type' => $address_type,
+                ]);
+
+                $address->update(['user_id' => $package->customer_id]); // due to admin add or edit package
+            } else {
+                $package->update([
+                    'address_book_id' => 0,
+                    'address_type' => NULL,
+                ]);
+            }
+    
+            if ($address->signature_type_id == 5) {
+                $signature_charges = SiteSetting::where('name', 'signature_charges')->first();
+                $package->update(['signature_charges' => $signature_charges->value]);
+            } else {
+                $package->update(['signature_charges' => 0]);
+            }
+
             return redirect()->back()->with('success', 'The address have been created successfully.');
         } else {
             return redirect()->route('addresses')->with('success', 'The address have been created successfully.');
@@ -354,5 +390,17 @@ class AddressController extends Controller
         } else {
             return response()->json(['status' => false, 'address' => NULL]);
         }
+    }
+
+    public function getAddressByID(Request $request)
+    {
+        $address = Address::where('id',$request->address_book_id)->first();
+        // dd($address);
+        
+        if ($address) {
+            return response()->json($address);
+        }
+
+        return response()->json(['error' => 'Address not found'], 404);
     }
 }
