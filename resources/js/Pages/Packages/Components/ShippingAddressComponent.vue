@@ -1,5 +1,5 @@
 <template>
-	<div class="row">
+	<div class="row" v-if="packag.payment_status == 'Pending' && !packag.carrier_code">
 		<div class="col-md-12">
 			<div class="card mt-2">
 				<div class="card-header">
@@ -7,31 +7,35 @@
 				</div>
 				<div class="card-body">
 					<div class="row" v-if="packag.address">
-						<p>{{ packag?.address?.fullname }} </p> <br>
-						<p>{{ packag?.address?.address }} </p> <br>
-						<p v-if="packag.address.address_2">{{ packag?.address?.address_2 }} </p>
-						<p v-if="packag.address.address_3">{{ packag?.address?.address_3 }} </p>
-						<p>
-							{{ packag?.address?.city }},
-							{{ packag?.address?.state }},
-							{{ packag?.address?.zip_code }},
-							{{ packag?.address?.country_name }}
-						</p>
-						<p>
-							Contact: {{ packag?.address?.phone }} <br>
-							Email: {{ packag?.address?.email }} <br>
-							<template v-if="packag?.address?.tax_no">
-								VAT ID: {{ packag?.address?.tax_no }} <br>
-							</template>
-							Type: {{ packag?.address?.is_residential == 1 ? 'Residential' :
-								'Commercial'
-							}} <br />
-						</p>
+						<div class="col-md-6">
+							<p class="mb-2">
+								<button type="button" class="btn btn-primary" @click="edit()">
+									<i class="fa fa-edit mr-1"></i>Edit Address</button>
+							</p>
 
-						<button type="button" class="btn btn-primary" @click="editAddress()">
-							<i class="fa fa-plus mr-1"></i>Edit Address</button>
+							<p>{{ packag?.address?.fullname }} </p>
+							<p>{{ packag?.address?.address }} </p>
+							<p>{{ packag?.address?.address_2 }} </p>
+							<p>{{ packag?.address?.address_3 }} </p>
+							<p>
+								{{ packag?.address?.city }},
+								{{ packag?.address?.state }},
+								{{ packag?.address?.zip_code }},
+								{{ packag?.address?.country_name }}
+							</p>
+							<p>
+								Contact: {{ packag?.address?.phone }} <br>
+								Email: {{ packag?.address?.email }} <br>
+								<template v-if="packag?.address?.tax_no">
+									VAT ID: {{ packag?.address?.tax_no }} <br>
+								</template>
+								Type: {{ packag?.address?.is_residential == 1 ? 'Residential' :
+									'Commercial'
+								}} <br />
+							</p>
+						</div>
 					</div>
-					<div class="row justify-content-center" v-else>
+					<div class="row" v-else>
 						<button type="button" class="btn btn-primary" @click="open()">
 							<i class="fa fa-plus mr-1"></i>Add Address</button>
 					</div>
@@ -40,7 +44,7 @@
 		</div>
 	</div>
 
-	<div class="modal fade" id="shipping_address_modal">
+	<div class="modal fade" id="shipping_address_modal"  v-if="packag.payment_status == 'Pending' && !packag.carrier_code">
 		<div class="modal-dialog border">
 			<form @submit.prevent="submitShippingAddress()">
 				<div class="modal-content">
@@ -51,17 +55,19 @@
 					</div>
 					<div class="modal-body">
 						<breeze-validation-errors class="mb-4" />
-						<div class="row">
-							<div class="form-group col-md-12">
-								<select name="address_book_id" class="form-select text-uppercase"
-									v-model="address_form.address_book_id" @change="getAddressByID()">
-									<option :value="0">--Select Address--</option>
-									<template v-for="address in shipping_address" :key="address.id">
-										<option :value="address.id">
-											{{ address.fullname }}, {{ address.address }}
-										</option>
-									</template>
-								</select>
+						<div class="row" v-if="shipping_address.length > 0">
+							<div class="col-md-12">
+								<div class="form-group">
+									<select name="address_book_id" class="form-select text-uppercase"
+										v-model="address_form.address_book_id" @change="getAddressByID()">
+										<!-- <option :value="0">--Select Address--</option> -->
+										<template v-for="address in shipping_address" :key="address.id">
+											<option :value="address.id">
+												{{ address.fullname }}, {{ address.address }}
+											</option>
+										</template>
+									</select>
+								</div>
 							</div>
 						</div>
 						<div class="row">
@@ -180,7 +186,6 @@ export default {
 	},
 	data() {
 		return {
-			create_shipping_address: false,
 			address_form: this.$inertia.form({
 				package_id: "",
 				address_book_id: "",
@@ -199,15 +204,10 @@ export default {
 				email: "",
 				state_required: false,
 				packages_address: true,
-				// signature_type_id: 1,
 			}),
 		};
 	},
 	methods: {
-		submitPkgAddress() {
-			this.address_form.package_id = this.packag.id;
-			Inertia.post(this.route("packages.address.update"), this.address_form);
-		},
 		submitShippingAddress() {
 			this.address_form.package_id = this.packag.id;
 
@@ -220,25 +220,20 @@ export default {
 				},
 			});
 		},
-		cancelShippingAddress() {
-			this.create_shipping_address_form.reset();
-			this.create_shipping_address = false;
-		},
 		country() {
 			if (
-				this.create_shipping_address_form.country_id == 226 ||
-				this.create_shipping_address_form.country_id == 138 ||
-				this.create_shipping_address_form.country_id == 38
+				this.address_form.country_id == 226 ||
+				this.address_form.country_id == 138 ||
+				this.address_form.country_id == 38
 			) {
-				this.create_shipping_address_form.state_required = true;
+				this.address_form.state_required = true;
 			} else {
-				this.create_shipping_address_form.state_required = false;
+				this.address_form.state_required = false;
 			}
 		},
 		mounted() {
 			this.country();
 		},
-
 		open() {
 			var modal = document.getElementById("shipping_address_modal");
 			modal.classList.add("show");
@@ -273,7 +268,7 @@ export default {
 					console.error(error);
 				});
 		},
-		editAddress() {
+		edit() {
 			this.address_form.address_book_id = this.packag.address_book_id;
 			this.getAddressByID();
 			this.open();

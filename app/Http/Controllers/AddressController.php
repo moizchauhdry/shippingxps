@@ -37,9 +37,7 @@ class AddressController extends Controller
     }
 
     public function store(Request $request)
-    {
-        // dd($request->all());
-        
+    {        
         $validated = $request->validate([
             'fullname' => 'regex:/^[A-Za-z0-9\s]+$/|required',
             'is_residential' => 'required|boolean',
@@ -131,6 +129,7 @@ class AddressController extends Controller
                 // if ($address_type == 'UNKNOWN') {
                 //     return redirect()->back()->with('error', 'The address you have entered is not valid.');
                 // }
+                
             } catch (\Throwable $th) {
                 return redirect()->back()->with('error', 'The address you have entered is not valid.');
             }
@@ -172,6 +171,8 @@ class AddressController extends Controller
                     'address_book_id' => $address->id,
                     'address_type' => $address_type,
                 ]);
+
+                $address->update(['user_id' => $package->customer_id]); // due to admin add or edit package
             } else {
                 $package->update([
                     'address_book_id' => 0,
