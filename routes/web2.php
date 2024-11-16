@@ -84,30 +84,33 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::prefix('payment')->group(function () {
-        Route::any('setup', [\App\Http\Controllers\PaymentController::class, 'index'])->name('payment.index');
-        Route::post('pay', [\App\Http\Controllers\PaymentController::class,  'pay'])->name('payment.pay');
-        Route::any('paypal/init', [\App\Http\Controllers\PaymentController::class,  'payPalInit'])->name('payment.payPalInit');
-        Route::any('payPalSuccess', [\App\Http\Controllers\PaymentController::class,  'payPalSuccess'])->name('payment.payPalSuccess');
         Route::any('list', [\App\Http\Controllers\PaymentController::class,  'getPayments'])->name('payments.getPayments');
-        Route::get('PaymentSuccess/{id}', [\App\Http\Controllers\PaymentController::class,  'PaymentSuccess'])->name('payments.PaymentSuccess');
         Route::post('check/coupon', [\App\Http\Controllers\PaymentController::class, 'checkCoupon'])->name('checkCoupon');
         Route::get('invoice/{id}', [\App\Http\Controllers\PaymentController::class, 'invoice'])->name('payment.invoice');
         Route::get('generateReport/{id}', [\App\Http\Controllers\PaymentController::class, 'generateReport'])->name('generateReport');
         Route::any('generateReportList', [\App\Http\Controllers\PaymentController::class, 'generateReportList'])->name('generateReportList');
         Route::post('add-payment', [PaymentController::class, 'addPayment'])->middleware(['auth'])->name('payment.add');
-        Route::post('square-success', [PaymentController::class, 'squareSuccess'])->name('payment.square-success');
+        
+        Route::middleware(['auth', 'check.shipping.address'])->group(function () {
+            Route::any('setup', [\App\Http\Controllers\PaymentController::class, 'index'])->name('payment.index');
+            Route::post('pay', [\App\Http\Controllers\PaymentController::class,  'pay'])->name('payment.pay');
+            Route::any('paypal/init', [\App\Http\Controllers\PaymentController::class,  'payPalInit'])->name('payment.payPalInit');
+            Route::any('payPalSuccess', [\App\Http\Controllers\PaymentController::class,  'payPalSuccess'])->name('payment.payPalSuccess');
+            Route::get('PaymentSuccess/{id}', [\App\Http\Controllers\PaymentController::class,  'PaymentSuccess'])->name('payments.PaymentSuccess');
+            Route::post('square-success', [PaymentController::class, 'squareSuccess'])->name('payment.square-success');
+        });
     });
 
     Route::prefix('reports')->group(function () {
-        Route::any('report/{slug}',[ReportController::class,'index'] )->name('report.index');
-        Route::any('import-carrier-cost',[ReportController::class,'importCarrierCost'] )->name('report.import-carrier-cost');
+        Route::any('report/{slug}', [ReportController::class, 'index'])->name('report.index');
+        Route::any('import-carrier-cost', [ReportController::class, 'importCarrierCost'])->name('report.import-carrier-cost');
     });
 
     Route::prefix('expenses')->group(function () {
-        Route::any('list',[ExpenseController::class,'index'] )->name('expense.index');
-        Route::get('create',[ExpenseController::class,'create'] )->name('expense.create');
-        Route::post('store',[ExpenseController::class,'store'] )->name('expense.store');
-        Route::post('destroy',[ExpenseController::class,'destroy'] )->name('expense.destroy');
+        Route::any('list', [ExpenseController::class, 'index'])->name('expense.index');
+        Route::get('create', [ExpenseController::class, 'create'])->name('expense.create');
+        Route::post('store', [ExpenseController::class, 'store'])->name('expense.store');
+        Route::post('destroy', [ExpenseController::class, 'destroy'])->name('expense.destroy');
     });
 
     Route::get('getShippingAddress/{id}', [\App\Http\Controllers\AddressController::class, 'getShippingAddress'])->name('getShippingAddress');
