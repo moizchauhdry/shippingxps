@@ -45,7 +45,7 @@
 	</div>
 
 	<div class="modal fade" id="shipping_address_modal"  v-if="packag.payment_status == 'Pending' && !packag.carrier_code">
-		<div class="modal-dialog border">
+		<div class="modal-dialog border modal-dialog-scrollable">
 			<form @submit.prevent="submitShippingAddress()">
 				<div class="modal-content">
 					<div class="modal-header">
