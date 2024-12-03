@@ -153,8 +153,8 @@
 												$page.props.auth.user.type == 'manager') &&
 												request.status == 'pending'
 											">
-												<a v-on:click="setServiceResponse(request)"
-													class="link-primary">Respond</a>
+												<button type="button" v-on:click="setServiceResponse(request)"
+													class="btn btn-primary">Respond</button>
 											</template>
 										</td>
 									</tr>

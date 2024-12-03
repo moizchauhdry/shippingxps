@@ -47,9 +47,9 @@ class AddressController extends Controller
             'phone' => 'required|string',
             'email' => 'email|required|string',
             // 'address' => 'regex:/^[A-Za-z0-9\s]+$/|required|string|max:35',
-            'address' => 'required|string|max:35',
-            'address_2' => 'nullable|string|max:35',
-            'address_3' => 'nullable|string|max:35',
+            'address' => 'regex:/^[A-Za-z0-9\s\-\#]+$/|required|string|max:35',
+            'address_2' => 'regex:/^[A-Za-z0-9\s\-\#]+$/|nullable|string|max:35',
+            'address_3' => 'regex:/^[A-Za-z0-9\s\-\#]+$/|nullable|string|max:35',
             'tax_no' => 'nullable|max:100',
             // 'signature_type_id' => 'required',
         ], [
