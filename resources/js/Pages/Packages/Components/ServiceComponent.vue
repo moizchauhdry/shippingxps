@@ -81,17 +81,20 @@
 											<div class="row mt-4 mb-2">
 												<div class="form-group col-md-6">
 													<label for="">Insurance Amount:</label>
-													<input type="text" v-model="form.insurance_amount" class="form-control" @keyup="calculateInsuranceCharges()">
+													<input type="text" v-model="form.insurance_amount"
+														class="form-control" @keyup="calculateInsuranceCharges()">
 												</div>
 												<div class="form-group col-md-6">
 													<label>Insurance Charges:</label>
-													<input type="text" v-model="form.insurance_charges" class="form-control" readonly>
+													<input type="text" v-model="form.insurance_charges"
+														class="form-control" readonly>
 												</div>
 											</div>
 										</template>
 
 										<template v-else>
-											<p>{{ form.service.title }} Charges : <strong>${{ form.service.price}}</strong></p>
+											<p>{{ form.service.title }} Charges : <strong>${{
+												form.service.price }}</strong></p>
 										</template>
 
 										<div class="order-button mt-3">
@@ -103,107 +106,103 @@
 								</template>
 							</div>
 						</template>
-						<div v-bind:class="{
-							'col-md-8':
-								$page.props.auth.user.type == 'admin' ||
-								$page.props.auth.user.type == 'manager',
-							'col-md-12': $page.props.auth.user.type == 'customer',
-						}" v-if="service_requests.length > 0">
-							<table class="table table-striped">
-								<thead>
-									<tr>
-										<th scope="col">Service</th>
-										<template v-if="$page.props.auth.user.type == 'customer'">
-											<th scope="col">Your Message</th>
-										</template>
-										<template v-if="$page.props.auth.user.type == 'admin' ||
-											$page.props.auth.user.type == 'manager'
-										">
-											<th scope="col">Customer Message</th>
-										</template>
-										<th scope="col">Admin Response</th>
-										<th scope="col">Status</th>
-										<th scope="col">Charges</th>
-										<template v-if="$page.props.auth.user.type == 'admin' ||
-											$page.props.auth.user.type == 'manager'
-										">
-											<th scope="col"></th>
-										</template>
-									</tr>
-								</thead>
-								<tbody>
-									<tr v-for="request in service_requests" :key="request.id">
-										<td>
-											{{ request.service_title }}
-										</td>
-										<td>
-											{{ request.customer_message }}
-										</td>
-										<td>
-											{{ request.admin_message }}
-										</td>
-										<td>
-											<span v-bind:class="getLabelClass(request.status)" style="padding: 5px">
-												{{ request.status }}
-											</span>
-										</td>
-										<td>$ {{ request.price }}</td>
-										<td>
-											<template v-if="($page.props.auth.user.type == 'admin' ||
-												$page.props.auth.user.type == 'manager') &&
-												request.status == 'pending'
-											">
-												<button type="button" v-on:click="setServiceResponse(request)"
-													class="btn btn-primary">Respond</button>
-											</template>
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
+
 						<div v-if="service_requests == 0">
 							<span>There are no services requests added.</span>
 						</div>
-						<div v-if="$page.props.auth.user.type == 'admin' ||
-							$page.props.auth.user.type == 'manager'
-						" class="col-md-4">
-							<template v-if="form_respond.request != null">
-								<h3>Handle Service Request</h3>
-								<form @submit.prevent="submitRespondForm">
-									<p style="">
-										Service :
-										<strong>{{ form_respond.request.service_title }}</strong>
-									</p>
-									<div class="form-group">
-										<p>Message for Customer</p>
-										<textarea v-model="form_respond.admin_message" name="admin_message"
-											id="admin_message" class="form-control" placeholder="Message for Customer"
-											rows="4" style="resize: none" required>
-										</textarea>
-									</div>
-									<p style="">
-										Charges:
-										<strong>${{ form_respond.request.price }}</strong>
-									</p>
-									<div class="form-group">
-										<p>Edit Charges</p>
-										<input type="text" v-model="form_respond.request.price" />
-									</div>
-									<div class="order-button">
-										<input style="display: none" type="submit" value="Update Request"
-											class="btn btn-danger" />
 
-										<a v-on:click="requestComplete()" class="btn btn-success float-left">
-											<span>Complete Request</span>
-										</a>
+						<div class="row">
+							<div class="col-md-12" v-if="service_requests.length > 0">
+								<div class="table-responsive">
+									<table class="table table-bordered" style="width: 100%;">
+										<thead>
+											<tr>
+												<th scope="col">Service</th>
+												<template v-if="$page.props.auth.user.type == 'customer'">
+													<th scope="col">Your Message</th>
+												</template>
+												<template
+													v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">
+													<th scope="col">Customer Message</th>
+												</template>
+												<th scope="col">Admin Response</th>
+												<th scope="col">Status</th>
+												<th scope="col">Charges</th>
+												<th scope="col"
+													v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">
+												</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr v-for="request in service_requests" :key="request.id">
+												<td>
+													{{ request.service_title }}
+												</td>
+												<td>
+													{{ request.customer_message }}
+												</td>
+												<td>
+													{{ request.admin_message }}
+												</td>
+												<td>
+													<span v-bind:class="getLabelClass(request.status)"
+														style="padding: 5px">
+														{{ request.status }}
+													</span>
+												</td>
+												<td>$ {{ request.price }}</td>
+												<td
+													v-if="($page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager') && request.status == 'pending'">
+													<button type="button" v-on:click="setServiceResponse(request)"
+														class="btn btn-primary">Respond</button>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
 
-										<a v-on:click="requestReject()" class="btn btn-danger float-right"
-											style="margin-right: 5px">
-											<span>Reject Request</span>
-										</a>
-									</div>
-								</form>
-							</template>
+							<div class="col-md-12"
+								v-if="$page.props.auth.user.type == 'admin' || $page.props.auth.user.type == 'manager'">
+								<template v-if="form_respond.request != null">
+									<h3>Handle Service Request</h3>
+									<form @submit.prevent="submitRespondForm">
+										<p style="">
+											Service :
+											<strong>{{ form_respond.request.service_title }}</strong>
+										</p>
+										<div class="form-group">
+											<p>Message for Customer</p>
+											<textarea v-model="form_respond.admin_message" name="admin_message"
+												id="admin_message" class="form-control"
+												placeholder="Message for Customer" rows="4" style="resize: none"
+												required>
+											</textarea>
+										</div>
+										<p style="">
+											Charges:
+											<strong>${{ form_respond.request.price }}</strong>
+										</p>
+										<div class="form-group">
+											<p>Edit Charges</p>
+											<input type="text" v-model="form_respond.request.price" />
+										</div>
+										<div class="order-button">
+											<input style="display: none" type="submit" value="Update Request"
+												class="btn btn-danger" />
+
+											<a v-on:click="requestComplete()" class="btn btn-success float-left">
+												<span>Complete Request</span>
+											</a>
+
+											<a v-on:click="requestReject()" class="btn btn-danger float-right"
+												style="margin-right: 5px">
+												<span>Reject Request</span>
+											</a>
+										</div>
+									</form>
+								</template>
+							</div>
 						</div>
 					</div>
 				</div>
