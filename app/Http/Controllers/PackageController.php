@@ -158,7 +158,6 @@ class PackageController extends Controller
 
         $package_expired = false;
         if ($packag->storage_days > 80) {
-            // abort(403, 'The package has exceeded 80 days, so it has been terminated and has become the property of ShippingXPS.');
             $package_expired = true;
         }
 
@@ -166,6 +165,7 @@ class PackageController extends Controller
         foreach ($packag->child_packages as $key => $child_package) {
             if ($child_package->order) {
                 $child_package_orders[] = [
+                    'customer_id' => $child_package->customer_id,
                     'pkg_id' => $child_package->id,
                     'order_id' => $child_package->order->id,
                     'weight' => $child_package->order->package_weight,
