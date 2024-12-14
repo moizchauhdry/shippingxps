@@ -22,7 +22,8 @@
 									<h6>Ship from</h6>
 									<select required v-model="form.ship_from" class="form-control custom-select">
 										<option value="">Select</option>
-										<option v-for="warehouse in warehouses" :value="warehouse.id" :key="warehouse.id">
+										<option v-for="warehouse in warehouses" :value="warehouse.id"
+											:key="warehouse.id">
 											{{ warehouse.name }}
 										</option>
 										<option value="other">Other USA</option>
@@ -43,7 +44,8 @@
 							<div class="d-flex justify-content-center">
 								<div class="form-group">
 									<h6>Ship To</h6>
-									<select required v-model="form.ship_to_country_code" class="form-control custom-select">
+									<select required v-model="form.ship_to_country_code"
+										class="form-control custom-select">
 										<option value="">Select</option>
 										<option v-for="country in countries" :value="country.iso" :key="country.id">
 											{{ country.name }}
@@ -80,8 +82,8 @@
 									<h6>
 										Weight <small>{{ form.units ? "kg" : "lbs" }}</small>
 									</h6>
-									<input v-model="item.weight" type="number" class="form-control" name="name" :step="0.01"
-										:min="0" required="" />
+									<input v-model="item.weight" type="number" class="form-control" name="name"
+										:step="0.01" :min="0" required="" />
 								</div>
 
 								<div class="form-group">
@@ -93,8 +95,8 @@
 										<input v-model="item.length" type="number" class="form-control dimension"
 											name="name" :step="0.01" :min="1" required="" />
 
-										<input v-model="item.width" type="number" class="form-control dimension" name="name"
-											:step="0.01" :min="1" required="" />
+										<input v-model="item.width" type="number" class="form-control dimension"
+											name="name" :step="0.01" :min="1" required="" />
 
 										<input v-model="item.height" type="number" class="form-control dimension"
 											name="name" :step="0.01" :min="1" required="" />
@@ -162,28 +164,33 @@
 						</div>
 					</div>
 				</div>
+
 				<div class="col-md-6">
-					<template v-if="shipping_rates.length == 0">
-						<div class="d-flex justify-content-center">
-							<a href="http://shippingxps.com">
-								<img alt="shippingxps" width="237" height="55" src="/theme/img/logo.png" />
-							</a>
-						</div>
+					<div class="d-flex justify-content-center">
+						<a href="http://shippingxps.com">
+							<img alt="shippingxps" width="237" height="55" src="/theme/img/logo.png" />
+						</a>
+					</div>
 
-						<div class="d-flex justify-content-center">
-							<h1
-								class="text-8 text-lg-8 text-xl-8 line-height-3 text-transform-none font-weight-semibold text-primary">
-								Worldwide Shipping from the USA
-							</h1>
-						</div>
+					<div class="d-flex justify-content-center">
+						<h1
+							class="text-8 text-lg-8 text-xl-8 line-height-3 text-transform-none font-weight-semibold text-primary">
+							Worldwide Shipping from the USA
+						</h1>
+					</div>
 
-						<div class="d-flex justify-content-center" v-if="loading">
-							<h1
-								class="text-3 text-lg-3 text-xl-3 line-height-3 text-transform-none font-weight-semibold mt-5">
-								Please wait, we are fetching best rates for you.
-							</h1>
-						</div>
-					</template>
+					<div class="d-flex justify-content-center" v-if="loading">
+						<h1
+							class="text-3 text-lg-3 text-xl-3 line-height-3 text-transform-none font-weight-semibold mt-5">
+							Please wait, we are fetching best rates for you.
+						</h1>
+					</div>
+
+					<div class="d-flex justify-content-center" v-if="!loading && shipping_rates.length == 0">
+						<h1 class="mt-4">
+							No rates found. Try different values.
+						</h1>
+					</div>
 
 					<div class="card shadow" v-for="rate in shipping_rates" :key="rate.id">
 						<div class="card-body">

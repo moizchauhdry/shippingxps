@@ -43,7 +43,8 @@
 							<template v-for="child_pkg in child_package_orders" :key="child_pkg.id">
 								<tr>
 									<td>
-										<span class="badge badge-primary text-sm">PKG #{{ child_pkg.pkg_id }}</span>
+										<span class="badge badge-primary text-sm">PKG #{{ child_pkg.pkg_id }}</span> <br>
+										<small>UID #{{ child_pkg.customer_id }} OID #{{ child_pkg.order_id }}</small>
 									</td>
 									<td>
 										{{ child_pkg.length }} {{ child_pkg.dim_unit }} x {{ child_pkg.width }} {{ child_pkg.dim_unit }} x {{ child_pkg.height }} {{ child_pkg.dim_unit }}

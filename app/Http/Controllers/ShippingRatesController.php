@@ -80,101 +80,105 @@ class ShippingRatesController extends Controller
 
     public function fedex($data)
     {
-        $client = new Client();
+        try {
+            $client = new Client();
 
-        $result = $client->post('https://apis.fedex.com/oauth/token', [
-            'form_params' => [
-                'grant_type' => 'client_credentials',
-                'client_id' => 'l7ef7275cc94544aaabf802ef4308bb66a',
-                'client_secret' => '48b51793-fd0d-426d-8bf0-3ecc62d9c876',
-            ]
-        ]);
+            $result = $client->post('https://apis.fedex.com/oauth/token', [
+                'form_params' => [
+                    'grant_type' => 'client_credentials',
+                    'client_id' => 'l7ef7275cc94544aaabf802ef4308bb66a',
+                    'client_secret' => '48b51793-fd0d-426d-8bf0-3ecc62d9c876',
+                ]
+            ]);
 
-        $authorization = $result->getBody()->getContents();
-        $authorization = json_decode($authorization);
+            $authorization = $result->getBody()->getContents();
+            $authorization = json_decode($authorization);
 
-        $headers = [
-            'X-locale' => 'en_US',
-            'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer ' . $authorization->access_token
-        ];
+            $headers = [
+                'X-locale' => 'en_US',
+                'Content-Type' => 'application/json',
+                'Authorization' => 'Bearer ' . $authorization->access_token
+            ];
 
-        $requested_package_line_items = [];
-        foreach ($data['dimensions'] as $key => $dimension) {
-            $requested_package_line_items[] =  [
-                "weight" => [
-                    "units" => $data['weight_units'],
-                    "value" => $dimension['weight']
+            $requested_package_line_items = [];
+            foreach ($data['dimensions'] as $key => $dimension) {
+                $requested_package_line_items[] =  [
+                    "weight" => [
+                        "units" => $data['weight_units'],
+                        "value" => $dimension['weight']
+                    ],
+                    "dimensions" => [
+                        "length" => $dimension['length'],
+                        "width" => $dimension['width'],
+                        "height" => $dimension['height'],
+                        "units" => $data['dimension_units']
+                    ]
+                ];
+            }
+
+            $body = [
+                "accountNumber" => [
+                    "value" => "695684150"
                 ],
-                "dimensions" => [
-                    "length" => $dimension['length'],
-                    "width" => $dimension['width'],
-                    "height" => $dimension['height'],
-                    "units" => $data['dimension_units']
+                "requestedShipment" => [
+                    "shipper" => [
+                        "address" => [
+                            "postalCode" => $data['ship_from_postal_code'],
+                            "countryCode" => $data['ship_from_country_code'],
+                            "residential" => false
+                        ]
+                    ],
+                    "recipient" => [
+                        "address" => [
+                            "postalCode" => $data['ship_to_postal_code'],
+                            "countryCode" => $data['ship_to_country_code'],
+                            "residential" => $data['residential']
+                        ]
+                    ],
+                    "pickupType" => "DROPOFF_AT_FEDEX_LOCATION",
+                    "rateRequestType" => [
+                        "ACCOUNT"
+                    ],
+                    "requestedPackageLineItems" => $requested_package_line_items
                 ]
             ];
+
+            $request = $client->post('https://apis.fedex.com/rate/v1/rates/quotes', [
+                'headers' => $headers,
+                'body' => json_encode($body)
+            ]);
+
+            $response = $request->getBody()->getContents();
+            $response = json_decode($response);
+
+            // $markup = SiteSetting::getByName('markup');
+
+            $rates = [];
+            foreach ($response->output->rateReplyDetails as $key => $fedex) {
+                $price = $fedex->ratedShipmentDetails[0]->totalNetFedExCharge;
+                // $markup_amount = $fedex->ratedShipmentDetails[0]->totalNetFedExCharge * ((int)$markup / 100);
+                $markup = shipping_service_markup($fedex->serviceType);
+                $markup_amount = $price * ((float)$markup / 100);
+
+                $total = $price + $markup_amount;
+                $total = number_format((float)$total, 2, '.', '');
+
+                $rates[] = [
+                    'code' => 'fedex',
+                    'type' => $fedex->serviceType,
+                    'name' => $fedex->serviceName,
+                    'pkg_type' => $fedex->packagingType,
+                    'price' => $price,
+                    'markup' => $markup_amount,
+                    'markup_percentage' => $markup,
+                    'total' => $total,
+                ];
+            }
+
+            return $rates;
+        } catch (\Throwable $th) {
+            return [];
         }
-
-        $body = [
-            "accountNumber" => [
-                "value" => "695684150"
-            ],
-            "requestedShipment" => [
-                "shipper" => [
-                    "address" => [
-                        "postalCode" => $data['ship_from_postal_code'],
-                        "countryCode" => $data['ship_from_country_code'],
-                        "residential" => false
-                    ]
-                ],
-                "recipient" => [
-                    "address" => [
-                        "postalCode" => $data['ship_to_postal_code'],
-                        "countryCode" => $data['ship_to_country_code'],
-                        "residential" => $data['residential']
-                    ]
-                ],
-                "pickupType" => "DROPOFF_AT_FEDEX_LOCATION",
-                "rateRequestType" => [
-                    "ACCOUNT"
-                ],
-                "requestedPackageLineItems" => $requested_package_line_items
-            ]
-        ];
-
-        $request = $client->post('https://apis.fedex.com/rate/v1/rates/quotes', [
-            'headers' => $headers,
-            'body' => json_encode($body)
-        ]);
-
-        $response = $request->getBody()->getContents();
-        $response = json_decode($response);
-
-        // $markup = SiteSetting::getByName('markup');
-
-        $rates = [];
-        foreach ($response->output->rateReplyDetails as $key => $fedex) {
-            $price = $fedex->ratedShipmentDetails[0]->totalNetFedExCharge;
-            // $markup_amount = $fedex->ratedShipmentDetails[0]->totalNetFedExCharge * ((int)$markup / 100);
-            $markup = shipping_service_markup($fedex->serviceType);
-            $markup_amount = $price * ((float)$markup / 100);
-
-            $total = $price + $markup_amount;
-            $total = number_format((float)$total, 2, '.', '');
-
-            $rates[] = [
-                'code' => 'fedex',
-                'type' => $fedex->serviceType,
-                'name' => $fedex->serviceName,
-                'pkg_type' => $fedex->packagingType,
-                'price' => $price,
-                'markup' => $markup_amount,
-                'markup_percentage' => $markup,
-                'total' => $total,
-            ];
-        }
-
-        return $rates;
     }
 
     public function dhl($data)
