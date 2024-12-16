@@ -925,6 +925,7 @@ class PaymentController extends Controller
 
             $card_response = Http::withHeaders($headers)->post($card_url, $card_body);
             $card_response = json_decode($card_response->getBody(), true);
+            Log::info($card_response);
 
             // CREATE PAYMENT
             $payment_url =  $SQUARE_API_URL . '/payments';
@@ -941,6 +942,7 @@ class PaymentController extends Controller
 
             $payment_response = Http::withHeaders($headers)->post($payment_url, $payment_body);
             $payment_response = json_decode($payment_response->getBody(), true);
+            Log::info($payment_response);
 
             $data = [
                 $payment_module . '_id' => $payment_module_id,
