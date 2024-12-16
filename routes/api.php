@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('register', [RegisterController::class, 'register']);
 Route::post('login', [RegisterController::class, 'login']);
 Route::post('rates', [ShippingRatesController::class, 'index']);
+Route::post('fetch-address', [ShippingRatesController::class, 'fetchAddress']);
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
