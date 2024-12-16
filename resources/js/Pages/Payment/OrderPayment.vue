@@ -19,21 +19,16 @@
 										{{ response_message }}
 									</div>
 
-									<!-- <template v-if="payment_module != 'package' || payment_module != 'auction'">
-										<h3 v-show="form.shipping_address_id == null">
-											Select Shipping Address to proceed
-										</h3>
-										<select v-on:change="selectAddress($event)" name="shipping_address_id"
-											class="form-control custom-select" v-model="shipping_address_id" required>
-											<option :value="null" disabled :selected="true">
-												Select Shipping Address
-											</option>
-											<template v-for="address in shipping_address" :key="address.id">
-												<option :value="address.id">{{ address.label }}</option>
-											</template>
-</select>
-<hr class="mb-3 mt-3" />
-</template> -->
+									<h3>Select Billing Address to proceed</h3>
+									<select class="form-control custom-select"
+										v-model="square_payment_form.billing_address_id" required>
+										<option value="">Select Address</option>
+										<template v-for="address in billing_addresses" :key="address.id">
+											<option :value="address.id">{{ address.label }}</option>
+										</template>
+									</select>
+
+									<hr class="mb-3 mt-3" />
 
 									<div class="row">
 										<!-- <div class="col-12" v-if="status != undefined">
@@ -308,7 +303,6 @@ export default {
 			card_max: 16,
 			card_csv_max: 3,
 			paypal_amount: 0,
-			shipping_address_id: null,
 			hasPackage: this.hasPackage,
 			form: this.$inertia.form({
 				payment_module_type: this.payment_module,
@@ -330,13 +324,15 @@ export default {
 				coupon_code: "",
 				coupon_code_id: "",
 				discount: 0.0,
-				shipping_address_id: null,
 			}),
 			square_payment_form: this.$inertia.form({
 				payment_module: this.payment_module,
 				payment_module_id: this.payment_module_id,
 				payment_token: "",
+				verification_token: "",
+				billing_address_id: "",
 			}),
+			billing_addresses: [],
 		};
 	},
 	props: {
@@ -344,7 +340,7 @@ export default {
 		status: Object,
 		payment_module: Object,
 		payment_module_id: Object,
-		shipping_address: Object,
+		billing_addresses: Object,
 		paypal_processing_fee: Object,
 		paypal_charged_amount: Object,
 		square_application_id: String,
@@ -377,33 +373,60 @@ export default {
 				const statusContainer = document.getElementById('payment-status-container');
 
 				try {
+
+					cardButton.disabled = true;
 					const result = await card.tokenize();
+
 					if (result.status === 'OK') {
+
+						var address_data = {};
+
+						try {
+							const response = await axios.post('/api/fetch-address', {
+								address_id: this.square_payment_form.billing_address_id,
+							});
+
+							address_data = response.data.data.address;
+						} catch (error) {
+							console.error('Error fetching address details:', error);
+						}
+
+						const verificationDetails = {
+							amount: String(this.amount),
+							billingContact: {
+								givenName: address_data.fullname,
+								familyName: address_data.fullname,
+								email: address_data.email,
+								phone: address_data.phone,
+								addressLines: [address_data.address, address_data.address_2 ?? ''],
+								city: address_data.city,
+								state: '',
+								countryCode: address_data.country_code,
+							},
+							currencyCode: 'USD',
+							intent: 'CHARGE',
+						};
+
+						const verificationResult = await payments.verifyBuyer(
+							result.token,
+							verificationDetails,
+						);
+
 						this.square_payment_form.payment_token = result.token;
+						this.square_payment_form.verification_token = verificationResult.token;
+
 						this.square_payment_form.post(this.route("payment.square-success"));
 					} else {
-						let errorMessage = `Tokenization failed with status: ${result.status}`;
-						if (result.errors) {
-							errorMessage += ` and errors: ${JSON.stringify(
-								result.errors
-							)}`;
-						}
-						throw new Error(errorMessage);
+						cardButton.disabled = false;
+						throw new Error("CARD DECLINE");
 					}
 				} catch (e) {
-					console.error(e);
-					statusContainer.innerHTML = "PAYMENT FAILED.";
+					cardButton.disabled = false;
+					statusContainer.innerHTML = "PAYMENT ERROR.";
 				}
 			});
 		},
 		submit() {
-			// if (
-			// 	this.payment_module != "package" &&
-			// 	this.form.shipping_address_id == null
-			// ) {
-			// 	alert("PLEASE SELECT SHIPPING ADDRESS");
-			// }
-
 			if (document.getElementById("terms").checked == true && document.getElementById("signature").checked == true) {
 				this.response_message = null;
 				this.overlay = true;
@@ -429,13 +452,6 @@ export default {
 
 		},
 		submitPayPal() {
-			// if (
-			// 	this.payment_module != "package" &&
-			// 	this.form.shipping_address_id == null
-			// ) {
-			// 	alert("PLEASE SELECT SHIPPING ADDRESS");
-			// }
-
 			if (document.getElementById("terms-paypal").checked == true && document.getElementById("signature-paypal").checked == true) {
 				this.response_message = null;
 				this.overlay = true;
@@ -539,16 +555,7 @@ export default {
 				.finally(() => this.responseFromSubmit());
 		},
 		getValues() {
-			console.log(document.getElementById("transaction_id"));
-		},
-		selectAddress(event) {
-			var address = this.shipping_address[event.target.value];
-			this.current_address = address.full_address;
-			console.log("target value " + event.target.value);
-			console.log("old value " + this.form.shipping_address_id);
-			this.form.shipping_address_id = event.target.value;
-			this.shipping_address_id = event.target.value;
-			console.log("new value " + this.form.shipping_address_id);
+			// console.log(document.getElementById("transaction_id"));
 		},
 	},
 };

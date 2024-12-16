@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Address;
 use App\Models\SiteSetting;
 use App\Models\Warehouse;
 use Carbon\Carbon;
@@ -601,5 +602,20 @@ class ShippingRatesController extends Controller
         } catch (\Throwable $th) {
             return [];
         }
+    }
+
+    public function fetchAddress(Request $request)
+    {
+        $address = Address::where('id', $request->address_id)->first();
+
+        $data = [
+            'address' => $address
+        ];
+
+        return response()->json([
+            'status' => true,
+            'message' => 'success',
+            'data' => $data,
+        ]);
     }
 }

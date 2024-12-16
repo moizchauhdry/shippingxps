@@ -87,16 +87,6 @@ class PaymentController extends Controller
             $payment_module_id = $order->id;
         }
 
-        if ($payment_module != 'package') {
-            $addresss = Address::where('user_id', $user->id)->get();
-            foreach ($addresss as $address) {
-                $shipping_address[$address->id] = [
-                    'id' => $address->id,
-                    'label' => $address->fullname . ", " . $address->city . ", " . $address->state . ", " . $address->zip_code,
-                ];
-            }
-        }
-
         if ($payment_module == 'auction') {
             $auction = Auction::query()
                 ->where('bought_at', NULL)
@@ -112,6 +102,16 @@ class PaymentController extends Controller
             abort(403, 'The amount is less then 0');
         }
 
+
+        $address_list = Address::where('user_id', $user->id)->get();
+        foreach ($address_list as $address) {
+            $billing_addresses[$address->id] = [
+                'id' => $address->id,
+                'label' => $address->fullname . ", " . $address->city . ", " . $address->state . ", " . $address->zip_code,
+            ];
+        }
+
+
         $paypal_processing_fee = SiteSetting::where('name', 'paypal_processing_percentage')->first()->value ?? 0.00;
         $paypal_charged_amount = ($amount * $paypal_processing_fee / 100) + $amount;
         $paypal_charged_amount =  number_format((float)$paypal_charged_amount, 2, '.', '');
@@ -126,7 +126,7 @@ class PaymentController extends Controller
                 'amount' => $amount,
                 'payment_module' => $payment_module,
                 'payment_module_id' => $payment_module_id,
-                'shipping_address' => $shipping_address,
+                'billing_addresses' => $billing_addresses,
                 'paypal_processing_fee' => $paypal_processing_fee,
                 'paypal_charged_amount' => $paypal_charged_amount,
                 'square_application_id' => $square_application_id,
@@ -825,6 +825,8 @@ class PaymentController extends Controller
 
     public function squareSuccess(Request $request)
     {
+        // dd($request->all());
+
         try {
 
             $SQUARE_API_URL = config('services.square.api_url');
@@ -934,6 +936,7 @@ class PaymentController extends Controller
                 'idempotency_key' => (string) Str::uuid(),
                 'source_id' => $card_response['card']['id'],
                 'customer_id' => $customer_response['customer']['id'],
+                'verification_token' => $request->verification_token,
             ];
 
             $payment_response = Http::withHeaders($headers)->post($payment_url, $payment_body);
@@ -978,34 +981,13 @@ class PaymentController extends Controller
                 }
 
                 return redirect()->route('payments.getPayments')->with('success', 'The payment have been completed successfully.');
-
-                // return response()->json([
-                //     'status' => true,
-                //     'code' => 200,
-                //     'message' => 'success',
-                //     // 'route' => route('packages.show', $payment_module_id),
-                //     'route' => route('payments.getPayments'),
-                // ]);
             } else {
 
                 return redirect()->back()->with('error', $payment_response['errors'][0]['code']);
-
-                // return response()->json([
-                //     'status' => false,
-                //     'code' => 403,
-                //     'message' => $payment_response,
-                // ]);
             }
         } catch (\Throwable $th) {
-
             Log::info($th);
-            return redirect()->back()->with('error', 'Payment Error.');
-
-            // return response()->json([
-            //     'status' => false,
-            //     'code' => 403,
-            //     'message' => $th->getMessage(),
-            // ]);
+            return redirect()->back()->with('error', "Payment Error!");
         }
     }
 }
