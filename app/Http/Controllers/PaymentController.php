@@ -937,7 +937,7 @@ class PaymentController extends Controller
                 'idempotency_key' => (string) Str::uuid(),
                 'source_id' => $card_response['card']['id'],
                 'customer_id' => $customer_response['customer']['id'],
-                // 'verification_token' => $request->verification_token,
+                'verification_token' => $request->verification_token,
             ];
 
             $payment_response = Http::withHeaders($headers)->post($payment_url, $payment_body);
