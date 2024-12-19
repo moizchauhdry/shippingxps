@@ -905,7 +905,7 @@ class PaymentController extends Controller
             // CREATE CUSTOMER
             $customer_url = $SQUARE_API_URL . '/customers';
             $customer_body = [
-                "company_name" => $user->name,
+                "company_name" => $user->name . ' - ' . $user->id + 4000,
                 'idempotency_key' => (string) Str::uuid(),
             ];
 
@@ -913,19 +913,21 @@ class PaymentController extends Controller
             $customer_response = json_decode($customer_response->getBody(), true);
 
             // CREATE CARD
-            $card_url =  $SQUARE_API_URL . '/cards';
-            $card_body = [
-                "card" => [
-                    "cardholder_name" => $user->name,
-                    "customer_id" => $customer_response['customer']['id']
-                ],
-                'idempotency_key' => (string) Str::uuid(),
-                'source_id' => $request->payment_token,
-            ];
+            // $card_url =  $SQUARE_API_URL . '/cards';
+            // $card_body = [
+            //     "card" => [
+            //         "cardholder_name" => $user->name,
+            //         "customer_id" => $customer_response['customer']['id']
+            //     ],
+            //     'idempotency_key' => (string) Str::uuid(),
+            //     'source_id' => $request->payment_token,
+            //     'verification_token' => $request->verification_token,
+            // ];
 
-            $card_response = Http::withHeaders($headers)->post($card_url, $card_body);
-            $card_response = json_decode($card_response->getBody(), true);
-            Log::info($card_response);
+            // $card_response = Http::withHeaders($headers)->post($card_url, $card_body);
+            // $card_response = json_decode($card_response->getBody(), true);
+            
+            $billing_address = Address::find($request->billing_address_id);
 
             // CREATE PAYMENT
             $payment_url =  $SQUARE_API_URL . '/payments';
@@ -935,14 +937,22 @@ class PaymentController extends Controller
                     'currency' => 'USD',
                 ],
                 'idempotency_key' => (string) Str::uuid(),
-                'source_id' => $card_response['card']['id'],
                 'customer_id' => $customer_response['customer']['id'],
-                // 'verification_token' => $request->verification_token,
+                // 'source_id' => $card_response['card']['id'],
+                'source_id' => $request->payment_token,
+                'verification_token' => $request->verification_token,
+                'billing_address' => [
+                    'address_line_1' => $billing_address->address,
+                    'address_line_2' => $billing_address->address_2,
+                    'address_line_3' => $billing_address->address_3,
+                    'first_name' => $billing_address->fullname,
+                    'country' => $billing_address->country_code,
+                    'postal_code' => $billing_address->zip_code,
+                ],
             ];
 
             $payment_response = Http::withHeaders($headers)->post($payment_url, $payment_body);
             $payment_response = json_decode($payment_response->getBody(), true);
-            Log::info($payment_response);
 
             $data = [
                 $payment_module . '_id' => $payment_module_id,
@@ -951,10 +961,11 @@ class PaymentController extends Controller
                 'payment_type' => 'square',
                 'sq_customer_id' => $customer_response['customer']['id'],
                 'sq_customer_response' => json_encode($customer_response),
-                'sq_card_id' => $card_response['card']['id'],
-                'sq_card_response' => json_encode($card_response),
+                // 'sq_card_id' => $card_response['card']['id'],
+                // 'sq_card_response' => json_encode($card_response),
                 'sq_payment_id' => $payment_response['payment']['id'],
-                'sq_payment_response' => json_encode($payment_response),
+                'sq_payment_response' => json_encode($payment_response), 
+                'billing_address' => json_encode($billing_address),
             ];
 
             $payment = Payment::updateOrCreate([$payment_module . '_id' => $payment_module_id], $data);
@@ -968,6 +979,10 @@ class PaymentController extends Controller
 
                 if ($payment_module == 'package') {
                     $package->update(['payment_status' => 'Paid']);
+                    $shipping_address = Address::find($package->address_book_id);
+                    $payment->update([
+                        'shipping_address' => json_encode($shipping_address),
+                    ]);
                 }
 
                 if ($payment_module == 'order') {

@@ -931,7 +931,7 @@ class PackageController extends Controller
 
     public function consolidation(Request $request)
     {
-        abort(403,'Multi-piece and consolidation are in maintenance mode.');
+        // abort(403,'Multi-piece and consolidation are in maintenance mode.');
 
         $query = Package::with('customer', 'warehouse')
             ->where('warehouse_id', $request->warehouse_id)
@@ -955,7 +955,7 @@ class PackageController extends Controller
 
     public function storeConsolidation(Request $request)
     {
-        abort(403,'Multi-piece and consolidation are in maintenance mode.');
+        // abort(403,'Multi-piece and consolidation are in maintenance mode.');
 
         if ($request->package_consolidation == []) {
             return redirect()->back()->with('error', 'Please select package for consolidation.');
@@ -1000,7 +1000,7 @@ class PackageController extends Controller
 
     public function multipiece(Request $request)
     {
-        abort(403,'Multi-piece and consolidation are in maintenance mode.');
+        // abort(403,'Multi-piece and consolidation are in maintenance mode.');
 
         $query = Package::with('customer', 'warehouse')
             ->where('warehouse_id', $request->warehouse_id)
@@ -1023,7 +1023,7 @@ class PackageController extends Controller
 
     public function storeMultipiece(Request $request)
     {
-        abort(403,'Multi-piece and consolidation are in maintenance mode.');
+        // abort(403,'Multi-piece and consolidation are in maintenance mode.');
 
         if ($request->multipiece_package == []) {
             return redirect()->back()->with('error', 'Please select packages for multipiece.');
