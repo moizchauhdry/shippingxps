@@ -54,7 +54,7 @@
             margin: 0;
             padding: 0;
             background: #fff;
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: Arial, sans-serif;
             font-size: 14px;
             color: #464646;
             text-align: left
@@ -231,7 +231,18 @@
                         </tbody>
                     </table>
 
-                    <table class="w320 full-width-gmail-android" bgcolor="#f9f8f8" style="background-color:#f04c23"
+                    <div style="text-align:center">
+                        <p>
+                            Thank you for using our application! <br>
+                        </p>
+
+                        <p>
+                            ©{{Carbon\Carbon::now()->year }} <a href="http://shippingxps.com">ShippingXPS.com</a> <br>
+                            <span>All Rights Reserved</span>
+                        </p>
+                    </div>
+
+                    {{-- <table class="w320 full-width-gmail-android" bgcolor="#f9f8f8" style="background-color:#f04c23"
                         cellpadding="0" cellspacing="0" border="0" width="100%">
                         <tbody>
                             <tr>
@@ -243,8 +254,9 @@
                                                 <tr>
                                                     <td colspan="3" class="header center" width="100%">
                                                         <span style="color: white;font-size:12px">©{{
-                                                            Carbon\Carbon::now()->year }} <a href="https://shippingxps.com/"
-                                                                style="color:#fff">shippingxps.com</a> <br> All Rights
+                                                            Carbon\Carbon::now()->year }} <a
+                                                                href="https://shippingxps.com"
+                                                                style="color:#fff">ShippingXPS</a> <br> All Rights
                                                             Reserved</span>
                                                     </td>
                                                 </tr>
@@ -255,7 +267,7 @@
                                 </td>
                             </tr>
                         </tbody>
-                    </table>
+                    </table> --}}
 
                 </td>
             </tr>
