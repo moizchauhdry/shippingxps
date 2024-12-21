@@ -25,6 +25,7 @@ use Inertia\Inertia;
 */
 
 require __DIR__ . '/auth.php';
+
 Route::any('shipping-rates', [ShippingRatesController::class, 'index'])->name('shipping-rates.index');
 Route::get('/shipping-calculator', 'HomeController@pricing')->name('shipping-calculator');
 Route::get('dashboard/shipping-calculator', [ShippingCalculatorController::class, 'index'])->name('dashboard.shipping-calculator.index');
