@@ -26,6 +26,8 @@ use Inertia\Inertia;
 
 require __DIR__ . '/auth.php';
 Route::any('shipping-rates', [ShippingRatesController::class, 'index'])->name('shipping-rates.index');
+Route::get('/shipping-calculator', 'HomeController@pricing')->name('shipping-calculator');
+Route::get('dashboard/shipping-calculator', [ShippingCalculatorController::class, 'index'])->name('dashboard.shipping-calculator.index');
 
 Route::group(['middleware' => ['verified', 'auth']], function () {
 
@@ -40,7 +42,6 @@ Route::group(['middleware' => ['verified', 'auth']], function () {
     Route::any('/dashboard', 'HomeController@dashboard')->name('dashboard')->middleware(['auth', 'verified']);
 
     Route::any('/dashboard-success', 'HomeController@dashboard')->name('dashboard-success')->middleware(['auth', 'verified']);
-    Route::get('/shipping-calculator', 'HomeController@pricing')->name('shipping-calculator');
     Route::get('/getServicesList', 'HomeController@getServicesList')->name('getServicesList');
     Route::get('/pricing', 'HomeController@pricingTable')->name('pricing');
     Route::get('/getListings', 'HomeController@getListings')->name('getListings');
@@ -133,7 +134,6 @@ Route::group(['middleware' => ['verified', 'auth']], function () {
     Route::get('page/{slug}', 'CMSPageController@show')->name('page-show');
     Route::get('packages-to-dash/{id}', 'PackageController@pushPackage')->name('pushPackage');
 
-    Route::get('dashboard/shipping-calculator', [ShippingCalculatorController::class, 'index'])->name('dashboard.shipping-calculator.index');
     Route::get('auctions', [AuctionController::class, 'index'])->name('auctions.index');
     Route::get('auctions/{id}', [AuctionController::class, 'detail'])->name('auctions.detail');
     Route::post('bid-auction', [AuctionController::class, 'bid'])->name('auctions.bid');
