@@ -30,7 +30,7 @@ Route::any('shipping-rates', [ShippingRatesController::class, 'index'])->name('s
 Route::get('/shipping-calculator', 'HomeController@pricing')->name('shipping-calculator');
 Route::get('dashboard/shipping-calculator', [ShippingCalculatorController::class, 'index'])->name('dashboard.shipping-calculator.index');
 
-Route::group(['middleware' => ['verified', 'auth']], function () {
+Route::group(['middleware' => ['auth']], function () {
 
     require __DIR__ . '/package.php';
 
