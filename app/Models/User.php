@@ -10,7 +10,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use OwenIt\Auditing\Contracts\Auditable;
 
-class User extends Authenticatable implements Auditable
+class User extends Authenticatable implements Auditable, MustVerifyEmail
 {
     use \OwenIt\Auditing\Auditable;
     use HasFactory, Notifiable, HasApiTokens;
