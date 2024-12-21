@@ -25,6 +25,7 @@ use Inertia\Inertia;
 */
 
 require __DIR__ . '/auth.php';
+Route::any('shipping-rates', [ShippingRatesController::class, 'index'])->name('shipping-rates.index');
 
 Route::group(['middleware' => ['verified', 'auth']], function () {
 
@@ -133,7 +134,6 @@ Route::group(['middleware' => ['verified', 'auth']], function () {
     Route::get('packages-to-dash/{id}', 'PackageController@pushPackage')->name('pushPackage');
 
     Route::get('dashboard/shipping-calculator', [ShippingCalculatorController::class, 'index'])->name('dashboard.shipping-calculator.index');
-    Route::any('shipping-rates', [ShippingRatesController::class, 'index'])->name('shipping-rates.index');
     Route::get('auctions', [AuctionController::class, 'index'])->name('auctions.index');
     Route::get('auctions/{id}', [AuctionController::class, 'detail'])->name('auctions.detail');
     Route::post('bid-auction', [AuctionController::class, 'bid'])->name('auctions.bid');
