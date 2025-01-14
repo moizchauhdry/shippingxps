@@ -50,6 +50,13 @@ class RegisteredUserController extends Controller
             // 'captcha_token' => ['required', new Recaptcha]
         ]);
 
+        $phone_no = $request->phone_no;
+        $parts = explode(' ', $phone_no);
+        $country_code = $parts[0];
+
+        if (in_array($country_code, ["+233", "+234"])) {
+            abort(403, 'ShippingXPS services are not available in this region');
+        }
 
         $user = User::create([
             'name' => $request->name,

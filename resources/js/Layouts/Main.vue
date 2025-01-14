@@ -86,7 +86,7 @@
 						</inertia-link>
 					</div>
 
-					<button class="accordion">Address</button>
+					<!-- <button class="accordion">Address</button> -->
 					<div class="accordion-content">
 						<!-- <inertia-link
 							class="nav-link"
