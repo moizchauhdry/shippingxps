@@ -35,8 +35,17 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request)
     {
         $user = User::where('email', $request->email)->first();
+        
         if (!$user) {
             abort(403, 'The email you have entered is invalid');
+        }
+
+        $phone_no = $user->phone_no;
+        $parts = explode(' ', $phone_no);
+        $country_code = $parts[0];
+
+        if (in_array($country_code, ["+233", "+234"])) {
+            abort(403, 'ShippingXPS services are not available in this region');
         }
 
         if ($user->status == 1) {
