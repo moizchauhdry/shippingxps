@@ -103,7 +103,7 @@
         @endforeach
     </table>
     @endisset
-    
+
     <br>
 
     <span style="font-size:10px"><b>CHARGES:</b></span>
@@ -265,7 +265,8 @@
     <br>
 
     <p style="font-size: 10px">
-        I possess an electronic signature confirming both the initiation and authorization of the payment, which was made by me.
+        I, {{$billing->fullname ?? ""}}, possess an electronic signature confirming both the initiation and
+        authorization of the payment made by me.
     </p>
 </body>
 
