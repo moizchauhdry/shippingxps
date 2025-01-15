@@ -6,8 +6,8 @@
 				<form @submit.prevent="submit">
 					<div class="row">
 						<div class="col-md-2 offset-md-5">
-							<select class="form-control" name="warehouse_id" id="warehouse_id" v-model="form.warehouse_id"
-								@change="filterPackages()">
+							<select class="form-control" name="warehouse_id" id="warehouse_id"
+								v-model="form.warehouse_id" @change="filterPackages()">
 								<option value="" selected>--Select Warehouse--</option>
 								<template v-for="warehouse in warehouses" :key="warehouse.id">
 									<option :value="warehouse.id">{{ warehouse.name }}</option>
@@ -71,6 +71,7 @@
 import MainLayout from "@/Layouts/Main";
 import BreezeAuthenticatedLayout from "@/Layouts/Authenticated";
 import { Inertia } from "@inertiajs/inertia";
+import Swal from 'sweetalert2';
 
 export default {
 	components: {
@@ -95,11 +96,21 @@ export default {
 		siuteNum(user_id) {
 			return 4000 + user_id;
 		},
-
 		submit() {
-			Inertia.post(route("packages.consolidation.store"), this.form, {});
+			Swal.fire({
+				title: 'Are you sure?',
+				text: 'You will not be able to change the package once it has been consolidated.',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#198754',
+				cancelButtonColor: '#3085d6',
+				confirmButtonText: 'Yes, Confirm it!'
+			}).then(async (result) => {
+				if (result.isConfirmed) {
+					Inertia.post(route("packages.consolidation.store"), this.form, {});
+				}
+			});
 		},
-
 		filterPackages() {
 			this.form.package_consolidation = [];
 			Inertia.post(route("packages.consolidation"), this.form);
