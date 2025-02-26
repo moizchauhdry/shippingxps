@@ -59,7 +59,8 @@ class ShippingRatesController extends Controller
             ];
 
             $fedex_rates = $this->fedex($data);
-            $dhl_rates = $this->dhl($data);
+            // $dhl_rates = $this->dhl($data);
+            $dhl_rates = [];
             $ups_rates = $this->ups($data);
             $usps_rates = $this->usps($data);
 
